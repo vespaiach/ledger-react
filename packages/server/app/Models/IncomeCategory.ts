@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
-export default class Category extends BaseModel {
+export default class IncomeCategory extends BaseModel {
+  public static table = 'incomes_categories'
+
   @column({ isPrimary: true })
   public id: number
 

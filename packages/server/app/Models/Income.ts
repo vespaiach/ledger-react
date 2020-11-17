@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, afterSave } from '@ioc:Adonis/Lucid/Orm'
-import Category from './Category'
+import IncomeCategory from './IncomeCategory'
 
 export default class Income extends BaseModel {
   public static table = 'incomes'
@@ -32,10 +32,10 @@ export default class Income extends BaseModel {
   @afterSave()
   public static async saveCategory(income: Income) {
     const categoryName = income.category.toLowerCase()
-    let category = await Category.findBy('name', categoryName)
+    let category = await IncomeCategory.findBy('name', categoryName)
 
     if (!category) {
-      category = new Category()
+      category = new IncomeCategory()
       category.name = categoryName
       category.userId = income.userId
       await category.save()

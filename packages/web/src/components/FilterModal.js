@@ -94,24 +94,24 @@ export default function FilterModal({
                             }}
                         />
                     </Grid>
-                    <Grid container justify="space-around">
-                        <FormControl>
-                            <InputLabel>Category</InputLabel>
-                            <Select
-                                value={cate}
-                                onChange={(e) => {
-                                    setCate(e.target.value);
-                                }}
-                            >
-                                {categories.map((c) => (
-                                    <MenuItem key={c} value={c}>
-                                        {c}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Grid>
                 </MuiPickersUtilsProvider>
+                <Grid container justify="space-around">
+                    <FormControl>
+                        <InputLabel>Category</InputLabel>
+                        <Select
+                            value={cate}
+                            onChange={(e) => {
+                                setCate(e.target.value);
+                            }}
+                        >
+                            {categories.map((c) => (
+                                <MenuItem key={c} value={c}>
+                                    {c}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClear} color="primary">

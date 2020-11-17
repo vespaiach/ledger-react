@@ -36,6 +36,9 @@ Route.group(() => {
     Route.get('incomes', 'IncomesController.index')
     Route.post('incomes', 'IncomesController.store')
 
+    Route.get('incomes_categories', 'IncomeCategoriesController.list')
+    Route.get('expenses_categories', 'ExpenseCategoriesController.list')
+
     Route.get('me', 'UsersController.me')
     Route.get('logout', 'UsersController.logout')
   }).middleware('auth')

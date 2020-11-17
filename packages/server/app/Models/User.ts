@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
 import { column, beforeSave, BaseModel, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
-import Category from './Category'
+import ExpenseCategory from './ExpenseCategory'
+import IncomeCategory from './IncomeCategory'
 import Expense from './Expense'
 import Income from './Income'
 
@@ -29,8 +30,11 @@ export default class User extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
-  @hasMany(() => Category)
-  public categories: HasMany<typeof Category>
+  @hasMany(() => ExpenseCategory)
+  public expenseCategories: HasMany<typeof ExpenseCategory>
+
+  @hasMany(() => IncomeCategory)
+  public incomeCategories: HasMany<typeof IncomeCategory>
 
   @hasMany(() => Expense)
   public expenses: HasMany<typeof Expense>
