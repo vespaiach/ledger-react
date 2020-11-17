@@ -24,6 +24,7 @@ export default function ExpenseList() {
     const from = useSelector((state) => state.expenses.from);
     const to = useSelector((state) => state.expenses.to);
     const category = useSelector((state) => state.expenses.category);
+    const categories = useSelector((state) => state.expenses.categories);
     const handleSort = (sort) => {
         dispatch({ type: 'REQUEST_SORT_EXPENSES', payload: sort });
     };
@@ -32,6 +33,12 @@ export default function ExpenseList() {
     useEffect(() => {
         dispatch({ type: 'REQUEST_EXPENSES', payload: 1 });
     }, [dispatch]);
+
+    useEffect(() => {
+        if (categories === null) {
+            dispatch({ type: 'REQUEST_UPDATE_EXPENSES_FILTER' });
+        }
+    }, [categories, dispatch]);
 
     return (
         <MasterPage>
@@ -49,12 +56,15 @@ export default function ExpenseList() {
                 from={from}
                 to={to}
                 category={category}
+                categories={categories}
                 open={openFilter}
                 onClose={closeFilter}
-                onClear={() =>
-                    dispatch({ type: 'REQUEST_RESET_EXPENSES_FILTER' })
-                }
+                onClear={() => {
+                    closeFilter();
+                    dispatch({ type: 'REQUEST_RESET_EXPENSES_FILTER' });
+                }}
                 onSubmit={(payload) => {
+                    closeFilter();
                     dispatch({
                         type: 'REQUEST_UPDATE_EXPENSES_FILTER',
                         payload,

@@ -12,6 +12,7 @@ import {
     sortExpensesRequest,
     resetExpensesFilterRequest,
     updateExpensesFilterRequest,
+    fetchExpensesCategoriesRequest,
 } from '../routes/Expenses/saga';
 
 import commonReducer from './commonReducer';
@@ -51,6 +52,7 @@ const saga = function* rootSaga() {
             sortExpensesRequest,
             resetExpensesFilterRequest,
             updateExpensesFilterRequest,
+            fetchExpensesCategoriesRequest,
         ].map(fork)
     );
 };

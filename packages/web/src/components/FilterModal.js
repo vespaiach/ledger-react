@@ -11,12 +11,22 @@ import {
     InputLabel,
     MenuItem,
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import DateFnsUtils from '@date-io/date-fns';
-import {
-    KeyboardTimePicker,
-    KeyboardDatePicker,
-    MuiPickersUtilsProvider,
-} from '@material-ui/pickers';
+import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        '& .MuiTextField-root': {
+            margin: theme.spacing(1),
+            width: '25ch',
+        },
+    },
+    select: {
+        margin: theme.spacing(1),
+        marginBottom: theme.spacing(4),
+    },
+}));
 
 export default function FilterModal({
     from = null,
@@ -28,9 +38,10 @@ export default function FilterModal({
     onSubmit,
     onClear,
 }) {
+    const classes = useStyles();
     const [fromDate, setFromDate] = useState(from);
     const [toDate, setToDate] = useState(to);
-    const [cate, setCate] = useState(category);
+    const [cate, setCate] = useState(category || '');
     const handleFromDateChange = (date) => {
         setFromDate(date);
     };
@@ -49,69 +60,40 @@ export default function FilterModal({
             onClose={onClose}
             aria-labelledby="form-dialog-title"
         >
-            <DialogTitle id="form-dialog-title">Filter</DialogTitle>
+            <DialogTitle>Filter</DialogTitle>
             <DialogContent>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <Grid container justify="space-around">
-                        <KeyboardDatePicker
-                            margin="normal"
+                    <div className={classes.root}>
+                        <DateTimePicker
                             label="From date"
-                            format="MM/dd/yyyy"
+                            format="MMM do hh:mm aaaa"
                             value={fromDate}
                             onChange={handleFromDateChange}
-                            KeyboardButtonProps={{
-                                'aria-label': 'change date',
-                            }}
                         />
-                        <KeyboardTimePicker
-                            margin="normal"
-                            label="From time"
-                            value={fromDate}
-                            onChange={handleFromDateChange}
-                            KeyboardButtonProps={{
-                                'aria-label': 'change time',
-                            }}
-                        />
-                    </Grid>
-                    <Grid container justify="space-around">
-                        <KeyboardDatePicker
-                            margin="normal"
+
+                        <DateTimePicker
                             label="To date"
-                            format="MM/dd/yyyy"
+                            format="MMM do hh:mm aaaa"
                             value={toDate}
                             onChange={handleToDateChange}
-                            KeyboardButtonProps={{
-                                'aria-label': 'change date',
-                            }}
                         />
-                        <KeyboardTimePicker
-                            margin="normal"
-                            label="To time"
-                            value={toDate}
-                            onChange={handleToDateChange}
-                            KeyboardButtonProps={{
-                                'aria-label': 'change time',
-                            }}
-                        />
-                    </Grid>
+                    </div>
                 </MuiPickersUtilsProvider>
-                <Grid container justify="space-around">
-                    <FormControl>
-                        <InputLabel>Category</InputLabel>
-                        <Select
-                            value={cate}
-                            onChange={(e) => {
-                                setCate(e.target.value);
-                            }}
-                        >
-                            {categories.map((c) => (
-                                <MenuItem key={c} value={c}>
-                                    {c}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Grid>
+                <FormControl classes={{ root: classes.select }} fullWidth>
+                    <InputLabel>Category</InputLabel>
+                    <Select
+                        value={cate}
+                        onChange={(e) => {
+                            setCate(e.target.value);
+                        }}
+                    >
+                        {(categories || []).map((c) => (
+                            <MenuItem key={c} value={c}>
+                                {c}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClear} color="primary">

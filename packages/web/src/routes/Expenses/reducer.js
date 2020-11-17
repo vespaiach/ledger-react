@@ -6,6 +6,7 @@ const defaultState = {
     from: null,
     to: null,
     category: null,
+    categories: null,
     orderBy: {
         field: 'date',
         order: 'asc',
@@ -48,6 +49,8 @@ export default function reducer(state = defaultState, { type, payload }) {
             return {
                 ...state,
                 ...payload,
+                pages: {},
+                totalPage: null,
             };
 
         case 'RESET_EXPENSES_FILTER_CONDITION':
@@ -58,6 +61,12 @@ export default function reducer(state = defaultState, { type, payload }) {
                 category: null,
                 pages: {},
                 totalPage: null,
+            };
+
+        case 'FETCHED_EXPENSES_CATEGORIES_SUCCESS':
+            return {
+                ...state,
+                categories: payload.map((c) => c.name),
             };
 
         default:

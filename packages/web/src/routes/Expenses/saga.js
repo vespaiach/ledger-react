@@ -1,14 +1,24 @@
 import axios from 'axios';
-import { call, put, select, take } from 'redux-saga/effects';
+import { call, put, select, take, takeLatest } from 'redux-saga/effects';
+
+export function* getExpensesCategories() {
+    try {
+        const result = yield call(axios.get, '/expenses_categories');
+        yield put({
+            type: 'FETCHED_EXPENSES_CATEGORIES_SUCCESS',
+            payload: result.data,
+        });
+    } catch (e) {
+        yield put({ type: 'API_REQUEST_FAIL', payload: e });
+    }
+}
 
 export function* getTotalPage() {
     try {
         const { from, to, category } = yield select((state) => state.expenses);
         yield put({ type: 'FETCHING_EXPENSES_TOTAL_PAGE' });
         const result = yield call(axios.get, '/expenses/count', {
-            from,
-            to,
-            cate: category,
+            params: { from, to, cate: category },
         });
         yield put({
             type: 'FETCHED_EXPENSES_TOTAL_PAGE_SUCCESS',
@@ -94,4 +104,8 @@ export function* fetchExpensesRequest() {
             }
         }
     }
+}
+
+export function* fetchExpensesCategoriesRequest() {
+    yield takeLatest('REQUEST_UPDATE_EXPENSES_FILTER', getExpensesCategories);
 }
