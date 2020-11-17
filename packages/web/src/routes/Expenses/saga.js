@@ -88,14 +88,14 @@ export function* fetchExpensesRequest() {
     while (true) {
         const { payload: page } = yield take('REQUEST_EXPENSES');
         yield put({ type: 'UPDATE_EXPENSES_CURRENT_PAGE', payload: page });
-        let totalPage = yield select((state) => state.expenses.totalPage);
+        let totalPages = yield select((state) => state.expenses.totalPages);
         // If there is no total page, call api to get it first
-        if (totalPage === null) {
-            totalPage = yield call(getTotalPage);
+        if (totalPages === null) {
+            totalPages = yield call(getTotalPage);
         }
 
         // Don't do anything, if requested page doesn't exist
-        if (page <= totalPage) {
+        if (page <= totalPages) {
             const pages = yield select((state) => state.expenses.pages);
 
             // Fetch page data

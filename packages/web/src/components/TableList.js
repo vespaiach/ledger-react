@@ -8,9 +8,13 @@ import {
     TableSortLabel,
     IconButton,
 } from '@material-ui/core';
+import { Pagination } from '@material-ui/lab';
 import { format } from 'date-fns';
 import currency from 'currency.js';
-import { FilterList as FilterListIcon } from '@material-ui/icons';
+import {
+    FilterList as FilterListIcon,
+    Edit as EditIcon,
+} from '@material-ui/icons';
 
 const columns = [
     {
@@ -38,11 +42,15 @@ const columns = [
 
 export default function TableList({
     orderBy,
-    order,
-    onSort,
-    onFilterClick,
     hasFilter,
     rows = [],
+    order,
+    currentPage,
+    totalPages,
+    onSort,
+    onEdit,
+    onFilterClick,
+    onPage,
 }) {
     const createSortHandler = (col) => (e) => {
         e.preventDefault();
@@ -53,6 +61,12 @@ export default function TableList({
                 fieldOrder = order === 'asc' ? 'desc' : 'asc';
             }
             onSort({ field, order: fieldOrder });
+        }
+    };
+    const handleEdit = (record) => (e) => {
+        e.preventDefault();
+        if (onEdit) {
+            onEdit(record);
         }
     };
 
@@ -67,7 +81,7 @@ export default function TableList({
                                     aria-label="filter"
                                     size="small"
                                     onClick={onFilterClick}
-                                    color={hasFilter ? 'secondary' : 'default'}
+                                    color={hasFilter ? 'secondary' : 'primary'}
                                 >
                                     <FilterListIcon />
                                 </IconButton>
@@ -106,7 +120,16 @@ export default function TableList({
                                     tabIndex={-1}
                                     key={row.id}
                                 >
-                                    <TableCell></TableCell>
+                                    <TableCell>
+                                        <IconButton
+                                            aria-label="filter"
+                                            size="small"
+                                            onClick={handleEdit}
+                                            color="primary"
+                                        >
+                                            <EditIcon fontSize="small" />
+                                        </IconButton>
+                                    </TableCell>
                                     {columns.map((column) => {
                                         const value = row[column.id];
                                         return (
@@ -126,6 +149,12 @@ export default function TableList({
                     </TableBody>
                 </Table>
             </TableContainer>
+            <Pagination
+                count={totalPages}
+                onChange={onPage}
+                page={currentPage}
+                color="primary"
+            />
         </>
     );
 }

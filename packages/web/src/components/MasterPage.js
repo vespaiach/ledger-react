@@ -38,7 +38,7 @@ export default function MasterPage({ children }) {
                     <List>
                         <ListHeader>EXPENSES</ListHeader>
                         <ListItem>
-                            <LinkItem to="/expenses">Histories</LinkItem>
+                            <LinkItem to="/expenses">Transactions</LinkItem>
                         </ListItem>
                         <ListItem>
                             <LinkItem to="/expenses/new">Add New</LinkItem>
@@ -49,7 +49,7 @@ export default function MasterPage({ children }) {
                             INCOMES
                         </ListHeader>
                         <ListItem>
-                            <LinkItem to="/incomes">Histories</LinkItem>
+                            <LinkItem to="/incomes">Transactions</LinkItem>
                         </ListItem>
                         <ListItem>
                             <LinkItem to="/incomes/new">Add New</LinkItem>

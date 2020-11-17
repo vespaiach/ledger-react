@@ -25,6 +25,8 @@ export default function ExpenseList() {
     const to = useSelector((state) => state.expenses.to);
     const category = useSelector((state) => state.expenses.category);
     const categories = useSelector((state) => state.expenses.categories);
+    const currentPage = useSelector((state) => state.expenses.currentPage);
+    const totalPages = useSelector((state) => state.expenses.totalPages);
     const handleSort = (sort) => {
         dispatch({ type: 'REQUEST_SORT_EXPENSES', payload: sort });
     };
@@ -48,8 +50,13 @@ export default function ExpenseList() {
                 orderBy={orderBy.field}
                 order={orderBy.order}
                 hasFilter={hasFilter}
+                totalPages={totalPages}
+                currentPage={currentPage}
                 onFilterClick={() => {
                     setOpenFilter(true);
+                }}
+                onPage={(e, page) => {
+                    dispatch({ type: 'REQUEST_EXPENSES', payload: page });
                 }}
             />
             <FilterModal

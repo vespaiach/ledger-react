@@ -2,7 +2,7 @@ const defaultState = {
     pages: {},
     fetching: false,
     currentPage: null,
-    totalPage: null,
+    totalPages: null,
     from: null,
     to: null,
     category: null,
@@ -32,7 +32,7 @@ export default function reducer(state = defaultState, { type, payload }) {
             };
 
         case 'FETCHED_EXPENSES_TOTAL_PAGE_SUCCESS':
-            return { ...state, fetching: false, totalPage: payload };
+            return { ...state, fetching: false, totalPages: payload };
 
         case 'FETCHED_EXPENSES_TOTAL_PAGE_FAIL':
         case 'FETCHED_EXPENSES_FAIL':
@@ -50,7 +50,7 @@ export default function reducer(state = defaultState, { type, payload }) {
                 ...state,
                 ...payload,
                 pages: {},
-                totalPage: null,
+                totalPages: null,
             };
 
         case 'RESET_EXPENSES_FILTER_CONDITION':
@@ -60,7 +60,7 @@ export default function reducer(state = defaultState, { type, payload }) {
                 to: null,
                 category: null,
                 pages: {},
-                totalPage: null,
+                totalPages: null,
             };
 
         case 'FETCHED_EXPENSES_CATEGORIES_SUCCESS':
