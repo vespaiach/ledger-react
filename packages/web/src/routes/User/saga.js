@@ -10,7 +10,7 @@ function* login(email, password) {
         yield put({ type: 'FETCHED_LOGIN_SUCCESS', payload: result.data });
     } catch (e) {
         yield put({ type: 'FETCHED_LOGIN_FAIL' });
-        yield put({ type: 'API_REQUEST_FAIL', payload: e });
+        yield put({ type: 'Store: api request fail', payload: e });
     }
 }
 

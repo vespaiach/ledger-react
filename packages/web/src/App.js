@@ -6,6 +6,8 @@ import LoadingBar from 'react-redux-loading-bar';
 import APIErrorModal from './components/APIErrorModal';
 import Login from './routes/User/Login';
 import ExpenseList from './routes/Expenses/List';
+import ExpenseEdit from './routes/Expenses/Edit';
+import ExpenseCreate from './routes/Expenses/Create';
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {
@@ -30,6 +32,12 @@ function App() {
             <Switch>
                 <PrivateRoute exact path="/expenses">
                     <ExpenseList />
+                </PrivateRoute>
+                <PrivateRoute exact path="/expenses/new">
+                    <ExpenseCreate />
+                </PrivateRoute>
+                <PrivateRoute exact path="/expenses/:id">
+                    <ExpenseEdit />
                 </PrivateRoute>
                 <Route exact path="/login">
                     <Login />

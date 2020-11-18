@@ -124,7 +124,7 @@ export default function TableList({
                                         <IconButton
                                             aria-label="filter"
                                             size="small"
-                                            onClick={handleEdit}
+                                            onClick={handleEdit(row)}
                                             color="primary"
                                         >
                                             <EditIcon fontSize="small" />

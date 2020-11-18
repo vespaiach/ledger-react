@@ -58,6 +58,9 @@ export default function ExpenseList() {
                 onPage={(e, page) => {
                     dispatch({ type: 'REQUEST_EXPENSES', payload: page });
                 }}
+                onEdit={(dt) => {
+                    dispatch({ type: 'Request: edit expense', payload: dt.id });
+                }}
             />
             <FilterModal
                 from={from}

@@ -9,10 +9,10 @@ export const emailSchema = schema.string({ trim: true }, [
 ])
 export const passwordSchema = schema.string({ trim: true }, [rules.minLength(8)])
 export const fromSchema = schema.date.optional({
-  format: 'yyyy-MM-dd HH:mm:ss',
+  format: 'iso',
 })
 export const toSchema = schema.date.optional({
-  format: 'yyyy-MM-dd HH:mm:ss',
+  format: 'iso',
 })
 export const cateSchema = schema.string.optional({ escape: true, trim: true }, [
   rules.maxLength(20),
@@ -20,7 +20,7 @@ export const cateSchema = schema.string.optional({ escape: true, trim: true }, [
 export const bySchema = schema.string({ escape: true, trim: true }, [rules.by()])
 export const pgSchema = schema.number()
 export const dateSchema = schema.date({
-  format: 'yyyy-MM-dd HH:mm:ss',
+  format: 'iso',
 })
 export const amountSchema = schema.number()
 export const descriptionSchema = schema.string({ escape: true, trim: true }, [rules.maxLength(256)])

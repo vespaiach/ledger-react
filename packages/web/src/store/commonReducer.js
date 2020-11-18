@@ -4,7 +4,7 @@ const defaultState = {
 
 export default function reducer(state = defaultState, { type, payload }) {
     switch (type) {
-        case 'API_REQUEST_FAIL':
+        case 'Store: api request fail':
             let messages = [];
             let code = null;
             try {

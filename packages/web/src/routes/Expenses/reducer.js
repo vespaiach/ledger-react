@@ -7,9 +7,10 @@ const defaultState = {
     to: null,
     category: null,
     categories: null,
+    savingExpenses: false,
     orderBy: {
         field: 'date',
-        order: 'asc',
+        order: 'desc',
     },
 };
 
@@ -67,6 +68,37 @@ export default function reducer(state = defaultState, { type, payload }) {
             return {
                 ...state,
                 categories: payload.map((c) => c.name),
+            };
+
+        case 'Store: editing expense - fetch ok':
+            return {
+                ...state,
+                editing: payload,
+            };
+
+        case 'Store: editing expense - save done':
+            return {
+                ...state,
+                savingExpenses: false,
+            };
+
+        case 'Store: editing expense - saving':
+            return {
+                ...state,
+                savingExpenses: true,
+            };
+
+        case 'Store: expense list - mark as stale':
+            return {
+                ...state,
+                pages: {},
+                totalPages: null,
+            };
+
+        case 'Store: expense categories - fetch ok':
+            return {
+                ...state,
+                categories: payload,
             };
 
         default:
