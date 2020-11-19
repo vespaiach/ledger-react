@@ -45,6 +45,7 @@ export default function TableList({
     hasFilter,
     rows = [],
     order,
+    filteringEleRef,
     currentPage,
     totalPages,
     onSort,
@@ -73,11 +74,12 @@ export default function TableList({
     return (
         <>
             <TableContainer>
-                <Table stickyHeader aria-label="sticky table">
+                <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell>
                                 <IconButton
+                                    ref={filteringEleRef}
                                     aria-label="filter"
                                     size="small"
                                     onClick={onFilterClick}

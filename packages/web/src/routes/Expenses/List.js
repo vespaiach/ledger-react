@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import TableList from '../../components/TableList';
 import MasterPage from '../../components/MasterPage';
-import FilterModal from '../../components/FilterModal';
+import FilteringMenu from '../../components/FilteringMenu';
 
 export default function ExpenseList() {
+    const anchorEl = useRef(null);
     const [openFilter, setOpenFilter] = useState(false);
     const dispatch = useDispatch();
     const expenses = useSelector((state) => {
@@ -28,23 +29,18 @@ export default function ExpenseList() {
     const currentPage = useSelector((state) => state.expenses.currentPage);
     const totalPages = useSelector((state) => state.expenses.totalPages);
     const handleSort = (sort) => {
-        dispatch({ type: 'REQUEST_SORT_EXPENSES', payload: sort });
+        dispatch({ type: 'Request: sort expense list', payload: sort });
     };
     const closeFilter = () => setOpenFilter(false);
 
     useEffect(() => {
-        dispatch({ type: 'REQUEST_EXPENSES', payload: 1 });
+        dispatch({ type: 'Request: fetch expense list', payload: 1 });
     }, [dispatch]);
-
-    useEffect(() => {
-        if (categories === null) {
-            dispatch({ type: 'REQUEST_UPDATE_EXPENSES_FILTER' });
-        }
-    }, [categories, dispatch]);
 
     return (
         <MasterPage>
             <TableList
+                filteringEleRef={anchorEl}
                 rows={expenses}
                 onSort={handleSort}
                 orderBy={orderBy.field}
@@ -53,30 +49,34 @@ export default function ExpenseList() {
                 totalPages={totalPages}
                 currentPage={currentPage}
                 onFilterClick={() => {
-                    setOpenFilter(true);
+                    setOpenFilter(!openFilter);
                 }}
                 onPage={(e, page) => {
-                    dispatch({ type: 'REQUEST_EXPENSES', payload: page });
+                    dispatch({
+                        type: 'Request: fetch expense list',
+                        payload: page,
+                    });
                 }}
                 onEdit={(dt) => {
                     dispatch({ type: 'Request: edit expense', payload: dt.id });
                 }}
             />
-            <FilterModal
+            <FilteringMenu
+                anchorEleRef={anchorEl}
                 from={from}
                 to={to}
                 category={category}
-                categories={categories}
+                categories={(categories || []).map((c) => c.name)}
                 open={openFilter}
                 onClose={closeFilter}
                 onClear={() => {
                     closeFilter();
-                    dispatch({ type: 'REQUEST_RESET_EXPENSES_FILTER' });
+                    dispatch({ type: 'Request: clear expense list fitering' });
                 }}
-                onSubmit={(payload) => {
+                onFilter={(payload) => {
                     closeFilter();
                     dispatch({
-                        type: 'REQUEST_UPDATE_EXPENSES_FILTER',
+                        type: 'Request: filter expense list',
                         payload,
                     });
                 }}

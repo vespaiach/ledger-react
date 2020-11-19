@@ -16,58 +16,31 @@ const defaultState = {
 
 export default function reducer(state = defaultState, { type, payload }) {
     switch (type) {
-        case 'FETCHING_EXPENSES_TOTAL_PAGE':
-        case 'FETCHING_EXPENSES':
+        case 'Store: expense list - fetching':
             return { ...state, fetching: true };
 
-        case 'UPDATE_EXPENSES_CURRENT_PAGE':
+        case 'Store: expense list - fetch done':
+            return { ...state, fetching: false };
+
+        case 'Store: expense list - update current page':
             return { ...state, currentPage: payload };
 
-        case 'FETCHED_EXPENSES_SUCCESS':
+        case 'Store: expense list - save list':
             return {
                 ...state,
-                fetching: false,
                 pages: Object.assign({}, state.pages, {
                     [payload.page]: payload.list,
                 }),
             };
 
-        case 'FETCHED_EXPENSES_TOTAL_PAGE_SUCCESS':
+        case 'Store: expense list - save total pages':
             return { ...state, fetching: false, totalPages: payload };
 
-        case 'FETCHED_EXPENSES_TOTAL_PAGE_FAIL':
-        case 'FETCHED_EXPENSES_FAIL':
-            return { ...state, fetching: false };
-
-        case 'UPDATE_EXPENSES_SORT_CONDITION':
+        case 'Store: expense list - update sort condition':
             return {
                 ...state,
                 orderBy: payload,
                 pages: {},
-            };
-
-        case 'UPDATE_EXPENSES_FILTER_CONDITION':
-            return {
-                ...state,
-                ...payload,
-                pages: {},
-                totalPages: null,
-            };
-
-        case 'RESET_EXPENSES_FILTER_CONDITION':
-            return {
-                ...state,
-                from: null,
-                to: null,
-                category: null,
-                pages: {},
-                totalPages: null,
-            };
-
-        case 'FETCHED_EXPENSES_CATEGORIES_SUCCESS':
-            return {
-                ...state,
-                categories: payload.map((c) => c.name),
             };
 
         case 'Store: editing expense - fetch ok':
@@ -99,6 +72,14 @@ export default function reducer(state = defaultState, { type, payload }) {
             return {
                 ...state,
                 categories: payload,
+            };
+
+        case 'Store: expense list - save filtering condition':
+            return {
+                ...state,
+                from: payload.from,
+                to: payload.to,
+                category: payload.category,
             };
 
         default:

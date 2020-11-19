@@ -10,12 +10,11 @@ import { loginFlow, fetchMeFlow } from '../routes/User/saga';
 import {
     fetchExpensesRequest,
     sortExpensesRequest,
-    resetExpensesFilterRequest,
-    updateExpensesFilterRequest,
-    fetchExpensesCategoriesRequest,
     editExpenseRequest,
     saveExpenseRequest,
     loadExpenseCategoriesRequest,
+    filterExpensesListRequest,
+    clearExpensesListFilteringRequest,
 } from '../routes/Expenses/saga';
 
 import commonReducer from './commonReducer';
@@ -53,12 +52,11 @@ const saga = function* rootSaga() {
             fetchMeFlow,
             fetchExpensesRequest,
             sortExpensesRequest,
-            resetExpensesFilterRequest,
-            updateExpensesFilterRequest,
-            fetchExpensesCategoriesRequest,
             editExpenseRequest,
             saveExpenseRequest,
             loadExpenseCategoriesRequest,
+            filterExpensesListRequest,
+            clearExpensesListFilteringRequest,
         ].map(fork)
     );
 };
