@@ -39,6 +39,9 @@ Route.group(() => {
     Route.get('incomes_categories', 'IncomeCategoriesController.list')
     Route.get('expenses_categories', 'ExpenseCategoriesController.list')
 
+    Route.get('statistics/sum', 'StatisticsController.sum')
+    Route.get('statistics/total', 'StatisticsController.total')
+
     Route.get('me', 'UsersController.me')
     Route.get('logout', 'UsersController.logout')
   }).middleware('auth')

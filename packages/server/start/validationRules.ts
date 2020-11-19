@@ -31,7 +31,26 @@ validator.rule('by', (value, _, { pointer, arrayExpressionPointer, errorReporter
   }
 
   /**
-   * Report error when phone number is not valid
+   * Report error when sorting field is not correct
    */
   errorReporter.report(pointer, 'by', 'Invalid order by', arrayExpressionPointer)
+})
+
+validator.rule('type', (value, _, { pointer, arrayExpressionPointer, errorReporter }) => {
+  /**
+   * Skip validation when value is not a string. The string
+   * schema rule will handle it
+   */
+  if (typeof value !== 'string') {
+    return
+  }
+
+  if (value === 'expeneses' || value === 'incomes') {
+    return
+  }
+
+  /**
+   * Report error
+   */
+  errorReporter.report(pointer, 'type', 'Invalid type', arrayExpressionPointer)
 })
