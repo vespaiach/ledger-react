@@ -21,6 +21,12 @@
       "environment": [
         "web"
       ]
+    },
+    {
+      "file": "./start/events",
+      "environment": [
+        "web"
+      ]
     }
   ],
   "providers": [

@@ -45,7 +45,7 @@ validator.rule('type', (value, _, { pointer, arrayExpressionPointer, errorReport
     return
   }
 
-  if (value === 'expeneses' || value === 'incomes') {
+  if (value === 'expenses' || value === 'incomes') {
     return
   }
 
