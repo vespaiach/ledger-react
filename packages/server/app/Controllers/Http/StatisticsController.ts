@@ -100,7 +100,7 @@ export default class StatisticsController {
 
     let result
     if (type === 'expenses') {
-      result = await Income.query()
+      result = await Expense.query()
         .sum('amount as total')
         .select(Database.raw('EXTRACT(month FROM date) as month'))
         .where({ userId: (auth.user as User).id })
