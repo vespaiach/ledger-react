@@ -16,6 +16,7 @@ import {
 } from 'App/Utils/schemas'
 import User from 'App/Models/User'
 import NotAllowException from 'App/Exceptions/NotAllowException'
+import { to2Decimal } from 'App/Utils/small'
 
 const PER_PAGE = Env.get('PER_PAGE', 20)
 
@@ -125,7 +126,7 @@ export default class IncomesController {
 
     const exp = new Income()
     exp.date = date
-    exp.amount = amount
+    exp.amount = to2Decimal(amount)
     exp.description = description
     exp.category = category
     exp.userId = (auth.user as User).id
@@ -159,7 +160,7 @@ export default class IncomesController {
       exp.date = date
     }
     if (amount) {
-      exp.amount = amount
+      exp.amount = to2Decimal(amount)
     }
     if (description) {
       exp.description = description
