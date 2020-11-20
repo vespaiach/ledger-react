@@ -98,8 +98,18 @@ export default class StatisticsController {
     const firstDate = new Date(year, 0, 1)
     const lastDate = new Date(year + 1, 0, 1)
 
+    let result
     if (type === 'expenses') {
-      return await Income.query()
+      result = await Income.query()
+        .sum('amount as total')
+        .select(Database.raw('EXTRACT(month FROM date) as month'))
+        .where({ userId: (auth.user as User).id })
+        .andWhere('date', '>=', firstDate)
+        .andWhere('date', '<', lastDate)
+        .groupBy('month')
+        .orderBy('month', 'asc')
+    } else {
+      result = await Income.query()
         .sum('amount as total')
         .select(Database.raw('EXTRACT(month FROM date) as month'))
         .where({ userId: (auth.user as User).id })
@@ -108,13 +118,10 @@ export default class StatisticsController {
         .groupBy('month')
         .orderBy('month', 'asc')
     }
-    return await Income.query()
-      .sum('amount as total')
-      .select(Database.raw('EXTRACT(month FROM date) as month'))
-      .where({ userId: (auth.user as User).id })
-      .andWhere('date', '>=', firstDate)
-      .andWhere('date', '<', lastDate)
-      .groupBy('month')
-      .orderBy('month', 'asc')
+
+    return result.reduce((ac, it: { month: Number; total: Number }) => {
+      ac[String(it.month)] = it.total
+      return ac
+    }, {})
   }
 }
