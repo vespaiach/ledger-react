@@ -16,10 +16,15 @@ import {
     filterExpensesListRequest,
     clearExpensesListFilteringRequest,
 } from '../routes/Expenses/saga';
+import {
+    expensesStatisticsRequest,
+    dashboardStatisticsRequest,
+} from '../routes/Dashboard/saga';
 
 import commonReducer from './commonReducer';
 import userReducer from '../routes/User/reducer';
 import expenseReducer from '../routes/Expenses/reducer';
+import statisticsReducer from '../routes/Dashboard/reducer';
 
 const history = createBrowserHistory();
 const sagaMiddleware = createSagaMiddleware();
@@ -41,6 +46,7 @@ const store = createStore(
         loadingBar: loadingBarReducer,
         expenses: expenseReducer,
         router: connectRouter(history),
+        statistics: statisticsReducer,
     }),
     composeEnhancers(applyMiddleware(sagaMiddleware, routerMiddleware(history)))
 );
@@ -57,6 +63,8 @@ const saga = function* rootSaga() {
             loadExpenseCategoriesRequest,
             filterExpensesListRequest,
             clearExpensesListFilteringRequest,
+            expensesStatisticsRequest,
+            dashboardStatisticsRequest,
         ].map(fork)
     );
 };

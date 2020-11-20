@@ -7,6 +7,7 @@ import APIErrorModal from './components/APIErrorModal';
 import Login from './routes/User/Login';
 import ExpenseList from './routes/Expenses/List';
 import ExpenseEdit from './routes/Expenses/Edit';
+import Dashboard from './routes/Dashboard';
 import ExpenseCreate from './routes/Expenses/Create';
 import PrivateRoute from './components/PrivateRoute';
 
@@ -30,6 +31,9 @@ function App() {
             ></APIErrorModal>
 
             <Switch>
+                <PrivateRoute exact path="/">
+                    <Dashboard />
+                </PrivateRoute>
                 <PrivateRoute exact path="/expenses">
                     <ExpenseList />
                 </PrivateRoute>

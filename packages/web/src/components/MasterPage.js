@@ -36,6 +36,12 @@ export default function MasterPage({ children }) {
             <Grid container spacing={3}>
                 <Grid item xs={3}>
                     <List>
+                        <ListHeader>REPORTS</ListHeader>
+                        <ListItem>
+                            <LinkItem to="/">Dashboard</LinkItem>
+                        </ListItem>
+                    </List>
+                    <List>
                         <ListHeader>EXPENSES</ListHeader>
                         <ListItem>
                             <LinkItem to="/expenses">Transactions</LinkItem>

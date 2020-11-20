@@ -7,7 +7,7 @@ export default class Expenses extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
       table.dateTime('date').notNullable()
-      table.double('amount', 9, 2).notNullable()
+      table.decimal('amount', 11, 2).notNullable()
       table.string('description', 256).notNullable()
       table.string('category', 32).notNullable()
       table.timestamps(true)
