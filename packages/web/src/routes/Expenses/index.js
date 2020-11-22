@@ -1,13 +1,24 @@
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
 
-import TableList from '../../components/TableList';
-import MasterPage from '../../components/MasterPage';
+import TransactionTable from '../../components/TransactionTable';
+import BasePage from '../../components/BasePage';
+import BlockHeader from '../../components/BlockHeader';
 import FilteringMenu from '../../components/FilteringMenu';
+import ExpenseForm from './Form';
+
+const useStyles = makeStyles((theme) => ({
+    icon: {
+        color: theme.palette.text.disabled,
+    },
+}));
 
 export default function ExpenseList() {
+    const classes = useStyles();
     const anchorEl = useRef(null);
     const [openFilter, setOpenFilter] = useState(false);
+    const [openForm, setOpenForm] = useState(true);
     const dispatch = useDispatch();
     const expenses = useSelector((state) => {
         if (state.expenses.currentPage && !state.expenses.fetching) {
@@ -16,18 +27,17 @@ export default function ExpenseList() {
         return [];
     });
     const orderBy = useSelector((state) => state.expenses.orderBy);
-    const hasFilter = useSelector(
-        (state) =>
-            state.expenses.category !== null ||
-            state.expenses.from !== null ||
-            state.expenses.to !== null
-    );
     const from = useSelector((state) => state.expenses.from);
     const to = useSelector((state) => state.expenses.to);
     const category = useSelector((state) => state.expenses.category);
     const categories = useSelector((state) => state.expenses.categories);
     const currentPage = useSelector((state) => state.expenses.currentPage);
     const totalPages = useSelector((state) => state.expenses.totalPages);
+    const numberOfFilter =
+        (from !== null ? 1 : 0) +
+        (to !== null ? 1 : 0) +
+        (category !== null ? 1 : 0);
+
     const handleSort = (sort) => {
         dispatch({ type: 'Request: sort expense list', payload: sort });
     };
@@ -38,17 +48,18 @@ export default function ExpenseList() {
     }, [dispatch]);
 
     return (
-        <MasterPage>
-            <TableList
-                filteringEleRef={anchorEl}
+        <BasePage>
+            <BlockHeader title="Expenses Transactions"></BlockHeader>
+            <TransactionTable
+                numberOfFilter={numberOfFilter}
+                filterButtonRef={anchorEl}
                 rows={expenses}
                 onSort={handleSort}
                 orderBy={orderBy.field}
                 order={orderBy.order}
-                hasFilter={hasFilter}
                 totalPages={totalPages}
                 currentPage={currentPage}
-                onFilterClick={() => {
+                onFilter={() => {
                     setOpenFilter(!openFilter);
                 }}
                 onPage={(e, page) => {
@@ -62,25 +73,26 @@ export default function ExpenseList() {
                 }}
             />
             <FilteringMenu
+                numberOfFilter={numberOfFilter}
                 anchorEleRef={anchorEl}
                 from={from}
                 to={to}
                 category={category}
                 categories={(categories || []).map((c) => c.name)}
                 open={openFilter}
-                onClose={closeFilter}
-                onClear={() => {
-                    closeFilter();
-                    dispatch({ type: 'Request: clear expense list fitering' });
-                }}
-                onFilter={(payload) => {
-                    closeFilter();
+                onChange={(value, name) => {
                     dispatch({
                         type: 'Request: filter expense list',
-                        payload,
+                        payload: { [name]: value },
                     });
                 }}
+                onClose={closeFilter}
+                onClear={() => {
+                    dispatch({ type: 'Request: clear expense list fitering' });
+                    closeFilter();
+                }}
             />
-        </MasterPage>
+            {openForm && <ExpenseForm />}
+        </BasePage>
     );
 }

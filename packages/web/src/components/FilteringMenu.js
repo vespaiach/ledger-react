@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
     Button,
     Select,
@@ -13,16 +12,37 @@ import { makeStyles } from '@material-ui/core/styles';
 import DateFnsUtils from '@date-io/date-fns';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 
+import ImageFilterIcon from '../components/Icons/ImageFilter';
+
 const useStyles = makeStyles((theme) => ({
     root: {
         '& .MuiTextField-root': {
             margin: theme.spacing(1),
-            width: '25ch',
         },
     },
     select: {
         margin: theme.spacing(1),
         marginBottom: theme.spacing(4),
+    },
+    popper: {
+        zIndex: 100,
+        width: 308,
+    },
+    paper: {
+        padding: theme.spacing(2),
+        '& .MuiTextField-root': {
+            marginBottom: theme.spacing(2),
+        },
+    },
+    icon: {
+        color: theme.palette.secondary.main,
+        marginBottom: theme.spacing(3),
+    },
+    buttons: {
+        marginTop: theme.spacing(3),
+        '& button + button': {
+            marginLeft: theme.spacing(1),
+        },
     },
 }));
 
@@ -32,24 +52,16 @@ export default function FilteringMenu({
     category = '',
     categories,
     open,
+    numberOfFilter,
     anchorEleRef,
-    onClose,
-    onFilter,
+    onChange,
     onClear,
+    onClose,
 }) {
     const classes = useStyles();
-    const [fromDate, setFromDate] = useState(from || null);
-    const [toDate, setToDate] = useState(to || null);
-    const [cate, setCate] = useState(category || '');
-    const handleFromDateChange = (date) => {
-        setFromDate(date);
-    };
-    const handleToDateChange = (date) => {
-        setToDate(date);
-    };
-    const handleSubmit = () => {
-        if (onFilter) {
-            onFilter({ from: fromDate, to: toDate, category: cate });
+    const handleChange = (name) => (date) => {
+        if (onChange) {
+            onChange(date, name);
         }
     };
 
@@ -59,6 +71,7 @@ export default function FilteringMenu({
             anchorEl={anchorEleRef.current}
             transition
             disablePortal
+            className={classes.popper}
         >
             {({ TransitionProps, placement }) => (
                 <Grow
@@ -70,34 +83,39 @@ export default function FilteringMenu({
                                 : 'center bottom',
                     }}
                 >
-                    <Paper>
+                    <Paper classes={{ root: classes.paper }} elevation={3}>
+                        <div className={classes.icon}>
+                            <ImageFilterIcon number={numberOfFilter} />
+                        </div>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                            <div className={classes.root}>
+                            <FormControl fullWidth>
                                 <DateTimePicker
+                                    size="small"
+                                    inputVariant="filled"
                                     label="From date"
                                     format="MMM do hh:mm aaaa"
-                                    value={fromDate}
-                                    onChange={handleFromDateChange}
+                                    value={from}
+                                    onChange={handleChange('from')}
                                 />
-
+                            </FormControl>
+                            <FormControl fullWidth>
                                 <DateTimePicker
+                                    size="small"
+                                    inputVariant="filled"
                                     label="To date"
                                     format="MMM do hh:mm aaaa"
-                                    value={toDate}
-                                    onChange={handleToDateChange}
+                                    value={to}
+                                    onChange={handleChange('to')}
                                 />
-                            </div>
+                            </FormControl>
                         </MuiPickersUtilsProvider>
-                        <FormControl
-                            classes={{ root: classes.select }}
-                            fullWidth
-                        >
+                        <FormControl variant="filled" fullWidth size="small">
                             <InputLabel>Category</InputLabel>
                             <Select
-                                value={cate}
-                                onChange={(e) => {
-                                    setCate(e.target.value);
-                                }}
+                                value={category || ''}
+                                onChange={(evt) =>
+                                    handleChange('category')(evt.target.value)
+                                }
                             >
                                 {(categories || []).map((c) => (
                                     <MenuItem key={c} value={c}>
@@ -106,12 +124,23 @@ export default function FilteringMenu({
                                 ))}
                             </Select>
                         </FormControl>
-                        <Button onClick={onClear} color="primary">
-                            Clear
-                        </Button>
-                        <Button onClick={handleSubmit} color="primary">
-                            Submit
-                        </Button>
+                        <div className={classes.buttons}>
+                            <Button
+                                onClick={onClear}
+                                color="default"
+                                variant="contained"
+                                disableElevation
+                            >
+                                Clear All
+                            </Button>
+                            <Button
+                                onClick={onClose}
+                                color="default"
+                                disableElevation
+                            >
+                                Close
+                            </Button>
+                        </div>
                     </Paper>
                 </Grow>
             )}

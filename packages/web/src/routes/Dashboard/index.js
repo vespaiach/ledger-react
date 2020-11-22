@@ -4,28 +4,39 @@ import {
     useMediaQuery,
     TableContainer,
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useMemo } from 'react';
-import currency from 'currency.js';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
-import TotalList from './TotalList';
+import InMonthTable from './InMonthTable.js';
 import MonthsTable from './MonthsTable';
-import MasterPage from '../../components/MasterPage';
+import ChartInMonth from './ChartInMonth';
+import BasePage from '../../components/BasePage';
 
 const filterByMonth = (month) => (acc, it) => {
     if (it.month === month) {
-        acc.push({ category: it.category, total: currency(it.total).format() });
+        acc.push({ category: it.category, total: it.total });
     }
     return acc;
 };
 const sumByMonth = (month) => (acc, it) => {
     if (it.month === month) {
-        acc += it.total;
+        acc += parseFloat(it.total);
     }
     return acc;
 };
 
+const useStyles = makeStyles((theme) => ({
+    gridRoot: {
+        marginTop: theme.spacing(1),
+    },
+}));
+
 export default function Dashboard() {
+    const expenseInMonthRef = useRef(null);
+    const incomeInMonthRef = useRef(null);
+    const [chartHeight, setChartHeight] = useState(0);
+    const classes = useStyles();
     const mobileSize = useMediaQuery('(max-width:768px)');
     const dispatch = useDispatch();
 
@@ -63,6 +74,16 @@ export default function Dashboard() {
         [month, statisticIncomesCategories]
     );
 
+    /* eslint-disable react-hooks/exhaustive-deps */
+    useEffect(() => {
+        setChartHeight(
+            expenseInMonthRef.current.offsetHeight >
+                incomeInMonthRef.current.offsetHeight
+                ? expenseInMonthRef.current.offsetHeight
+                : incomeInMonthRef.current.offsetHeight
+        );
+    });
+
     useEffect(() => {
         dispatch({
             type: 'Request: get statistics for dashboard',
@@ -71,24 +92,36 @@ export default function Dashboard() {
     }, [dispatch, year]);
 
     return (
-        <MasterPage>
-            <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
+        <BasePage>
+            <Grid container spacing={4}>
+                <Grid item sm={12} md={4}>
+                    <ChartInMonth
+                        expenses={totalExpensesInMonth}
+                        incomes={totalIncomesInMonth}
+                        height={chartHeight}
+                        month={month}
+                    />
+                </Grid>
+                <Grid item sm={12} md={4}>
                     <TableContainer>
-                        <Typography>
-                            Expenses (${totalExpensesInMonth})
-                        </Typography>
-                        <TotalList rows={sumExpenseByCategoriesInMonth} />
+                        <InMonthTable
+                            rows={sumExpenseByCategoriesInMonth}
+                            title="Expenses"
+                            tableRef={expenseInMonthRef}
+                        />
                     </TableContainer>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item sm={12} md={4}>
                     <TableContainer>
-                        <Typography>
-                            Incomes (${totalIncomesInMonth})
-                        </Typography>
-                        <TotalList rows={sumIncomeByCategoriesInMonth} />
+                        <InMonthTable
+                            rows={sumIncomeByCategoriesInMonth}
+                            title="Income"
+                            tableRef={incomeInMonthRef}
+                        />
                     </TableContainer>
                 </Grid>
+            </Grid>
+            <Grid container spacing={4}>
                 <Grid item xs={12}>
                     <MonthsTable
                         expenses={statisticExpensesMonths}
@@ -97,6 +130,6 @@ export default function Dashboard() {
                     />
                 </Grid>
             </Grid>
-        </MasterPage>
+        </BasePage>
     );
 }

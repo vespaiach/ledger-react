@@ -143,7 +143,7 @@ export function* filterExpensesListRequest() {
     while (true) {
         const { payload } = yield take('Request: filter expense list');
         yield put({
-            type: 'Store: expense list - save filtering condition',
+            type: 'Store: expense list - update filtering condition',
             payload,
         });
         yield put({ type: 'Store: expense list - mark as stale' });
@@ -164,7 +164,7 @@ export function* clearExpensesListFilteringRequest() {
     while (true) {
         yield take(['Request: clear expense list fitering']);
         yield put({
-            type: 'Store: expense list - save filtering condition',
+            type: 'Store: expense list - update filtering condition',
             payload: { from: null, to: null, category: null },
         });
         yield put({ type: 'Store: expense list - mark as stale' });

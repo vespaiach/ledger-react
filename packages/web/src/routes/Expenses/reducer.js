@@ -74,12 +74,13 @@ export default function reducer(state = defaultState, { type, payload }) {
                 categories: payload,
             };
 
-        case 'Store: expense list - save filtering condition':
+        case 'Store: expense list - update filtering condition':
             return {
                 ...state,
-                from: payload.from,
-                to: payload.to,
-                category: payload.category,
+                from: 'from' in payload ? payload.from : state.from,
+                to: 'to' in payload ? payload.to : state.to,
+                category:
+                    'category' in payload ? payload.category : state.category,
             };
 
         default:
