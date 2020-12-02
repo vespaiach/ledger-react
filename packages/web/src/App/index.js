@@ -3,14 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CssBaseline, ThemeProvider, createMuiTheme } from '@material-ui/core';
 import LoadingBar from 'react-redux-loading-bar';
 
-import APIErrorModal from './components/APIErrorModal';
-import Login from './routes/User/Login';
-import Expenses from './routes/Expenses';
-import ExpenseEdit from './routes/Expenses/Edit';
-import Dashboard from './routes/Dashboard';
-import ExpenseCreate from './routes/Expenses/Create';
-import PrivateRoute from './components/PrivateRoute';
-import BasePage from './components/BasePage';
+import APIErrorModal from '../components/APIErrorModal';
+import Login from '../routes/User/Login';
+
+import PrivateRoute from '../components/PrivateRoute';
+import BasePage from './BasePage';
 
 const theme = createMuiTheme({
     typography: {
@@ -66,23 +63,11 @@ function App() {
             ></APIErrorModal>
 
             <Switch>
-                <PrivateRoute exact path="/reports">
-                    <Dashboard />
-                </PrivateRoute>
-                <PrivateRoute exact path="/expenses">
-                    <Expenses />
-                </PrivateRoute>
-                <PrivateRoute exact path="/expenses/new">
-                    <ExpenseCreate />
-                </PrivateRoute>
-                <PrivateRoute exact path="/expenses/:id">
-                    <ExpenseEdit />
+                <PrivateRoute path="/portal">
+                    <BasePage />
                 </PrivateRoute>
                 <Route exact path="/login">
                     <Login />
-                </Route>
-                <Route exact path="/base">
-                    <BasePage />
                 </Route>
             </Switch>
         </ThemeProvider>

@@ -238,7 +238,7 @@ export default function TableList({
                                                         root: classes.button,
                                                     }}
                                                     onClick={handleAction(
-                                                        'edit',
+                                                        'delete',
                                                         row
                                                     )}
                                                     style={{ marginLeft: 8 }}

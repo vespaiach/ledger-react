@@ -1,9 +1,4 @@
-import {
-    Grid,
-    Typography,
-    useMediaQuery,
-    TableContainer,
-} from '@material-ui/core';
+import { Grid, useMediaQuery, TableContainer } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -11,7 +6,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import InMonthTable from './InMonthTable.js';
 import MonthsTable from './MonthsTable';
 import ChartInMonth from './ChartInMonth';
-import BasePage from '../../components/BasePage';
 
 const filterByMonth = (month) => (acc, it) => {
     if (it.month === month) {
@@ -92,7 +86,7 @@ export default function Dashboard() {
     }, [dispatch, year]);
 
     return (
-        <BasePage>
+        <>
             <Grid container spacing={4}>
                 <Grid item sm={12} md={4}>
                     <ChartInMonth
@@ -130,6 +124,6 @@ export default function Dashboard() {
                     />
                 </Grid>
             </Grid>
-        </BasePage>
+        </>
     );
 }

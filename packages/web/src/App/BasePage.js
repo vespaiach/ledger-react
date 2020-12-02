@@ -1,8 +1,12 @@
 import { Container } from '@material-ui/core';
+import { Switch, Route } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
 
 import Menu from './Menu';
+import Expenses from '../routes/Expenses';
+import ExpenseEdit from '../routes/Expenses/Edit';
+import Dashboard from '../routes/Dashboard';
+import ExpenseCreate from '../routes/Expenses/Create';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -18,12 +22,9 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: theme.spacing(3),
         paddingBottom: theme.spacing(3),
     },
-    mainGrid: {
-        margin: `0 ${theme.spacing(8)}px`,
-    },
 }));
 
-export default function BasePage({ children }) {
+export default function BasePage() {
     const classes = useStyles();
 
     return (
@@ -34,12 +35,15 @@ export default function BasePage({ children }) {
                 component="main"
                 classes={{ root: classes.content }}
             >
-                {children}
+                <Switch>
+                    <Route exact path="/portal/reports">
+                        <Dashboard />
+                    </Route>
+                    <Route path="/portal/expenses">
+                        <Expenses />
+                    </Route>
+                </Switch>
             </Container>
         </div>
     );
 }
-
-BasePage.propTypes = {
-    children: PropTypes.node.isRequired,
-};

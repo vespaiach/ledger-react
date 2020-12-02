@@ -8,15 +8,22 @@ import {
     InputLabel,
     Input,
     DialogContentText,
+    InputAdornment,
     FormControl,
     makeStyles,
 } from '@material-ui/core';
+import {
+    AttachMoney as AttachMoneyIcon,
+    CalendarToday as CalendarTodayIcon,
+} from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
+import { useEffect } from 'react';
+import { useRef } from 'react';
 
 const validationSchema = yup.object({
     amount: yup.number('Enter amount').required('Amount is required'),
@@ -35,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
             marginLeft: theme.spacing(1),
         },
     },
+    adornment: {
+        color: theme.palette.primary.dark,
+        height: 16,
+    },
 }));
 
 export default function Form({
@@ -45,10 +56,13 @@ export default function Form({
     category,
     afterSuccess,
     onCancel,
+    open,
+    ...rest
 }) {
     const dispatch = useDispatch();
     const classes = useStyles();
     const categories = useSelector((state) => state.expenses.categories || []);
+    const title = id ? 'EDIT A TRANSACTION' : 'CREATE A NEW TRANSACTION';
     const formik = useFormik({
         initialValues: {
             amount,
@@ -66,15 +80,35 @@ export default function Form({
         },
     });
 
+    /* eslint-disable react-hooks/exhaustive-deps */
+    useEffect(() => {
+        if (open) {
+            formik.setValues(
+                {
+                    amount,
+                    date,
+                    description,
+                    category,
+                },
+                false
+            );
+        } else {
+            formik.resetForm();
+        }
+    }, [amount, date, description, category, open]);
+
     return (
-        <Dialog maxWidth="xs" open={true} onClose={onCancel}>
-            <DialogTitle>New Expenses Transaction</DialogTitle>
+        <Dialog
+            {...rest}
+            maxWidth="xs"
+            disableBackdropClick
+            disableEscapeKeyDown
+            open={open}
+            onClose={onCancel}
+        >
+            <DialogTitle>{title}</DialogTitle>
             <form onSubmit={formik.handleSubmit}>
                 <DialogContent>
-                    <DialogContentText>
-                        To subscribe to this website, please enter your email
-                        address here. We will send updates occasionally.
-                    </DialogContentText>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <FormControl fullWidth>
                             <DateTimePicker
@@ -100,6 +134,18 @@ export default function Form({
                                 helperText={
                                     formik.touched.date && formik.errors.date
                                 }
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment
+                                            position="end"
+                                            classes={{
+                                                root: classes.adornment,
+                                            }}
+                                        >
+                                            <CalendarTodayIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
                             />
                         </FormControl>
                     </MuiPickersUtilsProvider>
@@ -117,36 +163,36 @@ export default function Form({
                             helperText={
                                 formik.touched.amount && formik.errors.amount
                             }
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment
+                                        position="end"
+                                        classes={{
+                                            root: classes.adornment,
+                                        }}
+                                    >
+                                        <AttachMoneyIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                     </FormControl>
                     <FormControl fullWidth>
                         <Autocomplete
                             freeSolo
+                            value={formik.values.category}
                             size="small"
                             options={categories.map((c) => c.name)}
-                            renderInput={(params) => (
-                                <>
-                                    <InputLabel htmlFor="standard-adornment-password">
-                                        Password
-                                    </InputLabel>
-                                    <Input
-                                        {...params}
-                                        size="small"
-                                        name="category"
-                                        label="Category"
-                                        margin="normal"
-                                        error={
-                                            formik.touched.category &&
-                                            Boolean(formik.errors.category)
-                                        }
-                                        helperText={
-                                            formik.touched.category &&
-                                            formik.errors.category
-                                        }
-                                        value={formik.values.category}
-                                        onChange={formik.handleChange}
-                                    />
-                                </>
+                            renderInput={({ InputProps, ...rest }) => (
+                                <TextField
+                                    {...rest}
+                                    label="Category"
+                                    margin="dense"
+                                    InputProps={{
+                                        ...InputProps,
+                                        type: 'search',
+                                    }}
+                                />
                             )}
                         />
                     </FormControl>

@@ -174,7 +174,7 @@ export function* clearExpensesListFilteringRequest() {
 
 /**
  * Users want to edit an expenses record.
- * We need to load the being updating record before navigating users to editing page.
+ * We need to load the being updated record before navigating users to editing page.
  * Payload --> record's id
  */
 export function* editExpenseRequest() {

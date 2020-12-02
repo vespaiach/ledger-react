@@ -27,6 +27,7 @@ export default function Prefetch() {
             date={editing.date}
             description={editing.description}
             category={editing.category}
+            title="New Expenses Transaction"
             afterSuccess={() => history.push('/expenses')}
             onCancel={() => history.push('/expenses')}
         />

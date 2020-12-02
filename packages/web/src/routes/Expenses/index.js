@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from 'react-router-dom';
 
 import TransactionTable from '../../components/TransactionTable';
-import BasePage from '../../components/BasePage';
 import BlockHeader from '../../components/BlockHeader';
 import FilteringMenu from '../../components/FilteringMenu';
 import ExpenseForm from './Form';
@@ -16,9 +16,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ExpenseList() {
     const classes = useStyles();
+    const history = useHistory();
     const anchorEl = useRef(null);
     const [openFilter, setOpenFilter] = useState(false);
-    const [openForm, setOpenForm] = useState(true);
+    const [openForm, setOpenForm] = useState({});
     const dispatch = useDispatch();
     const expenses = useSelector((state) => {
         if (state.expenses.currentPage && !state.expenses.fetching) {
@@ -48,7 +49,7 @@ export default function ExpenseList() {
     }, [dispatch]);
 
     return (
-        <BasePage>
+        <>
             <BlockHeader title="Expenses Transactions"></BlockHeader>
             <TransactionTable
                 numberOfFilter={numberOfFilter}
@@ -69,7 +70,7 @@ export default function ExpenseList() {
                     });
                 }}
                 onEdit={(dt) => {
-                    dispatch({ type: 'Request: edit expense', payload: dt.id });
+                    setOpenForm(dt);
                 }}
             />
             <FilteringMenu
@@ -92,7 +93,12 @@ export default function ExpenseList() {
                     closeFilter();
                 }}
             />
-            {openForm && <ExpenseForm />}
-        </BasePage>
+
+            <ExpenseForm
+                {...(openForm || {})}
+                open={openForm !== null}
+                onCancel={() => setOpenForm(null)}
+            />
+        </>
     );
 }
