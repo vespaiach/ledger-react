@@ -1,17 +1,4 @@
-import {
-    TextField,
-    Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    InputLabel,
-    Input,
-    DialogContentText,
-    InputAdornment,
-    FormControl,
-    makeStyles,
-} from '@material-ui/core';
+import { TextField, InputAdornment, makeStyles } from '@material-ui/core';
 import {
     AttachMoney as AttachMoneyIcon,
     CalendarToday as CalendarTodayIcon,
@@ -23,7 +10,8 @@ import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
 import { useEffect } from 'react';
-import { useRef } from 'react';
+import MoneyInput from '../../components/MoneyInput';
+import FormDialog from '../../components/FormDialog';
 
 const validationSchema = yup.object({
     amount: yup.number('Enter amount').required('Amount is required'),
@@ -35,15 +23,8 @@ const validationSchema = yup.object({
 });
 
 const useStyles = makeStyles((theme) => ({
-    buttons: {
-        marginTop: theme.spacing(3),
-        marginBottom: theme.spacing(2),
-        '& button + button': {
-            marginLeft: theme.spacing(1),
-        },
-    },
     adornment: {
-        color: theme.palette.primary.dark,
+        color: theme.palette.text.disabled,
         height: 16,
     },
 }));
@@ -98,140 +79,128 @@ export default function Form({
     }, [amount, date, description, category, open]);
 
     return (
-        <Dialog
+        <FormDialog
             {...rest}
-            maxWidth="xs"
-            disableBackdropClick
-            disableEscapeKeyDown
+            title={title}
             open={open}
             onClose={onCancel}
+            onSubmit={formik.handleSubmit}
         >
-            <DialogTitle>{title}</DialogTitle>
-            <form onSubmit={formik.handleSubmit}>
-                <DialogContent>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <FormControl fullWidth>
-                            <DateTimePicker
-                                clearable
-                                size="small"
-                                label="Date"
-                                format="MMM do, yyyy HH:mm"
-                                name="date"
-                                value={formik.values.date}
-                                onChange={(value) => {
-                                    /**
-                                     * Datetime picker doesn't return a SyntheticEvent,
-                                     * so we have to fake one in order to make formik work
-                                     */
-                                    formik.handleChange({
-                                        target: { name: 'date', value },
-                                    });
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <DateTimePicker
+                    clearable
+                    size="small"
+                    label="Date"
+                    format="MMM do, yyyy HH:mm"
+                    name="date"
+                    value={formik.values.date}
+                    onChange={(value) => {
+                        /**
+                         * Datetime picker doesn't return a SyntheticEvent,
+                         * so we have to fake one in order to make formik work
+                         */
+                        formik.handleChange({
+                            target: { name: 'date', value },
+                        });
+                    }}
+                    error={formik.touched.date && Boolean(formik.errors.date)}
+                    helperText={formik.touched.date && formik.errors.date}
+                    inputVariant="filled"
+                    fullWidth
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment
+                                position="end"
+                                classes={{
+                                    root: classes.adornment,
                                 }}
-                                error={
-                                    formik.touched.date &&
-                                    Boolean(formik.errors.date)
-                                }
-                                helperText={
-                                    formik.touched.date && formik.errors.date
-                                }
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment
-                                            position="end"
-                                            classes={{
-                                                root: classes.adornment,
-                                            }}
-                                        >
-                                            <CalendarTodayIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                        </FormControl>
-                    </MuiPickersUtilsProvider>
-                    <FormControl fullWidth>
-                        <TextField
-                            size="small"
-                            label="Amount"
-                            name="amount"
-                            value={formik.values.amount}
-                            onChange={formik.handleChange}
-                            error={
-                                formik.touched.amount &&
-                                Boolean(formik.errors.amount)
-                            }
-                            helperText={
-                                formik.touched.amount && formik.errors.amount
-                            }
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment
-                                        position="end"
-                                        classes={{
-                                            root: classes.adornment,
-                                        }}
-                                    >
-                                        <AttachMoneyIcon />
-                                    </InputAdornment>
-                                ),
+                            >
+                                <CalendarTodayIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+            </MuiPickersUtilsProvider>
+            <TextField
+                variant="filled"
+                fullWidth
+                size="small"
+                label="Amount"
+                name="amount"
+                value={formik.values.amount}
+                onChange={formik.handleChange}
+                error={formik.touched.amount && Boolean(formik.errors.amount)}
+                helperText={formik.touched.amount && formik.errors.amount}
+                InputProps={{
+                    inputComponent: MoneyInput,
+                    endAdornment: (
+                        <InputAdornment
+                            position="end"
+                            classes={{
+                                root: classes.adornment,
                             }}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <Autocomplete
-                            freeSolo
-                            value={formik.values.category}
-                            size="small"
-                            options={categories.map((c) => c.name)}
-                            renderInput={({ InputProps, ...rest }) => (
-                                <TextField
-                                    {...rest}
-                                    label="Category"
-                                    margin="dense"
-                                    InputProps={{
-                                        ...InputProps,
-                                        type: 'search',
-                                    }}
-                                />
-                            )}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <TextField
-                            multiline={true}
-                            label="Description"
-                            name="description"
-                            value={formik.values.description}
-                            onChange={formik.handleChange}
-                            error={
-                                formik.touched.description &&
-                                Boolean(formik.errors.description)
-                            }
-                            helperText={
-                                formik.touched.description &&
-                                formik.errors.description
-                            }
-                        />
-                    </FormControl>
-                    <div className={classes.buttons}>
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            disableElevation
                         >
-                            Submit
-                        </Button>
-                        <Button
-                            variant="contained"
-                            onClick={onCancel}
-                            disableElevation
-                        >
-                            Cancel
-                        </Button>
-                    </div>
-                </DialogContent>
-            </form>
-        </Dialog>
+                            <AttachMoneyIcon />
+                        </InputAdornment>
+                    ),
+                }}
+            />
+            <Autocomplete
+                name="category"
+                fullWidth
+                freeSolo
+                value={formik.values.category}
+                onChange={(_, value, source) => {
+                    if (
+                        source === 'remove-option' ||
+                        source === 'select-option'
+                    ) {
+                        formik.handleChange({
+                            target: { name: 'category', value },
+                        });
+                    }
+                }}
+                onInputChange={(evt) => {
+                    if (evt) {
+                        formik.handleChange(evt);
+                    }
+                }}
+                size="small"
+                options={categories.map((c) => c.name)}
+                renderInput={({ InputProps, ...rest }) => (
+                    <TextField
+                        {...rest}
+                        name="category"
+                        variant="filled"
+                        label="Category"
+                        error={
+                            formik.touched.category &&
+                            Boolean(formik.errors.category)
+                        }
+                        helperText={
+                            formik.touched.category && formik.errors.category
+                        }
+                        InputProps={InputProps}
+                    />
+                )}
+            />
+            <TextField
+                variant="filled"
+                fullWidth
+                multiline
+                label="Description"
+                name="description"
+                rows={3}
+                value={formik.values.description}
+                onChange={formik.handleChange}
+                error={
+                    formik.touched.description &&
+                    Boolean(formik.errors.description)
+                }
+                helperText={
+                    formik.touched.description && formik.errors.description
+                }
+            />
+        </FormDialog>
     );
 }

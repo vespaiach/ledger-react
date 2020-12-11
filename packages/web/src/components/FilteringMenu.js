@@ -7,7 +7,9 @@ import {
     Popper,
     Paper,
     Grow,
+    InputAdornment,
 } from '@material-ui/core';
+import { CalendarToday as CalendarTodayIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import DateFnsUtils from '@date-io/date-fns';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -31,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     paper: {
         padding: theme.spacing(2),
         '& .MuiTextField-root': {
-            marginBottom: theme.spacing(2),
+            marginBottom: theme.spacing(1),
         },
     },
     icon: {
@@ -43,6 +45,10 @@ const useStyles = makeStyles((theme) => ({
         '& button + button': {
             marginLeft: theme.spacing(1),
         },
+    },
+    adornment: {
+        color: theme.palette.text.disabled,
+        height: 16,
     },
 }));
 
@@ -88,26 +94,50 @@ export default function FilteringMenu({
                             <ImageFilterIcon number={numberOfFilter} />
                         </div>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                            <FormControl fullWidth>
-                                <DateTimePicker
-                                    size="small"
-                                    inputVariant="filled"
-                                    label="From date"
-                                    format="MMM do hh:mm aaaa"
-                                    value={from}
-                                    onChange={handleChange('from')}
-                                />
-                            </FormControl>
-                            <FormControl fullWidth>
-                                <DateTimePicker
-                                    size="small"
-                                    inputVariant="filled"
-                                    label="To date"
-                                    format="MMM do hh:mm aaaa"
-                                    value={to}
-                                    onChange={handleChange('to')}
-                                />
-                            </FormControl>
+                            <DateTimePicker
+                                clearable
+                                size="small"
+                                label="From date"
+                                format="MMM do, yyyy HH:mm"
+                                value={from}
+                                onChange={handleChange('from')}
+                                inputVariant="filled"
+                                fullWidth
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment
+                                            position="end"
+                                            classes={{
+                                                root: classes.adornment,
+                                            }}
+                                        >
+                                            <CalendarTodayIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <DateTimePicker
+                                clearable
+                                size="small"
+                                label="To date"
+                                format="MMM do hh:mm aaaa"
+                                value={to}
+                                onChange={handleChange('to')}
+                                inputVariant="filled"
+                                fullWidth
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment
+                                            position="end"
+                                            classes={{
+                                                root: classes.adornment,
+                                            }}
+                                        >
+                                            <CalendarTodayIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
                         </MuiPickersUtilsProvider>
                         <FormControl variant="filled" fullWidth size="small">
                             <InputLabel>Category</InputLabel>
@@ -118,8 +148,8 @@ export default function FilteringMenu({
                                 }
                             >
                                 {(categories || []).map((c) => (
-                                    <MenuItem key={c} value={c}>
-                                        {c}
+                                    <MenuItem key={c.id} value={c.name}>
+                                        {c.name}
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -127,7 +157,7 @@ export default function FilteringMenu({
                         <div className={classes.buttons}>
                             <Button
                                 onClick={onClear}
-                                color="default"
+                                color="primary"
                                 variant="contained"
                                 disableElevation
                             >

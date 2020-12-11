@@ -4,9 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Menu from './Menu';
 import Expenses from '../routes/Expenses';
-import ExpenseEdit from '../routes/Expenses/Edit';
 import Dashboard from '../routes/Dashboard';
-import ExpenseCreate from '../routes/Expenses/Create';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -18,9 +16,7 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
         minHeight: '100vh',
         background: theme.palette.background.paper,
-        paddingLeft: theme.spacing(8),
-        paddingTop: theme.spacing(3),
-        paddingBottom: theme.spacing(3),
+        padding: `${theme.spacing(3)}px ${theme.spacing(4)}px`,
     },
 }));
 

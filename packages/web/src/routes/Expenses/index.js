@@ -19,7 +19,7 @@ export default function ExpenseList() {
     const history = useHistory();
     const anchorEl = useRef(null);
     const [openFilter, setOpenFilter] = useState(false);
-    const [openForm, setOpenForm] = useState({});
+    const [openForm, setOpenForm] = useState(null);
     const dispatch = useDispatch();
     const expenses = useSelector((state) => {
         if (state.expenses.currentPage && !state.expenses.fetching) {
@@ -69,8 +69,8 @@ export default function ExpenseList() {
                         payload: page,
                     });
                 }}
-                onEdit={(dt) => {
-                    setOpenForm(dt);
+                onEdit={({ id, catgory, amount, description, date }) => {
+                    setOpenForm({ id, catgory, amount, description, date });
                 }}
             />
             <FilteringMenu
@@ -79,7 +79,7 @@ export default function ExpenseList() {
                 from={from}
                 to={to}
                 category={category}
-                categories={(categories || []).map((c) => c.name)}
+                categories={categories}
                 open={openFilter}
                 onChange={(value, name) => {
                     dispatch({
@@ -93,7 +93,7 @@ export default function ExpenseList() {
                     closeFilter();
                 }}
             />
-
+            <div>asbd</div>
             <ExpenseForm
                 {...(openForm || {})}
                 open={openForm !== null}

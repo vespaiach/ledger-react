@@ -12,6 +12,7 @@ const defaultState = {
         field: 'date',
         order: 'desc',
     },
+    openCreatingDialog: false,
 };
 
 export default function reducer(state = defaultState, { type, payload }) {
