@@ -27,7 +27,7 @@ export function* getExpenses(pg) {
         const { from, to, category, orderBy } = yield select(
             (state) => state.expenses
         );
-        yield put({ type: 'Store: expense list - fetching' });
+        yield put({ type: 'Store: fetching expense list' });
         const result = yield call(axios.get, '/expenses', {
             params: {
                 from,
@@ -68,7 +68,7 @@ export function* fetchExpensesRequest() {
     while (true) {
         const { payload: page } = yield take('Request: fetch expense list');
 
-        yield put({ type: 'Store: expense list - fetching' });
+        yield put({ type: 'Store: fetching expense list' });
 
         let totalPages = yield select((state) => state.expenses.totalPages);
 
@@ -143,7 +143,7 @@ export function* filterExpensesListRequest() {
     while (true) {
         const { payload } = yield take('Request: filter expense list');
         yield put({
-            type: 'Store: expense list - update filtering condition',
+            type: "Store: update expense's filtering conditions",
             payload,
         });
         yield put({ type: 'Store: expense list - mark as stale' });
@@ -164,7 +164,7 @@ export function* clearExpensesListFilteringRequest() {
     while (true) {
         yield take(['Request: clear expense list fitering']);
         yield put({
-            type: 'Store: expense list - update filtering condition',
+            type: "Store: update expense's filtering conditions",
             payload: { from: null, to: null, category: null },
         });
         yield put({ type: 'Store: expense list - mark as stale' });

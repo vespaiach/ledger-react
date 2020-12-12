@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Menu from './Menu';
 import Expenses from '../routes/Expenses';
+import Incomes from '../routes/Incomes';
 import Dashboard from '../routes/Dashboard';
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +38,9 @@ export default function BasePage() {
                     </Route>
                     <Route path="/portal/expenses">
                         <Expenses />
+                    </Route>
+                    <Route path="/portal/incomes">
+                        <Incomes />
                     </Route>
                 </Switch>
             </Container>

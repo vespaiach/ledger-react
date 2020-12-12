@@ -19,7 +19,7 @@ export default function BlockHeader({ title, children }) {
     const classes = useStyles();
     return (
         <div className={classes.container}>
-            <Typography variant="h6" classes={{ root: classes.root }}>
+            <Typography variant="h5" classes={{ root: classes.root }}>
                 {title}
             </Typography>
             <div className={classes.control}>{children}</div>

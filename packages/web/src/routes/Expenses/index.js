@@ -81,10 +81,10 @@ export default function ExpenseList() {
                 category={category}
                 categories={categories}
                 open={openFilter}
-                onChange={(value, name) => {
+                onFilter={(data) => {
                     dispatch({
                         type: 'Request: filter expense list',
-                        payload: { [name]: value },
+                        payload: data,
                     });
                 }}
                 onClose={closeFilter}
@@ -93,7 +93,6 @@ export default function ExpenseList() {
                     closeFilter();
                 }}
             />
-            <div>asbd</div>
             <ExpenseForm
                 {...(openForm || {})}
                 open={openForm !== null}

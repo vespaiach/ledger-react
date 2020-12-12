@@ -17,7 +17,7 @@ const defaultState = {
 
 export default function reducer(state = defaultState, { type, payload }) {
     switch (type) {
-        case 'Store: expense list - fetching':
+        case 'Store: fetching expense list':
             return { ...state, fetching: true };
 
         case 'Store: expense list - fetch done':
@@ -75,7 +75,7 @@ export default function reducer(state = defaultState, { type, payload }) {
                 categories: payload,
             };
 
-        case 'Store: expense list - update filtering condition':
+        case 'Store: update expense\'s filtering conditions':
             return {
                 ...state,
                 from: 'from' in payload ? payload.from : state.from,

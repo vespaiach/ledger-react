@@ -13,6 +13,7 @@ import { CalendarToday as CalendarTodayIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import DateFnsUtils from '@date-io/date-fns';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { useState } from 'react';
 
 import ImageFilterIcon from '../components/Icons/ImageFilter';
 
@@ -60,16 +61,13 @@ export default function FilteringMenu({
     open,
     numberOfFilter,
     anchorEleRef,
-    onChange,
-    onClear,
+    onFilter,
     onClose,
 }) {
+    const [dateTo, setDateTo] = useState(to);
+    const [dateFrom, setDateFrom] = useState(from);
+    const [cate, setCate] = useState(category);
     const classes = useStyles();
-    const handleChange = (name) => (date) => {
-        if (onChange) {
-            onChange(date, name);
-        }
-    };
 
     return (
         <Popper
@@ -99,8 +97,10 @@ export default function FilteringMenu({
                                 size="small"
                                 label="From date"
                                 format="MMM do, yyyy HH:mm"
-                                value={from}
-                                onChange={handleChange('from')}
+                                value={dateFrom}
+                                onChange={(val) => {
+                                    setDateFrom(val);
+                                }}
                                 inputVariant="filled"
                                 fullWidth
                                 InputProps={{
@@ -121,8 +121,10 @@ export default function FilteringMenu({
                                 size="small"
                                 label="To date"
                                 format="MMM do hh:mm aaaa"
-                                value={to}
-                                onChange={handleChange('to')}
+                                value={dateTo}
+                                onChange={(val) => {
+                                    setDateTo(val);
+                                }}
                                 inputVariant="filled"
                                 fullWidth
                                 InputProps={{
@@ -142,10 +144,8 @@ export default function FilteringMenu({
                         <FormControl variant="filled" fullWidth size="small">
                             <InputLabel>Category</InputLabel>
                             <Select
-                                value={category || ''}
-                                onChange={(evt) =>
-                                    handleChange('category')(evt.target.value)
-                                }
+                                value={cate}
+                                onChange={(evt) => setCate(evt.target.value)}
                             >
                                 {(categories || []).map((c) => (
                                     <MenuItem key={c.id} value={c.name}>
@@ -156,12 +156,20 @@ export default function FilteringMenu({
                         </FormControl>
                         <div className={classes.buttons}>
                             <Button
-                                onClick={onClear}
+                                onClick={() => {
+                                    if (onFilter) {
+                                        onFilter({
+                                            to: dateTo,
+                                            from: dateFrom,
+                                            category: cate,
+                                        });
+                                    }
+                                }}
                                 color="primary"
                                 variant="contained"
                                 disableElevation
                             >
-                                Clear All
+                                Apply
                             </Button>
                             <Button
                                 onClick={onClose}
