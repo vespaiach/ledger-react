@@ -16,6 +16,8 @@ import {
     filterExpensesListRequest,
     clearExpensesListFilteringRequest,
 } from '../routes/Expenses/saga';
+import { watchFetchMoreIncomesRequest } from '../routes/Incomes/saga';
+
 import {
     expensesStatisticsRequest,
     dashboardStatisticsRequest,
@@ -25,6 +27,7 @@ import commonReducer from './commonReducer';
 import userReducer from '../routes/User/reducer';
 import expenseReducer from '../routes/Expenses/reducer';
 import statisticsReducer from '../routes/Dashboard/reducer';
+import incomesReducer from '../routes/Incomes/reducer';
 
 const history = createBrowserHistory();
 const sagaMiddleware = createSagaMiddleware();
@@ -47,6 +50,7 @@ const store = createStore(
         expenses: expenseReducer,
         router: connectRouter(history),
         statistics: statisticsReducer,
+        incomes: incomesReducer,
     }),
     composeEnhancers(applyMiddleware(sagaMiddleware, routerMiddleware(history)))
 );
@@ -65,6 +69,7 @@ const saga = function* rootSaga() {
             clearExpensesListFilteringRequest,
             expensesStatisticsRequest,
             dashboardStatisticsRequest,
+            watchFetchMoreIncomesRequest,
         ].map(fork)
     );
 };

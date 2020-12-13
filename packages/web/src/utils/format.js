@@ -1,26 +1,12 @@
-import currency from 'currency.js';
+import NumberFormat from 'react-number-format';
 import { format } from 'date-fns';
 
 export function formatCurrency(money) {
-    return currency(money).format();
+    return <NumberFormat value={money} displayType={'text'} thousandSeparator={true} prefix={'$'} />;
 }
 
 export function getMonthName(m) {
-    const months = [
-        '',
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
-    ];
+    const months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return months[m];
 }
 

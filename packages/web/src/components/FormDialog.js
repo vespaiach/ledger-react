@@ -1,12 +1,4 @@
-import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    DialogContentText,
-    Button,
-    makeStyles,
-} from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, Button, makeStyles } from '@material-ui/core';
 
 let inc = 0;
 
@@ -77,20 +69,10 @@ export default function FormDialog({
                     {text && <DialogContentText>{text}</DialogContentText>}
                     {children}
                     <div className={classes.actions}>
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            disableElevation
-                            className="submit"
-                        >
+                        <Button type="submit" variant="contained" color="primary" disableElevation className="submit">
                             Submit
                         </Button>
-                        <Button
-                            variant="contained"
-                            onClick={onClose}
-                            disableElevation
-                        >
+                        <Button variant="contained" onClick={onClose} disableElevation>
                             Cancel
                         </Button>
                     </div>

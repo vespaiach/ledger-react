@@ -13,7 +13,7 @@ export default class ExpenseSeeder extends BaseSeeder {
       }
     )
 
-    await ExpensesFactory.merge({ userId: user.id }).createMany(100)
-    await IncomesFactory.merge({ userId: user.id }).createMany(100)
+    await ExpensesFactory.merge({ userId: user.id }).createMany(100000)
+    await IncomesFactory.merge({ userId: user.id }).createMany(100000)
   }
 }

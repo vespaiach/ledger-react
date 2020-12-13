@@ -14,7 +14,6 @@
     "axios": "^0.21.0",
     "clsx": "^1.1.1",
     "connected-react-router": "^6.8.0",
-    "currency.js": "^2.0.3",
     "date-fns": "^2.16.1",
     "formik": "^2.2.5",
     "humps": "^2.0.1",

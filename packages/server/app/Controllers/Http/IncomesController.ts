@@ -106,7 +106,8 @@ export default class IncomesController {
     const total = result ? Number(result[0].count) : 0
 
     return {
-      total: Math.floor(total / PER_PAGE) + (total % PER_PAGE !== 0 ? 1 : 0),
+      total,
+      page: Math.floor(total / PER_PAGE) + (total % PER_PAGE !== 0 ? 1 : 0),
       perPage: PER_PAGE,
     }
   }
