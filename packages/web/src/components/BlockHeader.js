@@ -8,7 +8,11 @@ const useStyles = makeStyles((theme) => ({
     container: {
         display: 'flex',
         alignItems: 'center',
-        marginBottom: theme.spacing(1),
+        paddingBottom: theme.spacing(1),
+        position: 'sticky',
+        top: 0,
+        zIndex: 101,
+        backgroundColor: 'white',
     },
     control: {
         marginLeft: 'auto',

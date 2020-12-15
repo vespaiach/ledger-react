@@ -8,7 +8,15 @@ import TextBoxPlusIcon from '../components/Icons/TextBoxPlus';
 const useStyles = makeStyles((theme) => ({
     aside: {
         paddingTop: theme.spacing(3),
+        width: 132,
+        height: '100vh',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        zIndex: 100,
+        backgroundColor: 'rgba(0, 0, 0, 0.04)',
     },
+
     listItemButton: {
         width: 132,
         flexFlow: 'column nowrap',

@@ -16,8 +16,14 @@ const useStyles = makeStyles((theme) => ({
     content: {
         width: '100%',
         minHeight: '100vh',
+        marginLeft: 132,
         background: theme.palette.background.paper,
         padding: `${theme.spacing(3)}px ${theme.spacing(4)}px`,
+        '& .ReactVirtualized__Table__headerRow': {
+            position: 'sticky',
+            top: 56,
+            zIndex: 101,
+        },
     },
 }));
 
@@ -27,11 +33,7 @@ export default function BasePage() {
     return (
         <div className={classes.container}>
             <Menu />
-            <Container
-                maxWidth={false}
-                component="main"
-                classes={{ root: classes.content }}
-            >
+            <Container maxWidth={false} component="main" classes={{ root: classes.content }}>
                 <Switch>
                     <Route exact path="/portal/reports">
                         <Dashboard />

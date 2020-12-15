@@ -1,10 +1,8 @@
-import { call, debounce, all, put, select } from 'redux-saga/effects';
+import { call, debounce, all, put, select, takeEvery } from 'redux-saga/effects';
 import axios from 'axios';
 
 function* fetchTotalRecords() {
-    const fetchedTotalRecords = yield select(
-        (state) => state.incomes.fetchedTotalRecords
-    );
+    const fetchedTotalRecords = yield select((state) => state.incomes.fetchedTotalRecords);
 
     if (fetchedTotalRecords) {
         return;
@@ -88,25 +86,35 @@ function* fetchMoreIncomes(page) {
     });
 }
 
-export function* watchFetchMoreIncomesRequest() {
-    yield debounce(
-        500,
-        'Saga: request more income records',
-        function* ({ payload }) {
-            yield put({ type: 'Reducer: set fetching on' });
+export function* watchSaveIncomesRequest() {
+    yield takeEvery('Saga: save income transation', function* ({ payload }) {
+        const { id, ...data } = payload;
+        const url = id ? `/incomes/${id}` : '/incomes';
 
-            yield fetchTotalRecords();
+        yield put({ type: 'Reducer: set saving on' });
 
-            const pageToFetch = yield getListofPageToFetch(
-                payload.startIndex,
-                payload.stopIndex
-            );
+        const result = yield call(axios.post, url, { data });
 
-            if (pageToFetch.length) {
-                yield all(pageToFetch.map((pg) => fetchMoreIncomes(pg)));
-            }
+        yield put({ type: 'Reducer: set saving off' });
 
-            yield put({ type: 'Reducer: set fetching off' });
+        if (result.data) {
+            yield put({ type: 'Reducer: reset list data' });
         }
-    );
+    });
+}
+
+export function* watchFetchMoreIncomesRequest() {
+    yield debounce(500, 'Saga: request more income records', function* ({ payload }) {
+        yield put({ type: 'Reducer: set fetching on' });
+
+        yield fetchTotalRecords();
+
+        const pageToFetch = yield getListofPageToFetch(payload.startIndex, payload.stopIndex);
+
+        if (pageToFetch.length) {
+            yield all(pageToFetch.map((pg) => fetchMoreIncomes(pg)));
+        }
+
+        yield put({ type: 'Reducer: set fetching off' });
+    });
 }

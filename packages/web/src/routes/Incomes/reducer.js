@@ -20,6 +20,7 @@ const defaultState = {
     perPage: 20,
     fetchedTotalRecords: false,
     fetching: false,
+    saving: false,
 };
 
 export default createReducer(defaultState, {
@@ -54,4 +55,18 @@ export default createReducer(defaultState, {
     'Reducer: set fetching on': (state) => ({ ...state, fetching: true }),
 
     'Reducer: set fetching off': (state) => ({ ...state, fetching: false }),
+
+    'Reducer: set saving on': (state) => ({ ...state, saving: true }),
+
+    'Reducer: set saving off': (state) => ({ ...state, saving: false }),
+
+    'Reducer: reset list data': (state) => ({
+        ...state,
+        list: defaultState.list,
+        order: defaultState.order,
+        fetchedTotalRecords: false,
+        fetchedPages: defaultState.fetchedPages,
+        categories: defaultState.categories,
+        totalRecords: defaultState.totalRecords,
+    }),
 });
