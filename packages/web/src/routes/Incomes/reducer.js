@@ -69,4 +69,19 @@ export default createReducer(defaultState, {
         categories: defaultState.categories,
         totalRecords: defaultState.totalRecords,
     }),
+
+    'Reducer: reset incomes list': (state) => ({
+        ...state,
+        list: defaultState.list,
+    }),
+
+    'Reducer: update incomes filtering': (state, { payload }) => ({
+        ...state,
+        ...payload,
+    }),
+
+    'Reducers: save incomes categories': (state, { payload }) => ({
+        ...state,
+        categories: payload,
+    }),
 });

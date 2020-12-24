@@ -16,7 +16,11 @@ import {
     filterExpensesListRequest,
     clearExpensesListFilteringRequest,
 } from '../routes/Expenses/saga';
-import { watchFetchMoreIncomesRequest } from '../routes/Incomes/saga';
+import {
+    watchFetchMoreIncomesRequest,
+    watchFetchIncomeCategories,
+    watchIncomesFilteringRequest,
+} from '../routes/Incomes/saga';
 
 import {
     expensesStatisticsRequest,
@@ -70,6 +74,8 @@ const saga = function* rootSaga() {
             expensesStatisticsRequest,
             dashboardStatisticsRequest,
             watchFetchMoreIncomesRequest,
+            watchFetchIncomeCategories,
+            watchIncomesFilteringRequest,
         ].map(fork)
     );
 };

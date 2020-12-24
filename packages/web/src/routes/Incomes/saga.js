@@ -1,8 +1,18 @@
-import { call, debounce, all, put, select, takeEvery } from 'redux-saga/effects';
+import {
+    call,
+    debounce,
+    all,
+    put,
+    select,
+    takeEvery,
+    takeLatest,
+} from 'redux-saga/effects';
 import axios from 'axios';
 
 function* fetchTotalRecords() {
-    const fetchedTotalRecords = yield select((state) => state.incomes.fetchedTotalRecords);
+    const fetchedTotalRecords = yield select(
+        (state) => state.incomes.fetchedTotalRecords
+    );
 
     if (fetchedTotalRecords) {
         return;
@@ -31,6 +41,8 @@ function* fetchTotalRecords() {
             perPage: result.data.perPage,
         },
     });
+
+    return result.data;
 }
 
 /**
@@ -65,6 +77,7 @@ function* fetchMoreIncomes(page) {
     const params = {
         pg: page,
         by: `${order.direction === 'desc' ? '-' : ''}${order.field}`,
+        perPage: 100,
     };
     if (search.dateFrom) {
         params.from = search.dateFrom;
@@ -103,18 +116,55 @@ export function* watchSaveIncomesRequest() {
     });
 }
 
-export function* watchFetchMoreIncomesRequest() {
-    yield debounce(500, 'Saga: request more income records', function* ({ payload }) {
-        yield put({ type: 'Reducer: set fetching on' });
+export function* watchFetchIncomeCategories() {
+    yield takeLatest('Saga: fetch incomes categories', function* ({ payload }) {
+        const result = yield call(axios.get, '/incomes_categories');
 
-        yield fetchTotalRecords();
-
-        const pageToFetch = yield getListofPageToFetch(payload.startIndex, payload.stopIndex);
-
-        if (pageToFetch.length) {
-            yield all(pageToFetch.map((pg) => fetchMoreIncomes(pg)));
-        }
-
-        yield put({ type: 'Reducer: set fetching off' });
+        yield put({
+            type: 'Reducers: save incomes categories',
+            payload: result.data,
+        });
     });
+}
+
+export function* watchIncomesFilteringRequest() {
+    yield takeLatest(
+        'Saga: update filtering and sorting',
+        function* ({ payload }) {
+            yield put({ type: 'Reducer: update incomes filtering', payload });
+
+            const result = yield fetchTotalRecords();
+
+            if (result.totalRecords > 0) {
+                yield put({ type: 'Reducer: set fetching on' });
+
+                yield fetchMoreIncomes(1);
+
+                yield put({ type: 'Reducer: set fetching off' });
+            }
+        }
+    );
+}
+
+export function* watchFetchMoreIncomesRequest() {
+    yield debounce(
+        500,
+        'Saga: request more income records',
+        function* ({ payload }) {
+            yield put({ type: 'Reducer: set fetching on' });
+
+            yield fetchTotalRecords();
+
+            const pageToFetch = yield getListofPageToFetch(
+                payload.startIndex,
+                payload.stopIndex
+            );
+
+            if (pageToFetch.length) {
+                yield all(pageToFetch.map((pg) => fetchMoreIncomes(pg)));
+            }
+
+            yield put({ type: 'Reducer: set fetching off' });
+        }
+    );
 }

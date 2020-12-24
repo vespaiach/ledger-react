@@ -66,11 +66,17 @@ export default function IncomeList() {
     const fetching = useSelector((state) => state.incomes.fetching);
     const totalRecords = useSelector((state) => state.incomes.totalRecords);
     const categories = useSelector((state) => state.incomes.categories);
-    const searchByDateFrom = useSelector((state) => state.incomes.search.dateFrom);
+    const searchByDateFrom = useSelector(
+        (state) => state.incomes.search.dateFrom
+    );
     const searchByDateTo = useSelector((state) => state.incomes.search.dateTo);
-    const searchByCategory = useSelector((state) => state.incomes.search.category);
+    const searchByCategory = useSelector(
+        (state) => state.incomes.search.category
+    );
     const orderField = useSelector((state) => state.incomes.order.field);
-    const orderDirection = useSelector((state) => state.incomes.order.direction);
+    const orderDirection = useSelector(
+        (state) => state.incomes.order.direction
+    );
 
     const dispatch = useDispatch();
     const resolver = useRef(null);
@@ -83,6 +89,10 @@ export default function IncomeList() {
             resolver.current();
         }
     }, [fetching]);
+
+    useEffect(() => {
+        dispatch({ type: 'Saga: fetch incomes categories' });
+    }, [dispatch]);
 
     const handleLoadMore = ({ startIndex, stopIndex }) => {
         dispatch({
@@ -97,7 +107,11 @@ export default function IncomeList() {
     return (
         <>
             <BlockHeader title="Incomes Transactions">
-                <ButtonGroup disableElevation variant="contained" color="primary">
+                <ButtonGroup
+                    disableElevation
+                    variant="contained"
+                    color="primary"
+                >
                     <IconButton
                         color="primary"
                         aria-label="Add new transation"
@@ -119,7 +133,10 @@ export default function IncomeList() {
                             setOpenSettingDialog(true);
                         }}
                     >
-                        <Setting fontSize="inherit" title="Filtering and sorting" />
+                        <Setting
+                            fontSize="inherit"
+                            title="Filtering and sorting"
+                        />
                     </IconButton>
                 </ButtonGroup>
             </BlockHeader>
@@ -145,7 +162,10 @@ export default function IncomeList() {
                 open={openSettingDialog}
                 onClose={() => setOpenSettingDialog(false)}
                 onSubmit={(payload) => {
-                    dispatch({ type: 'Saga: update filtering and sorting', payload });
+                    dispatch({
+                        type: 'Saga: update filtering and sorting',
+                        payload,
+                    });
                 }}
             />
             <FormDialog
@@ -161,7 +181,10 @@ export default function IncomeList() {
                     setOpenFormDialog(false);
                 }}
                 onSubmit={(payload) => {
-                    dispatch({ type: 'Saga: update filtering and sorting', payload });
+                    dispatch({
+                        type: 'Saga: update filtering and sorting',
+                        payload,
+                    });
                 }}
             />
         </>
