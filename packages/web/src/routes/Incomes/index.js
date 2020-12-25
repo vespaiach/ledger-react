@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { ButtonGroup, IconButton } from '@material-ui/core';
+import { useMemo, useEffect, useRef, useState } from 'react';
+import { ButtonGroup, Button } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Setting from '../../components/Icons/Setting';
@@ -7,79 +7,88 @@ import Plus from '../../components/Icons/Plus';
 import BlockHeader from '../../components/BlockHeader';
 import VirtualTable from '../../components/VirtualTable';
 import SettingDialog from '../../components/SettingDialog';
+import ConfirmDialog from '../../components/ConfirmDialog';
 import { formatLongDate, formatCurrency } from '../../utils/format';
 import FormDialog from './Form';
 
 const headerHeight = 60;
 const rowHeight = 60;
+const templateCols = [
+    {
+        label: 'Date',
+        dataKey: 'date',
+        align: 'left',
+        rowHeight,
+        headerHeight,
+        width: 20, // percent
+        format: formatLongDate,
+    },
+    {
+        label: 'Amount',
+        dataKey: 'amount',
+        align: 'right',
+        rowHeight,
+        headerHeight,
+        width: 18, // percent
+        format: formatCurrency,
+    },
+    {
+        label: 'Description',
+        dataKey: 'description',
+        align: 'left',
+        rowHeight,
+        headerHeight,
+        width: 30, // percent
+    },
+    {
+        label: 'Category',
+        dataKey: 'category',
+        align: 'left',
+        rowHeight,
+        headerHeight,
+        width: 20, // percent
+    },
+    {
+        label: '',
+        dataKey: '2_buttons',
+        align: 'right',
+        rowHeight,
+        headerHeight,
+        width: 12, // percent
+    },
+];
 
 export default function IncomeList() {
-    const [columns] = useState([
-        {
-            label: 'Date',
-            dataKey: 'date',
-            align: 'left',
-            rowHeight,
-            headerHeight,
-            width: 20, // percent
-            format: formatLongDate,
-        },
-        {
-            label: 'Amount',
-            dataKey: 'amount',
-            align: 'right',
-            rowHeight,
-            headerHeight,
-            width: 18, // percent
-            format: formatCurrency,
-        },
-        {
-            label: 'Description',
-            dataKey: 'description',
-            align: 'left',
-            rowHeight,
-            headerHeight,
-            width: 30, // percent
-        },
-        {
-            label: 'Category',
-            dataKey: 'category',
-            align: 'left',
-            rowHeight,
-            headerHeight,
-            width: 20, // percent
-        },
-        {
-            label: '',
-            dataKey: '2_buttons',
-            align: 'right',
-            rowHeight,
-            headerHeight,
-            width: 12, // percent
-        },
-    ]);
-    const [openSettingDialog, setOpenSettingDialog] = useState(false);
-    const [formDialogData, setFormDialogData] = useState({});
-    const [openFormDialog, setOpenFormDialog] = useState(false);
-
-    const imcomeList = useSelector((state) => state.incomes.list);
-    const fetching = useSelector((state) => state.incomes.fetching);
-    const totalRecords = useSelector((state) => state.incomes.totalRecords);
-    const categories = useSelector((state) => state.incomes.categories);
-    const searchByDateFrom = useSelector(
-        (state) => state.incomes.search.dateFrom
-    );
-    const searchByDateTo = useSelector((state) => state.incomes.search.dateTo);
-    const searchByCategory = useSelector(
-        (state) => state.incomes.search.category
-    );
-    const orderField = useSelector((state) => state.incomes.order.field);
-    const orderDirection = useSelector(
-        (state) => state.incomes.order.direction
-    );
+    const openSettingDialog = useSelector((state) => state.inTrans.openSettingForm);
+    const openFormDialog = useSelector((state) => state.inTrans.openDialog);
+    const imcomeList = useSelector((state) => state.ins.list);
+    const fetching = useSelector((state) => state.ins.loading);
+    const totalRecords = useSelector((state) => state.ins.totalRecords);
+    const categories = useSelector((state) => state.inCates.list);
+    const searchByDateFrom = useSelector((state) => state.ins.lookup.dateFrom);
+    const searchByDateTo = useSelector((state) => state.ins.lookup.dateTo);
+    const searchByCategory = useSelector((state) => state.ins.lookup.category);
+    const orderField = useSelector((state) => state.ins.sort.field);
+    const orderDirection = useSelector((state) => state.ins.sort.direction);
+    const fetchedTotalRecords = useSelector((state) => state.ins.fetchedTotalRecords);
 
     const dispatch = useDispatch();
+
+    const loaderRef = useRef(null);
     const resolver = useRef(null);
+    const [deletingIncomeId, setDeletingIncomeId] = useState(0);
+
+    const columns = useMemo(() => {
+        return templateCols.map((c) => {
+            if (c.dataKey === orderField) {
+                return {
+                    ...c,
+                    direction: orderDirection,
+                };
+            }
+            return c;
+        });
+    }, [orderField, orderDirection]);
 
     /**
      * After fetched income rows, call resolver to trigger table's render
@@ -89,6 +98,13 @@ export default function IncomeList() {
             resolver.current();
         }
     }, [fetching]);
+
+    useEffect(() => {
+        if (!fetchedTotalRecords && loaderRef.current !== null) {
+            loaderRef.current.resetLoadMoreRowsCache(true);
+        }
+        dispatch({ type: 'Saga: fetch incomes categories' });
+    }, [fetchedTotalRecords, dispatch]);
 
     useEffect(() => {
         dispatch({ type: 'Saga: fetch incomes categories' });
@@ -106,50 +122,41 @@ export default function IncomeList() {
 
     return (
         <>
-            <BlockHeader title="Incomes Transactions">
-                <ButtonGroup
-                    disableElevation
-                    variant="contained"
-                    color="primary"
-                >
-                    <IconButton
-                        color="primary"
-                        aria-label="Add new transation"
-                        component="span"
-                        title="Add a new transation"
+            <BlockHeader title="Incomes Transactions" totalRecords={fetchedTotalRecords ? totalRecords : 0}>
+                <ButtonGroup variant="text" disableElevation>
+                    <Button
                         onClick={() => {
-                            setFormDialogData({});
-                            setOpenFormDialog(true);
+                            dispatch({ type: 'Reducer - inTrans: open form dialog' });
                         }}
                     >
-                        <Plus fontSize="inherit" title="Add a new transation" />
-                    </IconButton>
-                    <IconButton
-                        color="primary"
-                        aria-label="Filtering and sorting"
-                        component="span"
-                        title="Filtering and sorting"
+                        <Plus />
+                    </Button>
+                    <Button
                         onClick={() => {
-                            setOpenSettingDialog(true);
+                            dispatch({ type: 'Reducer - inTrans: open setting form' });
                         }}
                     >
-                        <Setting
-                            fontSize="inherit"
-                            title="Filtering and sorting"
-                        />
-                    </IconButton>
+                        <Setting />
+                    </Button>
                 </ButtonGroup>
             </BlockHeader>
             <VirtualTable
+                loaderRef={loaderRef}
                 totalRows={totalRecords}
                 onLoadMore={handleLoadMore}
                 rows={imcomeList}
                 columns={columns}
                 headerHeight={headerHeight}
                 rowHeight={rowHeight}
-                onEdit={(vals) => {
-                    setFormDialogData(vals.rowData);
-                    setOpenFormDialog(true);
+                onDelete={({ rowData }) => {
+                    setDeletingIncomeId(rowData.id);
+                }}
+                onEdit={({ rowData: vals }) => {
+                    dispatch({ type: 'Reducer - inTrans: set amount of income', payload: vals.amount });
+                    dispatch({ type: 'Reducer - inTrans: set date of income', payload: vals.date });
+                    dispatch({ type: 'Reducer - inTrans: set description of income', payload: vals.description });
+                    dispatch({ type: 'Reducer - inTrans: set category of income', payload: vals.category });
+                    dispatch({ type: 'Reducer - inTrans: open form dialog' });
                 }}
             />
             <SettingDialog
@@ -160,31 +167,28 @@ export default function IncomeList() {
                 orderField={orderField}
                 orderDirection={orderDirection}
                 open={openSettingDialog}
-                onClose={() => setOpenSettingDialog(false)}
+                onClose={() => {
+                    dispatch({ type: 'Reducer - inTrans: close setting form' });
+                }}
                 onSubmit={(payload) => {
                     dispatch({
-                        type: 'Saga: update filtering and sorting',
+                        type: 'Saga: update sort and lookup',
                         payload,
                     });
+                    dispatch({ type: 'Reducer - inTrans: close setting form' });
                 }}
             />
-            <FormDialog
-                open={openFormDialog}
-                categories={categories}
-                id={formDialogData.id}
-                date={formDialogData.date}
-                amount={formDialogData.amount}
-                description={formDialogData.description}
-                category={formDialogData.category}
-                onCancel={() => {
-                    setFormDialogData({});
-                    setOpenFormDialog(false);
+            <FormDialog open={openFormDialog} />
+            <ConfirmDialog
+                title="Deleting Confirmation"
+                text="You are deleting income transaction. Do you want it?"
+                open={deletingIncomeId > 0}
+                onYes={() => {
+                    dispatch({ type: 'Saga - ins: delete income transation', payload: deletingIncomeId });
+                    setDeletingIncomeId(0);
                 }}
-                onSubmit={(payload) => {
-                    dispatch({
-                        type: 'Saga: update filtering and sorting',
-                        payload,
-                    });
+                onClose={() => {
+                    setDeletingIncomeId(0);
                 }}
             />
         </>

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { push } from 'connected-react-router';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import { call, put, select, take } from 'redux-saga/effects';
+import { safeCall } from '../../utils/saga';
 
 export function* getTotalPage() {
     try {
@@ -24,9 +25,7 @@ export function* getTotalPage() {
 
 export function* getExpenses(pg) {
     try {
-        const { from, to, category, orderBy } = yield select(
-            (state) => state.expenses
-        );
+        const { from, to, category, orderBy } = yield select((state) => state.expenses);
         yield put({ type: 'Store: fetching expense list' });
         const result = yield call(axios.get, '/expenses', {
             params: {
@@ -74,20 +73,18 @@ export function* fetchExpensesRequest() {
 
         // If there is no total page, get it first
         if (totalPages === null) {
-            try {
-                const { from, to, category } = yield select(
-                    (state) => state.expenses
-                );
-                const result = yield call(axios.get, '/expenses/count', {
+            const { from, to, category } = yield select((state) => state.expenses);
+            const [result, response] = yield safeCall(
+                call(axios.get, '/expenses/count', {
                     params: { from, to, cate: category },
-                });
-                totalPages = result.data.total;
+                })
+            );
+            if (result) {
+                totalPages = response.data.total;
                 yield put({
                     type: 'Store: expense list - save total pages',
                     payload: totalPages,
                 });
-            } catch (e) {
-                yield put({ type: 'Store: api request fail', payload: e });
             }
         }
 
@@ -97,23 +94,18 @@ export function* fetchExpensesRequest() {
                 type: 'Store: expense list - update current page',
                 payload: page,
             });
-
             const pages = yield select((state) => state.expenses.pages);
 
             // There is no page data in store, go and crab it from server
             if (!pages[page]) {
                 try {
-                    const { from, to, category, orderBy } = yield select(
-                        (state) => state.expenses
-                    );
+                    const { from, to, category, orderBy } = yield select((state) => state.expenses);
                     const result = yield call(axios.get, '/expenses', {
                         params: {
                             from,
                             to,
                             cate: category,
-                            by: `${orderBy.order === 'desc' ? '-' : ''}${
-                                orderBy.field
-                            }`,
+                            by: `${orderBy.order === 'desc' ? '-' : ''}${orderBy.field}`,
                             pg: page,
                         },
                     });
@@ -188,9 +180,7 @@ export function* editExpenseRequest() {
                 type: 'Store: editing expense - fetch ok',
                 payload: result.data,
             });
-            const pathname = yield select(
-                (state) => state.router.location.pathname
-            );
+            const pathname = yield select((state) => state.router.location.pathname);
             if (!/^\/expenses\/\d+/i.test(pathname)) {
                 yield put(push(`/expenses/${id}`));
             }
@@ -208,11 +198,7 @@ export function* editExpenseRequest() {
  */
 export function* loadExpenseCategoriesRequest() {
     while (true) {
-        yield take([
-            'Request: edit expense',
-            'Request: create expense',
-            'Request: fetch expense list',
-        ]);
+        yield take(['Request: edit expense', 'Request: create expense', 'Request: fetch expense list']);
         const categories = yield select((state) => state.expenses.categories);
 
         try {
@@ -239,16 +225,12 @@ export function* saveExpenseRequest() {
 
         try {
             yield put({ type: 'Store: editing expense - saving' });
-            yield call(
-                id ? axios.put : axios.post,
-                id ? `/expenses/${id}` : '/expenses',
-                {
-                    amount,
-                    description,
-                    date,
-                    category,
-                }
-            );
+            yield call(id ? axios.put : axios.post, id ? `/expenses/${id}` : '/expenses', {
+                amount,
+                description,
+                date,
+                category,
+            });
             yield put({ type: 'Store: expense list - mark as stale' });
             if (afterSuccess) {
                 afterSuccess();

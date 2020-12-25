@@ -63,7 +63,7 @@ export default function Menu() {
                         button: classes.listItemButton,
                         selected: classes.listItemSelected,
                     }}
-                    selected={reportMatch}
+                    selected={reportMatch !== null}
                     onClick={goto('/portal/reports')}
                 >
                     <PollIcon />
@@ -75,7 +75,7 @@ export default function Menu() {
                         button: classes.listItemButton,
                         selected: classes.listItemSelected,
                     }}
-                    selected={expensesMatch}
+                    selected={expensesMatch !== null}
                     onClick={goto('/portal/expenses')}
                 >
                     <TextBoxMinusIcon />
@@ -87,7 +87,7 @@ export default function Menu() {
                         button: classes.listItemButton,
                         selected: classes.listItemSelected,
                     }}
-                    selected={incomesMatch}
+                    selected={incomesMatch !== null}
                     onClick={goto('/portal/incomes')}
                 >
                     <TextBoxPlusIcon />

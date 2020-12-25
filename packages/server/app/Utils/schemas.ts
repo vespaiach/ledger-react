@@ -22,7 +22,7 @@ export const pgSchema = schema.number()
 export const dateSchema = schema.date({
   format: 'iso',
 })
-export const amountSchema = schema.number([rules.minLength(0)])
+export const amountSchema = schema.number()
 export const descriptionSchema = schema.string({ escape: true, trim: true }, [rules.maxLength(256)])
 export const categorySchema = schema.string({ escape: true, trim: true }, [rules.maxLength(32)])
 export const nameSchema = schema.string({ escape: true, trim: true }, [rules.maxLength(32)])

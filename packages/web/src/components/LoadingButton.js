@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { green } from '@material-ui/core/colors';
@@ -22,31 +23,15 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function LoadingButton({
-    children,
-    color = 'primary',
-    loading,
-    onClick,
-    ...rest
-}) {
+export default function LoadingButton({ children, color = 'primary', className, loading, onClick, ...rest }) {
     const classes = useStyles();
 
     return (
-        <div className={classes.wrapper}>
-            <Button
-                {...rest}
-                color={color}
-                disabled={loading}
-                onClick={onClick}
-            >
+        <div className={clsx(classes.wrapper, className)}>
+            <Button {...rest} color={color} disabled={loading} onClick={onClick}>
                 {children}
             </Button>
-            {loading && (
-                <CircularProgress
-                    size={24}
-                    className={classes.buttonProgress}
-                />
-            )}
+            {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
         </div>
     );
 }

@@ -106,7 +106,6 @@ export default function Form({
                     error={formik.touched.date && Boolean(formik.errors.date)}
                     helperText={formik.touched.date && formik.errors.date}
                     inputVariant="filled"
-                    fullWidth
                     InputProps={{
                         endAdornment: (
                             <InputAdornment
@@ -123,7 +122,6 @@ export default function Form({
             </MuiPickersUtilsProvider>
             <TextField
                 variant="filled"
-                fullWidth
                 size="small"
                 label="Amount"
                 name="amount"
@@ -147,7 +145,7 @@ export default function Form({
             />
             <Autocomplete
                 name="category"
-                fullWidth
+                
                 freeSolo
                 value={formik.values.category}
                 onChange={(_, value, source) => {
@@ -186,7 +184,6 @@ export default function Form({
             />
             <TextField
                 variant="filled"
-                fullWidth
                 multiline
                 label="Description"
                 name="description"

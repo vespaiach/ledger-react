@@ -1,6 +1,7 @@
 import { InfiniteLoader, WindowScroller, AutoSizer, Table, Column } from 'react-virtualized';
+import clsx from 'clsx';
 import { styled } from '@material-ui/core/styles';
-import { makeStyles, TableCell, TableRow, IconButton } from '@material-ui/core';
+import { TableSortLabel, makeStyles, TableCell, TableRow, IconButton } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import ClipboardEditIcon from '../components/Icons/ClipboardEdit';
@@ -86,8 +87,23 @@ function headerRenderer({ label, columnData }) {
             align={columnData.align}
             className={columnData.headerCssClass}
         >
-            <span>{label}</span>
+            {columnData.direction ? (
+                <TableSortLabel direction={columnData.direction} active>
+                    {label}
+                </TableSortLabel>
+            ) : (
+                <span>{label}</span>
+            )}
         </TableCell>
+    );
+}
+
+function headerRowRenderer(props) {
+    const { className, columns, style } = props;
+    return (
+        <div className={clsx(className, 'sticky-table-header')} role="row" style={style}>
+            {columns}
+        </div>
     );
 }
 
@@ -105,6 +121,9 @@ const useStyles = makeStyles((theme) => ({
         '& .ReactVirtualized__Table__headerRow': {
             backgroundColor: theme.palette.primary.main,
             display: 'flex',
+            position: 'sticky',
+            top: (props) => props,
+            zIndex: 101,
             '& .ReactVirtualized__Table__headerColumn': {
                 '&:first-child .MuiTableCell-root': {
                     paddingLeft: theme.spacing(1),
@@ -129,14 +148,30 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function VirtualTable({ totalRows, rows, onLoadMore, headerHeight, rowHeight, columns, onEdit, onDelete }) {
-    const classes = useStyles();
+function VirtualTable({
+    offsetTop = 68,
+    totalRows,
+    rows,
+    loaderRef,
+    onLoadMore,
+    headerHeight,
+    rowHeight,
+    columns,
+    onEdit,
+    onDelete,
+}) {
+    const classes = useStyles(offsetTop);
     const isRowLoaded = (index) => rows[index] !== undefined && rows[index] !== null && rows[index] !== 'loading';
 
     return (
         <AutoSizer disableHeight>
             {({ width }) => (
-                <InfiniteLoader isRowLoaded={isRowLoaded} loadMoreRows={onLoadMore} rowCount={totalRows}>
+                <InfiniteLoader
+                    ref={loaderRef}
+                    isRowLoaded={isRowLoaded}
+                    loadMoreRows={onLoadMore}
+                    rowCount={totalRows}
+                >
                     {({ onRowsRendered, registerChild }) => (
                         <WindowScroller>
                             {({ height, isScrolling, onChildScroll, scrollTop }) => (
@@ -152,8 +187,8 @@ function VirtualTable({ totalRows, rows, onLoadMore, headerHeight, rowHeight, co
                                     width={width}
                                     rowCount={totalRows}
                                     rowGetter={({ index }) => rows[index]}
-                                    ref={registerChild}
                                     rowRenderer={rowRenderer}
+                                    headerRowRenderer={headerRowRenderer}
                                     className={classes.table}
                                 >
                                     {columns.map((column) => {

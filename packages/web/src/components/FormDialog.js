@@ -1,4 +1,6 @@
-import { Dialog, DialogTitle, DialogContent, DialogContentText, Button, makeStyles } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, makeStyles } from '@material-ui/core';
+
+import LoadingButton from './LoadingButton';
 
 let inc = 0;
 
@@ -21,9 +23,9 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: theme.spacing(4),
     },
     actions: {
-        marginTop: theme.spacing(2),
+        marginTop: theme.spacing(3),
         display: 'flex',
-        '& button + button': {
+        '& .cancel': {
             marginLeft: theme.spacing(1),
         },
         '& .submit': {
@@ -40,6 +42,7 @@ export default function FormDialog({
     children,
     onClose,
     onSubmit,
+    loading,
     ...rest
 }) {
     const classes = useStyles();
@@ -69,12 +72,29 @@ export default function FormDialog({
                     {text && <DialogContentText>{text}</DialogContentText>}
                     {children}
                     <div className={classes.actions}>
-                        <Button type="submit" variant="contained" color="primary" disableElevation className="submit">
+                        <LoadingButton
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            loading={loading}
+                            className="submit"
+                            fullWidth
+                            disableElevation
+                            size="large"
+                        >
                             Submit
-                        </Button>
-                        <Button variant="contained" onClick={onClose} disableElevation>
+                        </LoadingButton>
+                        <LoadingButton
+                            className="cancel"
+                            variant="contained"
+                            loading={loading}
+                            onClick={onClose}
+                            color="default"
+                            disableElevation
+                            size="large"
+                        >
                             Cancel
-                        </Button>
+                        </LoadingButton>
                     </div>
                 </DialogContent>
             </form>

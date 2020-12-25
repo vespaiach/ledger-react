@@ -16,6 +16,7 @@ export default function reducer(state = defaultState, action) {
             };
 
         case 'FETCHED_ME_SUCCESS':
+            debugger;
             return {
                 ...state,
                 me: action.payload,

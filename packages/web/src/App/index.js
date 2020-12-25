@@ -1,6 +1,7 @@
 import { Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { CssBaseline, ThemeProvider, createMuiTheme } from '@material-ui/core';
+import { CssBaseline, Snackbar, ThemeProvider, createMuiTheme } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import LoadingBar from 'react-redux-loading-bar';
 
 import APIErrorModal from '../components/APIErrorModal';
@@ -44,7 +45,10 @@ const theme = createMuiTheme({
 });
 
 function App() {
-    const apiError = useSelector((state) => state.common.apiError);
+    const apiError = useSelector((state) => state.app.apiError);
+    const flashMessage = useSelector((state) => state.app.flashMessage || {});
+    const emergeFlashMessage = flashMessage.severity !== undefined && flashMessage.message !== undefined;
+
     const dispatch = useDispatch();
     const close = () => dispatch({ type: 'CLEAR_API_ERROR' });
 
@@ -60,7 +64,19 @@ function App() {
                 messages={apiError ? apiError.messages : []}
                 open={apiError !== null}
                 onClose={close}
-            ></APIErrorModal>
+            />
+
+            <Snackbar
+                open={emergeFlashMessage}
+                autoHideDuration={flashMessage.timeout}
+                onClose={() =>
+                    dispatch({
+                        type: 'Reducer - app: clear flash message',
+                    })
+                }
+            >
+                <Alert severity={flashMessage.severity}>{flashMessage.message}</Alert>
+            </Snackbar>
 
             <Switch>
                 <PrivateRoute path="/portal">

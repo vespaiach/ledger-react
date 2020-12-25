@@ -104,7 +104,6 @@ export default function SignIn({ push }) {
                         variant="outlined"
                         margin="normal"
                         required
-                        fullWidth
                         id="email"
                         label="Email Address"
                         name="email"
@@ -122,7 +121,6 @@ export default function SignIn({ push }) {
                         variant="outlined"
                         margin="normal"
                         required
-                        fullWidth
                         name="password"
                         label="Password"
                         type="password"
@@ -134,13 +132,9 @@ export default function SignIn({ push }) {
                             setPassword(evt.target.value);
                         }}
                     />
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
-                        label="Remember me"
-                    />
+                    <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
                     <LoadingButton
                         type="submit"
-                        fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}

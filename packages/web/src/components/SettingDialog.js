@@ -116,6 +116,7 @@ export default function SettingDialog({
                 <DialogContentText>Apply filtering</DialogContentText>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <DateTimePicker
+                        fullWidth
                         clearable
                         size="small"
                         label="From date"
@@ -125,7 +126,6 @@ export default function SettingDialog({
                             setDateFrom(val);
                         }}
                         inputVariant="filled"
-                        fullWidth
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment
@@ -140,6 +140,7 @@ export default function SettingDialog({
                         }}
                     />
                     <DateTimePicker
+                        fullWidth
                         clearable
                         size="small"
                         label="To date"
@@ -149,7 +150,6 @@ export default function SettingDialog({
                             setDateTo(val);
                         }}
                         inputVariant="filled"
-                        fullWidth
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment
@@ -164,7 +164,7 @@ export default function SettingDialog({
                         }}
                     />
                 </MuiPickersUtilsProvider>
-                <FormControl variant="filled" fullWidth size="small">
+                <FormControl variant="filled" size="small" fullWidth>
                     <InputLabel>Category</InputLabel>
                     <Select value={cate} onChange={(evt) => setCate(evt.target.value)}>
                         {(categories || []).map((c) => (
@@ -195,23 +195,24 @@ export default function SettingDialog({
                     </div>
                     <div className="radio-row">
                         <Typography variant="subtitle1">Category:</Typography>
-                        <FormControlLabel value="cate" control={<Radio />} label="asc" />
-                        <FormControlLabel value="-cate" control={<Radio />} label="desc" />
+                        <FormControlLabel value="category" control={<Radio />} label="asc" />
+                        <FormControlLabel value="-category" control={<Radio />} label="desc" />
                     </div>
                 </RadioGroup>
                 <div className={classes.buttons}>
                     <Button
                         variant="contained"
-                        color="primary"
                         disableElevation
+                        size="large"
+                        color="primary"
                         onClick={() => {
                             onSubmit({
-                                search: {
+                                lookup: {
                                     dateFrom: from,
                                     dateTo: to,
                                     category,
                                 },
-                                order: {
+                                sort: {
                                     field: sort[0] === '-' ? sort.substr(1) : sort,
                                     direction: sort[0] === '-' ? 'desc' : 'asc',
                                 },
@@ -220,7 +221,7 @@ export default function SettingDialog({
                     >
                         Apply
                     </Button>
-                    <Button variant="contained" onClick={onClose} disableElevation>
+                    <Button disableElevation size="large" variant="contained" onClick={onClose}>
                         Cancel
                     </Button>
                 </div>

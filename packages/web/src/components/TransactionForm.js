@@ -34,6 +34,7 @@ export default function Form({
     onCancel,
     open,
     title,
+    loading,
 }) {
     const classes = useStyles();
 
@@ -67,7 +68,7 @@ export default function Form({
     }, [id, amount, date, description, category, open]);
 
     return (
-        <FormDialog title={title} open={open} onClose={onCancel} onSubmit={formik.handleSubmit}>
+        <FormDialog title={title} open={open} onClose={onCancel} onSubmit={formik.handleSubmit} loading={loading}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <DateTimePicker
                     clearable
@@ -85,10 +86,11 @@ export default function Form({
                             target: { name: 'date', value },
                         });
                     }}
+                    fullWidth
+                    disabled={loading}
                     error={formik.touched.date && Boolean(formik.errors.date)}
                     helperText={formik.touched.date && formik.errors.date}
                     inputVariant="filled"
-                    fullWidth
                     InputProps={{
                         endAdornment: (
                             <InputAdornment
@@ -104,8 +106,9 @@ export default function Form({
                 />
             </MuiPickersUtilsProvider>
             <TextField
-                variant="filled"
                 fullWidth
+                disabled={loading}
+                variant="filled"
                 size="small"
                 label="Amount"
                 name="amount"
@@ -128,8 +131,8 @@ export default function Form({
                 }}
             />
             <Autocomplete
+                disabled={loading}
                 name="category"
-                fullWidth
                 freeSolo
                 value={formik.values.category}
                 onChange={(_, value, source) => {
@@ -159,8 +162,8 @@ export default function Form({
                 )}
             />
             <TextField
+                disabled={loading}
                 variant="filled"
-                fullWidth
                 multiline
                 label="Description"
                 name="description"
@@ -169,6 +172,7 @@ export default function Form({
                 onChange={formik.handleChange}
                 error={formik.touched.description && Boolean(formik.errors.description)}
                 helperText={formik.touched.description && formik.errors.description}
+                fullWidth
             />
         </FormDialog>
     );

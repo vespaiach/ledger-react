@@ -1,11 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router-dom';
 
 import TransactionTable from '../../components/TransactionTable';
 import BlockHeader from '../../components/BlockHeader';
-import FilteringMenu from '../../components/FilteringMenu';
 import ExpenseForm from './Form';
 
 const useStyles = makeStyles((theme) => ({
@@ -15,8 +13,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ExpenseList() {
-    const classes = useStyles();
-    const history = useHistory();
     const anchorEl = useRef(null);
     const [openFilter, setOpenFilter] = useState(false);
     const [openForm, setOpenForm] = useState(null);
@@ -34,10 +30,7 @@ export default function ExpenseList() {
     const categories = useSelector((state) => state.expenses.categories);
     const currentPage = useSelector((state) => state.expenses.currentPage);
     const totalPages = useSelector((state) => state.expenses.totalPages);
-    const numberOfFilter =
-        (from !== null ? 1 : 0) +
-        (to !== null ? 1 : 0) +
-        (category !== null ? 1 : 0);
+    const numberOfFilter = (from !== null ? 1 : 0) + (to !== null ? 1 : 0) + (category !== null ? 1 : 0);
 
     const handleSort = (sort) => {
         dispatch({ type: 'Request: sort expense list', payload: sort });
@@ -73,31 +66,7 @@ export default function ExpenseList() {
                     setOpenForm({ id, catgory, amount, description, date });
                 }}
             />
-            <FilteringMenu
-                numberOfFilter={numberOfFilter}
-                anchorEleRef={anchorEl}
-                from={from}
-                to={to}
-                category={category}
-                categories={categories}
-                open={openFilter}
-                onFilter={(data) => {
-                    dispatch({
-                        type: 'Request: filter expense list',
-                        payload: data,
-                    });
-                }}
-                onClose={closeFilter}
-                onClear={() => {
-                    dispatch({ type: 'Request: clear expense list fitering' });
-                    closeFilter();
-                }}
-            />
-            <ExpenseForm
-                {...(openForm || {})}
-                open={openForm !== null}
-                onCancel={() => setOpenForm(null)}
-            />
+            <ExpenseForm {...(openForm || {})} open={openForm !== null} onCancel={() => setOpenForm(null)} />
         </>
     );
 }

@@ -179,15 +179,16 @@ export default class IncomesController {
   public async delete({ params, auth }: HttpContextContract) {
     const { id } = params
 
-    const exp = (await Income.firstOrFail(id)) as Income
+    const ins = (await Income.firstOrFail(id)) as Income
     /**
      * Don't allow to delete income of others
      */
-    if (exp.userId !== (auth.user as User).id) {
+    if (ins.userId !== (auth.user as User).id) {
       throw new NotAllowException('You are not allow to delete')
     }
-    await exp.delete()
 
-    return
+    await ins.delete()
+
+    return null
   }
 }

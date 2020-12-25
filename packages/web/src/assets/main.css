@@ -1,3 +1,13 @@
 body {
     background-color: white;
 }
+
+.ReactVirtualized__Table__headerColumn .MuiTableSortLabel-root.MuiTableSortLabel-active {
+    color: white;
+}
+
+.ReactVirtualized__Table__headerColumn
+    .MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active
+    .MuiTableSortLabel-icon {
+    color: inherit;
+}

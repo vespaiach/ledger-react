@@ -20,21 +20,26 @@ import {
     watchFetchMoreIncomesRequest,
     watchFetchIncomeCategories,
     watchIncomesFilteringRequest,
+    watchSaveIncomesRequest,
+    watchIncomeTranctionDeletion,
 } from '../routes/Incomes/saga';
 
-import {
-    expensesStatisticsRequest,
-    dashboardStatisticsRequest,
-} from '../routes/Dashboard/saga';
+import { expensesStatisticsRequest, dashboardStatisticsRequest } from '../routes/Dashboard/saga';
 
 import commonReducer from './commonReducer';
 import userReducer from '../routes/User/reducer';
 import expenseReducer from '../routes/Expenses/reducer';
 import statisticsReducer from '../routes/Dashboard/reducer';
-import incomesReducer from '../routes/Incomes/reducer';
+import listOfIncomesReducer from '../routes/Incomes/reducer/listOfIns';
+import incomeTransactionReducer from '../routes/Incomes/reducer/inTransaction';
+import incomeCategoryReducer from '../routes/Incomes/reducer/listOfInCates';
 
 const history = createBrowserHistory();
-const sagaMiddleware = createSagaMiddleware();
+const sagaMiddleware = createSagaMiddleware({
+    onError: (e, s) => {
+        debugger;
+    },
+});
 const typedWindow = typeof window !== 'undefined' && window;
 const composeEnhancers =
     (process.env.NODE_ENV === 'development' &&
@@ -49,12 +54,14 @@ const composeEnhancers =
 const store = createStore(
     combineReducers({
         user: userReducer,
-        common: commonReducer,
+        app: commonReducer,
         loadingBar: loadingBarReducer,
         expenses: expenseReducer,
         router: connectRouter(history),
         statistics: statisticsReducer,
-        incomes: incomesReducer,
+        ins: listOfIncomesReducer,
+        inTrans: incomeTransactionReducer,
+        inCates: incomeCategoryReducer,
     }),
     composeEnhancers(applyMiddleware(sagaMiddleware, routerMiddleware(history)))
 );
@@ -76,6 +83,8 @@ const saga = function* rootSaga() {
             watchFetchMoreIncomesRequest,
             watchFetchIncomeCategories,
             watchIncomesFilteringRequest,
+            watchSaveIncomesRequest,
+            watchIncomeTranctionDeletion,
         ].map(fork)
     );
 };
