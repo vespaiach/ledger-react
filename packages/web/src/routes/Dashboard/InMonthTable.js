@@ -1,12 +1,4 @@
-import {
-    makeStyles,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableRow,
-    Typography,
-} from '@material-ui/core';
+import { makeStyles, Table, TableBody, TableCell, TableRow, Typography } from '@material-ui/core';
 import { blueGrey } from '@material-ui/core/colors';
 import { formatCurrency } from '../../utils/format';
 
@@ -36,38 +28,24 @@ export default function InMonthTable({ rows, title, tableRef }) {
 
     return (
         <>
-            <Typography variant="h6" classes={{ root: classes.titleRoot }}>
+            <Typography variant="h5" classes={{ root: classes.titleRoot }}>
                 {title}
             </Typography>
             <Table size="small" ref={tableRef}>
                 <TableBody>
                     {rows.map((row) => (
-                        <TableRow
-                            key={row.category}
-                            classes={{ root: classes.rowRoot }}
-                        >
-                            <TableCell
-                                scope="row"
-                                classes={{ root: classes.cellTitleRoot }}
-                            >
+                        <TableRow key={row.category} classes={{ root: classes.rowRoot }}>
+                            <TableCell scope="row" classes={{ root: classes.cellTitleRoot }}>
                                 {row.category}
                             </TableCell>
-                            <TableCell
-                                align="right"
-                                classes={{ root: classes.cellRoot }}
-                            >
+                            <TableCell align="right" classes={{ root: classes.cellRoot }}>
                                 {formatCurrency(row.total)}
                             </TableCell>
                         </TableRow>
                     ))}
                     <TableRow classes={{ root: classes.boldRowRoot }}>
-                        <TableCell classes={{ root: classes.cellRoot }}>
-                            Total
-                        </TableCell>
-                        <TableCell
-                            align="right"
-                            classes={{ root: classes.cellRoot }}
-                        >
+                        <TableCell classes={{ root: classes.cellRoot }}>Total</TableCell>
+                        <TableCell align="right" classes={{ root: classes.cellRoot }}>
                             {formatCurrency(total)}
                         </TableCell>
                     </TableRow>

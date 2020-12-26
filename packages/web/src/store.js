@@ -1,34 +1,32 @@
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { all, fork } from 'redux-saga/effects';
-import { loadingBarReducer } from 'react-redux-loading-bar';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 
 import { createBrowserHistory } from 'history';
 
-import { loginFlow, fetchMeFlow } from '../routes/User/saga';
 import {
     watchFetchMoreExpensesRequest,
     watchFetchExpenseCategories,
     watchExpensesFilteringRequest,
     watchSaveExpensesRequest,
     watchExpenseTranctionDeletion,
-} from '../routes/Expenses/saga';
+} from './routes/Expenses/saga';
 import {
     watchFetchMoreIncomesRequest,
     watchFetchIncomeCategories,
     watchIncomesFilteringRequest,
     watchSaveIncomesRequest,
     watchIncomeTranctionDeletion,
-} from '../routes/Incomes/saga';
+} from './routes/Incomes/saga';
+import { watchLoginVerify, watchMeLogin, watchMeForceRelogin } from './routes/User/saga';
+import { expensesStatisticsRequest, dashboardStatisticsRequest } from './routes/Dashboard/saga';
 
-import { expensesStatisticsRequest, dashboardStatisticsRequest } from '../routes/Dashboard/saga';
-
-import commonReducer from './commonReducer';
-import userReducer from '../routes/User/reducer';
-import statisticsReducer from '../routes/Dashboard/reducer';
-import { inTransaction, listOfInCates, listOfIns } from '../routes/Incomes/reducer';
-import { exTransaction, listOfExCates, listOfExs } from '../routes/Expenses/reducer';
+import app from './App/reducer';
+import me from './routes/User/reducer';
+import statisticsReducer from './routes/Dashboard/reducer';
+import { inTransaction, listOfInCates, listOfIns } from './routes/Incomes/reducer';
+import { exTransaction, listOfExCates, listOfExs } from './routes/Expenses/reducer';
 
 const history = createBrowserHistory();
 const sagaMiddleware = createSagaMiddleware({
@@ -49,9 +47,8 @@ const composeEnhancers =
 
 const store = createStore(
     combineReducers({
-        user: userReducer,
-        app: commonReducer,
-        loadingBar: loadingBarReducer,
+        me,
+        app,
         router: connectRouter(history),
         statistics: statisticsReducer,
         exs: listOfExs,
@@ -67,11 +64,12 @@ const store = createStore(
 const saga = function* rootSaga() {
     yield all(
         [
-            loginFlow,
-            fetchMeFlow,
             expensesStatisticsRequest,
             dashboardStatisticsRequest,
 
+            watchLoginVerify,
+            watchMeLogin,
+            watchMeForceRelogin,
             watchFetchMoreExpensesRequest,
             watchFetchExpenseCategories,
             watchExpensesFilteringRequest,

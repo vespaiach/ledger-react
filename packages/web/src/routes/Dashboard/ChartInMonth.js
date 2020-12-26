@@ -92,7 +92,7 @@ export default function ChartInMonth({ expenses, incomes, height = 0, month }) {
 
     return (
         <>
-            <Typography variant="h6" classes={{ root: classes.title }}>
+            <Typography variant="h5" classes={{ root: classes.title }}>
                 Budgets in {getMonthName(month)}
             </Typography>
             <div className={classes.chart} style={{ height }}>

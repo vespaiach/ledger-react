@@ -38,41 +38,32 @@ export default function Dashboard() {
     const year = dt.getFullYear();
     const month = dt.getMonth() + 1;
 
-    const statisticExpensesCategories = useSelector(
-        (state) => state.statistics.expenses.categories
-    );
-    const statisticIncomesCategories = useSelector(
-        (state) => state.statistics.incomes.categories
-    );
-    const statisticExpensesMonths = useSelector(
-        (state) => state.statistics.expenses.months
-    );
-    const statisticIncomesMonths = useSelector(
-        (state) => state.statistics.incomes.months
-    );
+    const statisticExpensesCategories = useSelector((state) => state.statistics.expenses.categories);
+    const statisticIncomesCategories = useSelector((state) => state.statistics.incomes.categories);
+    const statisticExpensesMonths = useSelector((state) => state.statistics.expenses.months);
+    const statisticIncomesMonths = useSelector((state) => state.statistics.incomes.months);
 
-    const sumExpenseByCategoriesInMonth = useMemo(
-        () => statisticExpensesCategories.reduce(filterByMonth(month), []),
-        [month, statisticExpensesCategories]
-    );
-    const totalExpensesInMonth = useMemo(
-        () => statisticExpensesCategories.reduce(sumByMonth(month), 0),
-        [month, statisticExpensesCategories]
-    );
-    const sumIncomeByCategoriesInMonth = useMemo(
-        () => statisticIncomesCategories.reduce(filterByMonth(month), []),
-        [month, statisticIncomesCategories]
-    );
-    const totalIncomesInMonth = useMemo(
-        () => statisticIncomesCategories.reduce(sumByMonth(month), 0),
-        [month, statisticIncomesCategories]
-    );
+    const sumExpenseByCategoriesInMonth = useMemo(() => statisticExpensesCategories.reduce(filterByMonth(month), []), [
+        month,
+        statisticExpensesCategories,
+    ]);
+    const totalExpensesInMonth = useMemo(() => statisticExpensesCategories.reduce(sumByMonth(month), 0), [
+        month,
+        statisticExpensesCategories,
+    ]);
+    const sumIncomeByCategoriesInMonth = useMemo(() => statisticIncomesCategories.reduce(filterByMonth(month), []), [
+        month,
+        statisticIncomesCategories,
+    ]);
+    const totalIncomesInMonth = useMemo(() => statisticIncomesCategories.reduce(sumByMonth(month), 0), [
+        month,
+        statisticIncomesCategories,
+    ]);
 
     /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(() => {
         setChartHeight(
-            expenseInMonthRef.current.offsetHeight >
-                incomeInMonthRef.current.offsetHeight
+            expenseInMonthRef.current.offsetHeight > incomeInMonthRef.current.offsetHeight
                 ? expenseInMonthRef.current.offsetHeight
                 : incomeInMonthRef.current.offsetHeight
         );
@@ -87,7 +78,7 @@ export default function Dashboard() {
 
     return (
         <>
-            <Grid container spacing={4}>
+            <Grid container spacing={4} classes={{ root: classes.gridRoot }}>
                 <Grid item sm={12} md={4}>
                     <ChartInMonth
                         expenses={totalExpensesInMonth}
@@ -107,11 +98,7 @@ export default function Dashboard() {
                 </Grid>
                 <Grid item sm={12} md={4}>
                     <TableContainer>
-                        <InMonthTable
-                            rows={sumIncomeByCategoriesInMonth}
-                            title="Income"
-                            tableRef={incomeInMonthRef}
-                        />
+                        <InMonthTable rows={sumIncomeByCategoriesInMonth} title="Income" tableRef={incomeInMonthRef} />
                     </TableContainer>
                 </Grid>
             </Grid>

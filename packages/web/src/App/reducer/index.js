@@ -1,4 +1,4 @@
-import { createReducer } from '../utils/reducer';
+import { createReducer } from '../../utils/reducer';
 
 const defaultState = {
     apiError: null,
@@ -55,8 +55,8 @@ export default createReducer(defaultState, {
                 messages = ['Unexpected error occurred!'];
             }
         } catch (e) {
-            code = payload.response.status;
-            messages = ['Unknown error occurred!'];
+            code = 'UNKNOWN';
+            messages = ['Network error'];
         }
 
         return { ...state, apiError: { code, messages } };

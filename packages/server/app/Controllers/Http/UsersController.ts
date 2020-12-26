@@ -7,14 +7,15 @@ export default class UsersController {
    * Login user via session and return logined user account
    */
   public async login({ request, auth }: HttpContextContract) {
-    const { email, password } = await request.validate({
+    const { email, password, remember } = await request.validate({
       schema: schema.create({
         email: schema.string({ trim: true }, [rules.email()]),
         password: schema.string({ trim: true }),
+        remember: schema.boolean.optional(),
       }),
     })
 
-    await auth.attempt(email, password)
+    await auth.attempt(email, password, remember)
 
     return auth.user
   }

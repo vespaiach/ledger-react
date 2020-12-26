@@ -12,7 +12,6 @@ const useStyles = makeStyles(() => ({
 
 export default function APIErrorModal({ open, onClose, code = '', messages }) {
     const classes = useStyles();
-    console.log(messages);
 
     return (
         <Dialog

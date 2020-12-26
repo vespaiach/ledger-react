@@ -9,11 +9,11 @@ import {
     Grid,
     Box,
 } from '@material-ui/core';
+import { useFormik } from 'formik';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import * as yup from 'yup';
 
 import LoadingButton from '../../components/LoadingButton';
 
@@ -50,43 +50,30 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SignIn({ push }) {
+export default function SignIn() {
     const dispatch = useDispatch();
-    const history = useHistory();
-    const logining = useSelector((state) => state.user.logining);
-    const me = useSelector((state) => state.user.me);
-    const [email, setEmail] = useState('');
-    const [emailError, setEmailError] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordError, setPasswordError] = useState('');
+    const logining = useSelector((state) => state.me.loading);
     const classes = useStyles();
-    const submit = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (logining) {
-            return;
-        }
 
-        let valid = true;
-        if (!email) {
-            valid = false;
-            setEmailError('Please enter email');
-        }
-        if (!password) {
-            valid = false;
-            setPasswordError('Please enter password');
-        }
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            password: '',
+            remember: false,
+        },
+        validationSchema: yup.object({
+            email: yup.string('Enter email').required('Email is required').email('Please enter a valid email'),
+            password: yup.string('Enter password').required('Password is required'),
+        }),
+        onSubmit: ({ remember, email, password }) => {
+            if (logining) {
+                return;
+            }
+            debugger;
 
-        if (valid) {
-            dispatch({ type: 'REQUEST_LOGIN', payload: { email, password } });
-        }
-    };
-
-    useEffect(() => {
-        if (me !== null) {
-            history.push('/expenses');
-        }
-    }, [me, history]);
+            dispatch({ type: 'Saga: login', payload: { email, password, remember } });
+        },
+    });
 
     return (
         <Container component="main" maxWidth="xs">
@@ -97,11 +84,11 @@ export default function SignIn({ push }) {
                 <Typography component="h1" variant="h5">
                     Sign in
                 </Typography>
-                <form className={classes.form} noValidate onSubmit={submit}>
+                <form className={classes.form} noValidate onSubmit={formik.handleSubmit}>
                     <TextField
-                        error={emailError.length > 0}
-                        helperText={emailError}
-                        variant="outlined"
+                        fullWidth
+                        variant="filled"
+                        size="small"
                         margin="normal"
                         required
                         id="email"
@@ -109,16 +96,15 @@ export default function SignIn({ push }) {
                         name="email"
                         autoComplete="off"
                         autoFocus
-                        value={email}
-                        onChange={(evt) => {
-                            setEmailError('');
-                            setEmail(evt.target.value);
-                        }}
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        error={formik.touched.email && Boolean(formik.errors.email)}
+                        helperText={formik.touched.email && formik.errors.email}
                     />
                     <TextField
-                        error={passwordError.length > 0}
-                        helperText={passwordError}
-                        variant="outlined"
+                        fullWidth
+                        variant="filled"
+                        size="small"
                         margin="normal"
                         required
                         name="password"
@@ -126,22 +112,33 @@ export default function SignIn({ push }) {
                         type="password"
                         id="password"
                         autoComplete="off"
-                        value={password}
-                        onChange={(evt) => {
-                            setPasswordError('');
-                            setPassword(evt.target.value);
-                        }}
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        error={formik.touched.password && Boolean(formik.errors.password)}
+                        helperText={formik.touched.password && formik.errors.password}
                     />
-                    <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                name="remember"
+                                value={formik.values.remember}
+                                onChange={formik.handleChange}
+                                color="primary"
+                            />
+                        }
+                        label="Remember me"
+                    />
                     <LoadingButton
                         type="submit"
                         variant="contained"
                         color="primary"
-                        className={classes.submit}
                         loading={logining}
-                        onClick={submit}
+                        className="submit"
+                        fullWidth
+                        disableElevation
+                        size="large"
                     >
-                        Sign In
+                        Submit
                     </LoadingButton>
                     <Grid container>
                         <Grid item xs>

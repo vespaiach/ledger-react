@@ -1,13 +1,10 @@
-import { Route, Switch } from 'react-router-dom';
+import { Route, Redirect, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { CssBaseline, Snackbar, ThemeProvider, createMuiTheme } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import LoadingBar from 'react-redux-loading-bar';
 
 import APIErrorModal from '../components/APIErrorModal';
 import Login from '../routes/User/Login';
-
-import PrivateRoute from '../components/PrivateRoute';
 import BasePage from './BasePage';
 
 const theme = createMuiTheme({
@@ -54,10 +51,6 @@ function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            <header>
-                <LoadingBar />
-            </header>
-
             <CssBaseline />
             <APIErrorModal
                 code={apiError ? apiError.code : null}
@@ -79,11 +72,14 @@ function App() {
             </Snackbar>
 
             <Switch>
-                <PrivateRoute path="/portal">
+                <Route path="/portal">
                     <BasePage />
-                </PrivateRoute>
+                </Route>
                 <Route exact path="/login">
                     <Login />
+                </Route>
+                <Route exact path="/">
+                    <Redirect to="/portal/reports" />
                 </Route>
             </Switch>
         </ThemeProvider>

@@ -1,9 +1,11 @@
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { makeStyles, List, ListItem, ListItemText } from '@material-ui/core';
+import { MeetingRoom } from '@material-ui/icons';
 
 import PollIcon from '../components/Icons/Poll';
 import TextBoxMinusIcon from '../components/Icons/TextBoxMinus';
 import TextBoxPlusIcon from '../components/Icons/TextBoxPlus';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     aside: {
@@ -52,6 +54,7 @@ export default function Menu() {
         path: '/portal/incomes',
         strict: true,
     });
+    const dispatch = useDispatch();
     const goto = (p) => () => history.push(p);
 
     return (
@@ -92,6 +95,19 @@ export default function Menu() {
                 >
                     <TextBoxPlusIcon />
                     <ListItemText primary="Incomes" />
+                </ListItem>
+                <ListItem
+                    button
+                    classes={{
+                        button: classes.listItemButton,
+                        selected: classes.listItemSelected,
+                    }}
+                    onClick={() => {
+                        dispatch({ type: 'Saga: force relogin' });
+                    }}
+                >
+                    <MeetingRoom />
+                    <ListItemText primary="Exit" />
                 </ListItem>
             </List>
         </div>
