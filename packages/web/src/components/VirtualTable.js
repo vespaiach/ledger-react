@@ -122,7 +122,7 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: theme.palette.primary.main,
             display: 'flex',
             position: 'sticky',
-            top: (props) => props,
+            top: 84,
             zIndex: 101,
             '& .ReactVirtualized__Table__headerColumn': {
                 '&:first-child .MuiTableCell-root': {
@@ -148,19 +148,8 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function VirtualTable({
-    offsetTop = 68,
-    totalRows,
-    rows,
-    loaderRef,
-    onLoadMore,
-    headerHeight,
-    rowHeight,
-    columns,
-    onEdit,
-    onDelete,
-}) {
-    const classes = useStyles(offsetTop);
+function VirtualTable({ totalRows, rows, loaderRef, onLoadMore, headerHeight, rowHeight, columns, onEdit, onDelete }) {
+    const classes = useStyles();
     const isRowLoaded = (index) => rows[index] !== undefined && rows[index] !== null && rows[index] !== 'loading';
 
     return (

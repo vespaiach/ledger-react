@@ -8,13 +8,11 @@ import { createBrowserHistory } from 'history';
 
 import { loginFlow, fetchMeFlow } from '../routes/User/saga';
 import {
-    fetchExpensesRequest,
-    sortExpensesRequest,
-    editExpenseRequest,
-    saveExpenseRequest,
-    loadExpenseCategoriesRequest,
-    filterExpensesListRequest,
-    clearExpensesListFilteringRequest,
+    watchFetchMoreExpensesRequest,
+    watchFetchExpenseCategories,
+    watchExpensesFilteringRequest,
+    watchSaveExpensesRequest,
+    watchExpenseTranctionDeletion,
 } from '../routes/Expenses/saga';
 import {
     watchFetchMoreIncomesRequest,
@@ -28,16 +26,14 @@ import { expensesStatisticsRequest, dashboardStatisticsRequest } from '../routes
 
 import commonReducer from './commonReducer';
 import userReducer from '../routes/User/reducer';
-import expenseReducer from '../routes/Expenses/reducer';
 import statisticsReducer from '../routes/Dashboard/reducer';
-import listOfIncomesReducer from '../routes/Incomes/reducer/listOfIns';
-import incomeTransactionReducer from '../routes/Incomes/reducer/inTransaction';
-import incomeCategoryReducer from '../routes/Incomes/reducer/listOfInCates';
+import { inTransaction, listOfInCates, listOfIns } from '../routes/Incomes/reducer';
+import { exTransaction, listOfExCates, listOfExs } from '../routes/Expenses/reducer';
 
 const history = createBrowserHistory();
 const sagaMiddleware = createSagaMiddleware({
-    onError: (e, s) => {
-        debugger;
+    onError: (e) => {
+        console.error(e);
     },
 });
 const typedWindow = typeof window !== 'undefined' && window;
@@ -56,12 +52,14 @@ const store = createStore(
         user: userReducer,
         app: commonReducer,
         loadingBar: loadingBarReducer,
-        expenses: expenseReducer,
         router: connectRouter(history),
         statistics: statisticsReducer,
-        ins: listOfIncomesReducer,
-        inTrans: incomeTransactionReducer,
-        inCates: incomeCategoryReducer,
+        exs: listOfExs,
+        exTrans: exTransaction,
+        exCates: listOfExCates,
+        ins: listOfIns,
+        inTrans: inTransaction,
+        inCates: listOfInCates,
     }),
     composeEnhancers(applyMiddleware(sagaMiddleware, routerMiddleware(history)))
 );
@@ -71,15 +69,14 @@ const saga = function* rootSaga() {
         [
             loginFlow,
             fetchMeFlow,
-            fetchExpensesRequest,
-            sortExpensesRequest,
-            editExpenseRequest,
-            saveExpenseRequest,
-            loadExpenseCategoriesRequest,
-            filterExpensesListRequest,
-            clearExpensesListFilteringRequest,
             expensesStatisticsRequest,
             dashboardStatisticsRequest,
+
+            watchFetchMoreExpensesRequest,
+            watchFetchExpenseCategories,
+            watchExpensesFilteringRequest,
+            watchSaveExpensesRequest,
+            watchExpenseTranctionDeletion,
             watchFetchMoreIncomesRequest,
             watchFetchIncomeCategories,
             watchIncomesFilteringRequest,

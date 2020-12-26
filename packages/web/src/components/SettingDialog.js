@@ -210,7 +210,7 @@ export default function SettingDialog({
                                 lookup: {
                                     dateFrom: from,
                                     dateTo: to,
-                                    category,
+                                    category: cate,
                                 },
                                 sort: {
                                     field: sort[0] === '-' ? sort.substr(1) : sort,

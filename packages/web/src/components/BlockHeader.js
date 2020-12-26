@@ -23,16 +23,18 @@ const useStyles = makeStyles((theme) => ({
 export default function BlockHeader({ title, children, totalRecords }) {
     const classes = useStyles();
     return (
-        <div className={classes.container} ref="">
+        <div className={classes.container}>
             <div>
                 <Typography variant="h5" classes={{ root: classes.root }}>
                     {title}
                 </Typography>
-                {totalRecords ? (
-                    <Typography variant="body2" color="secondary">
-                        {totalRecords} records
-                    </Typography>
-                ) : null}
+                <Typography
+                    variant="body2"
+                    color="secondary"
+                    style={{ visibility: totalRecords ? 'visible' : 'hidden' }}
+                >
+                    {totalRecords} records
+                </Typography>
             </div>
             <div className={classes.control}>{children}</div>
         </div>

@@ -23,7 +23,7 @@ export default createReducer(defaultState, {
                         ...state,
                         apiError: {
                             code: 401,
-                            messages: 'Section has been expired or invalid. Please login/relogin!',
+                            messages: ['Section has been expired or invalid. Please login/relogin!'],
                         },
                     };
                 }
@@ -48,15 +48,15 @@ export default createReducer(defaultState, {
                 // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
                 // http.ClientRequest in node.js
                 code = payload.response.status;
-                messages = payload.request.message;
+                messages = [payload.request.message];
             } else {
                 // Something happened in setting up the request that triggered an Error
                 code = payload.response.status;
-                messages = 'Unexpected error occurred!';
+                messages = ['Unexpected error occurred!'];
             }
         } catch (e) {
             code = payload.response.status;
-            messages = 'Unknown error occurred!';
+            messages = ['Unknown error occurred!'];
         }
 
         return { ...state, apiError: { code, messages } };

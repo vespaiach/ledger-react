@@ -19,11 +19,6 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 132,
         background: theme.palette.background.paper,
         padding: `0 ${theme.spacing(4)}px ${theme.spacing(3)}px ${theme.spacing(4)}px `,
-        '& .ReactVirtualized__Table__headerRow': {
-            position: 'sticky',
-            top: 68,
-            zIndex: 101,
-        },
     },
 }));
 

@@ -1,11 +1,4 @@
-import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    DialogContentText,
-} from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { red } from '@material-ui/core/colors';
 
@@ -19,6 +12,7 @@ const useStyles = makeStyles(() => ({
 
 export default function APIErrorModal({ open, onClose, code = '', messages }) {
     const classes = useStyles();
+    console.log(messages);
 
     return (
         <Dialog
@@ -27,18 +21,11 @@ export default function APIErrorModal({ open, onClose, code = '', messages }) {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle
-                disableTypography
-                id="alert-dialog-title"
-                classes={{ root: classes.title }}
-            >
+            <DialogTitle disableTypography id="alert-dialog-title" classes={{ root: classes.title }}>
                 {`{ ${code} }`}
             </DialogTitle>
             <DialogContent>
-                <DialogContentText
-                    component="div"
-                    id="alert-dialog-description"
-                >
+                <DialogContentText component="div" id="alert-dialog-description">
                     {messages.map((m, i) => (
                         <p key={i}>{m}</p>
                     ))}

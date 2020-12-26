@@ -172,7 +172,7 @@ export default function IncomeList() {
                 }}
                 onSubmit={(payload) => {
                     dispatch({
-                        type: 'Saga: update sort and lookup',
+                        type: 'Saga: update sort and lookup of incomes',
                         payload,
                     });
                     dispatch({ type: 'Reducer - inTrans: close setting form' });
