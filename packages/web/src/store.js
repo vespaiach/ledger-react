@@ -19,7 +19,7 @@ import {
     watchSaveIncomesRequest,
     watchIncomeTranctionDeletion,
 } from './routes/Incomes/saga';
-import { watchLoginVerify, watchMeLogin, watchMeForceRelogin } from './routes/User/saga';
+import { watchLoginVerify, watchMeLogin, watchMeForceRelogin, watchSignup } from './routes/User/saga';
 import { expensesStatisticsRequest, dashboardStatisticsRequest } from './routes/Dashboard/saga';
 
 import app from './App/reducer';
@@ -69,6 +69,7 @@ const saga = function* rootSaga() {
 
             watchLoginVerify,
             watchMeLogin,
+            watchSignup,
             watchMeForceRelogin,
             watchFetchMoreExpensesRequest,
             watchFetchExpenseCategories,

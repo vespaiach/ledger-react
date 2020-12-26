@@ -1,9 +1,8 @@
-import { Paper, Typography, TextField, FormControlLabel, Checkbox } from '@material-ui/core';
+import { Typography, TextField, Paper } from '@material-ui/core';
 import clsx from 'clsx';
 import { useFormik } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 
 import LoadingButton from '../../components/LoadingButton';
@@ -26,13 +25,9 @@ const useStyles = makeStyles((theme) => ({
         '& .MuiTextField-root': {
             marginBottom: theme.spacing(2),
         },
-        '& .MuiFormControlLabel-root': {
-            marginTop: theme.spacing(2),
-            marginBottom: theme.spacing(2),
-        },
     },
     submit: {
-        margin: theme.spacing(2, 0, 5),
+        margin: theme.spacing(3, 0, 8),
     },
     link: {
         display: 'block',
@@ -41,44 +36,56 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.text.secondary,
     },
     copyright: {
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(5),
     },
 }));
 
 export default function SignIn() {
     const dispatch = useDispatch();
-    const logining = useSelector((state) => state.me.loading);
+    const loading = useSelector((state) => state.me.loading);
     const classes = useStyles();
 
     const formik = useFormik({
         initialValues: {
+            name: '',
             email: '',
             password: '',
-            remember: false,
         },
         validationSchema: yup.object({
-            email: yup.string('Enter email').required('Email is required').email('Please enter a valid email'),
-            password: yup.string('Enter password').required('Password is required'),
+            name: yup.string('enter name').required('name is required'),
+            email: yup.string('enter email').required('email is required').email('enter a valid email'),
+            password: yup.string('enter password').required('password is required').min(6),
         }),
-        onSubmit: ({ remember, email, password }) => {
-            if (logining) {
+        onSubmit: ({ email, password, name }) => {
+            if (loading) {
                 return;
             }
 
-            dispatch({ type: 'Saga: login', payload: { email, password, remember } });
+            dispatch({ type: 'Saga: sign up', payload: { name, email, password } });
         },
     });
 
     return (
-        <AuthBasePage component="main" maxWidth="xs" imgSrc="/login.svg">
+        <AuthBasePage component="main" maxWidth="xs" imgSrc="/signup.svg">
             <Paper classes={{ root: classes.paper }} square elevation={0}>
                 <Typography component="h1" variant="h3" color="secondary">
-                    Sign in
+                    Sign up
                 </Typography>
                 <form className={classes.form} noValidate onSubmit={formik.handleSubmit}>
                     <TextField
                         fullWidth
-                        required
+                        id="name"
+                        label="Your Name"
+                        name="name"
+                        autoComplete="off"
+                        autoFocus
+                        value={formik.values.name}
+                        onChange={formik.handleChange}
+                        error={formik.touched.name && Boolean(formik.errors.name)}
+                        helperText={formik.touched.name && formik.errors.name}
+                    />
+                    <TextField
+                        fullWidth
                         id="email"
                         label="Email Address"
                         name="email"
@@ -91,10 +98,8 @@ export default function SignIn() {
                     />
                     <TextField
                         fullWidth
-                        required
                         name="password"
                         label="Password"
-                        type="password"
                         id="password"
                         autoComplete="off"
                         value={formik.values.password}
@@ -102,22 +107,11 @@ export default function SignIn() {
                         error={formik.touched.password && Boolean(formik.errors.password)}
                         helperText={formik.touched.password && formik.errors.password}
                     />
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                name="remember"
-                                value={formik.values.remember}
-                                onChange={formik.handleChange}
-                                color="primary"
-                            />
-                        }
-                        label="Remember me"
-                    />
                     <LoadingButton
                         type="submit"
                         variant="contained"
                         color="primary"
-                        loading={logining}
+                        loading={loading}
                         className={classes.submit}
                         fullWidth
                         disableElevation
@@ -125,13 +119,6 @@ export default function SignIn() {
                     >
                         Submit
                     </LoadingButton>
-                    <Link to="/recovery" variant="body2" className={classes.link}>
-                        Forgot password?
-                    </Link>
-                    <Link to="/signup" variant="body2" className={classes.link}>
-                        {"Don't have an account? "}
-                        <b>Sign up</b>
-                    </Link>
                     <Copyright className={clsx(classes.link, classes.copyright)} />
                 </form>
             </Paper>

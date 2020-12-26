@@ -40,7 +40,6 @@ export function* watchLoginVerify() {
 export function* watchMeLogin() {
     yield takeLatest('Saga: login', function* ({ payload: { email, password, remember } }) {
         yield put({ type: 'Reducer - me: set loading on' });
-        debugger;
 
         const [result, response] = yield safeCall(call(axios.post, '/login', { email, password, remember }));
 
@@ -55,4 +54,29 @@ export function* watchMeLogin() {
             yield put(push('/portal'));
         }
     });
+}
+
+export function* watchSignup() {
+    while (true) {
+        const {
+            payload: { name, email, password },
+        } = yield take('Saga: sign up');
+
+        yield put({ type: 'Reducer - me: set loading on' });
+
+        const [result] = yield safeCall(call(axios.post, '/register', { email, password, name }));
+
+        yield put({ type: 'Reducer - me: set loading off' });
+
+        if (result) {
+            yield put({
+                type: 'Reducer - app: set flash message',
+                payload: {
+                    severity: 'success',
+                    message: 'Signed up successfully.',
+                },
+            });
+            yield put(push('/login'));
+        }
+    }
 }

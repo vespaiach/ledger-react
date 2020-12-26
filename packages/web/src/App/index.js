@@ -5,7 +5,9 @@ import { Alert } from '@material-ui/lab';
 
 import APIErrorModal from '../components/APIErrorModal';
 import Login from '../routes/User/Login';
+import Signup from '../routes/User/Signup';
 import BasePage from './BasePage';
+import Recovery from '../routes/User/Recovery';
 
 const theme = createMuiTheme({
     typography: {
@@ -77,6 +79,15 @@ function App() {
                 </Route>
                 <Route exact path="/login">
                     <Login />
+                </Route>
+                <Route exact path="/signup">
+                    <Signup />
+                </Route>
+                <Route exact path="/login">
+                    <Login />
+                </Route>
+                <Route exact path="/recovery">
+                    <Recovery />
                 </Route>
                 <Route exact path="/">
                     <Redirect to="/portal/reports" />
