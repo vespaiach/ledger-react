@@ -1,7 +1,6 @@
-import { Container } from '@material-ui/core';
+import { CircularProgress, Container } from '@material-ui/core';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import { Skeleton } from '@material-ui/lab';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRef, useEffect } from 'react';
 
@@ -22,6 +21,14 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 132,
         background: theme.palette.background.paper,
         padding: `0 ${theme.spacing(4)}px ${theme.spacing(3)}px ${theme.spacing(4)}px `,
+    },
+    loading: {
+        backgound: 'white',
+        width: '100%',
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 }));
 
@@ -45,28 +52,29 @@ export default function BasePage() {
 
     return (
         <div className={classes.container}>
-            <Menu />
             <Container maxWidth={false} component="main" classes={{ root: classes.content }}>
                 {id && !loading ? (
-                    <Switch>
-                        <Route exact path="/portal/reports">
-                            <Dashboard />
-                        </Route>
-                        <Route path="/portal/expenses">
-                            <Expenses />
-                        </Route>
-                        <Route path="/portal/incomes">
-                            <Incomes />
-                        </Route>
-                        <Route>
-                            <Redirect to="/portal/reports" />
-                        </Route>
-                    </Switch>
-                ) : (
                     <>
-                        <Skeleton variant="text" style={{ marginTop: 24, marginBottom: 8 }} height={52} />
-                        <Skeleton variant="rect" height={318} />
+                        <Menu />
+                        <Switch>
+                            <Route exact path="/portal/reports">
+                                <Dashboard />
+                            </Route>
+                            <Route path="/portal/expenses">
+                                <Expenses />
+                            </Route>
+                            <Route path="/portal/incomes">
+                                <Incomes />
+                            </Route>
+                            <Route>
+                                <Redirect to="/portal/reports" />
+                            </Route>
+                        </Switch>
                     </>
+                ) : (
+                    <div className={classes.loading}>
+                        <CircularProgress disableShrink />
+                    </div>
                 )}
             </Container>
         </div>

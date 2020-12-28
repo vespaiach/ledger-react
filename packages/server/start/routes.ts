@@ -18,6 +18,7 @@
 |
 */
 
+import { Response } from '@adonisjs/core/build/standalone'
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
@@ -52,6 +53,6 @@ Route.group(() => {
   .prefix('api')
   .where('id', /^[0-9]+$/)
 
-Route.get('/', async ({ view }) => {
+Route.get('/*', async ({ view }) => {
   return view.render('home')
 })

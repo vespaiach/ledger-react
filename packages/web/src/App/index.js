@@ -8,6 +8,7 @@ import Login from '../routes/User/Login';
 import Signup from '../routes/User/Signup';
 import BasePage from './BasePage';
 import Recovery from '../routes/User/Recovery';
+import NotFound from '../routes/Errors/NotFound';
 
 const theme = createMuiTheme({
     typography: {
@@ -74,6 +75,9 @@ function App() {
             </Snackbar>
 
             <Switch>
+                <Route exact path="/">
+                    <Redirect to="/portal/reports" />
+                </Route>
                 <Route path="/portal">
                     <BasePage />
                 </Route>
@@ -89,8 +93,8 @@ function App() {
                 <Route exact path="/recovery">
                     <Recovery />
                 </Route>
-                <Route exact path="/">
-                    <Redirect to="/portal/reports" />
+                <Route>
+                    <NotFound />
                 </Route>
             </Switch>
         </ThemeProvider>
