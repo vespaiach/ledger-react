@@ -51,3 +51,7 @@ Route.group(() => {
 })
   .prefix('api')
   .where('id', /^[0-9]+$/)
+
+Route.get('/', async ({ view }) => {
+  return view.render('home')
+})
