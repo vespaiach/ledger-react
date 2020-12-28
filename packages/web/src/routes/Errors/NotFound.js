@@ -1,4 +1,4 @@
-import { ListItemIcon, List, ListItem, ListItemText, Container, Paper, Typography, Button } from '@material-ui/core';
+import { ListItemIcon, List, ListItem, ListItemText, Container, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import { ArrowRightAlt } from '@material-ui/icons';

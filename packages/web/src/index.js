@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import humps from 'humps';
 import { ConnectedRouter } from 'connected-react-router';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import store, { history } from './store';
 import App from './App';
@@ -41,9 +42,11 @@ axios.interceptors.response.use(
 
 ReactDOM.render(
     <Provider store={store}>
-        <ConnectedRouter history={history}>
-            <App />
-        </ConnectedRouter>
+        <Router>
+            <ConnectedRouter history={history}>
+                <App />
+            </ConnectedRouter>
+        </Router>
     </Provider>,
     document.getElementById('root')
 );
