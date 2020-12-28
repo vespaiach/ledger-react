@@ -1,0 +1,9 @@
+node_modules
+build
+.dockerignore
+Dockerfile
+Dockerfile.prod
+packages/web/node_modules
+packages/server/node_modules
+packages/web/.vscode
+packages/server/.vscode
