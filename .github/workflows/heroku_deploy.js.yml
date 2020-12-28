@@ -19,12 +19,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-            **/node_modules
-            **/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
+      with:
+        path: |
+          node_modules
+          **/node_modules
+          **/**/node_modules
+        key: ${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
     - name: Login to Heroku Container registry
       env: 
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
