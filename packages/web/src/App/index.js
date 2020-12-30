@@ -6,7 +6,7 @@ import { Alert } from '@material-ui/lab';
 import APIErrorModal from '../components/APIErrorModal';
 import Login from '../routes/User/Login';
 import Signup from '../routes/User/Signup';
-import BasePage from './BasePage';
+import BaseAppPage from './BaseAppPage';
 import Recovery from '../routes/User/Recovery';
 import NotFound from '../routes/Errors/NotFound';
 
@@ -79,7 +79,7 @@ function App() {
                     <Redirect to="/portal/reports" />
                 </Route>
                 <Route path="/portal">
-                    <BasePage />
+                    <BaseAppPage />
                 </Route>
                 <Route exact path="/login">
                     <Login />

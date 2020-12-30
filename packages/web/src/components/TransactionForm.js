@@ -35,6 +35,7 @@ export default function Form({
     open,
     title,
     loading,
+    fullScreen,
 }) {
     const classes = useStyles();
 
@@ -68,7 +69,14 @@ export default function Form({
     }, [id, amount, date, description, category, open]);
 
     return (
-        <FormDialog title={title} open={open} onClose={onCancel} onSubmit={formik.handleSubmit} loading={loading}>
+        <FormDialog
+            fullScreen={fullScreen}
+            title={title}
+            open={open}
+            onClose={onCancel}
+            onSubmit={formik.handleSubmit}
+            loading={loading}
+        >
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <DateTimePicker
                     clearable

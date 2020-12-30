@@ -1,5 +1,4 @@
 import {
-    Dialog,
     DialogTitle,
     DialogContent,
     DialogContentText,
@@ -19,6 +18,8 @@ import DateFnsUtils from '@date-io/date-fns';
 import { CalendarToday as CalendarTodayIcon } from '@material-ui/icons';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { useState } from 'react';
+
+import BaseDialog from './BaseDialog';
 
 let inc = 0;
 
@@ -90,6 +91,7 @@ export default function SettingDialog({
     orderDirection,
     onClose,
     onSubmit,
+    fullScreen,
     ...rest
 }) {
     const [dateTo, setDateTo] = useState(to);
@@ -99,8 +101,9 @@ export default function SettingDialog({
 
     const classes = useStyles();
     return (
-        <Dialog
+        <BaseDialog
             {...rest}
+            fullScreen={fullScreen}
             open={open}
             onClose={onClose}
             aria-labelledby={id}
@@ -226,6 +229,6 @@ export default function SettingDialog({
                     </Button>
                 </div>
             </DialogContent>
-        </Dialog>
+        </BaseDialog>
     );
 }

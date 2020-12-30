@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import TransactionForm from '../../components/TransactionForm';
 
-export default function Form({ open }) {
+export default function Form({ open, fullScreen }) {
     const id = useSelector((state) => state.exTrans.id);
     const date = useSelector((state) => state.exTrans.date);
     const amount = useSelector((state) => state.exTrans.amount);
@@ -24,6 +24,7 @@ export default function Form({ open }) {
             title={title}
             open={open}
             loading={loading}
+            fullScreen={fullScreen}
             onCancel={() => {
                 dispatch({ type: 'Reducer - exTrans: clear all expense data' });
                 dispatch({ type: 'Reducer - exTrans: close form dialog' });

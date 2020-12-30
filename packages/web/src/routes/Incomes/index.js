@@ -1,5 +1,5 @@
-import { useMemo, useEffect, useRef, useState } from 'react';
-import { ButtonGroup, Button } from '@material-ui/core';
+import { useEffect, useRef, useState } from 'react';
+import { ButtonGroup, Button, useTheme, useMediaQuery } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Setting from '../../components/Icons/Setting';
@@ -8,55 +8,12 @@ import BlockHeader from '../../components/BlockHeader';
 import VirtualTable from '../../components/VirtualTable';
 import SettingDialog from '../../components/SettingDialog';
 import ConfirmDialog from '../../components/ConfirmDialog';
-import { formatLongDate, formatCurrency } from '../../utils/format';
 import FormDialog from './Form';
+import { desktopColDefs, mobileColDefs } from '../../utils/columnDefs';
+import useColumnDefs from '../../hooks/useColumnDefs';
 
 const headerHeight = 60;
 const rowHeight = 60;
-const templateCols = [
-    {
-        label: 'Date',
-        dataKey: 'date',
-        align: 'left',
-        rowHeight,
-        headerHeight,
-        width: 20, // percent
-        format: formatLongDate,
-    },
-    {
-        label: 'Amount',
-        dataKey: 'amount',
-        align: 'right',
-        rowHeight,
-        headerHeight,
-        width: 18, // percent
-        format: formatCurrency,
-    },
-    {
-        label: 'Description',
-        dataKey: 'description',
-        align: 'left',
-        rowHeight,
-        headerHeight,
-        width: 30, // percent
-    },
-    {
-        label: 'Category',
-        dataKey: 'category',
-        align: 'left',
-        rowHeight,
-        headerHeight,
-        width: 20, // percent
-    },
-    {
-        label: '',
-        dataKey: '2_buttons',
-        align: 'right',
-        rowHeight,
-        headerHeight,
-        width: 12, // percent
-    },
-];
 
 export default function IncomeList() {
     const openSettingDialog = useSelector((state) => state.inTrans.openSettingForm);
@@ -78,17 +35,9 @@ export default function IncomeList() {
     const resolver = useRef(null);
     const [deletingIncomeId, setDeletingIncomeId] = useState(0);
 
-    const columns = useMemo(() => {
-        return templateCols.map((c) => {
-            if (c.dataKey === orderField) {
-                return {
-                    ...c,
-                    direction: orderDirection,
-                };
-            }
-            return c;
-        });
-    }, [orderField, orderDirection]);
+    const theme = useTheme();
+    const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const columns = useColumnDefs(desktopColDefs, mobileColDefs, mobile, orderDirection, orderDirection);
 
     /**
      * After fetched income rows, call resolver to trigger table's render
@@ -122,7 +71,7 @@ export default function IncomeList() {
 
     return (
         <>
-            <BlockHeader title="Incomes Transactions" totalRecords={fetchedTotalRecords ? totalRecords : 0}>
+            <BlockHeader title="Incomes" totalRecords={fetchedTotalRecords ? totalRecords : 0}>
                 <ButtonGroup variant="text" disableElevation>
                     <Button
                         onClick={() => {
@@ -167,6 +116,7 @@ export default function IncomeList() {
                 orderField={orderField}
                 orderDirection={orderDirection}
                 open={openSettingDialog}
+                fullScreen={mobile}
                 onClose={() => {
                     dispatch({ type: 'Reducer - inTrans: close setting form' });
                 }}
@@ -178,8 +128,9 @@ export default function IncomeList() {
                     dispatch({ type: 'Reducer - inTrans: close setting form' });
                 }}
             />
-            <FormDialog open={openFormDialog} />
+            <FormDialog open={openFormDialog} fullScreen={mobile} />
             <ConfirmDialog
+                fullScreen={mobile}
                 title="Deleting Confirmation"
                 text="You are deleting income transaction. Do you want it?"
                 open={deletingIncomeId > 0}

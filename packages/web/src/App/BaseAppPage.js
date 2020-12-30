@@ -4,23 +4,44 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRef, useEffect } from 'react';
 
-import Menu from './Menu';
+import SideMenu from './SideMenu';
 import Expenses from '../routes/Expenses';
 import Incomes from '../routes/Incomes';
 import Dashboard from '../routes/Dashboard';
+import BottomMenu from './BottomMenu';
 
 const useStyles = makeStyles((theme) => ({
     container: {
         display: 'flex',
         minHeight: '100vh',
         alignItems: 'stretch',
+        padding: `0 ${theme.spacing(4)}px ${theme.spacing(3)}px ${theme.spacing(4)}px `,
+        [theme.breakpoints.down('sm')]: {
+            padding: 0,
+            flexFlow: 'column nowrap',
+        },
+    },
+    sideMenu: {
+        display: 'block',
+        [theme.breakpoints.down('sm')]: {
+            display: 'none',
+        },
+    },
+    botMenu: {
+        display: 'none',
+        [theme.breakpoints.down('sm')]: {
+            display: 'flex',
+        },
     },
     content: {
         width: '100%',
         minHeight: '100vh',
-        marginLeft: 132,
+        padding: `0 ${theme.spacing(3)}px ${theme.spacing(3)}px ${theme.spacing(3)}px `,
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: 132,
+            padding: `0 ${theme.spacing(4)}px ${theme.spacing(3)}px 72px `,
+        },
         background: theme.palette.background.paper,
-        padding: `0 ${theme.spacing(4)}px ${theme.spacing(3)}px ${theme.spacing(4)}px `,
     },
     loading: {
         backgound: 'white',
@@ -32,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function BasePage() {
+export default function BaseAppPage() {
     const classes = useStyles();
 
     const verifyingAttempt = useRef(0);
@@ -50,33 +71,34 @@ export default function BasePage() {
         }
     }, [id, loading, verifyingAttempt, dispatch]);
 
+    if (loading || !id) {
+        return (
+            <div className={classes.loading}>
+                <CircularProgress disableShrink />
+            </div>
+        );
+    }
+
     return (
         <div className={classes.container}>
             <Container maxWidth={false} component="main" classes={{ root: classes.content }}>
-                {id && !loading ? (
-                    <>
-                        <Menu />
-                        <Switch>
-                            <Route exact path="/portal/reports">
-                                <Dashboard />
-                            </Route>
-                            <Route path="/portal/expenses">
-                                <Expenses />
-                            </Route>
-                            <Route path="/portal/incomes">
-                                <Incomes />
-                            </Route>
-                            <Route>
-                                <Redirect to="/portal/reports" />
-                            </Route>
-                        </Switch>
-                    </>
-                ) : (
-                    <div className={classes.loading}>
-                        <CircularProgress disableShrink />
-                    </div>
-                )}
+                <SideMenu className={classes.sideMenu} />
+                <Switch>
+                    <Route exact path="/portal/reports">
+                        <Dashboard />
+                    </Route>
+                    <Route path="/portal/expenses">
+                        <Expenses />
+                    </Route>
+                    <Route path="/portal/incomes">
+                        <Incomes />
+                    </Route>
+                    <Route>
+                        <Redirect to="/portal/reports" />
+                    </Route>
+                </Switch>
             </Container>
+            <BottomMenu className={classes.botMenu} />
         </div>
     );
 }

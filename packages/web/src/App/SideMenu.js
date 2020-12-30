@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { makeStyles, List, ListItem, ListItemText } from '@material-ui/core';
 import { MeetingRoom } from '@material-ui/icons';
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Menu() {
+export default function Menu({ className }) {
     const history = useHistory();
     const classes = useStyles();
     const reportMatch = useRouteMatch({
@@ -58,7 +59,7 @@ export default function Menu() {
     const goto = (p) => () => history.push(p);
 
     return (
-        <div className={classes.aside}>
+        <div className={clsx(classes.aside, className)}>
             <List component="nav" aria-label="contacts">
                 <ListItem
                     button

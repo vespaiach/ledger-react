@@ -1,6 +1,7 @@
-import { Dialog, DialogTitle, DialogContent, DialogContentText, makeStyles } from '@material-ui/core';
+import { DialogTitle, DialogContent, DialogContentText, makeStyles } from '@material-ui/core';
 
 import LoadingButton from './LoadingButton';
+import BaseDialog from './BaseDialog';
 
 let inc = 0;
 
@@ -43,12 +44,14 @@ export default function FormDialog({
     onClose,
     onSubmit,
     loading,
+    fullScreen,
     ...rest
 }) {
     const classes = useStyles();
     return (
-        <Dialog
+        <BaseDialog
             {...rest}
+            fullScreen={fullScreen}
             open={open}
             onClose={onClose}
             aria-labelledby={id}
@@ -98,6 +101,6 @@ export default function FormDialog({
                     </div>
                 </DialogContent>
             </form>
-        </Dialog>
+        </BaseDialog>
     );
 }
