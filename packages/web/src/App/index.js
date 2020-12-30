@@ -51,7 +51,6 @@ function App() {
 
     const dispatch = useDispatch();
     const close = () => dispatch({ type: 'CLEAR_API_ERROR' });
-    console.log('debug----------')
 
     return (
         <ThemeProvider theme={theme}>
