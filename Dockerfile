@@ -12,9 +12,9 @@ WORKDIR /app
 COPY ["./packages/server/package.json", "./packages/server/package-lock.json", "/app/"]
 RUN npm ci
 COPY "./packages/server/" "/app/"
+COPY --from=web_builder "/app/build/index.html" "/app/resources/views/home.edge"
 WORKDIR public
 COPY --from=web_builder "/app/build/" "/app/public"
-COPY --from=web_builder "/app/build/index.html" "/app/resources/home.edge"
 RUN npm run build
 
 FROM node:12-slim as runtime
