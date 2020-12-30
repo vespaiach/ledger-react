@@ -93,7 +93,7 @@ function App() {
                 <Route exact path="/recovery">
                     <Recovery />
                 </Route>
-                <Route>
+                <Route path="*">
                     <NotFound />
                 </Route>
             </Switch>
