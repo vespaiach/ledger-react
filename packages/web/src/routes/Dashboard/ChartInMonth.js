@@ -1,6 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography } from '@material-ui/core';
+import { Button, Typography, List, ListItem } from '@material-ui/core';
 import { blueGrey } from '@material-ui/core/colors';
+import { DateRange } from '@material-ui/icons';
 
 import { formatCurrency, getMonthName } from '../../utils/format';
 import { useMemo } from 'react';
@@ -70,6 +71,10 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(1),
         color: theme.palette.secondary.main,
     },
+    header: {
+        display: 'flex',
+        alignItems: 'center',
+    },
 }));
 
 export default function ChartInMonth({ expenses, incomes, height = 0, month }) {
@@ -79,10 +84,7 @@ export default function ChartInMonth({ expenses, incomes, height = 0, month }) {
         }
 
         const extra = 50; // is the height of bar chart's legend
-        const ratio =
-            expenses > incomes
-                ? (height - extra) / expenses
-                : (height - extra) / incomes;
+        const ratio = expenses > incomes ? (height - extra) / expenses : (height - extra) / incomes;
         return {
             incomes: incomes * ratio,
             expenses: expenses * ratio,
@@ -92,29 +94,23 @@ export default function ChartInMonth({ expenses, incomes, height = 0, month }) {
 
     return (
         <>
-            <Typography variant="h5" classes={{ root: classes.title }}>
-                Budgets in {getMonthName(month)}
-            </Typography>
+            <Button classes={{ root: classes.title }}>
+                <DateRange /> Balance in {getMonthName(month)}
+            </Button>
             <div className={classes.chart} style={{ height }}>
                 <div className={classes.expense}>
                     <div className={classes.expenseText}>
                         <p>EXPENSES</p>
                         <p>{formatCurrency(expenses)}</p>
                     </div>
-                    <div
-                        className={classes.expenseBar}
-                        style={{ height: heights.expenses }}
-                    ></div>
+                    <div className={classes.expenseBar} style={{ height: heights.expenses }}></div>
                 </div>
                 <div className={classes.income}>
                     <div className={classes.incomeText}>
                         <p>INCOMES</p>
                         <p>{formatCurrency(incomes)}</p>
                     </div>
-                    <div
-                        className={classes.incomeBar}
-                        style={{ height: heights.incomes }}
-                    ></div>
+                    <div className={classes.incomeBar} style={{ height: heights.incomes }}></div>
                 </div>
             </div>
         </>

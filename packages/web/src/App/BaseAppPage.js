@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         minHeight: '100vh',
         alignItems: 'stretch',
-        padding: `0 ${theme.spacing(4)}px ${theme.spacing(3)}px ${theme.spacing(4)}px `,
         [theme.breakpoints.down('sm')]: {
             padding: 0,
             flexFlow: 'column nowrap',
@@ -37,9 +36,10 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
         minHeight: '100vh',
         padding: `0 ${theme.spacing(3)}px ${theme.spacing(3)}px ${theme.spacing(3)}px `,
-        [theme.breakpoints.up('sm')]: {
-            marginLeft: 132,
-            padding: `0 ${theme.spacing(4)}px ${theme.spacing(3)}px 72px `,
+        marginLeft: 132,
+        [theme.breakpoints.down('sm')]: {
+            marginLeft: 0,
+            padding: `0 ${theme.spacing(3)}px 72px ${theme.spacing(3)}px`,
         },
         background: theme.palette.background.paper,
     },
