@@ -9,6 +9,8 @@ import Signup from '../routes/User/Signup';
 import BaseAppPage from './BaseAppPage';
 import Recovery from '../routes/User/Recovery';
 import NotFound from '../routes/Errors/NotFound';
+import { CurrencyFormatContext } from './AppContext';
+import { formatCurrency } from '../utils/format';
 
 const theme = createMuiTheme({
     typography: {
@@ -54,49 +56,49 @@ function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <APIErrorModal
-                code={apiError ? apiError.code : null}
-                messages={apiError ? apiError.messages : []}
-                open={apiError !== null}
-                onClose={close}
-            />
-
-            <Snackbar
-                open={emergeFlashMessage}
-                autoHideDuration={flashMessage.timeout}
-                onClose={() =>
-                    dispatch({
-                        type: 'Reducer - app: clear flash message',
-                    })
-                }
-            >
-                <Alert severity={flashMessage.severity}>{flashMessage.message}</Alert>
-            </Snackbar>
-
-            <Switch>
-                <Route exact path="/">
-                    <Redirect to="/portal/reports" />
-                </Route>
-                <Route path="/portal">
-                    <BaseAppPage />
-                </Route>
-                <Route exact path="/login">
-                    <Login />
-                </Route>
-                <Route exact path="/signup">
-                    <Signup />
-                </Route>
-                <Route exact path="/login">
-                    <Login />
-                </Route>
-                <Route exact path="/recovery">
-                    <Recovery />
-                </Route>
-                <Route path="*">
-                    <NotFound />
-                </Route>
-            </Switch>
+            <CurrencyFormatContext.Provider value={formatCurrency}>
+                <CssBaseline />
+                <APIErrorModal
+                    code={apiError ? apiError.code : null}
+                    messages={apiError ? apiError.messages : []}
+                    open={apiError !== null}
+                    onClose={close}
+                />
+                <Snackbar
+                    open={emergeFlashMessage}
+                    autoHideDuration={flashMessage.timeout}
+                    onClose={() =>
+                        dispatch({
+                            type: 'Reducer - app: clear flash message',
+                        })
+                    }
+                >
+                    <Alert severity={flashMessage.severity}>{flashMessage.message}</Alert>
+                </Snackbar>
+                <Switch>
+                    <Route exact path="/">
+                        <Redirect to="/portal/reports" />
+                    </Route>
+                    <Route path="/portal">
+                        <BaseAppPage />
+                    </Route>
+                    <Route exact path="/login">
+                        <Login />
+                    </Route>
+                    <Route exact path="/signup">
+                        <Signup />
+                    </Route>
+                    <Route exact path="/login">
+                        <Login />
+                    </Route>
+                    <Route exact path="/recovery">
+                        <Recovery />
+                    </Route>
+                    <Route path="*">
+                        <NotFound />
+                    </Route>
+                </Switch>
+            </CurrencyFormatContext.Provider>
         </ThemeProvider>
     );
 }
