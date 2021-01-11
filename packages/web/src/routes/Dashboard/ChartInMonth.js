@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, Typography, List, ListItem, IconButton } from '@material-ui/core';
+import { Button, Typography, List, ListItem } from '@material-ui/core';
 import { blueGrey } from '@material-ui/core/colors';
-import { Launch } from '@material-ui/icons';
+import { DateRange } from '@material-ui/icons';
 
 import { formatCurrency, getMonthName } from '../../utils/format';
 import { useMemo } from 'react';
@@ -67,8 +67,9 @@ const useStyles = makeStyles((theme) => ({
         flexFlow: 'column-reverse nowrap',
         marginLeft: theme.spacing(2),
     },
-    monthBtnRoot: {
-        marginLeft: theme.spacing(2),
+    title: {
+        marginBottom: theme.spacing(1),
+        color: theme.palette.secondary.main,
     },
     header: {
         display: 'flex',
@@ -93,16 +94,9 @@ export default function ChartInMonth({ expenses, incomes, height = 0, month }) {
 
     return (
         <>
-            <Typography color="secondary" variant="h4">
-                Balance in {getMonthName(month)}
-                <IconButton
-                    color="default"
-                    aria-label="Select different months"
-                    classes={{ root: classes.monthBtnRoot }}
-                >
-                    <Launch />
-                </IconButton>
-            </Typography>
+            <Button classes={{ root: classes.title }}>
+                <DateRange /> Balance in {getMonthName(month)}
+            </Button>
             <div className={classes.chart} style={{ height }}>
                 <div className={classes.expense}>
                     <div className={classes.expenseText}>
