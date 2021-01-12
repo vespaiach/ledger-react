@@ -55,9 +55,9 @@
     "tabWidth": 4,
     "semi": true,
     "jsxSingleQuote": true,
-    "bracketSpacing": false,
+    "bracketSpacing": true,
     "jsxBracketSameLine": true,
-    "arrowParens": true
+    "arrowParens": "always"
   },
   "browserslist": {
     "production": [

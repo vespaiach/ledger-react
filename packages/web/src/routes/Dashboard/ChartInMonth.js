@@ -1,70 +1,68 @@
-import { makeStyles } from '@material-ui/core/styles';
-import { Button, Typography, List, ListItem } from '@material-ui/core';
-import { blueGrey } from '@material-ui/core/colors';
-import { DateRange } from '@material-ui/icons';
+import { makeStyles } from "@material-ui/core/styles";
+import { blueGrey } from "@material-ui/core/colors";
 
-import { formatCurrency, getMonthName } from '../../utils/format';
-import { useMemo } from 'react';
+import { formatCurrency } from "../../utils/format";
+import { useMemo } from "react";
 
 const useStyles = makeStyles((theme) => ({
     chart: {
         minHeight: theme.spacing(22),
-        display: 'flex',
-        alignItems: 'stretch',
-        justifyContent: 'center',
+        display: "flex",
+        alignItems: "stretch",
+        justifyContent: "center",
     },
     expense: {
-        display: 'flex',
-        flex: '1',
+        display: "flex",
+        flex: "1",
         borderRight: `1px dotted ${blueGrey[100]}`,
-        flexFlow: 'column-reverse nowrap',
+        flexFlow: "column-reverse nowrap",
         paddingRight: theme.spacing(2),
-        alignItems: 'flex-end',
+        alignItems: "flex-end",
     },
     expenseBar: {
-        background: '#6e608b',
+        background: "#6e608b",
         width: theme.spacing(5),
-        transition: 'height 2s ease',
+        transition: "height 2s ease",
         height: 0,
     },
     expenseText: {
-        fontSize: '0.8rem',
-        '& p:first-child': {
-            color: '#6e608b',
+        fontSize: "0.8rem",
+        "& p:first-child": {
+            color: "#6e608b",
             fontWeight: 600,
-            margin: '4px 0 0 0',
-            textAlign: 'right',
+            margin: "4px 0 0 0",
+            textAlign: "right",
         },
-        '& p:last-child': {
+        "& p:last-child": {
             margin: 0,
-            fontStyle: 'italic',
-            textAlign: 'right',
+            fontStyle: "italic",
+            textAlign: "right",
             color: theme.palette.text.disabled,
         },
     },
     incomeBar: {
-        background: '#608b84',
+        background: "#608b84",
         width: theme.spacing(5),
-        transition: 'height 2s ease',
+        transition: "height 2s ease",
         height: 0,
     },
     incomeText: {
-        fontSize: '0.8rem',
-        '& p:first-child': {
-            color: '#608b84',
+        fontSize: "0.8rem",
+        "& p:first-child": {
+            color: "#608b84",
             fontWeight: 600,
-            margin: '4px 0 0 0',
+            margin: "4px 0 0 0",
         },
-        '& p:last-child': {
+        "& p:last-child": {
             margin: 0,
-            fontStyle: 'italic',
+            fontStyle: "italic",
             color: theme.palette.text.disabled,
         },
     },
     income: {
-        display: 'flex',
-        flex: '1',
-        flexFlow: 'column-reverse nowrap',
+        display: "flex",
+        flex: "1",
+        flexFlow: "column-reverse nowrap",
         marginLeft: theme.spacing(2),
     },
     title: {
@@ -72,8 +70,8 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.secondary.main,
     },
     header: {
-        display: 'flex',
-        alignItems: 'center',
+        display: "flex",
+        alignItems: "center",
     },
 }));
 
@@ -84,7 +82,10 @@ export default function ChartInMonth({ expenses, incomes, height = 0, month }) {
         }
 
         const extra = 50; // is the height of bar chart's legend
-        const ratio = expenses > incomes ? (height - extra) / expenses : (height - extra) / incomes;
+        const ratio =
+            expenses > incomes
+                ? (height - extra) / expenses
+                : (height - extra) / incomes;
         return {
             incomes: incomes * ratio,
             expenses: expenses * ratio,
@@ -93,26 +94,25 @@ export default function ChartInMonth({ expenses, incomes, height = 0, month }) {
     const classes = useStyles();
 
     return (
-        <>
-            <Button classes={{ root: classes.title }}>
-                <DateRange /> Balance in {getMonthName(month)}
-            </Button>
-            <div className={classes.chart} style={{ height }}>
-                <div className={classes.expense}>
-                    <div className={classes.expenseText}>
-                        <p>EXPENSES</p>
-                        <p>{formatCurrency(expenses)}</p>
-                    </div>
-                    <div className={classes.expenseBar} style={{ height: heights.expenses }}></div>
+        <div className={classes.chart} style={{ height }}>
+            <div className={classes.expense}>
+                <div className={classes.expenseText}>
+                    <p>EXPENSES</p>
+                    <p>{formatCurrency(expenses)}</p>
                 </div>
-                <div className={classes.income}>
-                    <div className={classes.incomeText}>
-                        <p>INCOMES</p>
-                        <p>{formatCurrency(incomes)}</p>
-                    </div>
-                    <div className={classes.incomeBar} style={{ height: heights.incomes }}></div>
-                </div>
+                <div
+                    className={classes.expenseBar}
+                    style={{ height: heights.expenses }}></div>
             </div>
-        </>
+            <div className={classes.income}>
+                <div className={classes.incomeText}>
+                    <p>INCOMES</p>
+                    <p>{formatCurrency(incomes)}</p>
+                </div>
+                <div
+                    className={classes.incomeBar}
+                    style={{ height: heights.incomes }}></div>
+            </div>
+        </div>
     );
 }
