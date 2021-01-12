@@ -11,7 +11,7 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "clsx": "^1.1.1",
     "connected-react-router": "^6.8.0",
     "date-fns": "^2.16.1",
@@ -40,8 +40,24 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
-    ]
+      "react-app/jest",
+      "prettier"
+    ],
+    "rules": {
+      "semi": [
+        "warn",
+        "always"
+      ]
+    }
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "semi": true,
+    "jsxSingleQuote": true,
+    "bracketSpacing": false,
+    "jsxBracketSameLine": true,
+    "arrowParens": true
   },
   "browserslist": {
     "production": [
@@ -54,5 +70,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^7.1.0",
+    "prettier": "^2.2.1"
   }
 }
