@@ -1,52 +1,31 @@
 import './assets/main.css';
-import axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import humps from 'humps';
-import { ConnectedRouter } from 'connected-react-router';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { ThemeProvider, CssBaseline } from '@material-ui/core';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import { ConnectedRouter } from 'connected-react-router';
 
-import store, { history } from './store';
 import App from './App';
-
-axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
-axios.defaults.withCredentials = true;
-
-// snakecase to camelcase
-axios.interceptors.request.use(
-    (config) => {
-        if (config.data !== null && typeof config.data === 'object') {
-            config.data = humps.decamelizeKeys(config.data);
-        }
-        return config;
-    },
-    (e) => Promise.reject(e)
-);
-
-// camelcase to snakecase
-axios.interceptors.response.use(
-    (response) => {
-        if (response.data) {
-            response.data = humps.camelizeKeys(response.data);
-        }
-        return response;
-    },
-    (e) => {
-        if (e.response && e.response.data) {
-            e.response.data = humps.camelizeKeys(e.response.data);
-        }
-        return Promise.reject(e);
-    }
-);
+import theme from './theme';
+import store, { history } from './store';
 
 ReactDOM.render(
-    <Provider store={store}>
-        <Router>
-            <ConnectedRouter history={history}>
-                <App />
-            </ConnectedRouter>
-        </Router>
-    </Provider>,
+    <Router>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Provider store={store}>
+                <ConnectedRouter history={history}>
+                    <App />
+                </ConnectedRouter>
+            </Provider>
+        </ThemeProvider>
+    </Router>,
     document.getElementById('root')
 );
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://cra.link/PWA
+serviceWorkerRegistration.unregister();
