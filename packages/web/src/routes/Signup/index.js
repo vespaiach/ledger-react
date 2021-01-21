@@ -1,8 +1,6 @@
 import {
     Button,
     TextField,
-    Grid,
-    Container,
     makeStyles,
     Typography,
     IconButton,
@@ -79,102 +77,87 @@ export default function Signin() {
     const handleClearError = () => dispatch({ type: 'Reducer - signup: clear errors' });
 
     return (
-        <PublicPageShell imgSrc="/signup.jpg">
-            <Container>
-                <Grid container spacing={3} justify="center">
-                    <Grid item xs={12} sm={5}>
-                        <div className={classes.boxPageTitle}>
-                            <IconButton
-                                classes={{ root: classes.btnPreviousRoot }}
-                                component={Link}
-                                to="/signin"
-                                edge="start"
-                                title="go back to login page"
-                                aria-label="go back to login page">
-                                <ArrowBackIcon />
-                            </IconButton>
-                            <Typography variant="h4" component="h1">
-                                Sign Up
-                            </Typography>
-                        </div>
-                        <form className={classes.formSignup} onSubmit={formik.handleSubmit}>
-                            <TextField
-                                id="your-name"
-                                label="Your Name"
-                                variant="filled"
-                                name="name"
-                                value={formik.values.name}
-                                onChange={formik.handleChange}
-                                fullWidth
-                                error={formik.touched.name && Boolean(formik.errors.name)}
-                                helperText={formik.touched.name && formik.errors.name}
-                            />
-                            <TextField
-                                id="your-email"
-                                label="Your Email"
-                                variant="filled"
-                                name="email"
-                                value={formik.values.email}
-                                onChange={formik.handleChange}
-                                fullWidth
-                                error={formik.touched.email && Boolean(formik.errors.email)}
-                                helperText={formik.touched.email && formik.errors.email}
-                            />
-                            <TextField
-                                id="your-password"
-                                label="Your Password"
-                                variant="filled"
-                                fullWidth
-                                type={passwordVisibility ? 'text' : 'password'}
-                                name="password"
-                                value={formik.values.password}
-                                onChange={formik.handleChange}
-                                error={formik.touched.password && Boolean(formik.errors.password)}
-                                helperText={
-                                    formik.touched.password && formik.errors.password
-                                        ? formik.errors.password
-                                        : 'password should be 8 characters at least'
-                                }
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                onClick={() =>
-                                                    setPasswordVisibility(!passwordVisibility)
-                                                }>
-                                                {passwordVisibility ? (
-                                                    <VisibilityIcon />
-                                                ) : (
-                                                    <VisibilityOffIcon />
-                                                )}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                fullWidth
-                                size="large"
-                                type="submit">
-                                Sign Up
-                            </Button>
-                            <Collapse in={Boolean(error)}>
-                                <ErrorAlert
-                                    className={classes.boxError}
-                                    title={error && error.title}
-                                    onClose={handleClearError}>
-                                    {error
-                                        ? error.messages.map((e) => <div key={e}>{e}</div>)
-                                        : null}
-                                </ErrorAlert>
-                            </Collapse>
-                        </form>
-                    </Grid>
-                </Grid>
-            </Container>
+        <PublicPageShell imgSrc="/signup.jpg" imgSsrc="/s_signup.jpg">
+            <div className={classes.boxPageTitle}>
+                <IconButton
+                    classes={{ root: classes.btnPreviousRoot }}
+                    component={Link}
+                    to="/signin"
+                    edge="start"
+                    title="go back to login page"
+                    aria-label="go back to login page">
+                    <ArrowBackIcon />
+                </IconButton>
+                <Typography variant="h4" component="h1">
+                    Sign Up
+                </Typography>
+            </div>
+            <form className={classes.formSignup} onSubmit={formik.handleSubmit}>
+                <TextField
+                    id="your-name"
+                    label="Your Name"
+                    variant="filled"
+                    name="name"
+                    value={formik.values.name}
+                    onChange={formik.handleChange}
+                    fullWidth
+                    error={formik.touched.name && Boolean(formik.errors.name)}
+                    helperText={formik.touched.name && formik.errors.name}
+                />
+                <TextField
+                    id="your-email"
+                    label="Your Email"
+                    variant="filled"
+                    name="email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    fullWidth
+                    error={formik.touched.email && Boolean(formik.errors.email)}
+                    helperText={formik.touched.email && formik.errors.email}
+                />
+                <TextField
+                    id="your-password"
+                    label="Your Password"
+                    variant="filled"
+                    fullWidth
+                    type={passwordVisibility ? 'text' : 'password'}
+                    name="password"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    error={formik.touched.password && Boolean(formik.errors.password)}
+                    helperText={
+                        formik.touched.password && formik.errors.password
+                            ? formik.errors.password
+                            : 'password should be 8 characters at least'
+                    }
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={() => setPasswordVisibility(!passwordVisibility)}>
+                                    {passwordVisibility ? (
+                                        <VisibilityIcon />
+                                    ) : (
+                                        <VisibilityOffIcon />
+                                    )}
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+                <Button variant="contained" color="primary" fullWidth size="large" type="submit">
+                    Sign Up
+                </Button>
+                <Collapse in={Boolean(error)}>
+                    <ErrorAlert
+                        className={classes.boxError}
+                        title={error && error.title}
+                        onClose={handleClearError}>
+                        {error ? error.messages.map((e) => <div key={e}>{e}</div>) : null}
+                    </ErrorAlert>
+                </Collapse>
+            </form>
         </PublicPageShell>
     );
 }

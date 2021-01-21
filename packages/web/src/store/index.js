@@ -7,10 +7,13 @@ import { createBrowserHistory } from 'history';
 import { watchSubmitSignupForm } from '../routes/Signup/saga';
 import { watchSubmitSigninForm } from '../routes/Signin/saga';
 import { watchSubmitRecoveryForm } from '../routes/Recovery/saga';
+import { watchFetchIncomeListRequest } from '../routes/IncomeList/saga';
+import { watchFetchMeRequest } from '../App/saga';
 import app from '../App/store';
 import signup from '../routes/Signup/store';
 import signin from '../routes/Signin/store';
 import recovery from '../routes/Recovery/store';
+import ins from '../routes/IncomeList/store';
 
 const history = createBrowserHistory();
 const sagaMiddleware = createSagaMiddleware({
@@ -36,12 +39,21 @@ const store = createStore(
         signup,
         signin,
         recovery,
+        ins,
     }),
     composeEnhancers(applyMiddleware(sagaMiddleware, routerMiddleware(history)))
 );
 
 const saga = function* rootSaga() {
-    yield all([watchSubmitSignupForm, watchSubmitSigninForm, watchSubmitRecoveryForm].map(fork));
+    yield all(
+        [
+            watchSubmitSignupForm,
+            watchSubmitSigninForm,
+            watchSubmitRecoveryForm,
+            watchFetchIncomeListRequest,
+            watchFetchMeRequest,
+        ].map(fork)
+    );
 };
 sagaMiddleware.run(saga);
 

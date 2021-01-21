@@ -4,6 +4,7 @@ const defaultState = {
     loading: false,
     flashMessage: '',
     flashMessageSeverity: '',
+    me: null,
 };
 
 export default createReducer(defaultState, {
@@ -20,4 +21,6 @@ export default createReducer(defaultState, {
         flashMessage: '',
         flashMessageSeverity: '',
     }),
+
+    'Reducer - app: set me': (state, { payload: me }) => ({ ...state, me }),
 });

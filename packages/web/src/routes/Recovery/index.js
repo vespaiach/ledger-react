@@ -1,4 +1,3 @@
-import { Grid, Container } from '@material-ui/core';
 import { useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useEffect, useMemo } from 'react';
@@ -25,14 +24,8 @@ export default function Signin() {
     const el = token ? <ChangePass token={token} /> : <RequestChange />;
 
     return (
-        <PublicPageShell imgSrc="/signup.jpg">
-            <Container>
-                <Grid container spacing={3} justify="center">
-                    <Grid item xs={12} sm={5}>
-                        {el}
-                    </Grid>
-                </Grid>
-            </Container>
+        <PublicPageShell imgSrc="/signup.jpg" imgSsrc="/s_signup.jpg">
+            {el}
         </PublicPageShell>
     );
 }

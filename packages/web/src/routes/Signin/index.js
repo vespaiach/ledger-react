@@ -1,8 +1,6 @@
 import {
     Button,
     TextField,
-    Grid,
-    Container,
     makeStyles,
     Typography,
     IconButton,
@@ -77,92 +75,77 @@ export default function Signin() {
     });
 
     return (
-        <PublicPageShell imgSrc="/signup.jpg">
-            <Container>
-                <Grid container spacing={3} justify="center">
-                    <Grid item xs={12} sm={5}>
-                        <div className={classes.boxPageTitle}>
-                            <Typography variant="h4" component="h1">
-                                Sign In
-                            </Typography>
-                        </div>
-                        <form className={classes.formSignup} onSubmit={formik.handleSubmit}>
-                            <TextField
-                                id="your-email"
-                                label="Your Email"
-                                variant="filled"
-                                name="email"
-                                value={formik.values.email}
-                                onChange={formik.handleChange}
-                                fullWidth
-                                error={formik.touched.email && Boolean(formik.errors.email)}
-                                helperText={formik.touched.email && formik.errors.email}
-                            />
-                            <TextField
-                                id="your-password"
-                                label="Your Password"
-                                variant="filled"
-                                fullWidth
-                                type={passwordVisibility ? 'text' : 'password'}
-                                name="password"
-                                value={formik.values.password}
-                                onChange={formik.handleChange}
-                                error={formik.touched.email && Boolean(formik.errors.email)}
-                                helperText={formik.touched.password && formik.errors.password}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                onClick={() =>
-                                                    setPasswordVisibility(!passwordVisibility)
-                                                }>
-                                                {passwordVisibility ? (
-                                                    <VisibilityIcon />
-                                                ) : (
-                                                    <VisibilityOffIcon />
-                                                )}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                fullWidth
-                                size="large"
-                                type="submit">
-                                Sign In
-                            </Button>
-                        </form>
-                        <Collapse in={Boolean(error)}>
-                            <ErrorAlert
-                                className={classes.boxError}
-                                title={error && error.title}
-                                onClose={() =>
-                                    dispatch({ type: 'Reducer - signin: clear errors' })
-                                }>
-                                {error ? error.messages.map((e) => <div key={e}>{e}</div>) : null}
-                            </ErrorAlert>
-                        </Collapse>
-                        <div className={classes.boxSignup}>
-                            <Typography>
-                                <Link to="/signup" title="Sigin up for a new account">
-                                    Sign up
-                                </Link>
-                                <span> for a new account</span>
-                            </Typography>
-                            <Typography>
-                                <Link to="/recovery" title="Recover your password">
-                                    Recover
-                                </Link>
-                                <span> your password</span>
-                            </Typography>
-                        </div>
-                    </Grid>
-                </Grid>
-            </Container>
+        <PublicPageShell imgSrc="/signin.jpg" imgSsrc="/s_signin.jpg">
+            <div className={classes.boxPageTitle}>
+                <Typography variant="h4" component="h1">
+                    Sign In
+                </Typography>
+            </div>
+            <form className={classes.formSignup} onSubmit={formik.handleSubmit}>
+                <TextField
+                    id="your-email"
+                    label="Your Email"
+                    variant="filled"
+                    name="email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    fullWidth
+                    error={formik.touched.email && Boolean(formik.errors.email)}
+                    helperText={formik.touched.email && formik.errors.email}
+                />
+                <TextField
+                    id="your-password"
+                    label="Your Password"
+                    variant="filled"
+                    fullWidth
+                    type={passwordVisibility ? 'text' : 'password'}
+                    name="password"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    error={formik.touched.email && Boolean(formik.errors.email)}
+                    helperText={formik.touched.password && formik.errors.password}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={() => setPasswordVisibility(!passwordVisibility)}>
+                                    {passwordVisibility ? (
+                                        <VisibilityIcon />
+                                    ) : (
+                                        <VisibilityOffIcon />
+                                    )}
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+                <Button variant="contained" color="primary" fullWidth size="large" type="submit">
+                    Sign In
+                </Button>
+            </form>
+            <Collapse in={Boolean(error)}>
+                <ErrorAlert
+                    className={classes.boxError}
+                    title={error && error.title}
+                    onClose={() => dispatch({ type: 'Reducer - signin: clear errors' })}>
+                    {error ? error.messages.map((e) => <div key={e}>{e}</div>) : null}
+                </ErrorAlert>
+            </Collapse>
+            <div className={classes.boxSignup}>
+                <Typography>
+                    <Link to="/signup" title="Sigin up for a new account">
+                        Sign up
+                    </Link>
+                    <span> for a new account</span>
+                </Typography>
+                <Typography>
+                    <Link to="/recovery" title="Recover your password">
+                        Recover
+                    </Link>
+                    <span> your password</span>
+                </Typography>
+            </div>
         </PublicPageShell>
     );
 }

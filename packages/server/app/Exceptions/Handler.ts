@@ -30,7 +30,6 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     if (error.code === 'E_VALIDATION_FAILURE') {
       return ctx.response.status(422).send(error.messages)
     }
-    //return this.makeJSONAPIResponse(error, ctx)
-    return super.handle(error, ctx)
+    return this.makeJSONAPIResponse(error, ctx)
   }
 }

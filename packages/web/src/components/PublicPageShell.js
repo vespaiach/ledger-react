@@ -1,27 +1,20 @@
-import { makeStyles } from '@material-ui/core';
+import { Grid, Container } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import Footer from './Footer';
+import LazyBackgroundImage from './LazyBackgroundImage';
 
 const useStyles = makeStyles((theme) => ({
-    boxMain: {
+    gridContainerRoot: {
         height: '100vh',
-        display: 'flex',
     },
-    boxImage: {
-        flex: 1,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        display: 'block',
+    gridImageRoot: {
+        height: '100vh',
         [theme.breakpoints.down('xs')]: {
             display: 'none',
         },
     },
-    boxContent: {
-        flex: 1,
-        position: 'relative',
-    },
-    boxContentMain: {
-        minHeight: 580,
+    img: {
+        height: '100vh',
     },
     footer: {
         position: 'fixed',
@@ -30,15 +23,23 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Signin({ children, imgSrc }) {
+export default function Signin({ children, imgSrc, imgSsrc }) {
     const classes = useStyles();
     return (
-        <div className={classes.boxMain}>
-            <div className={classes.boxImage} style={{ backgroundImage: `url(${imgSrc})` }}></div>
-            <div className={classes.boxContent}>
-                <div className={classes.boxContentMain}>{children}</div>
+        <Grid spacing={0} container classes={{ root: classes.gridContainerRoot }}>
+            <Grid item xs sm={5} md={6} classes={{ root: classes.gridImageRoot }}>
+                <LazyBackgroundImage src={imgSrc} ssrc={imgSsrc} className={classes.img} />
+            </Grid>
+            <Grid item xs sm={7} md={6}>
+                <Container>
+                    <Grid container spacing={3} justify="center">
+                        <Grid item xs={12} sm={11} md={10} lg={7} xl={5}>
+                            {children}
+                        </Grid>
+                    </Grid>
+                </Container>
                 <Footer className={classes.footer} />
-            </div>
-        </div>
+            </Grid>
+        </Grid>
     );
 }
