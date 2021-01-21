@@ -11,11 +11,3 @@ services:
             - POSTGRES_DB=budgets
         ports:
             - 5432:5432
-    
-    admin:
-        image: dpage/pgadmin4
-        environment:
-            - PGADMIN_DEFAULT_EMAIL=anhtoan@gmail.com
-            - PGADMIN_DEFAULT_PASSWORD=123
-        ports:
-            - 7000:80

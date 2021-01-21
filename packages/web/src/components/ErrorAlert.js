@@ -1,10 +1,13 @@
+import { Collapse } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 
-export default function ErrorAlert({ onClose, className, title = 'Error', children }) {
+export default function ErrorAlert({ open, onClose, className, title = 'Error', children }) {
     return (
-        <Alert severity="error" className={className} onClose={onClose}>
-            <AlertTitle>{title}</AlertTitle>
-            {children}
-        </Alert>
+        <Collapse in={open}>
+            <Alert severity="error" className={className} onClose={onClose}>
+                <AlertTitle>{title}</AlertTitle>
+                {children}
+            </Alert>
+        </Collapse>
     );
 }

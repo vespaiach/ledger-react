@@ -23,19 +23,31 @@ export function handleApiError(setErrorAction, clearErrorAction) {
         [clearErrorAction]: (state) => ({ ...state, error: null }),
 
         [setErrorAction]: (state, { payload: apiResponse }) => {
-            if (apiResponse.state === 422) {
-                return {
+            if (apiResponse.status === 422) {
+                const tmp = {
                     ...state,
                     error: {
                         title: apiResponse.statusText,
-                        messages: apiResponse.data
-                            ? Object.values(apiResponse.data).reduce((acc, ers) => {
-                                  acc = acc.concat(ers);
-                                  return acc;
-                              }, [])
-                            : ['Unknown error'],
                     },
                 };
+
+                if (apiResponse.data) {
+                    if (apiResponse.data.errors && Array.isArray(apiResponse.data.errors)) {
+                        tmp.error.messages = apiResponse.data.errors.map(
+                            (e) => `"${e.field}" ${e.message}`
+                        );
+                    } else {
+                        tmp.error.messages = Object.values(apiResponse.data).reduce((acc, ers) => {
+                            acc = acc.concat(ers);
+                            return acc;
+                        }, []);
+                    }
+                    return tmp;
+                }
+
+                tmp.error.messages = ['Unknown error'];
+
+                return tmp;
             }
             return {
                 ...state,

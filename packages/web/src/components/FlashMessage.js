@@ -16,8 +16,12 @@ export default function FlashMessage({ open, onClose, timeout = 4000, message, s
                 horizontal: 'center',
             }}
             TransitionComponent={TransitionDown}>
-            <Alert onClose={onClose} severity={severity || 'info'}>
-                {message}
+            <Alert
+                onClose={onClose}
+                severity={severity || 'info'}
+                role="alertdialog"
+                aria-describedby="snackbarAlertText">
+                <span id="snackbarAlertText">{message}</span>
             </Alert>
         </Snackbar>
     );

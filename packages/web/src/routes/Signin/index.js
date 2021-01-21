@@ -5,7 +5,6 @@ import {
     Typography,
     IconButton,
     InputAdornment,
-    Collapse,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import {
@@ -124,14 +123,13 @@ export default function Signin() {
                     Sign In
                 </Button>
             </form>
-            <Collapse in={Boolean(error)}>
-                <ErrorAlert
-                    className={classes.boxError}
-                    title={error && error.title}
-                    onClose={() => dispatch({ type: 'Reducer - signin: clear errors' })}>
-                    {error ? error.messages.map((e) => <div key={e}>{e}</div>) : null}
-                </ErrorAlert>
-            </Collapse>
+            <ErrorAlert
+                open={Boolean(error)}
+                className={classes.boxError}
+                title={error && error.title}
+                onClose={() => dispatch({ type: 'Reducer - signin: clear errors' })}>
+                {error ? error.messages.map((e) => <div key={e}>{e}</div>) : null}
+            </ErrorAlert>
             <div className={classes.boxSignup}>
                 <Typography>
                     <Link to="/signup" title="Sigin up for a new account">

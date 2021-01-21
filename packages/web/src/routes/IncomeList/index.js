@@ -6,6 +6,7 @@ import {
     AddRounded as AddRoundedIcon,
 } from '@material-ui/icons';
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@material-ui/lab';
+import { useHistory } from 'react-router-dom';
 
 import TransactionList from '../../components/TransationList';
 
@@ -32,6 +33,7 @@ export default function IncomeList() {
     const totalRecords = useSelector((state) => state.ins.totalRecords);
     const fetchedTotalRecords = useSelector((state) => state.ins.fetchedTotalRecords);
 
+    const history = useHistory();
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
 
@@ -95,7 +97,10 @@ export default function IncomeList() {
                 <SpeedDialAction
                     icon={<AddRoundedIcon />}
                     tooltipTitle="add income transaction"
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                        setOpen(false);
+                        history.push('/portal/incomes/new');
+                    }}
                 />
             </SpeedDial>
         </>

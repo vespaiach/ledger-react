@@ -7,8 +7,9 @@ import Signup from '../routes/Signup';
 import Signin from '../routes/Signin';
 import Recovery from '../routes/Recovery';
 import NotFound from '../routes/Errors/NotFound';
-import FlashMessage from '../components/FlashMessage';
+import IncomeForm from '../routes/IncomeForm';
 import IncomeList from '../routes/IncomeList';
+import FlashMessage from '../components/FlashMessage';
 import PrivatePageShell from '../components/PrivatePageShell';
 
 const useStyles = makeStyles((theme) => ({
@@ -42,8 +43,11 @@ function App() {
                 <Route path="/portal">
                     <PrivatePageShell>
                         <Switch>
-                            <Route path="/portal/incomes">
+                            <Route exact path="/portal/incomes">
                                 <IncomeList />
+                            </Route>
+                            <Route exact path="/portal/incomes/new">
+                                <IncomeForm />
                             </Route>
                             <Route>
                                 <Redirect to="/portal/reports" />

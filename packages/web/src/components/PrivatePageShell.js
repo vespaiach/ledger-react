@@ -37,6 +37,14 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const TabIndex = {
+    '/portal/incomes/new': 0,
+    '/portal/incomes': 0,
+    '/portal/expenses': 1,
+    '/portal/expenses/new': 1,
+    '/portal/reports': 2,
+};
+
 export default function PrivatePageShell({ children }) {
     const dispatch = useDispatch();
     const trigger = useScrollTrigger();
@@ -69,26 +77,23 @@ export default function PrivatePageShell({ children }) {
                     </Toolbar>
                     <Tabs
                         classes={{ root: classes.tabsRoot }}
-                        value={location.pathname}
+                        value={TabIndex[location.pathname]}
                         aria-label="simple tabs example"
                         variant="fullWidth">
                         <Tab
                             label="Incomes"
-                            value="/portal/incomes"
                             component={Link}
                             to="/portal/incomes"
                             classes={{ root: classes.tabRoot }}
                         />
                         <Tab
                             label="Expenses"
-                            value="/portal/expenses"
                             component={Link}
                             to="/portal/expenses"
                             classes={{ root: classes.tabRoot }}
                         />
                         <Tab
                             label="Reports"
-                            value="/portal/reports"
                             component={Link}
                             to="/portal/reports"
                             classes={{ root: classes.tabRoot }}
@@ -96,7 +101,7 @@ export default function PrivatePageShell({ children }) {
                     </Tabs>
                 </AppBar>
             </Slide>
-            <Toolbar style={{ height: 104 }} />
+            <Toolbar style={{ height: 112 }} />
             <Container maxWidth={false}>{children}</Container>
         </>
     );

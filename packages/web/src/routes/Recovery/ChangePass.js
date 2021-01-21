@@ -5,7 +5,6 @@ import {
     makeStyles,
     Typography,
     IconButton,
-    Collapse,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
@@ -149,14 +148,13 @@ export default function ChangePass({ token }) {
                 </Typography>
             </div>
             {el}
-            <Collapse in={Boolean(error)}>
-                <ErrorAlert
-                    className={classes.boxError}
-                    title={error && error.title}
-                    onClose={() => dispatch({ type: 'Reducer - recovery: clear errors' })}>
-                    {error ? error.messages.map((e) => <div key={e}>{e}</div>) : null}
-                </ErrorAlert>
-            </Collapse>
+            <ErrorAlert
+                open={Boolean(error)}
+                className={classes.boxError}
+                title={error && error.title}
+                onClose={() => dispatch({ type: 'Reducer - recovery: clear errors' })}>
+                {error ? error.messages.map((e) => <div key={e}>{e}</div>) : null}
+            </ErrorAlert>
         </>
     );
 }
