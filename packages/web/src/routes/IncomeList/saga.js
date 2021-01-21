@@ -1,4 +1,4 @@
-import { select, all, debounce, put, call } from 'redux-saga/effects';
+import { select, all, debounce, put, call, takeEvery } from 'redux-saga/effects';
 import { safeCall } from '../../utils/saga';
 import http from '../../utils/http';
 
@@ -105,5 +105,20 @@ export function* watchFetchIncomeListRequest() {
         }
 
         yield put({ type: 'Reducer - ins: set loading off' });
+    });
+}
+
+export function* watchDeleteIncomeRequest() {
+    yield takeEvery('Saga: remove income transation', function* ({ payload: id }) {
+        yield put({ type: 'Reducer - app: clear confirm' });
+        yield put({ type: 'Reducer - app: set app loading on' });
+
+        const response = yield safeCall(call(http.del, { ep: `/incomes/${id}` }));
+
+        yield put({ type: 'Reducer - app: set app loading off' });
+
+        if (response.ok) {
+            yield put({ type: 'Reducer - ins: clear list of incomes' });
+        }
     });
 }

@@ -11,6 +11,8 @@ import IncomeForm from '../routes/IncomeForm';
 import IncomeList from '../routes/IncomeList';
 import FlashMessage from '../components/FlashMessage';
 import PrivatePageShell from '../components/PrivatePageShell';
+import ConfirmDialog from '../components/ConfirmDialog';
+import { useMemo } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -25,6 +27,9 @@ function App() {
     const loading = useSelector((state) => state.app.loading);
     const flashMessage = useSelector((state) => state.app.flashMessage);
     const flashMessageSeverity = useSelector((state) => state.app.flashMessageSeverity);
+    const confirm = useSelector((state) => state.app.confirm);
+    const showConfirmDialog = useMemo(() => Boolean(confirm), [confirm]);
+    const confirmObj = useMemo(() => confirm || {}, [confirm]);
 
     const handleClose = () => dispatch({ type: 'Reducer - app: clear flash message' });
 
@@ -69,8 +74,18 @@ function App() {
                 open={Boolean(flashMessage)}
                 message={flashMessage}
                 severity={flashMessageSeverity}
-                timeout={400000}
+                timeout={4000}
                 onClose={handleClose}
+            />
+            <ConfirmDialog
+                open={showConfirmDialog}
+                title={confirmObj.title}
+                message={confirmObj.message}
+                type={confirmObj.type}
+                onYes={() =>
+                    dispatch({ type: confirmObj.payload.type, payload: confirmObj.payload.payload })
+                }
+                onNo={() => dispatch({ type: 'Reducer - app: clear confirm' })}
             />
         </>
     );

@@ -9,6 +9,7 @@ import { watchSubmitSigninForm } from '../routes/Signin/saga';
 import { watchSubmitRecoveryForm } from '../routes/Recovery/saga';
 import { watchFetchIncomeListRequest } from '../routes/IncomeList/saga';
 import { watchSaveIncomesRequest } from '../routes/IncomeForm/saga';
+import { watchDeleteIncomeRequest } from '../routes/IncomeList/saga';
 import { watchFetchMeRequest } from '../App/saga';
 import app from '../App/store';
 import signup from '../routes/Signup/store';
@@ -56,6 +57,7 @@ const saga = function* rootSaga() {
             watchFetchIncomeListRequest,
             watchFetchMeRequest,
             watchSaveIncomesRequest,
+            watchDeleteIncomeRequest,
         ].map(fork)
     );
 };

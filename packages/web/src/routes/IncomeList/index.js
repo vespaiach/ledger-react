@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function IncomeList() {
     const classes = useStyles();
-    const imcomeList = useSelector((state) => state.ins.list);
+    const incomeList = useSelector((state) => state.ins.list);
     const fetching = useSelector((state) => state.ins.loading);
     const totalRecords = useSelector((state) => state.ins.totalRecords);
     const fetchedTotalRecords = useSelector((state) => state.ins.fetchedTotalRecords);
@@ -69,9 +69,24 @@ export default function IncomeList() {
         <>
             <TransactionList
                 loaderRef={loaderRef}
-                data={imcomeList}
+                data={incomeList}
                 totalRows={totalRecords}
                 onLoadMore={handleLoadMore}
+                onDelete={(index) =>
+                    dispatch({
+                        type: 'Reducer - app: confirm',
+                        payload: {
+                            title: 'Delete Transaction',
+                            message:
+                                'You are removing the transaction and this is a non-undoable action ',
+                            type: 'delete',
+                            payload: {
+                                type: 'Saga: remove income transation',
+                                payload: incomeList[index].id,
+                            },
+                        },
+                    })
+                }
             />
 
             <SpeedDial
