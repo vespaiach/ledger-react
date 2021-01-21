@@ -30,9 +30,6 @@ function App() {
     return (
         <>
             <Switch>
-                <Route exact path="/incomes">
-                    <IncomeList />
-                </Route>
                 <Route exact path="/signin">
                     <Signin />
                 </Route>

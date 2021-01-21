@@ -76,21 +76,21 @@ export default function PrivatePageShell({ children }) {
                             label="Incomes"
                             value="/portal/incomes"
                             component={Link}
-                            to="/incomes"
+                            to="/portal/incomes"
                             classes={{ root: classes.tabRoot }}
                         />
                         <Tab
                             label="Expenses"
                             value="/portal/expenses"
                             component={Link}
-                            to="/expenses"
+                            to="/portal/expenses"
                             classes={{ root: classes.tabRoot }}
                         />
                         <Tab
                             label="Reports"
                             value="/portal/reports"
                             component={Link}
-                            to="/reports"
+                            to="/portal/reports"
                             classes={{ root: classes.tabRoot }}
                         />
                     </Tabs>

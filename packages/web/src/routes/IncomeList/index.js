@@ -1,11 +1,29 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+    KeyboardArrowUpRounded as KeyboardArrowUpRoundedIcon,
+    AddRounded as AddRoundedIcon,
+} from '@material-ui/icons';
+import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@material-ui/lab';
 
-import PrivatePageShell from '../../components/PrivatePageShell';
 import TransactionList from '../../components/TransationList';
 
-const useStyles = makeStyles((theme) => ({}));
+const useStyles = makeStyles((theme) => ({
+    speedDial: {
+        position: 'fixed',
+        bottom: 16,
+        right: 24,
+        '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
+            bottom: theme.spacing(2),
+            right: theme.spacing(2),
+        },
+        '&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight': {
+            top: theme.spacing(2),
+            left: theme.spacing(2),
+        },
+    },
+}));
 
 export default function IncomeList() {
     const classes = useStyles();
@@ -15,6 +33,7 @@ export default function IncomeList() {
     const fetchedTotalRecords = useSelector((state) => state.ins.fetchedTotalRecords);
 
     const dispatch = useDispatch();
+    const [open, setOpen] = useState(false);
 
     const loaderRef = useRef(null);
     const resolver = useRef(null);
@@ -45,11 +64,40 @@ export default function IncomeList() {
     };
 
     return (
-        <TransactionList
-            loaderRef={loaderRef}
-            data={imcomeList}
-            totalRows={totalRecords}
-            onLoadMore={handleLoadMore}
-        />
+        <>
+            <TransactionList
+                loaderRef={loaderRef}
+                data={imcomeList}
+                totalRows={totalRecords}
+                onLoadMore={handleLoadMore}
+            />
+
+            <SpeedDial
+                ariaLabel="SpeedDial example"
+                className={classes.speedDial}
+                icon={<SpeedDialIcon />}
+                onClose={() => setOpen(false)}
+                onOpen={() => setOpen(true)}
+                open={open}
+                FabProps={{
+                    color: 'secondary',
+                }}
+                direction="left">
+                <SpeedDialAction
+                    icon={<KeyboardArrowUpRoundedIcon />}
+                    tooltipTitle="go to top"
+                    onClick={() => {
+                        document.body.scrollTop = 0;
+                        document.documentElement.scrollTop = 0;
+                        setOpen(false);
+                    }}
+                />
+                <SpeedDialAction
+                    icon={<AddRoundedIcon />}
+                    tooltipTitle="add income transaction"
+                    onClick={() => setOpen(false)}
+                />
+            </SpeedDial>
+        </>
     );
 }
