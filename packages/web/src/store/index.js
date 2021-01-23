@@ -8,7 +8,12 @@ import { watchSubmitSignupForm } from '../routes/Signup/saga';
 import { watchSubmitSigninForm } from '../routes/Signin/saga';
 import { watchSubmitRecoveryForm } from '../routes/Recovery/saga';
 import { watchFetchIncomeListRequest } from '../routes/IncomeList/saga';
-import { watchSaveIncomesRequest } from '../routes/IncomeForm/saga';
+import {
+    watchSaveIncomesRequest,
+    watchFetchIncomeDetailRequest,
+    watchEditIncomeRequest,
+    watchAddIncomeRequest,
+} from '../routes/IncomeForm/saga';
 import { watchDeleteIncomeRequest } from '../routes/IncomeList/saga';
 import { watchFetchMeRequest } from '../App/saga';
 import app from '../App/store';
@@ -58,6 +63,9 @@ const saga = function* rootSaga() {
             watchFetchMeRequest,
             watchSaveIncomesRequest,
             watchDeleteIncomeRequest,
+            watchFetchIncomeDetailRequest,
+            watchEditIncomeRequest,
+            watchAddIncomeRequest,
         ].map(fork)
     );
 };

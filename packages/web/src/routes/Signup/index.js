@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import {
     VisibilityOff as VisibilityOffIcon,
     Visibility as VisibilityIcon,
-    ArrowBack as ArrowBackIcon,
+    ArrowBackRounded as ArrowBackIcon,
 } from '@material-ui/icons';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';

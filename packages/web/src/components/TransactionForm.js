@@ -50,14 +50,15 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     boxBtns: {
+        marginTop: theme.spacing(1),
         display: 'flex',
     },
     btnSubmitRoot: {
         flex: 1,
-        marginRight: theme.spacing(2),
+        marginRight: theme.spacing(3),
     },
     btnCancelRoot: {
-        flex: '0 0 112px',
+        flex: '0 0 126px',
     },
 }));
 

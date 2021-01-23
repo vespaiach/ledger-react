@@ -69,7 +69,7 @@ export default function TransactionList({
                                 />
                             </Typography>
                             <Typography variant="body2">
-                                {format(data[index].date, 'LLL do, yyyy')} |{' '}
+                                {format(data[index].date, 'LLL do, yyyy')} -{' '}
                                 {format(data[index].date, 'HH:mm')}
                             </Typography>
                         </div>

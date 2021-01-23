@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import {
-    ArrowBack as ArrowBackIcon,
+    ArrowBackRounded as ArrowBackIcon,
     Visibility as VisibilityIcon,
     VisibilityOff as VisibilityOffIcon,
 } from '@material-ui/icons';

@@ -150,7 +150,7 @@ export default class IncomesController {
       }),
     })
 
-    const exp = (await Income.firstOrFail(id)) as Income
+    const exp = await Income.findOrFail(id)
     /**
      * Don't allow to update income of others
      */
@@ -179,7 +179,7 @@ export default class IncomesController {
   public async delete({ params, auth }: HttpContextContract) {
     const { id } = params
 
-    const ins = (await Income.firstOrFail(id)) as Income
+    const ins = await Income.findOrFail(id)
     /**
      * Don't allow to delete income of others
      */

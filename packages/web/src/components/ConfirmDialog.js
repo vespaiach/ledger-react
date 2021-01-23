@@ -6,19 +6,24 @@ import {
     DialogContent,
     DialogTitle,
     useMediaQuery,
+    Slide,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
     DeleteForeverRounded as DeleteRoundedIcon,
     WarningRounded as WarningRoundedIcon,
 } from '@material-ui/icons';
+import { forwardRef } from 'react';
+
+const SlideUp = forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const useStyles = makeStyles((theme) => ({
-    dialogRoot: {},
     boxCard: {
         display: 'flex',
         minWidth: 320,
-        [theme.breakpoints.up('xs')]: {
+        [theme.breakpoints.up('sm')]: {
             width: 420,
         },
     },
@@ -38,6 +43,15 @@ const useStyles = makeStyles((theme) => ({
     btnOk: {
         color: theme.palette.warning.main,
     },
+    dialogScrollPaper: {
+        [theme.breakpoints.down('xs')]: {
+            marginTop: theme.spacing(6),
+        },
+    },
+    dialogPaperFullScreen: {
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
+    },
 }));
 
 export default function ConfirmDialog({ open, title, type, message, onYes, onNo, onClose }) {
@@ -48,8 +62,12 @@ export default function ConfirmDialog({ open, title, type, message, onYes, onNo,
     return (
         <Dialog
             fullScreen={mobile}
-            classes={{ root: classes.dialogRoot }}
+            classes={{
+                scrollPaper: classes.dialogScrollPaper,
+                paperFullScreen: classes.dialogPaperFullScreen,
+            }}
             open={open}
+            TransitionComponent={SlideUp}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description">
             <div className={classes.boxCard}>

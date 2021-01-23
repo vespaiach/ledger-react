@@ -33,7 +33,6 @@ export default function IncomeList() {
     const totalRecords = useSelector((state) => state.ins.totalRecords);
     const fetchedTotalRecords = useSelector((state) => state.ins.fetchedTotalRecords);
 
-    const history = useHistory();
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
 
@@ -87,8 +86,13 @@ export default function IncomeList() {
                         },
                     })
                 }
+                onEdit={(index) => {
+                    dispatch({
+                        type: 'Saga: edit income transation',
+                        payload: incomeList[index].id,
+                    });
+                }}
             />
-
             <SpeedDial
                 ariaLabel="SpeedDial example"
                 className={classes.speedDial}
@@ -114,7 +118,7 @@ export default function IncomeList() {
                     tooltipTitle="add income transaction"
                     onClick={() => {
                         setOpen(false);
-                        history.push('/portal/incomes/new');
+                        dispatch({ type: 'Saga: add income transation' });
                     }}
                 />
             </SpeedDial>

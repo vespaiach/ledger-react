@@ -16,7 +16,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useMemo, useEffect } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     appbarRoot: {
@@ -37,20 +37,31 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const TabIndex = {
-    '/portal/incomes/new': 0,
-    '/portal/incomes': 0,
-    '/portal/expenses': 1,
-    '/portal/expenses/new': 1,
-    '/portal/reports': 2,
-};
-
 export default function PrivatePageShell({ children }) {
     const dispatch = useDispatch();
     const trigger = useScrollTrigger();
     const me = useSelector((state) => state.app.me);
     const classes = useStyles();
     const location = useLocation();
+    const tabValue = useMemo(() => {
+        const tabIndex = {
+            '/portal/incomes/new': 0,
+            '/portal/incomes': 0,
+            '/portal/expenses': 1,
+            '/portal/expenses/new': 1,
+            '/portal/reports': 2,
+        };
+        if (tabIndex[location.pathname] !== undefined) {
+            return tabIndex[location.pathname];
+        } else {
+            if (/\/portal\/incomes\/\d+/gi.test(location.pathname)) {
+                return 0;
+            } else if (/\/portal\/expenses\/\d+/gi.test(location.pathname)) {
+                return 1;
+            }
+        }
+        return 2;
+    }, [location.pathname]);
 
     useEffect(() => {
         if (!me) {
@@ -77,7 +88,7 @@ export default function PrivatePageShell({ children }) {
                     </Toolbar>
                     <Tabs
                         classes={{ root: classes.tabsRoot }}
-                        value={TabIndex[location.pathname]}
+                        value={tabValue}
                         aria-label="simple tabs example"
                         variant="fullWidth">
                         <Tab

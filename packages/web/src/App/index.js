@@ -48,11 +48,13 @@ function App() {
                 <Route path="/portal">
                     <PrivatePageShell>
                         <Switch>
+                            <Route
+                                exact
+                                path={['/portal/incomes/new', '/portal/incomes/:id(\\d+)']}>
+                                <IncomeForm />
+                            </Route>
                             <Route exact path="/portal/incomes">
                                 <IncomeList />
-                            </Route>
-                            <Route exact path="/portal/incomes/new">
-                                <IncomeForm />
                             </Route>
                             <Route>
                                 <Redirect to="/portal/reports" />
@@ -74,7 +76,7 @@ function App() {
                 open={Boolean(flashMessage)}
                 message={flashMessage}
                 severity={flashMessageSeverity}
-                timeout={4000}
+                timeout={3000}
                 onClose={handleClose}
             />
             <ConfirmDialog

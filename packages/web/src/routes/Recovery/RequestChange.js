@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
-import { ArrowBack as ArrowBackIcon } from '@material-ui/icons';
+import { ArrowBackRounded as ArrowBackIcon } from '@material-ui/icons';
 import { Alert, AlertTitle } from '@material-ui/lab';
 
 import ErrorAlert from '../../components/ErrorAlert';

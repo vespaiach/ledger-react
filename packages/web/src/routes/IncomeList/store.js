@@ -99,9 +99,7 @@ export default createReducer(defaultState, {
 
     'Reducer - ins: set fetching on': (state) => ({ ...state, fetching: true }),
 
-    'Reducer - ins: reset data to default': (state) => ({
-        ...defaultState,
-    }),
+    'Reducer - ins: reset data to default': () => ({ ...defaultState }),
 
     'Reducer - ins: clear list of incomes': (state) => ({
         ...state,

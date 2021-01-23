@@ -1,39 +1,79 @@
 import { Grid, IconButton, Typography } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { useHistory, Link } from 'react-router-dom';
-import { ArrowBack as ArrowBackIcon } from '@material-ui/icons';
+import { useHistory, Link, useParams } from 'react-router-dom';
+import { ArrowBackRounded as ArrowBackIcon } from '@material-ui/icons';
 
 import TransactionForm from '../../components/TransactionForm';
 import ErrorAlert from '../../components/ErrorAlert';
+import useLookupIcome from '../../hooks/useLookupIncome';
 
 const useStyles = makeStyles((theme) => ({
     boxPageTitle: {
-        marginTop: theme.spacing(5),
+        marginTop: theme.spacing(3),
         marginBottom: theme.spacing(3),
         display: 'flex',
         alignItems: 'center',
     },
     btnPreviousRoot: {
-        marginRight: theme.spacing(2),
+        marginRight: theme.spacing(1),
     },
     boxError: {
         marginTop: theme.spacing(3),
     },
+    boxSkeletonBtns: {
+        display: 'flex',
+        '& span:first-child': { flex: 1, marginRight: theme.spacing(4) },
+        '& span:last-child': { flex: '0 0 136px' },
+    },
 }));
 
 export default function IncomeForm() {
+    const params = useParams();
     const history = useHistory();
     const classes = useStyles();
     const dispatch = useDispatch();
     const categories = useSelector((state) => state.inForm.categories);
-    const status = useSelector((state) => state.inForm.status);
     const error = useSelector((state) => state.inForm.error);
+    const { status, id, amount, description, date, category } = useLookupIcome(params.id);
 
     useEffect(() => {
         dispatch({ type: 'Saga: fetch incomes categories' });
     }, [dispatch]);
+
+    let el = null;
+    if (status === 'ok' || status === 'done') {
+        el = (
+            <TransactionForm
+                id={id}
+                date={date}
+                amount={amount}
+                category={category}
+                description={description}
+                categories={categories}
+                onCancel={() => history.push('/portal/incomes')}
+                onSubmit={(payload) => {
+                    dispatch({ type: 'Saga: save income transation', payload });
+                }}
+                reset={status === 'done'}
+            />
+        );
+    } else if (status === 'loading') {
+        el = (
+            <div>
+                <Skeleton width="100%" height={58} />
+                <Skeleton width="100%" height={58} />
+                <Skeleton width="100%" height={58} />
+                <Skeleton width="100%" height={118} />
+                <div className={classes.boxSkeletonBtns}>
+                    <Skeleton height={58} />
+                    <Skeleton height={58} />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <Grid container justify="center">
@@ -49,17 +89,10 @@ export default function IncomeForm() {
                         <ArrowBackIcon />
                     </IconButton>
                     <Typography variant="h5" component="h2">
-                        Add Income Transaction
+                        {params.id ? 'Edit Income Transaction' : 'Add Income Transaction'}
                     </Typography>
                 </div>
-                <TransactionForm
-                    categories={categories}
-                    onCancel={() => history.push('/portal/incomes')}
-                    onSubmit={(payload) => {
-                        dispatch({ type: 'Saga: save income transation', payload });
-                    }}
-                    reset={status === 'done'}
-                />
+                {el}
                 <ErrorAlert
                     open={Boolean(error)}
                     className={classes.boxError}
