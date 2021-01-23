@@ -1,23 +1,17 @@
 import {
     Button,
     DialogContentText,
-    Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
-    useMediaQuery,
-    Slide,
 } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
     DeleteForeverRounded as DeleteRoundedIcon,
     WarningRounded as WarningRoundedIcon,
 } from '@material-ui/icons';
-import { forwardRef } from 'react';
 
-const SlideUp = forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
+import DialogPanel from './DialogPanel';
 
 const useStyles = makeStyles((theme) => ({
     boxCard: {
@@ -55,21 +49,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ConfirmDialog({ open, title, type, message, onYes, onNo, onClose }) {
-    const theme = useTheme();
-    const mobile = useMediaQuery(theme.breakpoints.down('xs'));
     const classes = useStyles();
 
     return (
-        <Dialog
-            fullScreen={mobile}
-            classes={{
-                scrollPaper: classes.dialogScrollPaper,
-                paperFullScreen: classes.dialogPaperFullScreen,
-            }}
+        <DialogPanel
             open={open}
-            TransitionComponent={SlideUp}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description">
+            ariaLabelledby="alert-dialog-title"
+            ariaDescribedby="alert-dialog-description">
             <div className={classes.boxCard}>
                 {type === 'delete' ? (
                     <DeleteRoundedIcon classes={{ root: classes.iconRoot }} />
@@ -95,6 +81,6 @@ export default function ConfirmDialog({ open, title, type, message, onYes, onNo,
                     cancel
                 </Button>
             </DialogActions>
-        </Dialog>
+        </DialogPanel>
     );
 }

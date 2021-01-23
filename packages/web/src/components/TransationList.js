@@ -48,6 +48,7 @@ export default function TransactionList({
     onLoadMore,
     onEdit,
     onDelete,
+    onDetail,
     loaderRef,
     data,
     totalRows,
@@ -58,7 +59,11 @@ export default function TransactionList({
         return (
             <div key={key} style={style}>
                 {data[index] ? (
-                    <ListItem alignItems="flex-start" disableGutters button>
+                    <ListItem
+                        alignItems="flex-start"
+                        disableGutters
+                        button
+                        onClick={() => onDetail(index)}>
                         <Typography variant="h6">{`$`}</Typography>
                         <div className={classes.boxMid}>
                             <Typography variant="h6">
@@ -86,12 +91,18 @@ export default function TransactionList({
                         <div className={classes.boxBtns}>
                             <IconButton
                                 aria-label="edit income transaction"
-                                onClick={() => onEdit(index)}>
+                                onClick={(evt) => {
+                                    evt.stopPropagation();
+                                    onEdit(index);
+                                }}>
                                 <EditRoundedIcon />
                             </IconButton>
                             <IconButton
                                 aria-label="delete income transaction"
-                                onClick={() => onDelete(index)}>
+                                onClick={(evt) => {
+                                    evt.stopPropagation();
+                                    onDelete(index);
+                                }}>
                                 <DeleteRoundedIcon />
                             </IconButton>
                         </div>

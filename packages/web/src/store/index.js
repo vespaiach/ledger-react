@@ -7,14 +7,23 @@ import { createBrowserHistory } from 'history';
 import { watchSubmitSignupForm } from '../routes/Signup/saga';
 import { watchSubmitSigninForm } from '../routes/Signin/saga';
 import { watchSubmitRecoveryForm } from '../routes/Recovery/saga';
-import { watchFetchIncomeListRequest } from '../routes/IncomeList/saga';
 import {
     watchSaveIncomesRequest,
     watchFetchIncomeDetailRequest,
     watchEditIncomeRequest,
     watchAddIncomeRequest,
 } from '../routes/IncomeForm/saga';
-import { watchDeleteIncomeRequest } from '../routes/IncomeList/saga';
+import {
+    watchSaveExpensesRequest,
+    watchFetchExpenseDetailRequest,
+    watchEditExpenseRequest,
+    watchAddExpenseRequest,
+} from '../routes/ExpenseForm/saga';
+import { watchFetchIncomeListRequest, watchDeleteIncomeRequest } from '../routes/IncomeList/saga';
+import {
+    watchFetchExpenseListRequest,
+    watchDeleteExpenseRequest,
+} from '../routes/ExpenseList/saga';
 import { watchFetchMeRequest } from '../App/saga';
 import app from '../App/store';
 import signup from '../routes/Signup/store';
@@ -22,6 +31,8 @@ import signin from '../routes/Signin/store';
 import recovery from '../routes/Recovery/store';
 import ins from '../routes/IncomeList/store';
 import inForm from '../routes/IncomeForm/store';
+import exs from '../routes/ExpenseList/store';
+import exForm from '../routes/ExpenseForm/store';
 
 const history = createBrowserHistory();
 const sagaMiddleware = createSagaMiddleware({
@@ -49,6 +60,8 @@ const store = createStore(
         recovery,
         ins,
         inForm,
+        exs,
+        exForm,
     }),
     composeEnhancers(applyMiddleware(sagaMiddleware, routerMiddleware(history)))
 );
@@ -66,6 +79,12 @@ const saga = function* rootSaga() {
             watchFetchIncomeDetailRequest,
             watchEditIncomeRequest,
             watchAddIncomeRequest,
+            watchFetchExpenseListRequest,
+            watchDeleteExpenseRequest,
+            watchSaveExpensesRequest,
+            watchFetchExpenseDetailRequest,
+            watchEditExpenseRequest,
+            watchAddExpenseRequest,
         ].map(fork)
     );
 };

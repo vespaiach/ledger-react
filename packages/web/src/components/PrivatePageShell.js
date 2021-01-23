@@ -113,7 +113,10 @@ export default function PrivatePageShell({ children }) {
                 </AppBar>
             </Slide>
             <Toolbar style={{ height: 112 }} />
-            <Container maxWidth={false}>{children}</Container>
+            <Container maxWidth={false}>
+                {children}
+                <div style={{ height: 64 }} />
+            </Container>
         </>
     );
 }

@@ -9,6 +9,8 @@ import Recovery from '../routes/Recovery';
 import NotFound from '../routes/Errors/NotFound';
 import IncomeForm from '../routes/IncomeForm';
 import IncomeList from '../routes/IncomeList';
+import ExpenseForm from '../routes/ExpenseForm';
+import ExpenseList from '../routes/ExpenseList';
 import FlashMessage from '../components/FlashMessage';
 import PrivatePageShell from '../components/PrivatePageShell';
 import ConfirmDialog from '../components/ConfirmDialog';
@@ -53,8 +55,16 @@ function App() {
                                 path={['/portal/incomes/new', '/portal/incomes/:id(\\d+)']}>
                                 <IncomeForm />
                             </Route>
+                            <Route
+                                exact
+                                path={['/portal/expenses/new', '/portal/expenses/:id(\\d+)']}>
+                                <ExpenseForm />
+                            </Route>
                             <Route exact path="/portal/incomes">
                                 <IncomeList />
+                            </Route>
+                            <Route exact path="/portal/expenses">
+                                <ExpenseList />
                             </Route>
                             <Route>
                                 <Redirect to="/portal/reports" />

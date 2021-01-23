@@ -149,7 +149,7 @@ export default class ExpensesController {
       }),
     })
 
-    const exp = await Expense.firstOrFail(id)
+    const exp = await Expense.findOrFail(id)
     /**
      * Don't allow to update expense of others
      */
@@ -178,7 +178,7 @@ export default class ExpensesController {
   public async delete({ params, auth }: HttpContextContract) {
     const { id } = params
 
-    const exp = await Expense.firstOrFail(id)
+    const exp = await Expense.findOrFail(id)
     /**
      * Don't allow to delete expense of others
      */

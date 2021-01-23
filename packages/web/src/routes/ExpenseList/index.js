@@ -8,7 +8,6 @@ import {
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@material-ui/lab';
 
 import TransactionList from '../../components/TransationList';
-import TransactionDialog from '../../components/TransactionDialog';
 
 const useStyles = makeStyles((theme) => ({
     speedDial: {
@@ -28,20 +27,19 @@ const useStyles = makeStyles((theme) => ({
 
 export default function IncomeList() {
     const classes = useStyles();
-    const incomeList = useSelector((state) => state.ins.list);
-    const fetching = useSelector((state) => state.ins.loading);
-    const totalRecords = useSelector((state) => state.ins.totalRecords);
-    const fetchedTotalRecords = useSelector((state) => state.ins.fetchedTotalRecords);
+    const incomeList = useSelector((state) => state.exs.list);
+    const fetching = useSelector((state) => state.exs.loading);
+    const totalRecords = useSelector((state) => state.exs.totalRecords);
+    const fetchedTotalRecords = useSelector((state) => state.exs.fetchedTotalRecords);
 
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
-    const [transactionDetail, setTransactionDetail] = useState(null);
 
     const loaderRef = useRef(null);
     const resolver = useRef(null);
 
     /**
-     * After fetched income rows, call resolver to trigger table's render
+     * After fetched expense rows, call resolver to trigger table's render
      */
     useEffect(() => {
         if (fetching) {
@@ -57,33 +55,13 @@ export default function IncomeList() {
 
     const handleLoadMore = ({ startIndex, stopIndex }) => {
         dispatch({
-            type: 'Saga: request more income records',
+            type: 'Saga: request more expense records',
             payload: { startIndex, stopIndex },
         });
         return new Promise((resolve) => {
             resolver.current = resolve;
         });
     };
-
-    const handleDelete = (payload) =>
-        dispatch({
-            type: 'Reducer - app: confirm',
-            payload: {
-                title: 'Delete Transaction',
-                message: 'You are removing the transaction and this is a non-undoable action ',
-                type: 'delete',
-                payload: {
-                    type: 'Saga: remove income transation',
-                    payload,
-                },
-            },
-        });
-
-    const handleEdit = (payload) =>
-        dispatch({
-            type: 'Saga: edit income transation',
-            payload,
-        });
 
     return (
         <>
@@ -92,13 +70,27 @@ export default function IncomeList() {
                 data={incomeList}
                 totalRows={totalRecords}
                 onLoadMore={handleLoadMore}
-                onDelete={(index) => {
-                    handleDelete(incomeList[index].id);
-                }}
+                onDelete={(index) =>
+                    dispatch({
+                        type: 'Reducer - app: confirm',
+                        payload: {
+                            title: 'Delete Transaction',
+                            message:
+                                'You are removing the transaction and this is a non-undoable action ',
+                            type: 'delete',
+                            payload: {
+                                type: 'Saga: remove expense transation',
+                                payload: incomeList[index].id,
+                            },
+                        },
+                    })
+                }
                 onEdit={(index) => {
-                    handleEdit(incomeList[index].id);
+                    dispatch({
+                        type: 'Saga: edit expense transation',
+                        payload: incomeList[index].id,
+                    });
                 }}
-                onDetail={(index) => setTransactionDetail(incomeList[index])}
             />
             <SpeedDial
                 ariaLabel="SpeedDial example"
@@ -122,24 +114,13 @@ export default function IncomeList() {
                 />
                 <SpeedDialAction
                     icon={<AddRoundedIcon />}
-                    tooltipTitle="add income transaction"
+                    tooltipTitle="add expense transaction"
                     onClick={() => {
                         setOpen(false);
-                        dispatch({ type: 'Saga: add income transation' });
+                        dispatch({ type: 'Saga: add expense transation' });
                     }}
                 />
             </SpeedDial>
-            <TransactionDialog
-                open={transactionDetail !== null}
-                transactionDetail={transactionDetail}
-                onClose={() => setTransactionDetail(null)}
-                onDelete={(id) => {
-                    handleDelete(id);
-                }}
-                onEdit={(id) => {
-                    handleEdit(id);
-                }}
-            />
         </>
     );
 }
