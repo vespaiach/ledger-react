@@ -1,6 +1,6 @@
 FROM node:12 AS web_builder
 ARG NODE_ENV=production
-ARG REACT_APP_BASE_URL=/api
+ARG REACT_APP_BASE_API_URL=/api
 WORKDIR /app
 COPY ["./packages/web/package.json", "./packages/web/package-lock.json", "/app/"]
 RUN npm ci
