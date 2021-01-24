@@ -1,103 +1,158 @@
-import { Route, Redirect, Switch } from 'react-router-dom';
+import { CircularProgress, Backdrop } from '@material-ui/core';
+import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { CssBaseline, Snackbar, ThemeProvider, createMuiTheme } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { makeStyles } from '@material-ui/styles';
 
-import APIErrorModal from '../components/APIErrorModal';
-import Login from '../routes/User/Login';
-import Signup from '../routes/User/Signup';
-import BaseAppPage from './BaseAppPage';
-import Recovery from '../routes/User/Recovery';
+import Signup from '../routes/Signup';
+import Signin from '../routes/Signin';
+import Recovery from '../routes/Recovery';
 import NotFound from '../routes/Errors/NotFound';
+import IncomeForm from '../routes/IncomeForm';
+import IncomeList from '../routes/IncomeList';
+import ExpenseForm from '../routes/ExpenseForm';
+import ExpenseList from '../routes/ExpenseList';
+import FlashMessage from '../components/FlashMessage';
+import PrivatePageShell from '../components/PrivatePageShell';
+import ConfirmDialog from '../components/ConfirmDialog';
+import { useState, useMemo } from 'react';
+import SortDialog from '../components/SortDialog';
+import useCounting from '../hooks/useCounting';
 
-const theme = createMuiTheme({
-    typography: {
-        fontFamily: 'Encode Sans Expanded, sans-serif',
+const useStyles = makeStyles((theme) => ({
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
     },
-    palette: {
-        common: { black: '#000', white: '#fff' },
-        background: { paper: '#fff', default: '#fff' },
-        primary: {
-            light: 'rgba(142, 172, 187, 1)',
-            main: 'rgba(96, 125, 139, 1)',
-            dark: 'rgba(52, 81, 94, 1)',
-            contrastText: '#fff',
-        },
-        secondary: {
-            light: 'rgba(188, 156, 141, 1)',
-            main: 'rgba(139, 110, 96, 1)',
-            dark: 'rgba(93, 67, 54, 1)',
-            contrastText: '#fff',
-        },
-        error: {
-            light: '#e57373',
-            main: '#f44336',
-            dark: '#d32f2f',
-            contrastText: '#fff',
-        },
-        text: {
-            primary: 'rgba(0, 0, 0, 0.87)',
-            secondary: 'rgba(0, 0, 0, 0.54)',
-            disabled: 'rgba(0, 0, 0, 0.38)',
-            hint: 'rgba(0, 0, 0, 0.38)',
-        },
-    },
-});
+}));
 
 function App() {
-    const apiError = useSelector((state) => state.app.apiError);
-    const flashMessage = useSelector((state) => state.app.flashMessage || {});
-    const emergeFlashMessage = flashMessage.severity !== undefined && flashMessage.message !== undefined;
+    const location = useLocation();
+    const tabValue = useMemo(() => {
+        const tabIndex = {
+            '/portal/incomes/new': 0,
+            '/portal/incomes': 0,
+            '/portal/expenses': 1,
+            '/portal/expenses/new': 1,
+            '/portal/reports': 2,
+        };
+        if (tabIndex[location.pathname] !== undefined) {
+            return tabIndex[location.pathname];
+        } else {
+            if (/\/portal\/incomes\/\d+/gi.test(location.pathname)) {
+                return 0;
+            } else if (/\/portal\/expenses\/\d+/gi.test(location.pathname)) {
+                return 1;
+            }
+        }
+        return 2;
+    }, [location.pathname]);
 
+    const {
+        searchingCount,
+        sortingCount,
+        sort,
+        search,
+        onSortApply,
+        onSearchApply,
+        onSortReset,
+        onSearchReset,
+    } = useCounting(tabValue);
     const dispatch = useDispatch();
-    const close = () => dispatch({ type: 'CLEAR_API_ERROR' });
+    const classes = useStyles();
+    const loading = useSelector((state) => state.app.loading);
+    const flashMessage = useSelector((state) => state.app.flashMessage);
+    const flashMessageSeverity = useSelector((state) => state.app.flashMessageSeverity);
+    const confirm = useSelector((state) => state.app.confirm);
+    const showConfirmDialog = useMemo(() => Boolean(confirm), [confirm]);
+    const confirmObj = useMemo(() => confirm || {}, [confirm]);
+    const [dialog, setDialog] = useState('');
+
+    const handleClose = () => dispatch({ type: 'Reducer - app: clear flash message' });
 
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <APIErrorModal
-                code={apiError ? apiError.code : null}
-                messages={apiError ? apiError.messages : []}
-                open={apiError !== null}
-                onClose={close}
-            />
-
-            <Snackbar
-                open={emergeFlashMessage}
-                autoHideDuration={flashMessage.timeout}
-                onClose={() =>
-                    dispatch({
-                        type: 'Reducer - app: clear flash message',
-                    })
-                }
-            >
-                <Alert severity={flashMessage.severity}>{flashMessage.message}</Alert>
-            </Snackbar>
-
+        <>
             <Switch>
-                <Route exact path="/">
-                    <Redirect to="/portal/reports" />
-                </Route>
-                <Route path="/portal">
-                    <BaseAppPage />
-                </Route>
-                <Route exact path="/login">
-                    <Login />
+                <Route exact path="/signin">
+                    <Signin />
                 </Route>
                 <Route exact path="/signup">
                     <Signup />
                 </Route>
-                <Route exact path="/login">
-                    <Login />
-                </Route>
                 <Route exact path="/recovery">
                     <Recovery />
+                </Route>
+                <Route path="/portal">
+                    <PrivatePageShell
+                        tabValue={tabValue}
+                        searchingCount={searchingCount}
+                        sortingCount={sortingCount}
+                        onSearch={() => setDialog('search')}
+                        onSort={() => setDialog('sort')}>
+                        <Switch>
+                            <Route
+                                exact
+                                path={['/portal/incomes/new', '/portal/incomes/:id(\\d+)']}>
+                                <IncomeForm />
+                            </Route>
+                            <Route
+                                exact
+                                path={['/portal/expenses/new', '/portal/expenses/:id(\\d+)']}>
+                                <ExpenseForm />
+                            </Route>
+                            <Route exact path="/portal/incomes">
+                                <IncomeList />
+                            </Route>
+                            <Route exact path="/portal/expenses">
+                                <ExpenseList />
+                            </Route>
+                            <Route>
+                                <Redirect to="/portal/reports" />
+                            </Route>
+                        </Switch>
+                    </PrivatePageShell>
+                </Route>
+                <Route exact path="/">
+                    <Redirect to="/portal/reports" />
                 </Route>
                 <Route path="*">
                     <NotFound />
                 </Route>
             </Switch>
-        </ThemeProvider>
+            <Backdrop className={classes.backdrop} open={loading}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            <FlashMessage
+                open={Boolean(flashMessage)}
+                message={flashMessage}
+                severity={flashMessageSeverity}
+                timeout={3000}
+                onClose={handleClose}
+            />
+            <ConfirmDialog
+                open={showConfirmDialog}
+                title={confirmObj.title}
+                message={confirmObj.message}
+                type={confirmObj.type}
+                onYes={() =>
+                    dispatch({ type: confirmObj.payload.type, payload: confirmObj.payload.payload })
+                }
+                onNo={() => dispatch({ type: 'Reducer - app: clear confirm' })}
+            />
+            <SortDialog
+                date={sort.byDate}
+                amount={sort.byAmount}
+                open={dialog === 'sort'}
+                onClose={() => setDialog('')}
+                onReset={(payload) => {
+                    onSortReset(payload);
+                    setDialog(null);
+                }}
+                onApply={(payload) => {
+                    onSortApply(payload);
+                    setDialog(null);
+                }}
+            />
+        </>
     );
 }
 

@@ -1,13 +1,15 @@
-import { TextField, InputAdornment, makeStyles } from '@material-ui/core';
-import { AttachMoney as AttachMoneyIcon, CalendarToday as CalendarTodayIcon } from '@material-ui/icons';
+import { TextField, InputAdornment, makeStyles, Button } from '@material-ui/core';
+import {
+    AttachMoney as AttachMoneyIcon,
+    CalendarToday as CalendarTodayIcon,
+} from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useEffect } from 'react';
-import MoneyInput from './MoneyInput';
-import FormDialog from './FormDialog';
+import NumberFormat from 'react-number-format';
 
 const validationSchema = yup.object({
     amount: yup.number('Enter amount').required('Amount is required'),
@@ -16,31 +18,67 @@ const validationSchema = yup.object({
     description: yup.string('Enter description').required('Description is required'),
 });
 
+function MoneyInput(props) {
+    const { inputRef, onChange, ...rest } = props;
+
+    return (
+        <NumberFormat
+            {...rest}
+            getInputRef={inputRef}
+            onValueChange={(values) => {
+                onChange({
+                    target: {
+                        name: props.name,
+                        value: values.value,
+                    },
+                });
+            }}
+            thousandSeparator
+            isNumericString
+        />
+    );
+}
+
 const useStyles = makeStyles((theme) => ({
     adornment: {
         color: theme.palette.text.disabled,
         height: 16,
     },
+    form: {
+        '& .MuiFormControl-root': {
+            marginBottom: theme.spacing(2),
+        },
+    },
+    boxBtns: {
+        marginTop: theme.spacing(1),
+        display: 'flex',
+    },
+    btnSubmitRoot: {
+        flex: 1,
+        marginRight: theme.spacing(3),
+    },
+    btnCancelRoot: {
+        flex: '0 0 126px',
+    },
 }));
 
 export default function Form({
-    id,
-    amount,
-    date,
-    description,
-    category,
+    id = null,
+    amount = '',
+    date = null,
+    description = '',
+    category = '',
     categories = [],
     onSubmit,
     onCancel,
-    open,
-    title,
     loading,
-    fullScreen,
+    reset,
 }) {
     const classes = useStyles();
 
     const formik = useFormik({
         initialValues: {
+            id,
             amount,
             date,
             description,
@@ -50,33 +88,15 @@ export default function Form({
         onSubmit,
     });
 
-    /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(() => {
-        if (open) {
-            formik.setValues(
-                {
-                    id,
-                    amount,
-                    date,
-                    description,
-                    category,
-                },
-                false
-            );
-        } else {
+        if (reset && formik) {
             formik.resetForm();
         }
-    }, [id, amount, date, description, category, open]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [reset]);
 
     return (
-        <FormDialog
-            fullScreen={fullScreen}
-            title={title}
-            open={open}
-            onClose={onCancel}
-            onSubmit={formik.handleSubmit}
-            loading={loading}
-        >
+        <form onSubmit={formik.handleSubmit} className={classes.form}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <DateTimePicker
                     clearable
@@ -105,8 +125,7 @@ export default function Form({
                                 position="end"
                                 classes={{
                                     root: classes.adornment,
-                                }}
-                            >
+                                }}>
                                 <CalendarTodayIcon />
                             </InputAdornment>
                         ),
@@ -131,8 +150,7 @@ export default function Form({
                             position="end"
                             classes={{
                                 root: classes.adornment,
-                            }}
-                        >
+                            }}>
                             <AttachMoneyIcon />
                         </InputAdornment>
                     ),
@@ -146,6 +164,7 @@ export default function Form({
                 onChange={(_, value, source) => {
                     if (source === 'remove-option' || source === 'select-option') {
                         formik.handleChange({
+                            name: 'category',
                             target: { name: 'category', value },
                         });
                     }
@@ -182,6 +201,23 @@ export default function Form({
                 helperText={formik.touched.description && formik.errors.description}
                 fullWidth
             />
-        </FormDialog>
+            <div className={classes.boxBtns}>
+                <Button
+                    type="submit"
+                    color="primary"
+                    classes={{ root: classes.btnSubmitRoot }}
+                    size="large"
+                    variant="contained">
+                    Submit
+                </Button>
+                <Button
+                    size="large"
+                    onClick={onCancel}
+                    variant="contained"
+                    classes={{ root: classes.btnCancelRoot }}>
+                    Cancel
+                </Button>
+            </div>
+        </form>
     );
 }

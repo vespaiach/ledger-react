@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
         zIndex: 100,
         backgroundColor: 'rgba(0, 0, 0, 0.04)',
     },
-
     listItemButton: {
         width: 132,
         flexFlow: 'column nowrap',
@@ -68,8 +67,7 @@ export default function Menu({ className }) {
                         selected: classes.listItemSelected,
                     }}
                     selected={reportMatch !== null}
-                    onClick={goto('/portal/reports')}
-                >
+                    onClick={goto('/portal/reports')}>
                     <PollIcon />
                     <ListItemText primary="Reports" />
                 </ListItem>
@@ -80,8 +78,7 @@ export default function Menu({ className }) {
                         selected: classes.listItemSelected,
                     }}
                     selected={expensesMatch !== null}
-                    onClick={goto('/portal/expenses')}
-                >
+                    onClick={goto('/portal/expenses')}>
                     <TextBoxMinusIcon />
                     <ListItemText primary="Expenses" />
                 </ListItem>
@@ -92,8 +89,7 @@ export default function Menu({ className }) {
                         selected: classes.listItemSelected,
                     }}
                     selected={incomesMatch !== null}
-                    onClick={goto('/portal/incomes')}
-                >
+                    onClick={goto('/portal/incomes')}>
                     <TextBoxPlusIcon />
                     <ListItemText primary="Incomes" />
                 </ListItem>
@@ -105,8 +101,7 @@ export default function Menu({ className }) {
                     }}
                     onClick={() => {
                         dispatch({ type: 'Saga: force relogin' });
-                    }}
-                >
+                    }}>
                     <MeetingRoom />
                     <ListItemText primary="Exit" />
                 </ListItem>

@@ -46,8 +46,9 @@ Route.group(() => {
     Route.get('logout', 'UsersController.logout')
   }).middleware('auth')
 
-  Route.post('login', 'UsersController.login')
-  Route.post('register', 'UsersController.register')
+  Route.post('signin', 'UsersController.login')
+  Route.post('signup', 'UsersController.register')
+  Route.post('recovery', 'UsersController.recovery')
 })
   .prefix('api')
   .where('id', /^[0-9]+$/)

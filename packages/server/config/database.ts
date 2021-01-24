@@ -44,7 +44,7 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
         database: Env.get('PG_DB_NAME', 'budgets'),
       },
       healthCheck: false,
-      debug: false,
+      debug: true,
     },
   },
 
