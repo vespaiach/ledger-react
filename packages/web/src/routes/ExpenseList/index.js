@@ -8,6 +8,7 @@ import {
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@material-ui/lab';
 
 import TransactionList from '../../components/TransationList';
+import TransactionDialog from '../../components/TransactionDialog';
 
 const useStyles = makeStyles((theme) => ({
     speedDial: {
@@ -27,13 +28,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function IncomeList() {
     const classes = useStyles();
-    const incomeList = useSelector((state) => state.exs.list);
+    const expenseList = useSelector((state) => state.exs.list);
     const fetching = useSelector((state) => state.exs.loading);
     const totalRecords = useSelector((state) => state.exs.totalRecords);
     const fetchedTotalRecords = useSelector((state) => state.exs.fetchedTotalRecords);
 
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
+    const [transactionDetail, setTransactionDetail] = useState(null);
 
     const loaderRef = useRef(null);
     const resolver = useRef(null);
@@ -63,34 +65,40 @@ export default function IncomeList() {
         });
     };
 
+    const handleDelete = (payload) =>
+        dispatch({
+            type: 'Reducer - app: confirm',
+            payload: {
+                title: 'Delete Transaction',
+                message: 'You are removing the transaction and this is a non-undoable action ',
+                type: 'delete',
+                payload: {
+                    type: 'Saga: remove expense transation',
+                    payload,
+                },
+            },
+        });
+
+    const handleEdit = (payload) =>
+        dispatch({
+            type: 'Saga: edit expense transation',
+            payload,
+        });
+
     return (
         <>
             <TransactionList
                 loaderRef={loaderRef}
-                data={incomeList}
+                data={expenseList}
                 totalRows={totalRecords}
                 onLoadMore={handleLoadMore}
-                onDelete={(index) =>
-                    dispatch({
-                        type: 'Reducer - app: confirm',
-                        payload: {
-                            title: 'Delete Transaction',
-                            message:
-                                'You are removing the transaction and this is a non-undoable action ',
-                            type: 'delete',
-                            payload: {
-                                type: 'Saga: remove expense transation',
-                                payload: incomeList[index].id,
-                            },
-                        },
-                    })
-                }
-                onEdit={(index) => {
-                    dispatch({
-                        type: 'Saga: edit expense transation',
-                        payload: incomeList[index].id,
-                    });
+                onDelete={(index) => {
+                    handleDelete(expenseList[index].id);
                 }}
+                onEdit={(index) => {
+                    handleEdit(expenseList[index].id);
+                }}
+                onDetail={(index) => setTransactionDetail(expenseList[index])}
             />
             <SpeedDial
                 ariaLabel="SpeedDial example"
@@ -121,6 +129,17 @@ export default function IncomeList() {
                     }}
                 />
             </SpeedDial>
+            <TransactionDialog
+                open={transactionDetail !== null}
+                transactionDetail={transactionDetail}
+                onClose={() => setTransactionDetail(null)}
+                onDelete={(id) => {
+                    handleDelete(id);
+                }}
+                onEdit={(id) => {
+                    handleEdit(id);
+                }}
+            />
         </>
     );
 }

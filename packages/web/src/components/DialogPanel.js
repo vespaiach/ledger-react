@@ -1,39 +1,80 @@
-import { Dialog, useMediaQuery, Slide } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { DialogTitle, Container, Dialog, IconButton, Paper, Slide } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { forwardRef } from 'react';
+import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';
 
 const SlideUp = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const ExtendedPaper = forwardRef(function ExtendedPaper({ btnCloseRoot, onClose, ...other }, ref) {
+    return (
+        <>
+            <IconButton
+                classes={{ root: btnCloseRoot }}
+                onClick={(evt) => {
+                    evt.stopPropagation();
+                    if (onClose) {
+                        onClose();
+                    }
+                }}>
+                <CloseRoundedIcon />
+            </IconButton>
+            <Paper ref={ref} {...other} />
+        </>
+    );
+});
+
 const useStyles = makeStyles((theme) => ({
-    dialogScrollPaper: {
-        [theme.breakpoints.down('xs')]: {
-            marginTop: theme.spacing(6),
+    dialogRoot: {
+        '& .MuiBackdrop-root': {
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
         },
+    },
+    btnCloseRoot: {
+        color: 'white',
+    },
+    dialogScrollPaper: {
+        flexFlow: 'column nowrap',
     },
     dialogPaperFullScreen: {
         borderTopLeftRadius: 8,
         borderTopRightRadius: 8,
     },
+    boxContent: {
+        background: 'rgba(0,0,0,0.07)',
+        padding: theme.spacing(3),
+    },
 }));
 
-export default function DialogPanel({ open, children, ...rest }) {
-    const theme = useTheme();
-    const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+export default function DialogPanel({ open, title, footer, children, onClose, ...rest }) {
     const classes = useStyles();
 
     return (
         <Dialog
             {...rest}
-            fullScreen={mobile}
+            fullScreen
             classes={{
+                root: classes.dialogRoot,
                 scrollPaper: classes.dialogScrollPaper,
                 paperFullScreen: classes.dialogPaperFullScreen,
             }}
             open={open}
-            TransitionComponent={mobile ? SlideUp : undefined}>
-            {children}
+            onClose={onClose}
+            PaperComponent={ExtendedPaper}
+            PaperProps={{ btnCloseRoot: classes.btnCloseRoot, onClose }}
+            TransitionComponent={SlideUp}>
+            <Container maxWidth="xs" disableGutters>
+                {title}
+            </Container>
+            <div className={classes.boxContent}>
+                <Container maxWidth="xs" disableGutters>
+                    {children}
+                </Container>
+            </div>
+            <Container maxWidth="xs" disableGutters>
+                {footer}
+            </Container>
         </Dialog>
     );
 }

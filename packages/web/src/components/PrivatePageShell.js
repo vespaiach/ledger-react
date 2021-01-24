@@ -8,15 +8,19 @@ import {
     IconButton,
     Slide,
     useScrollTrigger,
+    Badge,
 } from '@material-ui/core';
 import {
-    ExitToAppOutlined as ExitToAppOutlinedIcon,
+    ExitToAppRounded as ExitToAppOutlinedIcon,
     MenuBookOutlined as MenuBookOutlinedIcon,
+    SortRounded as SortRoundedIcon,
+    SearchRounded as SearchRoundedIcon,
 } from '@material-ui/icons';
+
 import { makeStyles } from '@material-ui/core/styles';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMemo, useEffect } from 'react';
+import { useEffect } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     appbarRoot: {
@@ -35,33 +39,27 @@ const useStyles = makeStyles((theme) => ({
     boxGrow: {
         flexGrow: 1,
     },
+    badge: {
+        right: -3,
+        top: 3,
+        border: `2px solid ${theme.palette.background.paper}`,
+        padding: '0 4px',
+    },
 }));
 
-export default function PrivatePageShell({ children }) {
+export default function PrivatePageShell({
+    children,
+    tabValue,
+    onEdit,
+    onSearch,
+    onSort,
+    searchingCount,
+    sortingCount,
+}) {
     const dispatch = useDispatch();
     const trigger = useScrollTrigger();
     const me = useSelector((state) => state.app.me);
     const classes = useStyles();
-    const location = useLocation();
-    const tabValue = useMemo(() => {
-        const tabIndex = {
-            '/portal/incomes/new': 0,
-            '/portal/incomes': 0,
-            '/portal/expenses': 1,
-            '/portal/expenses/new': 1,
-            '/portal/reports': 2,
-        };
-        if (tabIndex[location.pathname] !== undefined) {
-            return tabIndex[location.pathname];
-        } else {
-            if (/\/portal\/incomes\/\d+/gi.test(location.pathname)) {
-                return 0;
-            } else if (/\/portal\/expenses\/\d+/gi.test(location.pathname)) {
-                return 1;
-            }
-        }
-        return 2;
-    }, [location.pathname]);
 
     useEffect(() => {
         if (!me) {
@@ -73,6 +71,36 @@ export default function PrivatePageShell({ children }) {
         return <div style={{ height: '100vh' }} />;
     }
 
+    let el = null;
+    if (tabValue !== 2) {
+        el = (
+            <>
+                <IconButton
+                    aria-label="search transactions"
+                    title="search transactions"
+                    onClick={onSearch}>
+                    <Badge
+                        badgeContent={searchingCount}
+                        classes={{ badge: classes.badge }}
+                        color="secondary">
+                        <SearchRoundedIcon />
+                    </Badge>
+                </IconButton>
+                <IconButton
+                    aria-label="sort transactions"
+                    title="sort transactions"
+                    onClick={onSort}>
+                    <Badge
+                        badgeContent={sortingCount}
+                        classes={{ badge: classes.badge }}
+                        color="secondary">
+                        <SortRoundedIcon />
+                    </Badge>
+                </IconButton>
+            </>
+        );
+    }
+
     return (
         <>
             <Slide appear={false} direction="down" in={!trigger}>
@@ -82,7 +110,12 @@ export default function PrivatePageShell({ children }) {
                         <Typography variant="h6" className={classes.boxGrow}>
                             Ledger
                         </Typography>
-                        <IconButton edge="end" aria-label="exit application">
+                        {el}
+                        <IconButton
+                            edge="end"
+                            aria-label="exit application"
+                            title="exit application"
+                            onClick={onEdit}>
                             <ExitToAppOutlinedIcon />
                         </IconButton>
                     </Toolbar>

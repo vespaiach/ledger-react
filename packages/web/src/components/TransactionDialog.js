@@ -1,4 +1,5 @@
 import {
+    Container,
     Button,
     Card,
     CardActionArea,
@@ -8,7 +9,9 @@ import {
     ListItemText,
     Typography,
     ListItemIcon,
+    DialogTitle,
     List,
+    DialogActions,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -85,20 +88,10 @@ export default function TransactionDialog({ open, transactionDetail, onClose, on
     }
 
     return (
-        <DialogPanel open={open}>
-            <Card className={classes.cardRoot} elevation={0}>
-                <CardActionArea>
-                    <CardContent>
-                        <Typography
-                            variant="h5"
-                            component="h3"
-                            classes={{ root: classes.cardTitleRoot }}>
-                            Transaction's Details
-                        </Typography>
-                        {el}
-                    </CardContent>
-                </CardActionArea>
-                <CardActions>
+        <DialogPanel
+            title={<DialogTitle id="detail-dialog-title">Transaction's Details</DialogTitle>}
+            footer={
+                <DialogActions>
                     <Button
                         size="small"
                         color="primary"
@@ -115,12 +108,12 @@ export default function TransactionDialog({ open, transactionDetail, onClose, on
                         }}>
                         Delete
                     </Button>
-                    <div className={classes.grow} />
-                    <Button size="small" color="primary" onClick={onClose}>
-                        Close
-                    </Button>
-                </CardActions>
-            </Card>
+                </DialogActions>
+            }
+            open={open}
+            onClose={onClose}
+            aria-labelledby="detail-dialog-title">
+            {el}
         </DialogPanel>
     );
 }

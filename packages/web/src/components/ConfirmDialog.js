@@ -4,6 +4,10 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    Card,
+    CardContent,
+    Container,
+    CardActionArea,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -14,22 +18,15 @@ import {
 import DialogPanel from './DialogPanel';
 
 const useStyles = makeStyles((theme) => ({
-    boxCard: {
-        display: 'flex',
-        minWidth: 320,
-        [theme.breakpoints.up('sm')]: {
-            width: 420,
-        },
-    },
     boxCardContent: {
-        flex: 1,
+        display: 'flex',
     },
     titleRoot: {
         color: theme.palette.warning.main,
     },
     iconRoot: {
-        marginTop: theme.spacing(2),
-        marginLeft: theme.spacing(3),
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(3),
         width: '4rem',
         height: '4rem',
         color: theme.palette.warning.main,
@@ -37,14 +34,20 @@ const useStyles = makeStyles((theme) => ({
     btnOk: {
         color: theme.palette.warning.main,
     },
-    dialogScrollPaper: {
-        [theme.breakpoints.down('xs')]: {
-            marginTop: theme.spacing(6),
-        },
-    },
     dialogPaperFullScreen: {
         borderTopLeftRadius: 8,
         borderTopRightRadius: 8,
+    },
+    cardTitleRoot: {
+        marginBottom: theme.spacing(3),
+    },
+    cardRoot: {
+        '& .MuiCardActionArea-focusHighlight': {
+            opacity: 0.04,
+        },
+    },
+    contentText: {
+        marginBottom: 0,
     },
 }));
 
@@ -53,34 +56,35 @@ export default function ConfirmDialog({ open, title, type, message, onYes, onNo,
 
     return (
         <DialogPanel
+            title={
+                <DialogTitle id="alert-dialog-title" classes={{ root: classes.titleRoot }}>
+                    {title}
+                </DialogTitle>
+            }
+            footer={
+                <DialogActions>
+                    <Button onClick={onYes} classes={{ root: classes.btnOk }}>
+                        Do it
+                    </Button>
+                    <Button onClick={onNo} color="primary" autoFocus>
+                        cancel
+                    </Button>
+                </DialogActions>
+            }
             open={open}
-            ariaLabelledby="alert-dialog-title"
-            ariaDescribedby="alert-dialog-description">
-            <div className={classes.boxCard}>
+            onClose={onClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description">
+            <div className={classes.boxCardContent}>
                 {type === 'delete' ? (
                     <DeleteRoundedIcon classes={{ root: classes.iconRoot }} />
                 ) : (
                     <WarningRoundedIcon classes={{ root: classes.iconRoot }} />
                 )}
-                <div className={classes.boxCardContent}>
-                    <DialogTitle id="alert-dialog-title" classes={{ root: classes.titleRoot }}>
-                        {title}
-                    </DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            {message}
-                        </DialogContentText>
-                    </DialogContent>
-                </div>
+                <DialogContentText id="alert-dialog-description" className={classes.contentText}>
+                    {message}
+                </DialogContentText>
             </div>
-            <DialogActions>
-                <Button onClick={onYes} classes={{ root: classes.btnOk }}>
-                    Do it
-                </Button>
-                <Button onClick={onNo} color="primary" autoFocus>
-                    cancel
-                </Button>
-            </DialogActions>
         </DialogPanel>
     );
 }

@@ -6,6 +6,24 @@ const defaultState = {
     flashMessageSeverity: '',
     confirm: null,
     me: null,
+    inSort: {
+        byAmount: '',
+        byDate: '-',
+    },
+    exSort: {
+        byAmount: '',
+        byDate: '-',
+    },
+    inSearch: {
+        byDate: '',
+        byAmount: '',
+        byCategory: '',
+    },
+    exSearch: {
+        byDate: '',
+        byAmount: '',
+        byCategory: '',
+    },
 };
 
 export default createReducer(defaultState, {
@@ -27,4 +45,34 @@ export default createReducer(defaultState, {
 
     'Reducer - app: confirm': (state, { payload: confirm }) => ({ ...state, confirm }),
     'Reducer - app: clear confirm': (state) => ({ ...state, confirm: null }),
+
+    'Reducer - app: reset insort': (state) => ({ ...state, inSort: { ...defaultState.inSort } }),
+    'Reducer - app: apply insort': (state, { payload }) => ({
+        ...state,
+        inSort: { date: payload.byDate, amount: payload.byAmount },
+    }),
+
+    'Reducer - app: reset insearch': (state) => ({
+        ...state,
+        inSearch: { ...defaultState.inSearch },
+    }),
+    'Reducer - app: apply insearch': (state, { payload }) => ({
+        ...state,
+        inSearch: { date: payload.byDate, amount: payload.byAmount },
+    }),
+
+    'Reducer - app: reset exsort': (state) => ({ ...state, exSort: { ...defaultState.exSort } }),
+    'Reducer - app: apply exsort': (state, { payload }) => ({
+        ...state,
+        exSort: { date: payload.byDate, amount: payload.byAmount },
+    }),
+
+    'Reducer - app: reset exsearch': (state) => ({
+        ...state,
+        exSearch: { ...defaultState.exSearch },
+    }),
+    'Reducer - app: apply exsearch': (state, { payload }) => ({
+        ...state,
+        exSearch: { date: payload.byDate, amount: payload.byAmount },
+    }),
 });
