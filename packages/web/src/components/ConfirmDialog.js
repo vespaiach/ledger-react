@@ -1,14 +1,4 @@
-import {
-    Button,
-    DialogContentText,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    Card,
-    CardContent,
-    Container,
-    CardActionArea,
-} from '@material-ui/core';
+import { Button, DialogContentText, DialogActions, DialogTitle } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     DeleteForeverRounded as DeleteRoundedIcon,
@@ -19,6 +9,7 @@ import DialogPanel from './DialogPanel';
 
 const useStyles = makeStyles((theme) => ({
     boxCardContent: {
+        padding: theme.spacing(4, 3, 3, 3),
         display: 'flex',
     },
     titleRoot: {
@@ -33,18 +24,6 @@ const useStyles = makeStyles((theme) => ({
     },
     btnOk: {
         color: theme.palette.warning.main,
-    },
-    dialogPaperFullScreen: {
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8,
-    },
-    cardTitleRoot: {
-        marginBottom: theme.spacing(3),
-    },
-    cardRoot: {
-        '& .MuiCardActionArea-focusHighlight': {
-            opacity: 0.04,
-        },
     },
     contentText: {
         marginBottom: 0,

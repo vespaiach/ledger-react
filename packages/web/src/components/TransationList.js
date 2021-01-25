@@ -2,7 +2,7 @@ import { List, ListItem, Typography, IconButton, Divider } from '@material-ui/co
 import clsx from 'clsx';
 import {
     EditRounded as EditRoundedIcon,
-    DeleteRounded as DeleteRoundedIcon,
+    DeleteForeverRounded as DeleteRoundedIcon,
 } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { AutoSizer, List as VirtualList, WindowScroller, InfiniteLoader } from 'react-virtualized';

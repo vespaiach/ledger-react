@@ -17,6 +17,7 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import { useState, useMemo } from 'react';
 import SortDialog from '../components/SortDialog';
 import useCounting from '../hooks/useCounting';
+import SearchDialog from '../components/SearchingDialog';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -26,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function App() {
+    const dispatch = useDispatch();
     const location = useLocation();
     const tabValue = useMemo(() => {
         const tabIndex = {
@@ -47,17 +49,27 @@ function App() {
         return 2;
     }, [location.pathname]);
 
+    const incomeSorting = useSelector((state) => state.ins.sort);
+    const incomeSearching = useSelector((state) => state.ins.search);
+    const expenseSorting = useSelector((state) => state.exs.sort);
+    const expenseSearching = useSelector((state) => state.exs.search);
     const {
         searchingCount,
         sortingCount,
-        sort,
-        search,
+        searching,
+        sorting,
         onSortApply,
         onSearchApply,
         onSortReset,
         onSearchReset,
-    } = useCounting(tabValue);
-    const dispatch = useDispatch();
+    } = useCounting({
+        tabValue,
+        incomeSearching,
+        incomeSorting,
+        expenseSearching,
+        expenseSorting,
+        dispatch,
+    });
     const classes = useStyles();
     const loading = useSelector((state) => state.app.loading);
     const flashMessage = useSelector((state) => state.app.flashMessage);
@@ -139,18 +151,36 @@ function App() {
                 onNo={() => dispatch({ type: 'Reducer - app: clear confirm' })}
             />
             <SortDialog
-                date={sort.byDate}
-                amount={sort.byAmount}
+                date={sorting.byDate}
+                amount={sorting.byAmount}
                 open={dialog === 'sort'}
                 onClose={() => setDialog('')}
-                onReset={(payload) => {
-                    onSortReset(payload);
+                onReset={() => {
+                    onSortReset();
                     setDialog(null);
                 }}
                 onApply={(payload) => {
                     onSortApply(payload);
                     setDialog(null);
                 }}
+            />
+            <SearchDialog
+                onClose={() => setDialog('')}
+                open={dialog === 'search'}
+                dateFrom={searching.byDateFrom}
+                dateTo={searching.byDateTo}
+                amountFrom={searching.byAmountFrom}
+                amountTo={searching.byAmountTo}
+                category={searching.byCategory}
+                onReset={() => {
+                    onSearchReset();
+                    setDialog(null);
+                }}
+                onApply={(payload) => {
+                    onSearchApply(payload);
+                    setDialog(null);
+                }}
+                categories={[]}
             />
         </>
     );

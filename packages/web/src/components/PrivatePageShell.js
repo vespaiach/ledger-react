@@ -9,12 +9,13 @@ import {
     Slide,
     useScrollTrigger,
     Badge,
+    Divider,
 } from '@material-ui/core';
 import {
-    ExitToAppRounded as ExitToAppOutlinedIcon,
-    MenuBookOutlined as MenuBookOutlinedIcon,
+    MenuBookRounded as MenuBookRoundedIcon,
     SortRounded as SortRoundedIcon,
     SearchRounded as SearchRoundedIcon,
+    MenuRounded as MenuRoundedIcon,
 } from '@material-ui/icons';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -44,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
         top: 3,
         border: `2px solid ${theme.palette.background.paper}`,
         padding: '0 4px',
+    },
+    lineHeight: {
+        height: 24,
     },
 }));
 
@@ -97,6 +101,11 @@ export default function PrivatePageShell({
                         <SortRoundedIcon />
                     </Badge>
                 </IconButton>
+                <Divider
+                    orientation="vertical"
+                    variant="middle"
+                    classes={{ root: classes.lineHeight }}
+                />
             </>
         );
     }
@@ -106,17 +115,17 @@ export default function PrivatePageShell({
             <Slide appear={false} direction="down" in={!trigger}>
                 <AppBar color="default" classes={{ root: classes.appbarRoot }}>
                     <Toolbar>
-                        <MenuBookOutlinedIcon classes={{ root: classes.logoRoot }} />
+                        <MenuBookRoundedIcon classes={{ root: classes.logoRoot }} />
                         <Typography variant="h6" className={classes.boxGrow}>
                             Ledger
                         </Typography>
                         {el}
                         <IconButton
                             edge="end"
-                            aria-label="exit application"
-                            title="exit application"
+                            aria-label="setting application"
+                            title="setting application"
                             onClick={onEdit}>
-                            <ExitToAppOutlinedIcon />
+                            <MenuRoundedIcon />
                         </IconButton>
                     </Toolbar>
                     <Tabs

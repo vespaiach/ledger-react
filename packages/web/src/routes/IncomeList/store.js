@@ -7,13 +7,15 @@ const defaultPerPage = 20;
 const defaultState = {
     list: new Array(estimateRecord),
     sort: {
-        field: 'date',
-        direction: 'desc',
+        byAmount: '',
+        byDate: '-',
     },
-    lookup: {
-        dateFrom: null,
-        dateTo: null,
-        category: '',
+    search: {
+        byAmountFrom: '',
+        byAmountTo: '',
+        byCategory: '',
+        byDateFrom: null,
+        byDateTo: null,
     },
     totalRecords: estimateRecord,
     totalPages:
@@ -107,5 +109,29 @@ export default createReducer(defaultState, {
         fetchedTotalRecords: false,
         fetchedPages: defaultState.fetchedPages,
         totalRecords: defaultState.totalRecords,
+    }),
+
+    'Reducer - ins: reset income sorting': (state) => ({
+        ...state,
+        sort: { ...defaultState.sort },
+    }),
+    'Reducer - ins: apply income sorting': (state, { payload }) => ({
+        ...state,
+        sort: { byAmount: payload.byAmount, byDate: payload.byDate },
+    }),
+
+    'Reducer - ins: reset income searching': (state) => ({
+        ...state,
+        search: { ...defaultState.search },
+    }),
+    'Reducer - ins: apply income searching': (state, { payload }) => ({
+        ...state,
+        search: {
+            byAmountTo: payload.byAmountTo,
+            byAmountFrom: payload.byAmountFrom,
+            byDateFrom: payload.byDateFrom,
+            byDateTo: payload.byDateTo,
+            byCategory: payload.byCategory,
+        },
     }),
 });

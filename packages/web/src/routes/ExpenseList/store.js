@@ -7,13 +7,15 @@ const defaultPerPage = 20;
 const defaultState = {
     list: new Array(estimateRecord),
     sort: {
-        field: 'date',
-        direction: 'desc',
+        byAmount: '',
+        byDate: '-',
     },
-    lookup: {
-        dateFrom: null,
-        dateTo: null,
-        category: '',
+    search: {
+        byAmountFrom: '',
+        byAmountTo: '',
+        byDateFrom: null,
+        byDateTo: null,
+        byCategory: '',
     },
     totalRecords: estimateRecord,
     totalPages:
@@ -107,4 +109,28 @@ export default createReducer(defaultState, {
 
     'Reducer - exs: set fetching on': (state) => ({ ...state, fetching: true }),
     'Reducer - exs: set fetching off': (state) => ({ ...state, fetching: false }),
+
+    'Reducer - exs: reset expense sorting': (state) => ({
+        ...state,
+        sort: { ...defaultState.sort },
+    }),
+    'Reducer - exs: apply expense sorting': (state, { payload }) => ({
+        ...state,
+        sort: { byAmount: payload.byAmount, byDate: payload.byDate },
+    }),
+
+    'Reducer - exs: reset expense searching': (state) => ({
+        ...state,
+        search: { ...defaultState.search },
+    }),
+    'Reducer - exs: apply expense searching': (state, { payload }) => ({
+        ...state,
+        search: {
+            byAmountTo: payload.byAmountTo,
+            byAmountFrom: payload.byAmountFrom,
+            byDateFrom: payload.byDateFrom,
+            byDateTo: payload.byDateTo,
+            byCategory: payload.byCategory,
+        },
+    }),
 });
