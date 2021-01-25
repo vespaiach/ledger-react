@@ -1,4 +1,4 @@
-import { DialogTitle, Container, Dialog, IconButton, Paper, Slide } from '@material-ui/core';
+import { Container, Dialog, IconButton, Paper, Slide } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { forwardRef } from 'react';
 import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';
@@ -43,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
     },
     boxContent: {
         background: 'rgba(0,0,0,0.07)',
-        padding: theme.spacing(3),
     },
 }));
 

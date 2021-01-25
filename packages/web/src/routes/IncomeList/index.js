@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     KeyboardArrowUpRounded as KeyboardArrowUpRoundedIcon,
@@ -9,6 +9,8 @@ import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@material-ui/lab';
 
 import TransactionList from '../../components/TransationList';
 import TransactionDialog from '../../components/TransactionDialog';
+import NoResult from '../../components/NoResult';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     speedDial: {
@@ -27,11 +29,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function IncomeList() {
+    const history = useHistory();
     const classes = useStyles();
     const incomeList = useSelector((state) => state.ins.list);
     const fetching = useSelector((state) => state.ins.loading);
     const totalRecords = useSelector((state) => state.ins.totalRecords);
     const fetchedTotalRecords = useSelector((state) => state.ins.fetchedTotalRecords);
+    const search = useSelector((state) => state.ins.search);
+    const hasFilter = useMemo(() => Object.values(search).filter((s) => !!s).length > 0, [search]);
 
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
@@ -85,8 +90,9 @@ export default function IncomeList() {
             payload,
         });
 
-    return (
-        <>
+    let el = null;
+    if (totalRecords > 0) {
+        el = (
             <TransactionList
                 loaderRef={loaderRef}
                 data={incomeList}
@@ -100,6 +106,23 @@ export default function IncomeList() {
                 }}
                 onDetail={(index) => setTransactionDetail(incomeList[index])}
             />
+        );
+    } else {
+        el = (
+            <NoResult
+                hasFilter={hasFilter}
+                onClear={() => {
+                    dispatch({ type: 'Reducer - ins: reset income searching' });
+                    dispatch({ type: 'Reducer - ins: clear list of incomes' });
+                }}
+                onAdd={() => history.push('/portal/incomes/new')}
+            />
+        );
+    }
+
+    return (
+        <>
+            {el}
             <SpeedDial
                 ariaLabel="SpeedDial example"
                 className={classes.speedDial}

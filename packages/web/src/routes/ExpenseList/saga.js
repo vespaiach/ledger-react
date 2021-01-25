@@ -1,26 +1,14 @@
 import { select, all, debounce, put, call, takeEvery } from 'redux-saga/effects';
-import { safeCall } from '../../utils/saga';
+import { safeCall, buildParams } from '../../utils/saga';
 import http from '../../utils/http';
 
 function* fetchMoreExpenses(page) {
-    const { sort, lookup } = yield select((state) => state.exs);
+    const { sort, search } = yield select((state) => state.exs);
 
-    const params = {
-        pg: page,
-        by: `${sort.direction === 'desc' ? '-' : ''}${sort.field}`,
-        perPage: 100,
-    };
-    if (lookup.dateFrom) {
-        params.from = lookup.dateFrom;
-    }
-    if (lookup.dateTo) {
-        params.to = lookup.dateTo;
-    }
-    if (lookup.category) {
-        params.cate = lookup.category;
-    }
+    const response = yield safeCall(
+        call(http.get, { ep: '/expenses', params: buildParams(search, sort, page) })
+    );
 
-    const response = yield safeCall(call(http.get, { ep: '/expenses', params }));
     if (response.ok) {
         yield put({
             type: 'Reducer - exs: save expense records',
@@ -37,19 +25,11 @@ function* fetchTotalRecords() {
         return;
     }
 
-    const { lookup } = yield select((state) => state.exs);
-    const params = {};
-    if (lookup.dateFrom) {
-        params.from = lookup.dateFrom;
-    }
-    if (lookup.dateTo) {
-        params.to = lookup.dateTo;
-    }
-    if (lookup.category) {
-        params.cate = lookup.category;
-    }
+    const search = yield select((state) => state.exs.search);
 
-    const response = yield safeCall(call(http.get, { ep: '/expenses/count', params }));
+    const response = yield safeCall(
+        call(http.get, { ep: '/expenses/count', params: buildParams(search, null, null) })
+    );
 
     if (response.ok) {
         yield put({

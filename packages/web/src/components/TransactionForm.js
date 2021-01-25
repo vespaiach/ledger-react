@@ -9,7 +9,8 @@ import DateFnsUtils from '@date-io/date-fns';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useEffect } from 'react';
-import NumberFormat from 'react-number-format';
+
+import MoneyInput from './MoneyInput';
 
 const validationSchema = yup.object({
     amount: yup.number('Enter amount').required('Amount is required'),
@@ -17,27 +18,6 @@ const validationSchema = yup.object({
     category: yup.string('Enter category').required('Category is required'),
     description: yup.string('Enter description').required('Description is required'),
 });
-
-function MoneyInput(props) {
-    const { inputRef, onChange, ...rest } = props;
-
-    return (
-        <NumberFormat
-            {...rest}
-            getInputRef={inputRef}
-            onValueChange={(values) => {
-                onChange({
-                    target: {
-                        name: props.name,
-                        value: values.value,
-                    },
-                });
-            }}
-            thousandSeparator
-            isNumericString
-        />
-    );
-}
 
 const useStyles = makeStyles((theme) => ({
     adornment: {

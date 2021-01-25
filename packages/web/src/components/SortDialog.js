@@ -9,13 +9,13 @@ import {
     Button,
     makeStyles,
 } from '@material-ui/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import DialogPanel from './DialogPanel';
 
 const useStyles = makeStyles((theme) => ({
     boxSortContent: {
-        padding: `${theme.spacing(2)}px ${theme.spacing(4)}px`,
+        padding: theme.spacing(4, 3, 3, 3),
     },
 }));
 
@@ -23,6 +23,14 @@ export default function SortDialog({ open, date, amount, onClose, onApply, onRes
     const classes = useStyles();
     const [byDate, setByDate] = useState(date);
     const [byAmount, setByAmount] = useState(amount);
+
+    useEffect(() => {
+        setByDate(date);
+    }, [date, setByDate]);
+
+    useEffect(() => {
+        setByAmount(amount);
+    }, [amount, setByAmount]);
 
     return (
         <DialogPanel

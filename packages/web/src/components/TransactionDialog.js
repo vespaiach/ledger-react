@@ -1,19 +1,12 @@
 import {
-    Container,
     Button,
-    Card,
-    CardActionArea,
-    CardActions,
-    CardContent,
     ListItem,
     ListItemText,
-    Typography,
     ListItemIcon,
     DialogTitle,
     List,
     DialogActions,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import {
     CalendarTodayRounded as CalendarTodayRoundedIcon,
     QueryBuilderRounded as QueryBuilderRoundedIcon,
@@ -23,20 +16,13 @@ import {
 } from '@material-ui/icons';
 import NumberFormat from 'react-number-format';
 import { format } from 'date-fns';
+import { makeStyles } from '@material-ui/core/styles';
 
 import DialogPanel from './DialogPanel';
 
 const useStyles = makeStyles((theme) => ({
-    cardTitleRoot: {
-        marginBottom: theme.spacing(3),
-    },
-    cardRoot: {
-        '& .MuiCardActionArea-focusHighlight': {
-            opacity: 0.04,
-        },
-    },
-    grow: {
-        flexGrow: 1,
+    box: {
+        padding: theme.spacing(2, 1),
     },
 }));
 
@@ -113,7 +99,7 @@ export default function TransactionDialog({ open, transactionDetail, onClose, on
             open={open}
             onClose={onClose}
             aria-labelledby="detail-dialog-title">
-            {el}
+            <div className={classes.box}>{el}</div>
         </DialogPanel>
     );
 }

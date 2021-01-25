@@ -8,6 +8,9 @@ export function createReducer(initialState, handlers) {
     };
 }
 
+/**
+ * Create common actions to set on and off loading field
+ */
 export function createLoadingReducer(setLoadinOnAction, setLoadingOffAction) {
     return {
         [setLoadinOnAction]: (state) => ({ ...state, loading: true }),
