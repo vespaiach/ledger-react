@@ -5,7 +5,7 @@ export function* safeCall(effect) {
     try {
         return yield effect;
     } catch (err) {
-        yield put({ type: 'Reducer - error: set API error', payload: err });
+        yield put({ type: 'Reducer - app: set API error', payload: err });
         return {
             ok: false,
             data: err,
@@ -14,7 +14,7 @@ export function* safeCall(effect) {
 }
 
 export function buildParams(search, sort, page, perPage = 100) {
-    const params = {};
+    const params = { by: sort };
     if (page) {
         params.pg = page;
         params.per_page = perPage;
@@ -29,12 +29,6 @@ export function buildParams(search, sort, page, perPage = 100) {
         if (search.byCategory) {
             params.cate = search.byCategory;
         }
-    }
-
-    if (sort) {
-        let byDate = sort.byDate ? `${sort.byDate}date` : '';
-        let byAmount = sort.byAmount ? `${sort.byAmount}amount` : '';
-        params.by = `${byDate}${byDate && byAmount ? ',' : ''}${byAmount}`;
     }
 
     return params;

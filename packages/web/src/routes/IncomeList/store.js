@@ -6,10 +6,7 @@ const defaultPerPage = 20;
 
 const defaultState = {
     list: new Array(estimateRecord),
-    sort: {
-        byAmount: '',
-        byDate: '-',
-    },
+    sort: '-date',
     search: {
         byAmountFrom: '',
         byAmountTo: '',
@@ -113,11 +110,11 @@ export default createReducer(defaultState, {
 
     'Reducer - ins: reset income sorting': (state) => ({
         ...state,
-        sort: { ...defaultState.sort },
+        sort: defaultState.sort,
     }),
     'Reducer - ins: apply income sorting': (state, { payload }) => ({
         ...state,
-        sort: { byAmount: payload.byAmount, byDate: payload.byDate },
+        sort: payload,
     }),
 
     'Reducer - ins: reset income searching': (state) => ({

@@ -20,3 +20,12 @@ export function* watchFetchMeRequest() {
         }
     });
 }
+
+export function* watchSignoutRequest() {
+    yield takeLatest('Saga - app: sign out', function* () {
+        yield put({ type: 'Reducer - app: set app loading on' });
+        yield safeCall(call(http.get, { ep: '/logout' }));
+        yield put({ type: 'Reducer - app: set app loading off' });
+        yield put(push('/signin'));
+    });
+}
