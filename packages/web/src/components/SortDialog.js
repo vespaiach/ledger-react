@@ -1,5 +1,4 @@
 import {
-    Grid,
     FormLabel,
     Radio,
     RadioGroup,
@@ -19,18 +18,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SortDialog({ open, date, amount, onClose, onApply, onReset }) {
+export default function SortDialog({ open, value, onClose, onApply, onReset }) {
     const classes = useStyles();
-    const [byDate, setByDate] = useState(date);
-    const [byAmount, setByAmount] = useState(amount);
+    const [order, setOrder] = useState(value);
 
     useEffect(() => {
-        setByDate(date);
-    }, [date, setByDate]);
-
-    useEffect(() => {
-        setByAmount(amount);
-    }, [amount, setByAmount]);
+        setOrder(order);
+    }, [order, setOrder]);
 
     return (
         <DialogPanel
@@ -43,7 +37,7 @@ export default function SortDialog({ open, date, amount, onClose, onApply, onRes
                     <Button
                         size="small"
                         color="primary"
-                        onClick={() => onApply({ byDate, byAmount })}
+                        onClick={() => onApply(order)}
                         title="apply ordering">
                         Apply
                     </Button>
@@ -53,32 +47,43 @@ export default function SortDialog({ open, date, amount, onClose, onApply, onRes
                 </DialogActions>
             }>
             <div className={classes.boxSortContent}>
-                <Grid container spacing={3}>
-                    <Grid item xs={6}>
-                        <FormLabel component="legend">By date</FormLabel>
-                        <RadioGroup
-                            aria-label="by date"
-                            name="date"
-                            value={byDate}
-                            onChange={(evt) => setByDate(evt.target.value)}>
-                            <FormControlLabel value="+" control={<Radio />} label="Ascending" />
-                            <FormControlLabel value="-" control={<Radio />} label="Descending" />
-                            <FormControlLabel value="" control={<Radio />} label="None" />
-                        </RadioGroup>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <FormLabel component="legend">By amount</FormLabel>
-                        <RadioGroup
-                            aria-label="by amount"
-                            name="amount"
-                            value={byAmount}
-                            onChange={(evt) => setByAmount(evt.target.value)}>
-                            <FormControlLabel value="+" control={<Radio />} label="Ascending" />
-                            <FormControlLabel value="-" control={<Radio />} label="Descending" />
-                            <FormControlLabel value="" control={<Radio />} label="None" />
-                        </RadioGroup>
-                    </Grid>
-                </Grid>
+                <FormLabel component="legend">Sort</FormLabel>
+                <RadioGroup
+                    aria-label="by date"
+                    name="date"
+                    value={order}
+                    onChange={(evt) => setOrder(evt.target.value)}>
+                    <FormControlLabel
+                        value="date"
+                        control={<Radio />}
+                        label="By date in ascending order"
+                    />
+                    <FormControlLabel
+                        value="-date"
+                        control={<Radio />}
+                        label="By Date in descending order"
+                    />
+                    <FormControlLabel
+                        value="amount"
+                        control={<Radio />}
+                        label="By amount in ascending order"
+                    />
+                    <FormControlLabel
+                        value="-amount"
+                        control={<Radio />}
+                        label="By amount in descending order"
+                    />
+                    <FormControlLabel
+                        value="category"
+                        control={<Radio />}
+                        label="By category in ascending order"
+                    />
+                    <FormControlLabel
+                        value="-category"
+                        control={<Radio />}
+                        label="By category in descending order"
+                    />
+                </RadioGroup>
             </div>
         </DialogPanel>
     );

@@ -8,14 +8,6 @@ export default function useCounting({
     expenseSearching,
     dispatch,
 }) {
-    const incomeSortingCount = useMemo(
-        () => Object.values(incomeSorting).filter((s) => !!s).length,
-        [incomeSorting]
-    );
-    const expenseSortingCount = useMemo(
-        () => Object.values(expenseSorting).filter((s) => !!s).length,
-        [expenseSorting]
-    );
     const incomeSearchingCount = useMemo(
         () => Object.values(incomeSearching).filter((s) => !!s).length,
         [incomeSearching]
@@ -69,7 +61,6 @@ export default function useCounting({
 
     if (tabValue === 0) {
         return {
-            sortingCount: incomeSortingCount,
             searchingCount: incomeSearchingCount,
             sorting: incomeSorting,
             searching: incomeSearching,
@@ -80,7 +71,6 @@ export default function useCounting({
         };
     }
     return {
-        sortingCount: expenseSortingCount,
         searchingCount: expenseSearchingCount,
         sorting: expenseSorting,
         searching: expenseSearching,

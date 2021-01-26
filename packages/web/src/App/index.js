@@ -55,7 +55,6 @@ function App() {
     const expenseSearching = useSelector((state) => state.exs.search);
     const {
         searchingCount,
-        sortingCount,
         searching,
         sorting,
         onSortApply,
@@ -74,6 +73,7 @@ function App() {
     const loading = useSelector((state) => state.app.loading);
     const flashMessage = useSelector((state) => state.app.flashMessage);
     const flashMessageSeverity = useSelector((state) => state.app.flashMessageSeverity);
+    const user = useSelector((state) => state.app.me);
     const confirm = useSelector((state) => state.app.confirm);
     const showConfirmDialog = useMemo(() => Boolean(confirm), [confirm]);
     const confirmObj = useMemo(() => confirm || {}, [confirm]);
@@ -95,9 +95,11 @@ function App() {
                 </Route>
                 <Route path="/portal">
                     <PrivatePageShell
+                        userName={user && user.name}
+                        userEmail={user && user.email}
                         tabValue={tabValue}
                         searchingCount={searchingCount}
-                        sortingCount={sortingCount}
+                        onExit={() => dispatch({ type: 'Saga - app: sign out' })}
                         onSearch={() => setDialog('search')}
                         onSort={() => setDialog('sort')}>
                         <Switch>
@@ -151,8 +153,7 @@ function App() {
                 onNo={() => dispatch({ type: 'Reducer - app: clear confirm' })}
             />
             <SortDialog
-                date={sorting.byDate}
-                amount={sorting.byAmount}
+                value={sorting}
                 open={dialog === 'sort'}
                 onClose={() => setDialog('')}
                 onReset={() => {

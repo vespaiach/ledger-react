@@ -24,7 +24,7 @@ import {
     watchFetchExpenseListRequest,
     watchDeleteExpenseRequest,
 } from '../routes/ExpenseList/saga';
-import { watchFetchMeRequest } from '../App/saga';
+import { watchFetchMeRequest, watchSignoutRequest } from '../App/saga';
 import app from '../App/store';
 import signup from '../routes/Signup/store';
 import signin from '../routes/Signin/store';
@@ -85,6 +85,7 @@ const saga = function* rootSaga() {
             watchFetchExpenseDetailRequest,
             watchEditExpenseRequest,
             watchAddExpenseRequest,
+            watchSignoutRequest,
         ].map(fork)
     );
 };

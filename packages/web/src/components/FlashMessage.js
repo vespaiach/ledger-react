@@ -5,7 +5,7 @@ function TransitionDown(props) {
     return <Slide {...props} direction="down" />;
 }
 
-export default function FlashMessage({ open, onClose, timeout = 4000, message, severity }) {
+export default function FlashMessage({ open, onClose, timeout = 5000, children, severity }) {
     return (
         <Snackbar
             open={open}
@@ -21,7 +21,7 @@ export default function FlashMessage({ open, onClose, timeout = 4000, message, s
                 severity={severity || 'info'}
                 role="alertdialog"
                 aria-describedby="snackbarAlertText">
-                <span id="snackbarAlertText">{message}</span>
+                <span id="snackbarAlertText">{children}</span>
             </Alert>
         </Snackbar>
     );

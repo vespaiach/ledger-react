@@ -6,24 +6,6 @@ const defaultState = {
     flashMessageSeverity: '',
     confirm: null,
     me: null,
-    inSort: {
-        byAmount: '',
-        byDate: '-',
-    },
-    exSort: {
-        byAmount: '',
-        byDate: '-',
-    },
-    inSearch: {
-        byDate: '',
-        byAmount: '',
-        byCategory: '',
-    },
-    exSearch: {
-        byDate: '',
-        byAmount: '',
-        byCategory: '',
-    },
 };
 
 export default createReducer(defaultState, {
@@ -46,33 +28,40 @@ export default createReducer(defaultState, {
     'Reducer - app: confirm': (state, { payload: confirm }) => ({ ...state, confirm }),
     'Reducer - app: clear confirm': (state) => ({ ...state, confirm: null }),
 
-    'Reducer - app: reset insort': (state) => ({ ...state, inSort: { ...defaultState.inSort } }),
-    'Reducer - app: apply insort': (state, { payload }) => ({
-        ...state,
-        inSort: { date: payload.byDate, amount: payload.byAmount },
-    }),
+    'Reducer - app: clear API error': (state) => ({ ...state, apiError: null }),
+    'Reducer - app: set API error': (state, { payload: apiResponse }) => {
+        if (apiResponse.status === 422) {
+            const tmp = {
+                ...state,
+                apiError: {
+                    title: apiResponse.statusText,
+                },
+            };
 
-    'Reducer - app: reset insearch': (state) => ({
-        ...state,
-        inSearch: { ...defaultState.inSearch },
-    }),
-    'Reducer - app: apply insearch': (state, { payload }) => ({
-        ...state,
-        inSearch: { date: payload.byDate, amount: payload.byAmount },
-    }),
+            if (apiResponse.data) {
+                if (apiResponse.data.errors && Array.isArray(apiResponse.data.errors)) {
+                    tmp.apiError.messages = apiResponse.data.errors.map(
+                        (e) => `"${e.field}" ${e.message}`
+                    );
+                } else {
+                    tmp.apiError.messages = Object.values(apiResponse.data).reduce((acc, ers) => {
+                        acc = acc.concat(ers);
+                        return acc;
+                    }, []);
+                }
+                return tmp;
+            }
 
-    'Reducer - app: reset exsort': (state) => ({ ...state, exSort: { ...defaultState.exSort } }),
-    'Reducer - app: apply exsort': (state, { payload }) => ({
-        ...state,
-        exSort: { date: payload.byDate, amount: payload.byAmount },
-    }),
+            tmp.apiError.messages = ['Unknown error'];
 
-    'Reducer - app: reset exsearch': (state) => ({
-        ...state,
-        exSearch: { ...defaultState.exSearch },
-    }),
-    'Reducer - app: apply exsearch': (state, { payload }) => ({
-        ...state,
-        exSearch: { date: payload.byDate, amount: payload.byAmount },
-    }),
+            return tmp;
+        }
+        return {
+            ...state,
+            apiError: {
+                title: 'Error',
+                messages: ['Unknown error'],
+            },
+        };
+    },
 });

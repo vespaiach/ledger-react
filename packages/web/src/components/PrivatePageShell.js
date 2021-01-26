@@ -10,18 +10,27 @@ import {
     useScrollTrigger,
     Badge,
     Divider,
+    MenuItem,
+    ListItemIcon,
+    Paper,
+    ClickAwayListener,
+    Grow,
+    Popper,
+    MenuList,
 } from '@material-ui/core';
 import {
     MenuBookRounded as MenuBookRoundedIcon,
     SortRounded as SortRoundedIcon,
     SearchRounded as SearchRoundedIcon,
-    MenuRounded as MenuRoundedIcon,
+    PersonOutlineRounded as PersonOutlineRoundedIcon,
+    VpnKeyRounded as VpnKeyRoundedIcon,
+    PowerSettingsNewRounded as PowerSettingsNewRoundedIcon,
 } from '@material-ui/icons';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     appbarRoot: {
@@ -41,29 +50,44 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
     badge: {
-        right: -3,
-        top: 3,
+        right: -2,
+        top: 0,
         border: `2px solid ${theme.palette.background.paper}`,
         padding: '0 4px',
     },
     lineHeight: {
         height: 24,
     },
+    userInfo: {
+        flexFlow: 'column nowrap',
+        margin: theme.spacing(2, 2, 3, 2),
+    },
 }));
 
 export default function PrivatePageShell({
     children,
     tabValue,
-    onEdit,
+    userName,
+    userEmail,
     onSearch,
     onSort,
+    onExit,
+    onChangePass,
     searchingCount,
-    sortingCount,
 }) {
     const dispatch = useDispatch();
     const trigger = useScrollTrigger();
     const me = useSelector((state) => state.app.me);
     const classes = useStyles();
+    const [openMenu, setOpenMenu] = useState(false);
+    const btnAnchorRef = useRef(null);
+
+    const handleListKeyDown = (event) => {
+        if (event.key === 'Tab') {
+            event.preventDefault();
+            setOpenMenu(false);
+        }
+    };
 
     useEffect(() => {
         if (!me) {
@@ -94,10 +118,7 @@ export default function PrivatePageShell({
                     aria-label="sort transactions"
                     title="sort transactions"
                     onClick={onSort}>
-                    <Badge
-                        badgeContent={sortingCount}
-                        classes={{ badge: classes.badge }}
-                        color="secondary">
+                    <Badge variant="dot" color="secondary">
                         <SortRoundedIcon />
                     </Badge>
                 </IconButton>
@@ -122,11 +143,65 @@ export default function PrivatePageShell({
                         {el}
                         <IconButton
                             edge="end"
-                            aria-label="setting application"
-                            title="setting application"
-                            onClick={onEdit}>
-                            <MenuRoundedIcon />
+                            aria-label="account menu"
+                            aria-controls="account-menu"
+                            title="account menu"
+                            aria-haspopup="true"
+                            ref={btnAnchorRef}
+                            onClick={() => setOpenMenu(true)}>
+                            <PersonOutlineRoundedIcon />
                         </IconButton>
+                        <Popper
+                            style={{ zIndex: 1001 }}
+                            open={openMenu}
+                            anchorEl={btnAnchorRef.current}
+                            role={undefined}
+                            transition
+                            disablePortal>
+                            {({ TransitionProps, placement }) => (
+                                <Grow
+                                    {...TransitionProps}
+                                    style={{
+                                        transformOrigin:
+                                            placement === 'bottom' ? 'center top' : 'center bottom',
+                                    }}>
+                                    <Paper>
+                                        <ClickAwayListener onClickAway={() => setOpenMenu(false)}>
+                                            <MenuList
+                                                autoFocusItem={openMenu}
+                                                onKeyDown={handleListKeyDown}>
+                                                <MenuItem
+                                                    classes={{ root: classes.userInfo }}
+                                                    role={undefined}>
+                                                    <Typography variant="subtitle2">
+                                                        Hi, I'm {userName}
+                                                    </Typography>
+                                                    <Typography variant="body2">
+                                                        {userEmail}
+                                                    </Typography>
+                                                </MenuItem>
+                                                <MenuItem onClick={onChangePass}>
+                                                    <ListItemIcon>
+                                                        <VpnKeyRoundedIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    <Typography variant="inherit">
+                                                        Change password
+                                                    </Typography>
+                                                </MenuItem>
+                                                <MenuItem onClick={onExit}>
+                                                    <ListItemIcon>
+                                                        <PowerSettingsNewRoundedIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    <Typography variant="inherit">
+                                                        Sign out
+                                                    </Typography>
+                                                </MenuItem>
+                                            </MenuList>
+                                        </ClickAwayListener>
+                                    </Paper>
+                                </Grow>
+                            )}
+                        </Popper>
                     </Toolbar>
                     <Tabs
                         classes={{ root: classes.tabsRoot }}
