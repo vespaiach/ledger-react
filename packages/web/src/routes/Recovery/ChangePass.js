@@ -22,7 +22,7 @@ import ErrorAlert from '../../components/ErrorAlert';
 
 const useStyles = makeStyles((theme) => ({
     formSignup: {
-        marginTop: theme.spacing(5),
+        marginTop: theme.spacing(3),
         '& .MuiTextField-root + .MuiTextField-root': {
             marginTop: theme.spacing(2),
         },
@@ -31,18 +31,8 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     boxPageTitle: {
-        marginTop: theme.spacing(12),
-        [theme.breakpoints.down('sm')]: {
-            marginTop: theme.spacing(3),
-        },
         display: 'flex',
         alignItems: 'flex-start',
-    },
-    boxSignup: {
-        marginTop: theme.spacing(5),
-        '& .MuiTypography-root + .MuiTypography-root': {
-            marginTop: theme.spacing(1),
-        },
     },
     boxError: {
         marginTop: theme.spacing(3),

@@ -26,6 +26,7 @@ export function* watchSignoutRequest() {
         yield put({ type: 'Reducer - app: set app loading on' });
         yield safeCall(call(http.get, { ep: '/logout' }));
         yield put({ type: 'Reducer - app: set app loading off' });
+        yield put({ type: 'Reducer - app: clear login info' });
         yield put(push('/signin'));
     });
 }

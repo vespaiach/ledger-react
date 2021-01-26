@@ -1,5 +1,6 @@
-import { Grid, Container } from '@material-ui/core';
+import { Grid, Container, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
 import Footer from './Footer';
 import LazyBackgroundImage from './LazyBackgroundImage';
 
@@ -18,8 +19,12 @@ const useStyles = makeStyles((theme) => ({
     },
     footer: {
         position: 'fixed',
-        bottom: 8,
-        right: 8,
+        bottom: 16,
+        right: 16,
+    },
+    welcomeRoot: {
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(5),
     },
 }));
 
@@ -34,6 +39,13 @@ export default function Signin({ children, imgSrc, imgSsrc }) {
                 <Container>
                     <Grid container spacing={3} justify="center">
                         <Grid item xs={12} sm={11} md={10} lg={7} xl={5}>
+                            <Typography
+                                color="textSecondary"
+                                variant="subtitle1"
+                                component="div"
+                                classes={{ root: classes.welcomeRoot }}>
+                                Welcome to Ledger
+                            </Typography>
                             {children}
                         </Grid>
                     </Grid>

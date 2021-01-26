@@ -5,6 +5,8 @@ import {
     Typography,
     IconButton,
     InputAdornment,
+    FormControlLabel,
+    Checkbox,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import {
@@ -21,21 +23,16 @@ import ErrorAlert from '../../components/ErrorAlert';
 
 const useStyles = makeStyles((theme) => ({
     formSignup: {
-        marginTop: theme.spacing(5),
+        marginTop: theme.spacing(3),
         '& .MuiTextField-root + .MuiTextField-root': {
             marginTop: theme.spacing(2),
         },
         '& .MuiButton-root': {
-            marginTop: theme.spacing(3),
+            marginTop: theme.spacing(1),
         },
-    },
-    boxPageTitle: {
-        marginTop: theme.spacing(12),
-        [theme.breakpoints.down('sm')]: {
-            marginTop: theme.spacing(3),
+        '& .MuiFormControlLabel-root': {
+            marginTop: theme.spacing(1),
         },
-        display: 'flex',
-        alignItems: 'center',
     },
     boxSignup: {
         marginTop: theme.spacing(5),
@@ -57,6 +54,7 @@ export default function Signin() {
         initialValues: {
             email: '',
             password: '',
+            remember: false,
         },
         validationSchema: yup.object({
             email: yup
@@ -65,21 +63,19 @@ export default function Signin() {
                 .email('enter a valid email'),
             password: yup.string('enter password').required('password is required').min(8),
         }),
-        onSubmit: ({ email, password }) => {
+        onSubmit: ({ email, remember, password }) => {
             dispatch({
                 type: 'Saga: submit signin form',
-                payload: { email, password },
+                payload: { email, password, remember },
             });
         },
     });
 
     return (
         <PublicPageShell imgSrc="/signin.jpg" imgSsrc="/s_signin.jpg">
-            <div className={classes.boxPageTitle}>
-                <Typography variant="h4" component="h1">
-                    Sign In
-                </Typography>
-            </div>
+            <Typography variant="h4" component="h1" color="primary">
+                Sign In
+            </Typography>
             <form className={classes.formSignup} onSubmit={formik.handleSubmit}>
                 <TextField
                     id="your-email"
@@ -118,6 +114,17 @@ export default function Signin() {
                             </InputAdornment>
                         ),
                     }}
+                />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            name="remember"
+                            color="primary"
+                            onChange={formik.handleChange}
+                            checked={formik.values.remember}
+                        />
+                    }
+                    label="Remember me"
                 />
                 <Button variant="contained" color="primary" fullWidth size="large" type="submit">
                     Sign In
