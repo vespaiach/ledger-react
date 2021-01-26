@@ -7,13 +7,13 @@ import http from '../../utils/http';
 export function* watchSubmitSigninForm() {
     while (true) {
         const {
-            payload: { email, password },
+            payload: { email, password, remember = false },
         } = yield take('Saga: submit signin form');
 
         yield put({ type: 'Reducer - app: set app loading on' });
 
         const response = yield safeCall(
-            call(http.post, { ep: '/signin', body: { email, password } })
+            call(http.post, { ep: '/signin', body: { email, password, remember } })
         );
 
         yield put({ type: 'Reducer - app: set app loading off' });

@@ -22,24 +22,20 @@ import ErrorAlert from '../../components/ErrorAlert';
 
 const useStyles = makeStyles((theme) => ({
     formSignup: {
-        marginTop: theme.spacing(5),
+        marginTop: theme.spacing(3),
         '& .MuiTextField-root + .MuiTextField-root': {
             marginTop: theme.spacing(2),
         },
         '& .MuiButton-root': {
-            marginTop: theme.spacing(3),
+            marginTop: theme.spacing(2),
         },
     },
     boxPageTitle: {
-        marginTop: theme.spacing(12),
-        [theme.breakpoints.down('sm')]: {
-            marginTop: theme.spacing(3),
-        },
         display: 'flex',
         alignItems: 'center',
     },
     btnPreviousRoot: {
-        marginRight: theme.spacing(3),
+        marginRight: theme.spacing(2),
     },
     boxError: {
         marginTop: theme.spacing(3),
@@ -87,7 +83,7 @@ export default function Signin() {
                     aria-label="go back to login page">
                     <ArrowBackIcon />
                 </IconButton>
-                <Typography variant="h4" component="h1">
+                <Typography variant="h4" component="h1" color="primary">
                     Sign Up
                 </Typography>
             </div>
