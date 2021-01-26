@@ -18,6 +18,7 @@ import { useState, useMemo } from 'react';
 import SortDialog from '../components/SortDialog';
 import useCounting from '../hooks/useCounting';
 import SearchDialog from '../components/SearchingDialog';
+import MonthlyReport from '../routes/MonthlyReport';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -118,6 +119,9 @@ function App() {
                             </Route>
                             <Route exact path="/portal/expenses">
                                 <ExpenseList />
+                            </Route>
+                            <Route exact path="/portal/reports/monthly">
+                                <MonthlyReport />
                             </Route>
                             <Route>
                                 <Redirect to="/portal/reports" />
