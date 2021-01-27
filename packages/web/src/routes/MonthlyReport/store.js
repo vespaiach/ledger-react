@@ -1,134 +1,64 @@
-import { parseISO } from 'date-fns';
 import { createReducer } from '../../utils/reducer';
-
-const estimateRecord = 1000;
-const defaultPerPage = 20;
+import { getMonthName } from '../../utils/format';
 
 const defaultState = {
-    list: new Array(estimateRecord),
-    sort: '-date',
-    search: {
-        byAmountFrom: '',
-        byAmountTo: '',
-        byCategory: '',
-        byDateFrom: null,
-        byDateTo: null,
-    },
-    totalRecords: estimateRecord,
-    totalPages:
-        Math.floor(estimateRecord / defaultPerPage) +
-        (estimateRecord % defaultPerPage === 0 ? 0 : 1),
-    perPage: defaultPerPage,
-    fetchedPages: {},
-    fetchedTotalRecords: false,
-    loading: false,
+    status: '',
+    months: null,
+    incomes: {},
+    expenses: {},
 };
 
 export default createReducer(defaultState, {
-    'Reducer - ins: save income records': (state, { payload: { list, page } }) => {
-        const cloneList = state.list.slice();
-        const startIndex = (page - 1) * state.perPage;
-        for (let i = 0; i < list.length; i++) {
-            list[i].date = parseISO(list[i].date);
-            cloneList[i + startIndex] = list[i];
+    'Reducer - monthly: save month statistics': (state, { payload: { data, year, month } }) => {
+        return {
+            ...state,
+            incomes: {
+                ...state.incomes,
+                [`${year}-${month}`]: data.incomes.map((inc) => ({
+                    name: inc.category,
+                    total: parseFloat(inc.total),
+                })),
+            },
+            expenses: {
+                ...state.expenses,
+                [`${year}-${month}`]: data.expenses.map((exs) => ({
+                    name: exs.category,
+                    total: parseFloat(exs.total),
+                })),
+            },
+        };
+    },
+
+    /**
+     * Build a month array:
+     * [
+     *      {month:1, year: 2020, name: 'January'},
+     *      {month:2, year: 2020, name: 'February'},
+     *      ...
+     * ]
+     */
+    'Reducer - monthly: save the latest month': (state, { payload }) => {
+        const min = new Date(payload);
+        const max = new Date();
+        const months = [];
+
+        for (let i = min; i <= max; i.setMonth(i.getMonth() + 1)) {
+            const year = i.getFullYear();
+            const month = i.getMonth() + 1;
+
+            months.push({
+                month,
+                year,
+                name: getMonthName(month),
+            });
         }
 
         return {
             ...state,
-            list: cloneList,
-            fetchedPages: Object.assign({}, state.fetchedPages, {
-                [page]: true,
-            }),
+            months: months.reverse(),
         };
     },
 
-    'Reducer - ins: save total records': (
-        state,
-        { payload: { totalRecords, totalPages, perPage } }
-    ) => {
-        return {
-            ...state,
-            list: new Array(totalRecords),
-            fetchedPages: [],
-            totalRecords,
-            totalPages,
-            perPage,
-            fetchedTotalRecords: true,
-        };
-    },
-
-    'Reducer - ins: update incomes filtering': (state, { payload }) => ({
-        ...state,
-        ...payload,
-    }),
-
-    'Reducer - ins: update date from lookup': (state, { payload }) => ({
-        ...state,
-        lookup: {
-            ...state.lookup,
-            dateFrom: payload,
-        },
-    }),
-
-    'Reducer - ins: update date to lookup': (state, { payload }) => ({
-        ...state,
-        lookup: {
-            ...state.lookup,
-            dateTo: payload,
-        },
-    }),
-
-    'Reducer - ins: update category lookup': (state, { payload }) => ({
-        ...state,
-        lookup: {
-            ...state.lookup,
-            category: payload,
-        },
-    }),
-
-    'Reducer - ins: update sorting': (state, { payload }) => ({
-        ...state,
-        sort: {
-            field: payload.field,
-            direction: payload.direction,
-        },
-    }),
-
-    'Reducer - ins: set loading off': (state) => ({ ...state, fetching: false }),
-
-    'Reducer - ins: set fetching on': (state) => ({ ...state, fetching: true }),
-
-    'Reducer - ins: reset data to default': () => ({ ...defaultState }),
-
-    'Reducer - ins: clear list of incomes': (state) => ({
-        ...state,
-        list: defaultState.list,
-        fetchedTotalRecords: false,
-        fetchedPages: defaultState.fetchedPages,
-        totalRecords: defaultState.totalRecords,
-    }),
-
-    'Reducer - ins: reset income sorting': (state) => ({
-        ...state,
-        sort: defaultState.sort,
-    }),
-    'Reducer - ins: apply income sorting': (state, { payload }) => ({
-        ...state,
-        sort: payload,
-    }),
-
-    'Reducer - ins: reset income searching': (state) => ({
-        ...state,
-        search: { ...defaultState.search },
-    }),
-    'Reducer - ins: apply income searching': (state, { payload }) => ({
-        ...state,
-        search: {
-            byAmountTo: payload.byAmountTo,
-            byAmountFrom: payload.byAmountFrom,
-            byDateFrom: payload.byDateFrom,
-            byDateTo: payload.byDateTo,
-            byCategory: payload.byCategory,
-        },
-    }),
+    'Reducer - monthly: set status loading': (state) => ({ ...state, status: 'loading' }),
+    'Reducer - monthly: set status loaded': (state) => ({ ...state, status: 'loaded' }),
 });

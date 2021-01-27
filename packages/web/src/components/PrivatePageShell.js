@@ -25,6 +25,7 @@ import {
     PersonOutlineRounded as PersonOutlineRoundedIcon,
     VpnKeyRounded as VpnKeyRoundedIcon,
     PowerSettingsNewRounded as PowerSettingsNewRoundedIcon,
+    BarChart as BarChartIcon,
 } from '@material-ui/icons';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -129,6 +130,24 @@ export default function PrivatePageShell({
                 />
             </>
         );
+    } else {
+        el = (
+            <>
+                <IconButton
+                    aria-label="sort transactions"
+                    title="sort transactions"
+                    onClick={onSort}>
+                    <Badge variant="dot" color="secondary">
+                        <BarChartIcon />
+                    </Badge>
+                </IconButton>
+                <Divider
+                    orientation="vertical"
+                    variant="middle"
+                    classes={{ root: classes.lineHeight }}
+                />
+            </>
+        );
     }
 
     return (
@@ -223,7 +242,7 @@ export default function PrivatePageShell({
                         <Tab
                             label="Reports"
                             component={Link}
-                            to="/portal/reports"
+                            to="/portal/monthly_reports"
                             classes={{ root: classes.tabRoot }}
                         />
                     </Tabs>

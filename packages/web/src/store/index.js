@@ -25,6 +25,7 @@ import {
     watchDeleteExpenseRequest,
 } from '../routes/ExpenseList/saga';
 import { watchFetchMeRequest, watchSignoutRequest } from '../App/saga';
+import { watchFetchMonthlySumCategoriesRequest } from '../routes/MonthlyReport/saga';
 import app from '../App/store';
 import signup from '../routes/Signup/store';
 import signin from '../routes/Signin/store';
@@ -33,6 +34,7 @@ import ins from '../routes/IncomeList/store';
 import inForm from '../routes/IncomeForm/store';
 import exs from '../routes/ExpenseList/store';
 import exForm from '../routes/ExpenseForm/store';
+import monthly from '../routes/MonthlyReport/store';
 
 const history = createBrowserHistory();
 const sagaMiddleware = createSagaMiddleware({
@@ -62,6 +64,7 @@ const store = createStore(
         inForm,
         exs,
         exForm,
+        monthly,
     }),
     composeEnhancers(applyMiddleware(sagaMiddleware, routerMiddleware(history)))
 );
@@ -86,6 +89,7 @@ const saga = function* rootSaga() {
             watchEditExpenseRequest,
             watchAddExpenseRequest,
             watchSignoutRequest,
+            watchFetchMonthlySumCategoriesRequest,
         ].map(fork)
     );
 };

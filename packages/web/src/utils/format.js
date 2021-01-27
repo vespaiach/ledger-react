@@ -1,8 +1,17 @@
 import NumberFormat from 'react-number-format';
 import { format } from 'date-fns';
 
-export function formatCurrency(money) {
-    return <NumberFormat value={money} displayType={'text'} thousandSeparator={true} prefix={'$'} />;
+export function formatCurrency(money, prefix) {
+    return (
+        <NumberFormat
+            value={money}
+            displayType={'text'}
+            thousandSeparator={true}
+            prefix={prefix}
+            decimalScale={2}
+            fixedDecimalScale={2}
+        />
+    );
 }
 
 export function getMonthName(m) {

@@ -11,7 +11,4 @@
 // import Event from '@ioc:Adonis/Core/Event'
 // import Database from '@ioc:Adonis/Lucid/Database'
 
-// Event.on('db:query', (e) => {
-//   console.log(e)
-//   debugger
-// })
+// Event.on('db:query', Database.prettyPrint)
