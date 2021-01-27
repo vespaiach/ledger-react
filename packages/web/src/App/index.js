@@ -18,6 +18,7 @@ import { useState, useMemo } from 'react';
 import SortDialog from '../components/SortDialog';
 import useCounting from '../hooks/useCounting';
 import SearchDialog from '../components/SearchingDialog';
+import MonthlyReport from '../routes/MonthlyReport';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -35,7 +36,7 @@ function App() {
             '/portal/incomes': 0,
             '/portal/expenses': 1,
             '/portal/expenses/new': 1,
-            '/portal/reports': 2,
+            '/portal/monthly_reports': 2,
         };
         if (tabIndex[location.pathname] !== undefined) {
             return tabIndex[location.pathname];
@@ -119,14 +120,17 @@ function App() {
                             <Route exact path="/portal/expenses">
                                 <ExpenseList />
                             </Route>
+                            <Route exact path="/portal/monthly_reports">
+                                <MonthlyReport />
+                            </Route>
                             <Route>
-                                <Redirect to="/portal/reports" />
+                                <Redirect to="/portal/monthly_reports" />
                             </Route>
                         </Switch>
                     </PrivatePageShell>
                 </Route>
                 <Route exact path="/">
-                    <Redirect to="/portal/reports" />
+                    <Redirect to="/portal/incomes" />
                 </Route>
                 <Route path="*">
                     <NotFound />

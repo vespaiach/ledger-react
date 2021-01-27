@@ -41,6 +41,7 @@ Route.group(() => {
 
     Route.get('statistics/sum', 'StatisticsController.sum')
     Route.get('statistics/total', 'StatisticsController.total')
+    Route.get('statistics/latest_month', 'StatisticsController.getMinMonth')
 
     Route.get('me', 'UsersController.me')
     Route.get('logout', 'UsersController.logout')

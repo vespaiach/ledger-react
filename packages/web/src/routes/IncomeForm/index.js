@@ -1,4 +1,4 @@
-import { Grid, IconButton, Typography } from '@material-ui/core';
+import { Grid, IconButton } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,14 +9,9 @@ import { ArrowBackRounded as ArrowBackIcon } from '@material-ui/icons';
 import TransactionForm from '../../components/TransactionForm';
 import ErrorAlert from '../../components/ErrorAlert';
 import useLookupIcome from '../../hooks/useLookupIncome';
+import PageTitle from '../../components/PageTitle';
 
 const useStyles = makeStyles((theme) => ({
-    boxPageTitle: {
-        marginTop: theme.spacing(3),
-        marginBottom: theme.spacing(3),
-        display: 'flex',
-        alignItems: 'center',
-    },
     btnPreviousRoot: {
         marginRight: theme.spacing(1),
     },
@@ -78,7 +73,7 @@ export default function IncomeForm() {
     return (
         <Grid container justify="center">
             <Grid item xs={12} sm={8} md={6} lg={5} xl={4}>
-                <div className={classes.boxPageTitle}>
+                <PageTitle>
                     <IconButton
                         classes={{ root: classes.btnPreviousRoot }}
                         component={Link}
@@ -88,10 +83,8 @@ export default function IncomeForm() {
                         aria-label="go back to incomes listing page">
                         <ArrowBackIcon />
                     </IconButton>
-                    <Typography variant="h5" component="h2">
-                        {params.id ? 'Edit Income Transaction' : 'Add Income Transaction'}
-                    </Typography>
-                </div>
+                    {params.id ? 'Edit Income Transaction' : 'Add Income Transaction'}
+                </PageTitle>
                 {el}
                 <ErrorAlert
                     open={Boolean(error)}
