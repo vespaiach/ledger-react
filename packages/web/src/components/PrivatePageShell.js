@@ -27,9 +27,8 @@ import {
     PowerSettingsNewRounded as PowerSettingsNewRoundedIcon,
     BarChart as BarChartIcon,
 } from '@material-ui/icons';
-
-import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRef, useState, useEffect } from 'react';
 
@@ -136,7 +135,8 @@ export default function PrivatePageShell({
                 <IconButton
                     aria-label="sort transactions"
                     title="sort transactions"
-                    onClick={onSort}>
+                    component={Link}
+                    to="/portal/monthly_reports">
                     <Badge variant="dot" color="secondary">
                         <BarChartIcon />
                     </Badge>
