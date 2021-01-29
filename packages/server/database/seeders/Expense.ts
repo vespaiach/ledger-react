@@ -8,12 +8,12 @@ export default class ExpenseSeeder extends BaseSeeder {
       { id: 1 },
       {
         name: 'Toan Nguyen',
-        email: 'anhtoan@gmail.com',
+        email: 'test@test.com',
         password: '12345678',
       }
     )
 
-    await ExpensesFactory.merge({ userId: user.id }).createMany(2000)
-    await IncomesFactory.merge({ userId: user.id }).createMany(2000)
+    await ExpensesFactory.merge({ userId: user.id }).createMany(3000)
+    await IncomesFactory.merge({ userId: user.id }).createMany(3000)
   }
 }

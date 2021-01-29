@@ -1,13 +1,6 @@
 <p align="center">
     <a href="https://www.vespaiach.com/">
-        <svg focusable="false" height="38" width="38" viewBox="0 0 24 24" fill="white" aria-hidden="true">
-            <path
-                d="M17.5 4.5c-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5-1.45 0-2.99.22-4.28.79C1.49 5.62 1 6.33 1 7.14v11.28c0 1.3 1.22 2.26 2.48 1.94.98-.25 2.02-.36 3.02-.36 1.56 0 3.22.26 4.56.92.6.3 1.28.3 1.87 0 1.34-.67 3-.92 4.56-.92 1 0 2.04.11 3.02.36 1.26.33 2.48-.63 2.48-1.94V7.14c0-.81-.49-1.52-1.22-1.85-1.28-.57-2.82-.79-4.27-.79zM21 17.23c0 .63-.58 1.09-1.2.98-.75-.14-1.53-.2-2.3-.2-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5.92 0 1.83.09 2.7.28.46.1.8.51.8.98v9.47z"
-            ></path>
-            <path
-                d="M13.98 11.01c-.32 0-.61-.2-.71-.52-.13-.39.09-.82.48-.94 1.54-.5 3.53-.66 5.36-.45.41.05.71.42.66.83-.05.41-.42.71-.83.66-1.62-.19-3.39-.04-4.73.39-.08.01-.16.03-.23.03zM13.98 13.67c-.32 0-.61-.2-.71-.52-.13-.39.09-.82.48-.94 1.53-.5 3.53-.66 5.36-.45.41.05.71.42.66.83-.05.41-.42.71-.83.66-1.62-.19-3.39-.04-4.73.39-.08.02-.16.03-.23.03zM13.98 16.33c-.32 0-.61-.2-.71-.52-.13-.39.09-.82.48-.94 1.53-.5 3.53-.66 5.36-.45.41.05.71.42.66.83-.05.41-.42.7-.83.66-1.62-.19-3.39-.04-4.73.39-.08.02-.16.03-.23.03z"
-            ></path>
-        </svg>
+        <img src="https://raw.githubusercontent.com/vespaiach/ledger/main/logo.svg" style="width: 56px; height: 56px" title="Ledger"/>
     </a>
 </p>
 
@@ -30,10 +23,84 @@ The demo version at: https://www.vespaiach.com/ . Please use the account below t
 -   email: test@test.com
 -   password: 12345678
 
-# Installation
+# Development
 
 Development environment requirements :
 
-Node.js >= 12.0.0
-PostgreSQL
-TypeScript
+-   Node.js >= 12.0.0
+-   PostgreSQL
+-   TypeScript
+-   Docker
+-   Docker compose
+
+This repository contains both backend project and frontend project. So I use lerna tool to make sure they use their own dependency package folder.
+
+## Download and bootstrap project:
+
+Download project:
+
+```
+git clone https://github.com/vespaiach/ledger
+```
+
+Install Lerna:
+
+```
+cd ./ledger
+npm install
+```
+
+Bootstrap all packages:
+
+```
+npm run lerna bootstrap
+
+```
+
+## Start PostgresQL and migration database
+
+Run PostgresQL:
+
+```
+cd ./ledger
+docker-compose up -d
+```
+
+Run database migration and seeds:
+
+```
+cd ./package/server
+node ace migration:run
+node ace db:seed
+```
+
+_Note_: Before running database migration, please create a .env file and config all necessary environment variables (refer to .env.example for more details).
+
+## Start backend server:
+
+Run backend server:
+
+```
+cd ./packages/server
+cp ./.env.example .env
+npm install
+node ace serve --watch
+```
+
+## Start frontend server:
+
+Run frontend server:
+
+```
+cd ./packages/web
+cp ./.env.template .env
+npm install
+npm start
+```
+
+# Deployment
+
+You are free to build and deploy a version of this web application to use on your own:
+
+-   Build docker image (Dockerfile in root folder)
+-   Deploy docker image

@@ -7,7 +7,6 @@ import TransactionTable from './Table';
 import PageTitle from '../../components/PageTitle';
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Skeleton } from '@material-ui/lab';
 import { getMonthName } from '../../utils/format';
 import MonthMenu from './MonthMenu';
 import SkeletonPage from './SkeletonPage';
