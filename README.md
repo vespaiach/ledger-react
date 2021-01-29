@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://www.vespaiach.com/">
-        <img src="https://raw.githubusercontent.com/vespaiach/ledger/main/logo.svg" style="width: 56px; height: 56px" title="Ledger"/>
+        <img src="https://raw.githubusercontent.com/vespaiach/ledger/main/ledger.svg" height="56" width="56" data-canonical-src="https://www.vespaiach.com/ledger.svg" title="Ledger"/>
     </a>
 </p>
 
