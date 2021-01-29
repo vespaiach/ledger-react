@@ -33,7 +33,9 @@ Development environment requirements :
 -   Docker
 -   Docker compose
 
-This repository contains both backend project and frontend project. So I use lerna tool to make sure they use their own dependency package folder.
+This repository contains both backend project and frontend project. In order to prevent confliction of packages resolving, lerna tool is using to make sure both projects use their own dependency package folder separately.
+
+Backend is using Adonisjs framework version 5. Frontend is React application combined with Redux, Redux Saga and Material UI framework
 
 ## Download and bootstrap project:
 
@@ -57,7 +59,7 @@ npm run lerna bootstrap
 
 ```
 
-## Start PostgresQL and migration database
+## Start PostgresQL and migrate database
 
 Run PostgresQL:
 
@@ -100,7 +102,7 @@ npm start
 
 # Deployment
 
-You are free to build and deploy a version of this web application to use on your own:
+Normally, backend code should be deployed in one host and frontend code in another code. However, this web application is leveraging Adonisjs framework and making the frontend application become a view of Adonisjs. Hence, we can deploy it in one host.
 
 -   Build docker image (Dockerfile in root folder)
 -   Deploy docker image
