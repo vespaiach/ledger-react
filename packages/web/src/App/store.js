@@ -5,7 +5,7 @@ const defaultState = {
     flashMessage: '',
     flashMessageSeverity: '',
     confirm: null,
-    me: null,
+    authorized: false,
 };
 
 export default createReducer(defaultState, {
@@ -23,7 +23,7 @@ export default createReducer(defaultState, {
         flashMessageSeverity: '',
     }),
 
-    'Reducer - app: set me': (state, { payload: me }) => ({ ...state, me }),
+    'Reducer - app: authorized': (state) => ({ ...state, authorized: true }),
     'Reducer - app: clear login info': (state) => ({ ...state, me: null }),
 
     'Reducer - app: confirm': (state, { payload: confirm }) => ({ ...state, confirm }),
