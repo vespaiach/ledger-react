@@ -1,16 +1,18 @@
+/**
+ * Ledger API Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen
+ */
+
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { DateTime } from 'luxon'
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import Logger from '@ioc:Adonis/Core/Logger'
 
 import Transaction from 'App/Models/Trasactions'
-
-const transactionSchema = schema.object().members({
-  id: schema.number.optional(),
-  date: schema.date({ format: 'iso' }),
-  amount: schema.number(),
-  description: schema.string({ escape: true, trim: true }, [rules.maxLength(255)]),
-  category: schema.string({ escape: true, trim: true }, [rules.maxLength(63)]),
-})
+import TransactionType from 'App/Models/TransactionType'
+import SyncValidator from 'App/Validator/SyncValidator'
+import SyncException from 'App/Exceptions/SyncException'
 
 export default class TransactionsController {
   /**
@@ -55,11 +57,7 @@ export default class TransactionsController {
    *   }
    */
   public async sync({ request }: HttpContextContract) {
-    const { payload } = await request.validate({
-      schema: schema.create({
-        payload: schema.array([rules.minLength(1)]).members(transactionSchema),
-      }),
-    })
+    const { payload } = await request.validate(SyncValidator)
 
     const results: {
       id: number | undefined
@@ -67,31 +65,45 @@ export default class TransactionsController {
       amount: number
       description: string
       category: string
+      transactionType: string
       status: string
     }[] = []
 
-    for (const item of payload) {
-      if (item.id) {
-        const tran = await Transaction.find(item.id)
-        if (tran) {
+    try {
+      for (const item of payload) {
+        if (item.id) {
+          const tran = await Transaction.find(item.id)
+          if (tran) {
+            tran.date = item.date
+            tran.amount = item.amount
+            tran.description = item.description
+            tran.category = item.category
+            tran.transactionType =
+              item.transactionType === TransactionType.Expense
+                ? TransactionType.Expense
+                : TransactionType.Income
+            await tran.save()
+            results.push({ ...item, status: 'updated' })
+          } else {
+            results.push({ ...item, status: 'missed' })
+          }
+        } else {
+          const tran = new Transaction()
           tran.date = item.date
           tran.amount = item.amount
           tran.description = item.description
           tran.category = item.category
+          tran.transactionType =
+            item.transactionType === TransactionType.Expense
+              ? TransactionType.Expense
+              : TransactionType.Income
           await tran.save()
-          results.push({ ...item, status: 'updated' })
-        } else {
-          results.push({ ...item, status: 'missed' })
+          results.push({ ...item, id: tran.id, status: 'created' })
         }
-      } else {
-        const tran = new Transaction()
-        tran.date = item.date
-        tran.amount = item.amount
-        tran.description = item.description
-        tran.category = item.category
-        await tran.save()
-        results.push({ ...item, id: tran.id, status: 'created' })
       }
+    } catch (e) {
+      Logger.error(e)
+      throw new SyncException('Synchronize fail')
     }
 
     return results

@@ -1,3 +1,10 @@
+/**
+ * Ledger API Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen
+ */
+
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class MergeInExes extends BaseSchema {

@@ -1,3 +1,10 @@
+/**
+ * Ledger API Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen
+ */
+
 import Factory from '@ioc:Adonis/Lucid/Factory'
 import Transaction from 'App/Models/Trasactions'
 import TransactionType from 'App/Models/TransactionType'

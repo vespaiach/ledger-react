@@ -1,3 +1,10 @@
+/**
+ * Ledger API Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen
+ */
+
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import Hash from '@ioc:Adonis/Core/Hash'
@@ -21,14 +28,13 @@ export default class UsersController {
     })
 
     await auth.attempt(email, password, remember)
-
-    return auth.user
+    return
   }
 
   /**
    * Logout
    */
-  public async logout({ auth }: HttpContextContract) {
+  public async signout({ auth }: HttpContextContract) {
     await auth.logout()
     return
   }

@@ -1,9 +1,9 @@
-/*
-|--------------------------------------------------------------------------
-| Routes
-|--------------------------------------------------------------------------
-|
-*/
+/**
+ * Ledger API Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen
+ */
 
 import Route from '@ioc:Adonis/Core/Route'
 
@@ -12,6 +12,7 @@ Route.group(() => {
     Route.get('transactions/:year', 'TransactionsController.get')
     Route.post('transactions', 'TransactionsController.sync')
     Route.get('ping', 'UsersController.ping')
+    Route.put('signout', 'UsersController.signout')
   }).middleware('auth')
 
   Route.post('signin', 'UsersController.signin')
