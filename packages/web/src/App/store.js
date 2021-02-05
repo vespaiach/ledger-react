@@ -1,16 +1,19 @@
 import { createReducer } from '../utils/reducer';
 
 const defaultState = {
-    loading: false,
+    appLoading: false,
+
     flashMessage: '',
     flashMessageSeverity: '',
     confirm: null,
+
+    signinLoading: false,
     authorized: false,
 };
 
 export default createReducer(defaultState, {
-    'Reducer - app: set app loading on': (state) => ({ ...state, loading: true }),
-    'Reducer - app: set app loading off': (state) => ({ ...state, loading: false }),
+    'Reducer - app: set app loading on': (state) => ({ ...state, appLoading: true }),
+    'Reducer - app: set app loading off': (state) => ({ ...state, appLoading: false }),
 
     'Reducer - app: set flash message': (state, { payload: { message, severity = 'info' } }) => ({
         ...state,

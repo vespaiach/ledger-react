@@ -87,6 +87,7 @@
     },
     "devDependencies": {
         "eslint": "^7.18.0",
-        "prettier": "^2.2.1"
+        "prettier": "^2.2.1",
+        "redux-saga-test-plan": "^4.0.1"
     }
 }

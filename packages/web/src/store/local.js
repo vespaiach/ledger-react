@@ -4,28 +4,13 @@ import { all, fork } from 'redux-saga/effects';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 
-import { watchSubmitSignupForm } from '../routes/Signup/saga';
-import { watchSubmitSigninForm } from '../routes/Signin/saga';
-import { watchSubmitRecoveryForm } from '../routes/Recovery/saga';
 import {
-    watchSaveIncomesRequest,
-    watchFetchIncomeDetailRequest,
-    watchEditIncomeRequest,
-    watchAddIncomeRequest,
-} from '../routes/IncomeForm/saga';
-import {
-    watchSaveExpensesRequest,
-    watchFetchExpenseDetailRequest,
-    watchEditExpenseRequest,
-    watchAddExpenseRequest,
-} from '../routes/ExpenseForm/saga';
-import { watchFetchIncomeListRequest, watchDeleteIncomeRequest } from '../routes/IncomeList/saga';
-import {
-    watchFetchExpenseListRequest,
-    watchDeleteExpenseRequest,
-} from '../routes/ExpenseList/saga';
-import { watchFetchMeRequest, watchSignoutRequest } from '../App/saga';
-import { watchFetchMonthlySumCategoriesRequest } from '../routes/MonthlyReport/saga';
+    watchPingRequest,
+    watchFetchRequest,
+    watchSyncRequest,
+    watchSigninRequest,
+    watchSignoutRequest,
+} from './saga';
 import app from '../App/store';
 import signup from '../routes/Signup/store';
 import signin from '../routes/Signin/store';
@@ -72,24 +57,11 @@ const store = createStore(
 const saga = function* rootSaga() {
     yield all(
         [
-            watchSubmitSignupForm,
-            watchSubmitSigninForm,
-            watchSubmitRecoveryForm,
-            watchFetchIncomeListRequest,
-            watchFetchMeRequest,
-            watchSaveIncomesRequest,
-            watchDeleteIncomeRequest,
-            watchFetchIncomeDetailRequest,
-            watchEditIncomeRequest,
-            watchAddIncomeRequest,
-            watchFetchExpenseListRequest,
-            watchDeleteExpenseRequest,
-            watchSaveExpensesRequest,
-            watchFetchExpenseDetailRequest,
-            watchEditExpenseRequest,
-            watchAddExpenseRequest,
+            watchPingRequest,
+            watchFetchRequest,
+            watchSyncRequest,
+            watchSigninRequest,
             watchSignoutRequest,
-            watchFetchMonthlySumCategoriesRequest,
         ].map(fork)
     );
 };
