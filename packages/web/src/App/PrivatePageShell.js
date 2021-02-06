@@ -77,7 +77,7 @@ export default function PrivatePageShell({
 }) {
     const dispatch = useDispatch();
     const trigger = useScrollTrigger();
-    const me = useSelector((state) => state.app.me);
+    const authorized = useSelector((state) => state.app.authorized);
     const classes = useStyles();
     const [openMenu, setOpenMenu] = useState(false);
     const btnAnchorRef = useRef(null);
@@ -90,12 +90,12 @@ export default function PrivatePageShell({
     };
 
     useEffect(() => {
-        if (!me) {
-            dispatch({ type: 'Saga: fetch my account' });
+        if (!authorized) {
+            dispatch({ type: 'Saga: ping server' });
         }
-    }, [me, dispatch]);
+    }, [authorized, dispatch]);
 
-    if (!me) {
+    if (!authorized) {
         return <div style={{ height: '100vh' }} />;
     }
 

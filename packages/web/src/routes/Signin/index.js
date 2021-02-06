@@ -14,12 +14,11 @@ import {
     Visibility as VisibilityIcon,
 } from '@material-ui/icons';
 import * as yup from 'yup';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 
 import PublicPageShell from '../../components/PublicPageShell';
-import ErrorAlert from '../../components/ErrorAlert';
 
 const useStyles = makeStyles((theme) => ({
     formSignup: {
@@ -46,10 +45,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Signin() {
-    const [passwordVisibility, setPasswordVisibility] = useState(false);
     const dispatch = useDispatch();
     const classes = useStyles();
-    const error = useSelector((state) => state.signin.error);
+    const [passwordVisibility, setPasswordVisibility] = useState(false);
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -65,7 +63,7 @@ export default function Signin() {
         }),
         onSubmit: ({ email, remember, password }) => {
             dispatch({
-                type: 'Saga: submit signin form',
+                type: 'Saga: signin',
                 payload: { email, password, remember },
             });
         },
@@ -130,13 +128,6 @@ export default function Signin() {
                     Sign In
                 </Button>
             </form>
-            <ErrorAlert
-                open={Boolean(error)}
-                className={classes.boxError}
-                title={error && error.title}
-                onClose={() => dispatch({ type: 'Reducer - signin: clear errors' })}>
-                {error ? error.messages.map((e) => <div key={e}>{e}</div>) : null}
-            </ErrorAlert>
             <div className={classes.boxSignup}>
                 <Typography>
                     <Link to="/signup" title="Sigin up for a new account">

@@ -5,10 +5,12 @@ const defaultState = {
 
     flashMessage: '',
     flashMessageSeverity: '',
-    confirm: null,
 
     signinLoading: false,
     authorized: false,
+
+    errorMessage: '',
+    errorSeverity: '',
 };
 
 export default createReducer(defaultState, {
@@ -29,43 +31,10 @@ export default createReducer(defaultState, {
     'Reducer - app: authorized': (state) => ({ ...state, authorized: true }),
     'Reducer - app: clear login info': (state) => ({ ...state, me: null }),
 
-    'Reducer - app: confirm': (state, { payload: confirm }) => ({ ...state, confirm }),
-    'Reducer - app: clear confirm': (state) => ({ ...state, confirm: null }),
-
-    'Reducer - app: clear API error': (state) => ({ ...state, apiError: null }),
-    'Reducer - app: set API error': (state, { payload: apiResponse }) => {
-        if (apiResponse.status === 422) {
-            const tmp = {
-                ...state,
-                apiError: {
-                    title: apiResponse.statusText,
-                },
-            };
-
-            if (apiResponse.data) {
-                if (apiResponse.data.errors && Array.isArray(apiResponse.data.errors)) {
-                    tmp.apiError.messages = apiResponse.data.errors.map(
-                        (e) => `"${e.field}" ${e.message}`
-                    );
-                } else {
-                    tmp.apiError.messages = Object.values(apiResponse.data).reduce((acc, ers) => {
-                        acc = acc.concat(ers);
-                        return acc;
-                    }, []);
-                }
-                return tmp;
-            }
-
-            tmp.apiError.messages = ['Unknown error'];
-
-            return tmp;
-        }
-        return {
-            ...state,
-            apiError: {
-                title: 'Error',
-                messages: ['Unknown error'],
-            },
-        };
-    },
+    'Reducer - app: clear error': (state) => ({ ...state, errorMessage: '', errorSeverity: '' }),
+    'Reducer - app: set error': (state, { payload: { message, severity } }) => ({
+        ...state,
+        errorMessage: message,
+        errorSeverity: severity,
+    }),
 });

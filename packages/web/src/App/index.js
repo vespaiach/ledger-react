@@ -3,7 +3,6 @@ import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
 
-import Signup from '../routes/Signup';
 import Signin from '../routes/Signin';
 import Recovery from '../routes/Recovery';
 import NotFound from '../routes/Errors/NotFound';
@@ -12,7 +11,7 @@ import IncomeList from '../routes/IncomeList';
 import ExpenseForm from '../routes/ExpenseForm';
 import ExpenseList from '../routes/ExpenseList';
 import FlashMessage from '../components/FlashMessage';
-import PrivatePageShell from '../components/PrivatePageShell';
+import PrivatePageShell from './PrivatePageShell';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { useState, useMemo } from 'react';
 import SortDialog from '../components/SortDialog';
@@ -88,9 +87,6 @@ function App() {
                 <Route exact path="/signin">
                     <Signin />
                 </Route>
-                <Route exact path="/signup">
-                    <Signup />
-                </Route>
                 <Route exact path="/recovery">
                     <Recovery />
                 </Route>
@@ -100,7 +96,7 @@ function App() {
                         userEmail={user && user.email}
                         tabValue={tabValue}
                         searchingCount={searchingCount}
-                        onExit={() => dispatch({ type: 'Saga - app: sign out' })}
+                        onExit={() => dispatch({ type: 'Saga: signout' })}
                         onSearch={() => setDialog('search')}
                         onSort={() => setDialog('sort')}>
                         <Switch>

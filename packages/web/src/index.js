@@ -9,7 +9,7 @@ import { ConnectedRouter } from 'connected-react-router';
 
 import App from './App';
 import theme from './theme';
-import store, { history } from './store';
+import store, { history } from './store/local';
 
 ReactDOM.render(
     <Router>

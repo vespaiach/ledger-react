@@ -2,7 +2,7 @@
  * Ledger API Source Code.
  *
  * @license MIT
- * @copyright Toan Nguyen
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
  */
 
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
@@ -14,36 +14,28 @@ import { DateTime } from 'luxon'
 import User from 'App/Models/User'
 import { base64 } from '@poppinss/utils'
 
-export default class UsersController {
+export default class AuthController {
   /**
-   * Login user via session and return logined user account
+   * Exchange email & password for opaque token
    */
   public async signin({ request, auth }: HttpContextContract) {
-    const { email, password, remember } = await request.validate({
+    const { email, password } = await request.validate({
       schema: schema.create({
         email: schema.string({ trim: true }, [rules.email()]),
         password: schema.string({ trim: true }),
-        remember: schema.boolean.optional(),
       }),
     })
 
-    await auth.attempt(email, password, remember)
-    return
+    const token = await auth.use('api').attempt(email, password)
+    return token.toJSON()
   }
 
   /**
-   * Logout
+   * Sign out token
    */
   public async signout({ auth }: HttpContextContract) {
-    await auth.logout()
+    await auth.use('api').logout()
     return
-  }
-
-  /**
-   * Use this to check if login session is still valid
-   */
-  public async ping() {
-    return 'pong'
   }
 
   /**
