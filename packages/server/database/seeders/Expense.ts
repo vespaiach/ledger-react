@@ -19,6 +19,6 @@ export default class ExpenseSeeder extends BaseSeeder {
       }
     )
 
-    await TransactionsFactory.createMany(3000)
+    await TransactionsFactory.createMany(300)
   }
 }

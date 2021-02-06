@@ -14,7 +14,7 @@ import { DateTime } from 'luxon'
 import User from 'App/Models/User'
 import { base64 } from '@poppinss/utils'
 
-export default class AuthController {
+export default class UsersController {
   /**
    * Exchange email & password for opaque token
    */

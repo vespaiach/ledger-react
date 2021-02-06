@@ -28,9 +28,7 @@ const incomeCategories = ['savings', 'paycheck', 'bonus', 'interest', 'other']
 
 export const TransactionsFactory = Factory.define(Transaction, ({ faker }) => {
   const tran = new Transaction()
-  tran.date = DateTime.fromJSDate(faker.date.between('2021-01-01', '2020-04-01'), {
-    zone: 'Eastern Standard Time',
-  })
+  tran.date = DateTime.fromJSDate(faker.date.between('2021-01-01', '2020-04-01'))
   tran.amount = parseFloat(faker.finance.amount(1, 100000, 2))
   tran.description = faker.lorem.sentence()
   if (faker.random.boolean()) {

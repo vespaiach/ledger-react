@@ -3,13 +3,14 @@
  * Ledger Web App Source Code.
  *
  * @license MIT
- * @copyright Toan Nguyen
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
  *
  */
 
 import { call, put, take, takeEvery } from 'redux-saga/effects';
 
 import { safeCall } from '../utils/saga';
+import { setToken } from '../utils/token';
 import { signout, ping, fetchTransactions, syncTransactions, signin } from './remote';
 
 /**
@@ -106,7 +107,9 @@ export function* syncTransactionRequest(data) {
 
 /**
  *
- * Signin request
+ * Signin request.
+ *  - success: save token to localstorage and return true
+ *  - fail   : show error flash message and return false
  *
  * @param {*} data
  * {
@@ -121,7 +124,19 @@ export function* signinRequest(data) {
     yield put({ type: 'Reducer - app: set signin loading off' });
 
     if (response.ok) {
-        yield put({ type: 'Reducer - app: authorized' });
+        const result = yield call(setToken, response.data.token);
+        if (result) {
+            return true;
+        } else {
+            yield put({
+                type: 'Reducer - app: set flash message',
+                payload: {
+                    severity: 'error',
+                    message: "Couldn't save token to local storage",
+                },
+            });
+            return false;
+        }
     } else {
         yield put({
             type: 'Reducer - app: set flash message',
@@ -130,7 +145,7 @@ export function* signinRequest(data) {
                 message: `${response.data.message} (${response.data.code})`,
             },
         });
-        yield put({ type: 'Reducer - app: unauthorized' });
+        return false;
     }
 }
 

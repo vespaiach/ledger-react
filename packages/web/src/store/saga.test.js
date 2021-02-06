@@ -9,6 +9,7 @@ import {
     syncTransactionRequest,
 } from './saga';
 import { fetchTransactions, ping, signin, signout, syncTransactions } from './remote';
+import { setToken } from '../utils/token';
 
 describe('Test ping requests:', () => {
     test('ping server - return 200', () =>
@@ -129,12 +130,33 @@ describe('Test synchronize transaction requests:', () => {
 describe('Test sign in requests:', () => {
     const data = { email: 'email', password: 'password' };
 
-    test('sign in - return 200', () =>
+    test('sign in - return 200 - save localstorage ok', () =>
         expectSaga(signinRequest, data)
-            .provide([[matchers.call.fn(signin, data), { ok: true }]])
+            .provide([
+                [matchers.call.fn(signin, data), { ok: true, data: { token: 'token' } }],
+                [matchers.call.fn(setToken, 'token'), true],
+            ])
             .put({ type: 'Reducer - app: set signin loading on' })
             .put({ type: 'Reducer - app: set signin loading off' })
-            .put({ type: 'Reducer - app: authorized' })
+            .returns(true)
+            .run());
+
+    test('sign in - return 200 - save localstorage fail', () =>
+        expectSaga(signinRequest, data)
+            .provide([
+                [matchers.call.fn(signin, data), { ok: true, data: { token: 'token' } }],
+                [matchers.call.fn(setToken, 'token'), false],
+            ])
+            .put({ type: 'Reducer - app: set signin loading on' })
+            .put({ type: 'Reducer - app: set signin loading off' })
+            .put({
+                type: 'Reducer - app: set flash message',
+                payload: {
+                    severity: 'error',
+                    message: "Couldn't save token to local storage",
+                },
+            })
+            .returns(false)
             .run());
 
     test('sign in - return !== 200', () =>
@@ -153,7 +175,6 @@ describe('Test sign in requests:', () => {
             ])
             .put({ type: 'Reducer - app: set signin loading on' })
             .put({ type: 'Reducer - app: set signin loading off' })
-            .put({ type: 'Reducer - app: unauthorized' })
             .put({
                 type: 'Reducer - app: set flash message',
                 payload: {
@@ -161,6 +182,7 @@ describe('Test sign in requests:', () => {
                     message: 'Login error (E_UNAUTHORIZED)',
                 },
             })
+            .returns(false)
             .run());
 });
 
