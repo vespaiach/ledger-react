@@ -60,7 +60,7 @@ function useType(val) {
     );
 }
 
-export default function useTransactions({ data, dateFrom, dateTo, amountFrom, amountTo, type }) {
+export function useTransactions({ data, dateFrom, dateTo, amountFrom, amountTo, type }) {
     const dateFromFilter = useDateFrom(dateFrom);
     const dateToFilter = useDateTo(dateTo);
     const amountFromFilter = useAmountFrom(amountFrom);
@@ -71,4 +71,14 @@ export default function useTransactions({ data, dateFrom, dateTo, amountFrom, am
         const pipe = [dateFromFilter, dateToFilter, amountFromFilter, amountToFilter, typeFilter];
         return data.filter((it) => pipe.every((fn) => fn(it)));
     }, [data, dateFromFilter, dateToFilter, amountFromFilter, amountToFilter, typeFilter]);
+}
+
+export function useCategories({ data }) {
+    return useMemo(() => {
+        const cats = new Set();
+        data.forEach((it) => {
+            cats.add(it.category);
+        });
+        return Array.from(cats);
+    }, [data]);
 }

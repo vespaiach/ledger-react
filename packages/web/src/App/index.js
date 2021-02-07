@@ -1,8 +1,7 @@
-import { Snackbar, Box, Container, Typography, IconButton } from '@material-ui/core';
+import { Snackbar, Container, IconButton } from '@material-ui/core';
 import { Route, Switch, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
-import { Alert } from '@material-ui/lab';
 import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';
 
 import NotFound from '../routes/Errors/NotFound';
@@ -11,6 +10,7 @@ import MonthlyReport from '../routes/MonthlyReport';
 import Transactions from '../routes/Transactions';
 import DialogPanel from '../components/DialogPanel';
 import Signin from '../routes/Signin';
+import TopNav from './TopNav';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -23,6 +23,7 @@ function App() {
     const dispatch = useDispatch();
     const location = useLocation();
     const showSignIn = useSelector((state) => state.common.showSignIn);
+    const appLoading = useSelector((state) => state.common.loading);
     const error = useSelector((state) => state.common.error);
     const closeMessage = () => dispatch({ type: 'Reducer: hide app error' });
     const tabValue = useMemo(() => {
@@ -47,6 +48,7 @@ function App() {
 
     return (
         <>
+            <TopNav />
             <Switch>
                 <Route exact path="/transactions">
                     <Transactions />
@@ -82,17 +84,21 @@ function App() {
                 message={error}
                 onClose={closeMessage}
             />
-            <Snackbar>
-                <Box>
-                    <div class="lds-ellipsis">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
-                    Loading
-                </Box>
-            </Snackbar>
+            <Snackbar
+                open={appLoading}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                message={
+                    <>
+                        <span>Loading transactions</span>
+                        <div class="lds-ellipsis">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </>
+                }
+            />
         </>
     );
 }

@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     },
     btnSubmitRoot: {
         flex: 1,
-        marginRight: theme.spacing(3),
+        marginLeft: theme.spacing(3),
     },
     btnCancelRoot: {
         flex: '0 0 126px',
@@ -51,7 +51,6 @@ export default function Form({
     categories = [],
     onSubmit,
     onCancel,
-    loading,
     reset,
 }) {
     const classes = useStyles();
@@ -95,7 +94,6 @@ export default function Form({
                         });
                     }}
                     fullWidth
-                    disabled={loading}
                     error={formik.touched.date && Boolean(formik.errors.date)}
                     helperText={formik.touched.date && formik.errors.date}
                     inputVariant="filled"
@@ -114,7 +112,6 @@ export default function Form({
             </MuiPickersUtilsProvider>
             <TextField
                 fullWidth
-                disabled={loading}
                 variant="filled"
                 size="small"
                 label="Amount"
@@ -137,7 +134,6 @@ export default function Form({
                 }}
             />
             <Autocomplete
-                disabled={loading}
                 name="category"
                 freeSolo
                 value={formik.values.category}
@@ -169,7 +165,6 @@ export default function Form({
                 )}
             />
             <TextField
-                disabled={loading}
                 variant="filled"
                 multiline
                 label="Description"
@@ -183,19 +178,21 @@ export default function Form({
             />
             <div className={classes.boxBtns}>
                 <Button
+                    size="large"
+                    onClick={onCancel}
+                    variant="contained"
+                    disableElevation
+                    classes={{ root: classes.btnCancelRoot }}>
+                    Cancel
+                </Button>
+                <Button
                     type="submit"
                     color="primary"
                     classes={{ root: classes.btnSubmitRoot }}
                     size="large"
+                    disableElevation
                     variant="contained">
                     Submit
-                </Button>
-                <Button
-                    size="large"
-                    onClick={onCancel}
-                    variant="contained"
-                    classes={{ root: classes.btnCancelRoot }}>
-                    Cancel
                 </Button>
             </div>
         </form>

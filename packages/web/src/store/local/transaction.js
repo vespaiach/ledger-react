@@ -1,3 +1,12 @@
+/**
+ *
+ * Ledger Web App Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
+ *
+ */
+
 import { createReducer } from '../../utils/reducer';
 
 const defaultState = {
@@ -15,7 +24,11 @@ export default createReducer(defaultState, {
     'Reducer: store transactions': (state, { payload }) => {
         return {
             ...state,
-            transactions: payload,
+            list: payload.map((it) => ({
+                ...it,
+                date: new Date(it.date),
+                amount: parseFloat(it.amount),
+            })),
         };
     },
 

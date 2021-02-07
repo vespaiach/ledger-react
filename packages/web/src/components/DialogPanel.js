@@ -1,12 +1,4 @@
-import {
-    AppBar,
-    Container,
-    Dialog,
-    IconButton,
-    Typography,
-    Slide,
-    Toolbar,
-} from '@material-ui/core';
+import { AppBar, Dialog, IconButton, Typography, Slide, Toolbar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { forwardRef } from 'react';
 import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';

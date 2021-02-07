@@ -39,6 +39,6 @@ export default createReducer(defaultState, {
         errorSeverity: severity,
     }),
 
-    'Reducer: close sign in dialog': (state) => ({ ...state, showSignIn: false }),
+    'Reducer: close sign in dialog': (state) => ({ ...state, showSignIn: false, lastAction: null }),
     'Reducer: open sign in dialog': (state) => ({ ...state, showSignIn: true }),
 });

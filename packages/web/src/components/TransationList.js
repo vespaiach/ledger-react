@@ -51,7 +51,7 @@ export default function TransactionList({ onEdit, onDelete, onDetail, data, tota
                     alignItems="flex-start"
                     disableGutters
                     button
-                    onClick={() => onDetail(index)}>
+                    onClick={() => onDetail(data[index])}>
                     <Typography variant="h6">{`$`}</Typography>
                     <div className={classes.boxMid}>
                         <Typography variant="h6">
@@ -78,7 +78,7 @@ export default function TransactionList({ onEdit, onDelete, onDetail, data, tota
                             aria-label="edit income transaction"
                             onClick={(evt) => {
                                 evt.stopPropagation();
-                                onEdit(index);
+                                onEdit(data[index]);
                             }}>
                             <EditRoundedIcon />
                         </IconButton>
@@ -86,7 +86,7 @@ export default function TransactionList({ onEdit, onDelete, onDetail, data, tota
                             aria-label="delete income transaction"
                             onClick={(evt) => {
                                 evt.stopPropagation();
-                                onDelete(index);
+                                onDelete(data[index]);
                             }}>
                             <DeleteRoundedIcon />
                         </IconButton>

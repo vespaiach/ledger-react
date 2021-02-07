@@ -8,7 +8,6 @@ import {
     FormControlLabel,
     Checkbox,
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import {
     VisibilityOff as VisibilityOffIcon,
     Visibility as VisibilityIcon,

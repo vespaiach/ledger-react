@@ -1,3 +1,12 @@
+/**
+ *
+ * Ledger Web App Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
+ *
+ */
+
 import { createReducer } from '../../utils/reducer';
 
 const defaultState = {

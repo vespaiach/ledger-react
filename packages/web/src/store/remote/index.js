@@ -9,7 +9,7 @@
 
 import axios from 'axios/lib/axios';
 import fetchAdapter from 'axios-fetch-adapter';
-import { getToken } from '../utils/token';
+import attachBearer from './attachBearer';
 
 /**
  * Axios uses xhr adapter by default. In order to leverage service worker for caching, fetch adapter is used instead
@@ -28,17 +28,7 @@ const axiosInstance = axios.create({
     },
 });
 
-/**
- * Add authorization header if credentials is not set to 'omit'
- */
-axiosInstance.interceptors.request.use(function (config) {
-    if (config.credentials === 'omit') {
-        return config;
-    }
-
-    config.headers['Authorization'] = `Bearer ${getToken()}`;
-    return config;
-});
+axiosInstance.interceptors.request.use(attachBearer);
 
 export default axiosInstance;
 
