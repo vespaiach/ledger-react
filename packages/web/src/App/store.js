@@ -2,6 +2,7 @@ import { createReducer } from '../utils/reducer';
 
 const defaultState = {
     appLoading: false,
+    showSignIn: false,
 
     flashMessage: '',
     flashMessageSeverity: '',
@@ -37,4 +38,7 @@ export default createReducer(defaultState, {
         errorMessage: message,
         errorSeverity: severity,
     }),
+
+    'Reducer: close sign in dialog': (state) => ({ ...state, showSignIn: false }),
+    'Reducer: open sign in dialog': (state) => ({ ...state, showSignIn: true }),
 });

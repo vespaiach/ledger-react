@@ -9,7 +9,7 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
   Route.group(() => {
-    Route.get('transactions/:year', 'TransactionsController.get')
+    Route.get('transactions', 'TransactionsController.get')
     Route.post('transactions', 'TransactionsController.sync')
     Route.get('ping', 'UsersController.ping')
     Route.put('signout', 'UsersController.signout')

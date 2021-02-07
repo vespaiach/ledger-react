@@ -5,20 +5,17 @@ import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import { ConnectedRouter } from 'connected-react-router';
 
 import App from './App';
 import theme from './theme';
-import store, { history } from './store/local';
+import store from './store';
 
 ReactDOM.render(
     <Router>
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Provider store={store}>
-                <ConnectedRouter history={history}>
-                    <App />
-                </ConnectedRouter>
+                <App />
             </Provider>
         </ThemeProvider>
     </Router>,

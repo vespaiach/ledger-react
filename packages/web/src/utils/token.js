@@ -15,7 +15,7 @@
 export function setToken(token) {
     return new Promise((res) => {
         try {
-            localStorage.set('__sig', token);
+            localStorage.setItem('__sig', token);
             res(true);
         } catch (e) {
             res(false);
@@ -28,5 +28,5 @@ export function clearToken() {
 }
 
 export function getToken() {
-    localStorage.getItem('__sig');
+    return localStorage.getItem('__sig');
 }

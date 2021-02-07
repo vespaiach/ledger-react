@@ -13,13 +13,14 @@ import Transaction from 'App/Models/Trasactions'
 import TransactionType from 'App/Models/TransactionType'
 import SyncValidator from 'App/Validator/SyncValidator'
 import SyncException from 'App/Exceptions/SyncException'
+import GetValidator from 'App/Validator/GetValidator'
 
 export default class TransactionsController {
   /**
    * Get all transactions in year and sort by date in descending order
    */
-  public async get({ params }: HttpContextContract) {
-    const { year } = params
+  public async get({ request }: HttpContextContract) {
+    const { year } = await request.validate(GetValidator)
 
     const fromDate = DateTime.fromJSDate(new Date(year, 0, 1, 0, 0))
     const toDate = DateTime.fromJSDate(new Date(year, 11, 31, 0, 0))

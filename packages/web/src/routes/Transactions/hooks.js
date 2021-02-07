@@ -1,0 +1,74 @@
+import { useCallback, useMemo } from 'react';
+
+function useDateFrom(val) {
+    return useCallback(
+        (item) => {
+            if (val) {
+                return item.date >= val;
+            }
+            return true;
+        },
+        [val]
+    );
+}
+
+function useDateTo(val) {
+    return useCallback(
+        (item) => {
+            if (val) {
+                return item.date < val;
+            }
+            return true;
+        },
+        [val]
+    );
+}
+
+function useAmountFrom(val) {
+    return useCallback(
+        (item) => {
+            if (val) {
+                return item.amount >= val;
+            }
+            return true;
+        },
+        [val]
+    );
+}
+
+function useAmountTo(val) {
+    return useCallback(
+        (item) => {
+            if (val) {
+                return item.amount < val;
+            }
+            return true;
+        },
+        [val]
+    );
+}
+
+function useType(val) {
+    return useCallback(
+        (item) => {
+            if (val) {
+                return item.transactionType === val;
+            }
+            return true;
+        },
+        [val]
+    );
+}
+
+export default function useTransactions({ data, dateFrom, dateTo, amountFrom, amountTo, type }) {
+    const dateFromFilter = useDateFrom(dateFrom);
+    const dateToFilter = useDateTo(dateTo);
+    const amountFromFilter = useAmountFrom(amountFrom);
+    const amountToFilter = useAmountTo(amountTo);
+    const typeFilter = useType(type);
+
+    return useMemo(() => {
+        const pipe = [dateFromFilter, dateToFilter, amountFromFilter, amountToFilter, typeFilter];
+        return data.filter((it) => pipe.every((fn) => fn(it)));
+    }, [data, dateFromFilter, dateToFilter, amountFromFilter, amountToFilter, typeFilter]);
+}

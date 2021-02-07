@@ -22,20 +22,11 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 
-export default class SyncValidator {
+export default class GetValidator {
   constructor(private ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    payload: schema.array().members(
-      schema.object().members({
-        id: schema.number.optional(),
-        date: schema.date({ format: 'iso' }),
-        amount: schema.number(),
-        description: schema.string({ escape: true, trim: true }, [rules.maxLength(255)]),
-        category: schema.string({ escape: true, trim: true }, [rules.maxLength(63)]),
-        transactionType: schema.string({ escape: true, trim: true }, [rules.transactionType()]),
-      })
-    ),
+    year: schema.number([rules.range(1970, 2999)]),
   })
 
   /**

@@ -7,24 +7,25 @@
  *
  */
 
-import { call, put, take, takeEvery } from 'redux-saga/effects';
+import { select, call, put, take } from 'redux-saga/effects';
 
 import { safeCall } from '../utils/saga';
-import { setToken } from '../utils/token';
-import { signout, ping, fetchTransactions, syncTransactions, signin } from './remote';
+import { clearToken, setToken } from '../utils/token';
+import { signout, fetchTransactions, syncTransactions, signin } from './remote';
 
 /**
- * Ping server to see if user's session is still valid
+ * Check if server return 401:
+ *  - show login dialog
+ *  - save current action to allow resuming after login
  */
-export function* pingRequest() {
-    yield put({ type: 'Reducer - app: set app loading on' });
-    const response = yield safeCall(call(ping));
-    yield put({ type: 'Reducer - app: set app loading off' });
-
-    if (response.ok) {
-        yield put({ type: 'Reducer - app: authorized' });
+export function* handleApiError(response, currentAction) {
+    if (response.status === 401) {
+        yield put({ type: 'Reducer: show sign in dialog', payload: currentAction });
     } else {
-        yield put({ type: 'Reducer - app: unauthorized' });
+        yield put({
+            type: 'Reducer: show app error',
+            payload: `${response.data.message} (${response.data.code})`,
+        });
     }
 }
 
@@ -32,31 +33,17 @@ export function* pingRequest() {
  * Fetch a batch of transaction records by year
  */
 export function* fetchTransactionRequest(year) {
-    yield put({ type: 'Reducer - trans: set fetch loading on' });
+    yield put({ type: 'Reducer: show app loading' });
     const response = yield safeCall(call(fetchTransactions, year));
-    yield put({ type: 'Reducer - trans: set fetch loading off' });
+    yield put({ type: 'Reducer: hide app loading' });
 
     if (response.ok) {
         yield put({
-            type: 'Reducer - trans: update status',
-            payload: 'loaded',
-        });
-        yield put({
-            type: 'Reducer - trans: store transactions',
+            type: 'Reducer: store transactions',
             payload: response.data,
         });
     } else {
-        yield put({
-            type: 'Reducer - trans: update status',
-            payload: 'fail',
-        });
-        yield put({
-            type: 'Reducer - app: set flash message',
-            payload: {
-                severity: 'error',
-                message: `${response.data.message} (${response.data.code})`,
-            },
-        });
+        yield handleApiError(response, { type: 'Saga: fetch transactions', payload: year });
     }
 }
 
@@ -78,30 +65,15 @@ export function* fetchTransactionRequest(year) {
  *
  */
 export function* syncTransactionRequest(data) {
-    yield put({ type: 'Reducer - trans: set sync loading on' });
     const response = yield safeCall(call(syncTransactions, data));
-    yield put({ type: 'Reducer - trans: set sync loading off' });
 
     if (response.ok) {
         yield put({
-            type: 'Reducer - trans: update transactions',
+            type: 'Reducer: update transactions',
             payload: response.data,
         });
-        yield put({
-            type: 'Reducer - app: set flash message',
-            payload: {
-                severity: 'success',
-                message: `Synchronized succefully`,
-            },
-        });
     } else {
-        yield put({
-            type: 'Reducer - app: set flash message',
-            payload: {
-                severity: 'error',
-                message: `${response.data.message} (${response.data.code})`,
-            },
-        });
+        yield handleApiError(response, { type: 'Saga: sync transactions', payload: data });
     }
 }
 
@@ -119,31 +91,30 @@ export function* syncTransactionRequest(data) {
  * }
  */
 export function* signinRequest(data) {
-    yield put({ type: 'Reducer - app: set signin loading on' });
+    yield put({ type: 'Reducer: show signin loading' });
     const response = yield safeCall(call(signin, data));
-    yield put({ type: 'Reducer - app: set signin loading off' });
+    yield put({ type: 'Reducer: hide signin loading' });
 
     if (response.ok) {
         const result = yield call(setToken, response.data.token);
         if (result) {
+            const lastAction = yield select((state) => state.common.lastAction);
+            if (lastAction) {
+                yield put({ type: lastAction.type, payload: lastAction.payload });
+            }
+            yield put({ type: 'Reducer: close sign in dialog' });
             return true;
         } else {
             yield put({
-                type: 'Reducer - app: set flash message',
-                payload: {
-                    severity: 'error',
-                    message: "Couldn't save token to local storage",
-                },
+                type: 'Reducer: show app error',
+                payload: "Couldn't store token to local storage",
             });
             return false;
         }
     } else {
         yield put({
-            type: 'Reducer - app: set flash message',
-            payload: {
-                severity: 'error',
-                message: `${response.data.message} (${response.data.code})`,
-            },
+            type: 'Reducer: show app error',
+            payload: `${response.data.message} (${response.data.code})`,
         });
         return false;
     }
@@ -154,11 +125,7 @@ export function* signinRequest(data) {
  */
 export function* signoutRequest() {
     yield safeCall(call(signout));
-    yield put({ type: 'Reducer - app: unauthorized' });
-}
-
-export function* watchPingRequest() {
-    yield takeEvery('Saga: ping server', pingRequest);
+    return yield call(() => Promise.resolve(clearToken() || true));
 }
 
 export function* watchFetchRequest() {

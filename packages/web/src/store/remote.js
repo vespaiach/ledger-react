@@ -7,7 +7,7 @@
  *
  */
 
-import axios from 'axios';
+import axios from 'axios/lib/axios';
 import fetchAdapter from 'axios-fetch-adapter';
 import { getToken } from '../utils/token';
 
@@ -15,10 +15,9 @@ import { getToken } from '../utils/token';
  * Axios uses xhr adapter by default. In order to leverage service worker for caching, fetch adapter is used instead
  */
 const axiosInstance = axios.create({
-    baseUrl: process.env.REACT_APP_BASE_API_URL,
+    baseURL: process.env.REACT_APP_BASE_API_URL,
     mode: 'cors',
     cache: 'no-store',
-    credentials: process.env.NODE_ENV === 'development' ? 'include' : 'same-origin',
     headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -54,13 +53,11 @@ export function fetchTransactions(year) {
 }
 
 export function syncTransactions(data) {
-    return axiosInstance.post('/transactions', {
-        data,
-    });
+    return axiosInstance.post('/transactions', data);
 }
 
 export function signin(data) {
-    return axiosInstance.post('/signin', { data });
+    return axiosInstance.post('/signin', data);
 }
 
 export function signout() {

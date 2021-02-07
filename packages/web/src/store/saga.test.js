@@ -3,75 +3,68 @@ import * as matchers from 'redux-saga-test-plan/matchers';
 
 import {
     fetchTransactionRequest,
-    pingRequest,
     signinRequest,
     signoutRequest,
     syncTransactionRequest,
 } from './saga';
-import { fetchTransactions, ping, signin, signout, syncTransactions } from './remote';
-import { setToken } from '../utils/token';
-
-describe('Test ping requests:', () => {
-    test('ping server - return 200', () =>
-        expectSaga(pingRequest)
-            .provide([[matchers.call.fn(ping), { ok: true, data: 'pong' }]])
-            .put({ type: 'Reducer - app: set app loading on' })
-            .put({ type: 'Reducer - app: set app loading off' })
-            .put({ type: 'Reducer - app: authorized' })
-            .run());
-
-    test('ping server - return !== 200', () =>
-        expectSaga(pingRequest)
-            .provide([[matchers.call.fn(ping), { ok: false }]])
-            .put({ type: 'Reducer - app: set app loading on' })
-            .put({ type: 'Reducer - app: set app loading off' })
-            .put({ type: 'Reducer - app: unauthorized' })
-            .run());
-});
+import { fetchTransactions, signin, syncTransactions } from './remote';
+import { clearToken, setToken } from '../utils/token';
 
 describe('Test fetch transaction requests:', () => {
     const year = 2020;
     test('fetch transactions - return 200', () =>
         expectSaga(fetchTransactionRequest, year)
             .provide([[matchers.call.fn(fetchTransactions, year), { ok: true, data: [{ id: 1 }] }]])
-            .put({ type: 'Reducer - trans: set fetch loading on' })
-            .put({ type: 'Reducer - trans: set fetch loading off' })
+            .put({ type: 'Reducer: show app loading' })
+            .put({ type: 'Reducer: hide app loading' })
             .put({
-                type: 'Reducer - trans: update status',
-                payload: 'loaded',
-            })
-            .put({
-                type: 'Reducer - trans: store transactions',
+                type: 'Reducer: store transactions',
                 payload: [{ id: 1 }],
             })
             .run());
 
-    test('fetch transactions - return !== 200', () =>
+    test('fetch transactions - return 401', () =>
         expectSaga(fetchTransactionRequest, year)
             .provide([
                 [
                     matchers.call.fn(fetchTransactions, year),
                     {
                         ok: false,
+                        status: 401,
+                    },
+                ],
+            ])
+            .put({ type: 'Reducer: show app loading' })
+            .put({ type: 'Reducer: hide app loading' })
+            .put({
+                type: 'Reducer: show sign in dialog',
+                payload: {
+                    type: 'Saga: fetch transactions',
+                    payload: year,
+                },
+            })
+            .run());
+
+    test('fetch transactions - return other error', () =>
+        expectSaga(fetchTransactionRequest, year)
+            .provide([
+                [
+                    matchers.call.fn(fetchTransactions, year),
+                    {
+                        ok: false,
+                        status: 400,
                         data: {
-                            code: 'E_SERVER_FAIL',
-                            message: 'Server encounted error',
+                            code: 'E',
+                            message: 'validation',
                         },
                     },
                 ],
             ])
-            .put({ type: 'Reducer - trans: set fetch loading on' })
-            .put({ type: 'Reducer - trans: set fetch loading off' })
+            .put({ type: 'Reducer: show app loading' })
+            .put({ type: 'Reducer: hide app loading' })
             .put({
-                type: 'Reducer - trans: update status',
-                payload: 'fail',
-            })
-            .put({
-                type: 'Reducer - app: set flash message',
-                payload: {
-                    severity: 'error',
-                    message: 'Server encounted error (E_SERVER_FAIL)',
-                },
+                type: 'Reducer: show app error',
+                payload: 'validation (E)',
             })
             .run());
 });
@@ -86,28 +79,40 @@ describe('Test synchronize transaction requests:', () => {
     test('sync transactions - return 200', () =>
         expectSaga(syncTransactionRequest, data)
             .provide([[matchers.call.fn(syncTransactions, data), { ok: true, data: response }]])
-            .put({ type: 'Reducer - trans: set sync loading on' })
-            .put({ type: 'Reducer - trans: set sync loading off' })
             .put({
-                type: 'Reducer - app: set flash message',
-                payload: {
-                    severity: 'success',
-                    message: `Synchronized succefully`,
-                },
-            })
-            .put({
-                type: 'Reducer - trans: update transactions',
+                type: 'Reducer: update transactions',
                 payload: response,
             })
             .run());
 
-    test('sync transactions - return !== 200', () =>
+    test('sync transactions - return 401', () =>
         expectSaga(syncTransactionRequest, data)
             .provide([
                 [
                     matchers.call.fn(syncTransactions, data),
                     {
                         ok: false,
+                        status: 401,
+                    },
+                ],
+            ])
+            .put({
+                type: 'Reducer: show sign in dialog',
+                payload: {
+                    type: 'Saga: sync transactions',
+                    payload: data,
+                },
+            })
+            .run());
+
+    test('sync transactions - return other error', () =>
+        expectSaga(syncTransactionRequest, data)
+            .provide([
+                [
+                    matchers.call.fn(syncTransactions, data),
+                    {
+                        ok: false,
+                        status: 400,
                         data: {
                             code: 'E_SYNC_FAIL',
                             message: 'Something went wrong when synchronizing data',
@@ -115,14 +120,9 @@ describe('Test synchronize transaction requests:', () => {
                     },
                 ],
             ])
-            .put({ type: 'Reducer - trans: set sync loading on' })
-            .put({ type: 'Reducer - trans: set sync loading off' })
             .put({
-                type: 'Reducer - app: set flash message',
-                payload: {
-                    severity: 'error',
-                    message: 'Something went wrong when synchronizing data (E_SYNC_FAIL)',
-                },
+                type: 'Reducer: show app error',
+                payload: 'Something went wrong when synchronizing data (E_SYNC_FAIL)',
             })
             .run());
 });
@@ -132,12 +132,28 @@ describe('Test sign in requests:', () => {
 
     test('sign in - return 200 - save localstorage ok', () =>
         expectSaga(signinRequest, data)
+            .withState({ common: { lastAction: { type: 'action', payload: 'payload' } } })
             .provide([
                 [matchers.call.fn(signin, data), { ok: true, data: { token: 'token' } }],
                 [matchers.call.fn(setToken, 'token'), true],
             ])
-            .put({ type: 'Reducer - app: set signin loading on' })
-            .put({ type: 'Reducer - app: set signin loading off' })
+            .put({ type: 'Reducer: show signin loading' })
+            .put({ type: 'Reducer: hide signin loading' })
+            .put({ type: 'Reducer: close sign in dialog' })
+            .returns(true)
+            .run());
+
+    test('sign in - return 200 - save localstorage ok - with last action', () =>
+        expectSaga(signinRequest, data)
+            .withState({ common: { lastAction: { type: 'action', payload: 'payload' } } })
+            .provide([
+                [matchers.call.fn(signin, data), { ok: true, data: { token: 'token' } }],
+                [matchers.call.fn(setToken, 'token'), true],
+            ])
+            .put({ type: 'Reducer: show signin loading' })
+            .put({ type: 'Reducer: hide signin loading' })
+            .put({ type: 'action', payload: 'payload' })
+            .put({ type: 'Reducer: close sign in dialog' })
             .returns(true)
             .run());
 
@@ -147,14 +163,11 @@ describe('Test sign in requests:', () => {
                 [matchers.call.fn(signin, data), { ok: true, data: { token: 'token' } }],
                 [matchers.call.fn(setToken, 'token'), false],
             ])
-            .put({ type: 'Reducer - app: set signin loading on' })
-            .put({ type: 'Reducer - app: set signin loading off' })
+            .put({ type: 'Reducer: show signin loading' })
+            .put({ type: 'Reducer: hide signin loading' })
             .put({
-                type: 'Reducer - app: set flash message',
-                payload: {
-                    severity: 'error',
-                    message: "Couldn't save token to local storage",
-                },
+                type: 'Reducer: show app error',
+                payload: "Couldn't store token to local storage",
             })
             .returns(false)
             .run());
@@ -173,14 +186,11 @@ describe('Test sign in requests:', () => {
                     },
                 ],
             ])
-            .put({ type: 'Reducer - app: set signin loading on' })
-            .put({ type: 'Reducer - app: set signin loading off' })
+            .put({ type: 'Reducer: show signin loading' })
+            .put({ type: 'Reducer: hide signin loading' })
             .put({
-                type: 'Reducer - app: set flash message',
-                payload: {
-                    severity: 'error',
-                    message: 'Login error (E_UNAUTHORIZED)',
-                },
+                type: 'Reducer: show app error',
+                payload: 'Login error (E_UNAUTHORIZED)',
             })
             .returns(false)
             .run());
@@ -189,7 +199,7 @@ describe('Test sign in requests:', () => {
 describe('Test sign out requests:', () => {
     test('sign out', () =>
         expectSaga(signoutRequest)
-            .provide([[matchers.call.fn(signout), { ok: true }]])
-            .put({ type: 'Reducer - app: unauthorized' })
+            .provide([[matchers.call.fn(clearToken), false]])
+            .returns(true)
             .run());
 });

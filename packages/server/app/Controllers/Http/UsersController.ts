@@ -13,6 +13,8 @@ import Env from '@ioc:Adonis/Core/Env'
 import { DateTime } from 'luxon'
 import User from 'App/Models/User'
 import { base64 } from '@poppinss/utils'
+import WrongCredentialsException from 'App/Exceptions/WrongCredentialsException'
+import Logger from '@ioc:Adonis/Core/Logger'
 
 export default class UsersController {
   /**
@@ -26,8 +28,13 @@ export default class UsersController {
       }),
     })
 
-    const token = await auth.use('api').attempt(email, password)
-    return token.toJSON()
+    try {
+      const token = await auth.use('api').attempt(email, password)
+      return token.toJSON()
+    } catch (e) {
+      Logger.info(e)
+      throw new WrongCredentialsException('Wrong credentials', 'E_WRONG_CREDENTIALS')
+    }
   }
 
   /**
