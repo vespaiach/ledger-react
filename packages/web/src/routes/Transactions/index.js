@@ -1,42 +1,54 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, Container, Grid, Typography } from '@material-ui/core';
-import { DeleteForeverRounded as DeleteForeverRoundedIcon } from '@material-ui/icons';
-
+import {
+    Container,
+    useScrollTrigger,
+    Grid,
+    IconButton,
+    Menu,
+    MenuItem,
+    Slide,
+    Typography,
+} from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ArrowDropDown as ArrowDropDownIcon } from '@material-ui/icons';
 
 import TransactionList from '../../components/TransationList';
 import { useCategories, useTransactions } from './hooks';
-import DialogPanel from '../../components/DialogPanel';
 import TransactionForm from '../../components/TransactionForm';
 import TransDetails from './TransDetails';
+import DeletingDialog from './DeletingDialog';
+import DatabaseSearchIcon from '../../components/Icons/DatabaseSearch';
+import SortingIcon from '../../components/Icons/Sorting';
 
 const useStyles = makeStyles((theme) => ({
-    gridRowRoot: {
-        marginTop: theme.spacing(7),
-    },
     formTitleRoot: {
         margin: theme.spacing(2, 0, 1, 0),
     },
-    deletingConfirm: {
-        display: 'flex',
-        marginTop: theme.spacing(3),
-    },
-    deletingIcon: {
-        width: 48,
+    padding: {
         height: 48,
-        marginRight: theme.spacing(2),
-        color: theme.palette.warning.dark,
+        background: theme.palette.primary.dark,
     },
-    btns: {
+    pageHead: {
+        background: theme.palette.primary.dark,
+        color: theme.palette.common.white,
+        padding: theme.spacing(2),
+    },
+    pageSubMenu: {
+        background: theme.palette.primary.dark,
+        color: theme.palette.common.white,
+        padding: theme.spacing(0, 2, 0, 2),
         display: 'flex',
-        marginTop: theme.spacing(3),
-        '& button + button': {
-            marginLeft: theme.spacing(3),
+        '& .MuiTypography-body1': {
+            display: 'flex',
+            alignItems: 'center',
         },
+        zIndex: 1002,
+        position: 'sticky',
+        top: 48,
     },
-    btnDoit: {
-        background: theme.palette.warning.dark,
+    grow: {
+        flexGrow: 1,
     },
 }));
 
@@ -46,6 +58,7 @@ export default function Transactions({ year = currentYear }) {
     const classes = useStyles();
     const dispatch = useDispatch();
 
+    const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const [editing, setEditing] = useState(null);
     const [deleting, setDeleting] = useState(null);
     const [detail, setDetail] = useState(null);
@@ -69,6 +82,7 @@ export default function Transactions({ year = currentYear }) {
         type,
     });
     const categories = useCategories({ data: rawTransactions });
+    const closeMenu = () => setMenuAnchorEl(null);
 
     /**
      * Load transactions by year
@@ -121,60 +135,67 @@ export default function Transactions({ year = currentYear }) {
     }
 
     return (
-        <Container>
-            <Grid container>
-                <Grid item xs={12} classes={{ root: classes.gridRowRoot }}>
-                    {el}
-                    <DialogPanel
-                        title="Confirmation"
-                        open={Boolean(deleting)}
-                        onClose={() => setDeleting(null)}>
-                        <Container>
-                            <Grid container spacing={3}>
-                                <Grid item xs={12}>
-                                    <div className={classes.deletingConfirm}>
-                                        <DeleteForeverRoundedIcon
-                                            classes={{ root: classes.deletingIcon }}
-                                        />
-                                        <Typography>
-                                            Deleted transaction record won't be recovered. Do you
-                                            want to continue?
-                                        </Typography>
-                                    </div>
-                                    <div className={classes.btns}>
-                                        <Button
-                                            variant="contained"
-                                            disableElevation
-                                            fullWidth
-                                            onClick={() => setDeleting(null)}>
-                                            Cancel
-                                        </Button>
-                                        <Button
-                                            variant="contained"
-                                            classes={{ root: classes.btnDoit }}
-                                            disableElevation
-                                            fullWidth>
-                                            Do It
-                                        </Button>
-                                    </div>
-                                </Grid>
-                            </Grid>
-                        </Container>
-                    </DialogPanel>
-                    <TransDetails
-                        detail={detail}
-                        onClose={() => setDetail(null)}
-                        onEdit={(item) => {
-                            setDetail(null);
-                            setEditing(item);
-                        }}
-                        onDelete={(item) => {
-                            setDetail(null);
-                            setDeleting(item);
-                        }}
-                    />
+        <>
+            <div className={classes.padding} />
+            <div className={classes.pageHead}>
+                <Typography variant="h6" component="h1">
+                    Transactions
+                </Typography>
+            </div>
+            <div className={classes.pageSubMenu}>
+                <Typography onClick={(evt) => setMenuAnchorEl(evt.currentTarget)} role="menu">
+                    <span>2021</span>
+                    <ArrowDropDownIcon />
+                </Typography>
+                <Menu
+                    anchorEl={menuAnchorEl}
+                    keepMounted
+                    open={Boolean(menuAnchorEl)}
+                    onClose={() => setMenuAnchorEl(null)}>
+                    <MenuItem onClick={closeMenu}>2020</MenuItem>
+                    <MenuItem onClick={closeMenu}>2019</MenuItem>
+                    <MenuItem onClick={closeMenu}>2018</MenuItem>
+                </Menu>
+                <div className={classes.grow} />
+                <IconButton
+                    aria-label="sort transactions"
+                    title="sort transactions"
+                    color="inherit">
+                    <SortingIcon />
+                </IconButton>
+                <IconButton
+                    aria-label="search transactions"
+                    title="search transactions"
+                    color="inherit">
+                    <DatabaseSearchIcon />
+                </IconButton>
+            </div>
+            <Container>
+                <Grid container>
+                    <Grid item xs={12} classes={{ root: classes.gridRowRoot }}>
+                        {el}
+                        <DeletingDialog
+                            open={Boolean(deleting)}
+                            onClose={() => setDeleting(null)}
+                            onDelete={() =>
+                                dispatch({ type: 'Saga: sync transactions', payload: deleting.id })
+                            }
+                        />
+                        <TransDetails
+                            detail={detail}
+                            onClose={() => setDetail(null)}
+                            onEdit={(item) => {
+                                setDetail(null);
+                                setEditing(item);
+                            }}
+                            onDelete={(item) => {
+                                setDetail(null);
+                                setDeleting(item);
+                            }}
+                        />
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Container>
+            </Container>
+        </>
     );
 }

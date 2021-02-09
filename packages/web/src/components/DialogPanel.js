@@ -32,7 +32,7 @@ export default function DialogPanel({ open, title, children, onClose, ...rest })
             onClose={onClose}
             PaperProps={{ btnCloseRoot: classes.btnCloseRoot, onClose }}
             TransitionComponent={SlideUp}>
-            <AppBar position="static" color="transparent">
+            <AppBar position="static" color="transparent" elevation={3}>
                 <Toolbar variant="dense">
                     <IconButton
                         edge="start"

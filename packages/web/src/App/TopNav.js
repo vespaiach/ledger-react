@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, IconButton, Divider } from '@material-ui/core';
 import {
     MenuBookRounded as MenuBookRoundedIcon,
     SettingsRounded as SettingsRoundedIcon,
@@ -6,6 +6,10 @@ import {
 } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+
+import ListIcon from '../components/Icons/List';
+import ChartIcon from '../components/Icons/Chart';
+import SettingIcon from '../components/Icons/Setting';
 
 const useStyles = makeStyles((theme) => ({
     appbarRoot: {
@@ -64,6 +68,12 @@ const useStyles = makeStyles((theme) => ({
         minHeight: 48,
         background: theme.palette.primary.dark,
     },
+    flexGrow: {
+        flexGrow: 1,
+    },
+    divider: {
+        height: 24,
+    },
 }));
 
 export default function TopNav() {
@@ -73,29 +83,24 @@ export default function TopNav() {
             <Toolbar variant="dense">
                 <MenuBookRoundedIcon classes={{ root: classes.logoRoot }} />
                 <Typography variant="h6">Ledger</Typography>
-                <div className={classes.tabsRoot}>
-                    <Link to="/transactions" className="active">
-                        Transactions
-                    </Link>
-                    <Link to="/reports">Reports</Link>
-                </div>
+                <div className={classes.flexGrow} />
                 <IconButton
-                    classes={{ root: classes.settingMenuRoot }}
-                    edge="end"
-                    aria-label="account menu"
-                    aria-controls="account-menu"
-                    title="account menu"
-                    aria-haspopup="true">
-                    <SettingsRoundedIcon />
+                    aria-label="list of transactions"
+                    title="list of transactions"
+                    to="/transactions"
+                    component={Link}>
+                    <ListIcon />
                 </IconButton>
                 <IconButton
-                    classes={{ root: classes.hamburgerMenuRoot }}
-                    edge="end"
-                    aria-label="account menu"
-                    aria-controls="account-menu"
-                    title="account menu"
-                    aria-haspopup="true">
-                    <MenuRoundedIcon />
+                    aria-label="transaction reports"
+                    title="transaction reports"
+                    to="/reports"
+                    component={Link}>
+                    <ChartIcon />
+                </IconButton>
+                <Divider orientation="vertical" classes={{ root: classes.divider }} />
+                <IconButton edge="end" aria-label="settings" title="settings">
+                    <SettingIcon />
                 </IconButton>
             </Toolbar>
         </AppBar>

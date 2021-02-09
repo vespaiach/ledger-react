@@ -6,7 +6,7 @@ import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';
 
 import NotFound from '../routes/Errors/NotFound';
 import { useMemo } from 'react';
-import MonthlyReport from '../routes/MonthlyReport';
+import MonthlyReport from '../routes/Reports';
 import Transactions from '../routes/Transactions';
 import DialogPanel from '../components/DialogPanel';
 import Signin from '../routes/Signin';

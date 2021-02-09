@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function MonthlyReport() {
+export default function Report() {
     const classes = useStyles();
     const dispatch = useDispatch();
     const [btnMonthRef, setBtnMonthRef] = useState(null);

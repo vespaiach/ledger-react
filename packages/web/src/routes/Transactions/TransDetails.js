@@ -83,14 +83,16 @@ export default function TransDetails({ detail, onClose, onEdit, onDelete }) {
 
     return (
         <DialogPanel title="Transaction Details" open={Boolean(detail)} onClose={onClose}>
-            <Container classes={{ root: classes.infoPanel }}>
-                <Grid container spacing={3}>
-                    <Grid item xs={12}>
-                        {el}
+            <Container classes={{ root: classes.infoPanel }} maxWidth={false}>
+                <Container maxWidth="sm">
+                    <Grid container spacing={3}>
+                        <Grid item xs={12}>
+                            {el}
+                        </Grid>
                     </Grid>
-                </Grid>
+                </Container>
             </Container>
-            <Container>
+            <Container maxWidth="sm">
                 <Grid container spacing={3}>
                     <Grid item xs={12} classes={{ root: classes.btns }}>
                         <IconButton
