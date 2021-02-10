@@ -18,9 +18,17 @@ const defaultState = {
         amountFrom: null,
         amountTo: null,
     },
+    sortingFn: null, // a sorting function will be stored
 };
 
 export default createReducer(defaultState, {
+    'Reducer: save sorting function': (state, { payload }) => {
+        return {
+            ...state,
+            sortingFn: payload,
+        };
+    },
+
     'Reducer: store transactions': (state, { payload }) => {
         return {
             ...state,

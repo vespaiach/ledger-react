@@ -25,13 +25,7 @@ export default function DialogPanel({ open, title, children, onClose, ...rest })
     const classes = useStyles();
 
     return (
-        <Dialog
-            {...rest}
-            fullScreen
-            open={open}
-            onClose={onClose}
-            PaperProps={{ btnCloseRoot: classes.btnCloseRoot, onClose }}
-            TransitionComponent={SlideUp}>
+        <Dialog {...rest} fullScreen open={open} onClose={onClose} TransitionComponent={SlideUp}>
             <AppBar position="static" color="transparent" elevation={3}>
                 <Toolbar variant="dense">
                     <IconButton

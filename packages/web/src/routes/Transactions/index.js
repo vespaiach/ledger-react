@@ -20,6 +20,7 @@ import TransDetails from './TransDetails';
 import DeletingDialog from './DeletingDialog';
 import DatabaseSearchIcon from '../../components/Icons/DatabaseSearch';
 import SortingIcon from '../../components/Icons/Sorting';
+import FilterDialog from './FilterDialog';
 
 const useStyles = makeStyles((theme) => ({
     formTitleRoot: {
@@ -55,6 +56,57 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const currentYear = new Date().getFullYear();
+const listOfYear = [2021, 2020, 2019, 2018];
+const listOfSorting = [
+    {
+        val: (trans1, trans2) => {
+            if (trans2.amount < trans1.amount) {
+                return -1;
+            } else if (trans2.amount > trans1.amount) {
+                return 1;
+            } else {
+                return 0;
+            }
+        },
+        text: 'Most amount of money',
+    },
+    {
+        val: (trans1, trans2) => {
+            if (trans2.date < trans1.date) {
+                return -1;
+            } else if (trans2.date > trans1.date) {
+                return 1;
+            } else {
+                return 0;
+            }
+        },
+        text: 'Most recent transactions',
+    },
+    {
+        val: (trans1, trans2) => {
+            if (trans2.date < trans1.date) {
+                return 1;
+            } else if (trans2.date > trans1.date) {
+                return -1;
+            } else {
+                return 0;
+            }
+        },
+        text: 'Date in ascending',
+    },
+    {
+        val: (trans1, trans2) => {
+            if (trans2.amount < trans1.amount) {
+                return 1;
+            } else if (trans2.amount > trans1.amount) {
+                return -1;
+            } else {
+                return 0;
+            }
+        },
+        text: 'Least of amount',
+    },
+];
 
 export default function Transactions() {
     const classes = useStyles();
@@ -66,6 +118,8 @@ export default function Transactions() {
     const [deleting, setDeleting] = useState(null);
     const [detail, setDetail] = useState(null);
     const [year, setYear] = useState(currentYear);
+    const [sortAnchorEl, setSortAnchorEl] = useState(null);
+    const [showFilterDialog, setShowFilterDialog] = useState(false);
 
     const rawTransactions = useSelector((state) => state.transaction.list);
     const dateFrom = useSelector((state) => state.transaction.filter.dateFrom);
@@ -73,6 +127,8 @@ export default function Transactions() {
     const amountFrom = useSelector((state) => state.transaction.filter.amountFrom);
     const amountTo = useSelector((state) => state.transaction.filter.amountTo);
     const type = useSelector((state) => state.transaction.filter.type);
+    const sortingFn = useSelector((state) => state.transaction.sortingFn);
+    const filter = useSelector((state) => state.transaction.filter);
 
     /**
      * Transaction list after apply filtering
@@ -84,11 +140,19 @@ export default function Transactions() {
         amountFrom,
         amountTo,
         type,
+        sortingFn,
     });
     const categories = useCategories({ data: rawTransactions });
     const selectYear = (year) => () => {
         setMenuAnchorEl(null);
         setYear(year);
+    };
+    const selectSorting = (payload) => () => {
+        setSortAnchorEl(null);
+        dispatch({
+            type: 'Reducer: save sorting function',
+            payload,
+        });
     };
 
     /**
@@ -160,21 +224,38 @@ export default function Transactions() {
                         keepMounted
                         open={Boolean(menuAnchorEl)}
                         onClose={() => setMenuAnchorEl(null)}>
-                        <MenuItem onClick={selectYear(2021)}>2021</MenuItem>
-                        <MenuItem onClick={selectYear(2020)}>2020</MenuItem>
-                        <MenuItem onClick={selectYear(2019)}>2019</MenuItem>
-                        <MenuItem onClick={selectYear(2018)}>2018</MenuItem>
+                        {listOfYear.map((it) => (
+                            <MenuItem key={it} selected={year === it} onClick={selectYear(it)}>
+                                {it}
+                            </MenuItem>
+                        ))}
                     </Menu>
                     <div className={classes.grow} />
                     <IconButton
                         aria-label="sort transactions"
                         title="sort transactions"
+                        onClick={(evt) => setSortAnchorEl(evt.currentTarget)}
                         color="inherit">
                         <SortingIcon />
                     </IconButton>
+                    <Menu
+                        anchorEl={sortAnchorEl}
+                        keepMounted
+                        open={Boolean(sortAnchorEl)}
+                        onClose={() => setSortAnchorEl(null)}>
+                        {listOfSorting.map((it) => (
+                            <MenuItem
+                                key={it.val}
+                                selected={sortingFn === it.val}
+                                onClick={selectSorting(it.val)}>
+                                {it.text}
+                            </MenuItem>
+                        ))}
+                    </Menu>
                     <IconButton
-                        aria-label="search transactions"
-                        title="search transactions"
+                        aria-label="filter transactions"
+                        title="filter transactions"
+                        onClick={() => setShowFilterDialog(true)}
                         color="inherit">
                         <DatabaseSearchIcon />
                     </IconButton>
@@ -201,6 +282,13 @@ export default function Transactions() {
                             onDelete={(item) => {
                                 setDetail(null);
                                 setDeleting(item);
+                            }}
+                        />
+                        <FilterDialog
+                            open={showFilterDialog}
+                            filter={filter}
+                            onClose={() => {
+                                setShowFilterDialog(false);
                             }}
                         />
                     </Grid>

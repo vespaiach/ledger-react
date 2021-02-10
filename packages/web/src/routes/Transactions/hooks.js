@@ -60,17 +60,19 @@ function useType(val) {
     );
 }
 
-export function useTransactions({ data, dateFrom, dateTo, amountFrom, amountTo, type }) {
+export function useTransactions({ data, dateFrom, dateTo, amountFrom, amountTo, type, sortingFn }) {
     const dateFromFilter = useDateFrom(dateFrom);
     const dateToFilter = useDateTo(dateTo);
     const amountFromFilter = useAmountFrom(amountFrom);
     const amountToFilter = useAmountTo(amountTo);
     const typeFilter = useType(type);
 
-    return useMemo(() => {
+    const filtered = useMemo(() => {
         const pipe = [dateFromFilter, dateToFilter, amountFromFilter, amountToFilter, typeFilter];
         return data.filter((it) => pipe.every((fn) => fn(it)));
     }, [data, dateFromFilter, dateToFilter, amountFromFilter, amountToFilter, typeFilter]);
+
+    return useMemo(() => (sortingFn ? filtered.sort(sortingFn) : filtered), [filtered, sortingFn]);
 }
 
 export function useCategories({ data }) {
