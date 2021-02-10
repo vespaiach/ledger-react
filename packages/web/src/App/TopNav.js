@@ -1,9 +1,5 @@
 import { AppBar, Toolbar, Typography, IconButton, Divider } from '@material-ui/core';
-import {
-    MenuBookRounded as MenuBookRoundedIcon,
-    SettingsRounded as SettingsRoundedIcon,
-    MenuRounded as MenuRoundedIcon,
-} from '@material-ui/icons';
+import { MenuBookRounded as MenuBookRoundedIcon } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -79,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
 export default function TopNav() {
     const classes = useStyles();
     return (
-        <AppBar classes={{ root: classes.appbarRoot }}>
+        <AppBar elevation={0} classes={{ root: classes.appbarRoot }}>
             <Toolbar variant="dense">
                 <MenuBookRoundedIcon classes={{ root: classes.logoRoot }} />
                 <Typography variant="h6">Ledger</Typography>

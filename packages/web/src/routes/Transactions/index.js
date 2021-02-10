@@ -6,8 +6,8 @@ import {
     IconButton,
     Menu,
     MenuItem,
-    Slide,
     Typography,
+    Box,
 } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -30,6 +30,11 @@ const useStyles = makeStyles((theme) => ({
         background: theme.palette.primary.dark,
     },
     pageHead: {
+        zIndex: 1002,
+        position: 'sticky',
+        top: -60,
+    },
+    pageHeadTitle: {
         background: theme.palette.primary.dark,
         color: theme.palette.common.white,
         padding: theme.spacing(2),
@@ -43,9 +48,6 @@ const useStyles = makeStyles((theme) => ({
             display: 'flex',
             alignItems: 'center',
         },
-        zIndex: 1002,
-        position: 'sticky',
-        top: 48,
     },
     grow: {
         flexGrow: 1,
@@ -54,14 +56,16 @@ const useStyles = makeStyles((theme) => ({
 
 const currentYear = new Date().getFullYear();
 
-export default function Transactions({ year = currentYear }) {
+export default function Transactions() {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const trigger = useScrollTrigger({ threshold: 48 });
 
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const [editing, setEditing] = useState(null);
     const [deleting, setDeleting] = useState(null);
     const [detail, setDetail] = useState(null);
+    const [year, setYear] = useState(currentYear);
 
     const rawTransactions = useSelector((state) => state.transaction.list);
     const dateFrom = useSelector((state) => state.transaction.filter.dateFrom);
@@ -82,7 +86,10 @@ export default function Transactions({ year = currentYear }) {
         type,
     });
     const categories = useCategories({ data: rawTransactions });
-    const closeMenu = () => setMenuAnchorEl(null);
+    const selectYear = (year) => () => {
+        setMenuAnchorEl(null);
+        setYear(year);
+    };
 
     /**
      * Load transactions by year
@@ -136,40 +143,43 @@ export default function Transactions({ year = currentYear }) {
 
     return (
         <>
-            <div className={classes.padding} />
-            <div className={classes.pageHead}>
-                <Typography variant="h6" component="h1">
-                    Transactions
-                </Typography>
-            </div>
-            <div className={classes.pageSubMenu}>
-                <Typography onClick={(evt) => setMenuAnchorEl(evt.currentTarget)} role="menu">
-                    <span>2021</span>
-                    <ArrowDropDownIcon />
-                </Typography>
-                <Menu
-                    anchorEl={menuAnchorEl}
-                    keepMounted
-                    open={Boolean(menuAnchorEl)}
-                    onClose={() => setMenuAnchorEl(null)}>
-                    <MenuItem onClick={closeMenu}>2020</MenuItem>
-                    <MenuItem onClick={closeMenu}>2019</MenuItem>
-                    <MenuItem onClick={closeMenu}>2018</MenuItem>
-                </Menu>
-                <div className={classes.grow} />
-                <IconButton
-                    aria-label="sort transactions"
-                    title="sort transactions"
-                    color="inherit">
-                    <SortingIcon />
-                </IconButton>
-                <IconButton
-                    aria-label="search transactions"
-                    title="search transactions"
-                    color="inherit">
-                    <DatabaseSearchIcon />
-                </IconButton>
-            </div>
+            <Box boxShadow={trigger ? 3 : 0} className={classes.pageHead}>
+                <div className={classes.padding} />
+                <div className={classes.pageHeadTitle}>
+                    <Typography variant="h6" component="h1">
+                        Transactions
+                    </Typography>
+                </div>
+                <div className={classes.pageSubMenu}>
+                    <Typography onClick={(evt) => setMenuAnchorEl(evt.currentTarget)} role="menu">
+                        <span>{year}</span>
+                        <ArrowDropDownIcon />
+                    </Typography>
+                    <Menu
+                        anchorEl={menuAnchorEl}
+                        keepMounted
+                        open={Boolean(menuAnchorEl)}
+                        onClose={() => setMenuAnchorEl(null)}>
+                        <MenuItem onClick={selectYear(2021)}>2021</MenuItem>
+                        <MenuItem onClick={selectYear(2020)}>2020</MenuItem>
+                        <MenuItem onClick={selectYear(2019)}>2019</MenuItem>
+                        <MenuItem onClick={selectYear(2018)}>2018</MenuItem>
+                    </Menu>
+                    <div className={classes.grow} />
+                    <IconButton
+                        aria-label="sort transactions"
+                        title="sort transactions"
+                        color="inherit">
+                        <SortingIcon />
+                    </IconButton>
+                    <IconButton
+                        aria-label="search transactions"
+                        title="search transactions"
+                        color="inherit">
+                        <DatabaseSearchIcon />
+                    </IconButton>
+                </div>
+            </Box>
             <Container>
                 <Grid container>
                     <Grid item xs={12} classes={{ root: classes.gridRowRoot }}>
