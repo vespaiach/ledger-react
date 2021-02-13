@@ -8,6 +8,7 @@ import {
     MenuItem,
     Typography,
     Box,
+    Badge,
 } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -55,8 +56,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const currentYear = new Date().getFullYear();
-const listOfYear = [2021, 2020, 2019, 2018];
 const listOfSorting = [
     {
         val: (trans1, trans2) => {
@@ -117,35 +116,27 @@ export default function Transactions() {
     const [editing, setEditing] = useState(null);
     const [deleting, setDeleting] = useState(null);
     const [detail, setDetail] = useState(null);
-    const [year, setYear] = useState(currentYear);
     const [sortAnchorEl, setSortAnchorEl] = useState(null);
     const [showFilterDialog, setShowFilterDialog] = useState(false);
 
     const rawTransactions = useSelector((state) => state.transaction.list);
-    const dateFrom = useSelector((state) => state.transaction.filter.dateFrom);
-    const dateTo = useSelector((state) => state.transaction.filter.dateTo);
-    const amountFrom = useSelector((state) => state.transaction.filter.amountFrom);
-    const amountTo = useSelector((state) => state.transaction.filter.amountTo);
-    const type = useSelector((state) => state.transaction.filter.type);
-    const sortingFn = useSelector((state) => state.transaction.sortingFn);
+    const year = useSelector((state) => state.transaction.year);
+    const listOfYear = useSelector((state) => state.transaction.listOfYear);
     const filter = useSelector((state) => state.transaction.filter);
+    const sortingFn = useSelector((state) => state.transaction.sortingFn);
 
     /**
      * Transaction list after apply filtering
      */
     const filteredTransactions = useTransactions({
         data: rawTransactions,
-        dateFrom,
-        dateTo,
-        amountFrom,
-        amountTo,
-        type,
+        filter,
         sortingFn,
     });
     const categories = useCategories({ data: rawTransactions });
     const selectYear = (year) => () => {
         setMenuAnchorEl(null);
-        setYear(year);
+        dispatch({ type: 'Reducer: set year', payload: year });
     };
     const selectSorting = (payload) => () => {
         setSortAnchorEl(null);
@@ -257,7 +248,17 @@ export default function Transactions() {
                         title="filter transactions"
                         onClick={() => setShowFilterDialog(true)}
                         color="inherit">
-                        <DatabaseSearchIcon />
+                        <Badge
+                            variant="dot"
+                            invisible={
+                                filter.income &&
+                                filter.expense &&
+                                !filter.enableAmountFilter &&
+                                !filter.enableDateFilter
+                            }
+                            color="secondary">
+                            <DatabaseSearchIcon />
+                        </Badge>
                     </IconButton>
                 </div>
             </Box>
@@ -287,6 +288,8 @@ export default function Transactions() {
                         <FilterDialog
                             open={showFilterDialog}
                             filter={filter}
+                            dispatch={dispatch}
+                            onReset={() => dispatch({ type: 'Reducer: reset transaction filter' })}
                             onClose={() => {
                                 setShowFilterDialog(false);
                             }}

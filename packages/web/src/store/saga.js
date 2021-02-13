@@ -24,7 +24,7 @@ export function* handleApiError(response, currentAction) {
     } else {
         yield put({
             type: 'Reducer: show app error',
-            payload: `${response.data.message} (${response.data.code})`,
+            payload: `${response.data.message}`,
         });
     }
 }
@@ -114,7 +114,7 @@ export function* signinRequest(data) {
     } else {
         yield put({
             type: 'Reducer: show app error',
-            payload: `${response.data.message} (${response.data.code})`,
+            payload: `${response.data.message}`,
         });
         return false;
     }

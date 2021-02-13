@@ -1,76 +1,94 @@
 import { useCallback, useMemo } from 'react';
 
-function useDateFrom(val) {
+function useDateFrom(val, enable) {
     return useCallback(
         (item) => {
-            if (val) {
+            if (enable) {
                 return item.date >= val;
             }
             return true;
         },
-        [val]
+        [val, enable]
     );
 }
 
-function useDateTo(val) {
+function useDateTo(val, enable) {
     return useCallback(
         (item) => {
-            if (val) {
-                return item.date < val;
+            if (enable) {
+                return item.date <= val;
             }
             return true;
         },
-        [val]
+        [val, enable]
     );
 }
 
-function useAmountFrom(val) {
+function useAmountFrom(val, enable) {
     return useCallback(
         (item) => {
-            if (val) {
+            if (enable) {
                 return item.amount >= val;
             }
             return true;
         },
-        [val]
+        [val, enable]
     );
 }
 
-function useAmountTo(val) {
+function useAmountTo(val, enable) {
     return useCallback(
         (item) => {
-            if (val) {
-                return item.amount < val;
+            if (enable) {
+                return item.amount <= val;
             }
             return true;
         },
-        [val]
+        [val, enable]
     );
 }
 
-function useType(val) {
+function useTransactionType(income, expense) {
     return useCallback(
         (item) => {
-            if (val) {
-                return item.transactionType === val;
+            if (income && expense) {
+                return true;
+            } else if (income) {
+                return item.transactionType === 'in';
+            } else if (expense) {
+                return item.transactionType === 'ex';
+            } else {
+                return false;
             }
-            return true;
         },
-        [val]
+        [income, expense]
     );
 }
 
-export function useTransactions({ data, dateFrom, dateTo, amountFrom, amountTo, type, sortingFn }) {
-    const dateFromFilter = useDateFrom(dateFrom);
-    const dateToFilter = useDateTo(dateTo);
-    const amountFromFilter = useAmountFrom(amountFrom);
-    const amountToFilter = useAmountTo(amountTo);
-    const typeFilter = useType(type);
+export function useTransactions({ data, filter, sortingFn }) {
+    const dateFromFilter = useDateFrom(filter.dateFrom, filter.enableDateFilter);
+    const dateToFilter = useDateTo(filter.dateTo, filter.enableDateFilter);
+    const amountFromFilter = useAmountFrom(filter.amountFrom, filter.enableAmountFilter);
+    const amountToFilter = useAmountTo(filter.amountTo, filter.enableAmountFilter);
+    const transactionTypeFilter = useTransactionType(filter.income, filter.expense);
 
     const filtered = useMemo(() => {
-        const pipe = [dateFromFilter, dateToFilter, amountFromFilter, amountToFilter, typeFilter];
+        const pipe = [
+            dateFromFilter,
+            dateToFilter,
+            amountFromFilter,
+            amountToFilter,
+            transactionTypeFilter,
+        ];
         return data.filter((it) => pipe.every((fn) => fn(it)));
-    }, [data, dateFromFilter, dateToFilter, amountFromFilter, amountToFilter, typeFilter]);
+    }, [
+        data,
+        dateFromFilter,
+        dateToFilter,
+        amountFromFilter,
+        amountToFilter,
+        transactionTypeFilter,
+    ]);
 
     return useMemo(() => (sortingFn ? filtered.sort(sortingFn) : filtered), [filtered, sortingFn]);
 }

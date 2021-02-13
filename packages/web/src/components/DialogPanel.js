@@ -1,17 +1,18 @@
-import { AppBar, Dialog, IconButton, Typography, Slide, Toolbar } from '@material-ui/core';
+import { AppBar, Dialog, IconButton, Typography, Slide, Toolbar, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { forwardRef } from 'react';
 import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';
+import clsx from 'clsx';
 
 const SlideUp = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
     dialogTitleRoot: {
         textAlign: 'center',
         flexGrow: 1,
-        marginRight: 48,
+        fontWeight: 600,
     },
     btnCloseRoot: {
         color: 'white',
@@ -19,9 +20,15 @@ const useStyles = makeStyles((theme) => ({
     dialogScrollPaper: {
         flexFlow: 'column nowrap',
     },
-}));
+    btnReset: {
+        padding: 0,
+    },
+    hidden: {
+        visibility: 'hidden',
+    },
+});
 
-export default function DialogPanel({ open, title, children, onClose, ...rest }) {
+export default function DialogPanel({ open, title, children, onClose, onReset, ...rest }) {
     const classes = useStyles();
 
     return (
@@ -38,10 +45,23 @@ export default function DialogPanel({ open, title, children, onClose, ...rest })
                     </IconButton>
                     <Typography
                         classes={{ root: classes.dialogTitleRoot }}
-                        variant="h6"
+                        variant="subtitle1"
                         color="primary">
                         {title}
                     </Typography>
+                    <Button
+                        disableRipple
+                        variant="text"
+                        className={clsx(!onReset && classes.hidden)}
+                        classes={{ root: classes.btnReset }}
+                        onClick={(evt) => {
+                            evt.stopPropagation();
+                            if (onReset) {
+                                onReset();
+                            }
+                        }}>
+                        Reset
+                    </Button>
                 </Toolbar>
             </AppBar>
             {children}
