@@ -1,11 +1,9 @@
-import { Snackbar, Container, IconButton } from '@material-ui/core';
-import { Route, Switch, useLocation } from 'react-router-dom';
+import { Snackbar, Container, IconButton, makeStyles } from '@material-ui/core';
+import { Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles } from '@material-ui/styles';
 import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';
 
 import NotFound from '../routes/Errors/NotFound';
-import { useMemo } from 'react';
 import MonthlyReport from '../routes/Reports';
 import Transactions from '../routes/Transactions';
 import DialogPanel from '../components/DialogPanel';
@@ -13,42 +11,29 @@ import Signin from '../routes/Signin';
 import TopNav from './TopNav';
 
 const useStyles = makeStyles((theme) => ({
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
+    successSnackbar: {
+        '& .MuiSnackbarContent-root': {
+            background: theme.palette.success.main,
+        },
     },
 }));
 
 function App() {
+    const classes = useStyles();
     const dispatch = useDispatch();
-    const location = useLocation();
     const showSignIn = useSelector((state) => state.common.showSignIn);
     const appLoading = useSelector((state) => state.common.loading);
     const error = useSelector((state) => state.common.error);
-    const closeMessage = () => dispatch({ type: 'Reducer: hide app error' });
-    const tabValue = useMemo(() => {
-        const tabIndex = {
-            '/portal/incomes/new': 0,
-            '/portal/incomes': 0,
-            '/portal/expenses': 1,
-            '/portal/expenses/new': 1,
-            '/portal/monthly_reports': 2,
-        };
-        if (tabIndex[location.pathname] !== undefined) {
-            return tabIndex[location.pathname];
-        } else {
-            if (/\/portal\/incomes\/\d+/gi.test(location.pathname)) {
-                return 0;
-            } else if (/\/portal\/expenses\/\d+/gi.test(location.pathname)) {
-                return 1;
-            }
-        }
-        return 2;
-    }, [location.pathname]);
+    const success = useSelector((state) => state.common.success);
+    const closeErrorMessage = () => dispatch({ type: 'Reducer: hide app error' });
+    const closeSuccessMessage = () => dispatch({ type: 'Reducer: hide app success' });
+    const handleSignOut = () => {
+        dispatch({ type: 'Saga: sign out' });
+    };
 
     return (
         <>
-            <TopNav />
+            <TopNav onSignOut={handleSignOut} />
             <Switch>
                 <Route exact path="/transactions">
                     <Transactions />
@@ -69,6 +54,23 @@ function App() {
                 </Container>
             </DialogPanel>
             <Snackbar
+                classes={{ root: classes.successSnackbar }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                autoHideDuration={5000}
+                open={Boolean(success)}
+                action={
+                    <IconButton
+                        size="small"
+                        aria-label="close"
+                        color="inherit"
+                        onClick={closeSuccessMessage}>
+                        <CloseRoundedIcon fontSize="small" />
+                    </IconButton>
+                }
+                message={success}
+                onClose={closeSuccessMessage}
+            />
+            <Snackbar
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 open={Boolean(error)}
                 autoHideDuration={5000}
@@ -77,12 +79,12 @@ function App() {
                         size="small"
                         aria-label="close"
                         color="inherit"
-                        onClick={closeMessage}>
+                        onClick={closeErrorMessage}>
                         <CloseRoundedIcon fontSize="small" />
                     </IconButton>
                 }
                 message={error}
-                onClose={closeMessage}
+                onClose={closeErrorMessage}
             />
             <Snackbar
                 open={appLoading}

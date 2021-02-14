@@ -125,6 +125,10 @@ export function* signinRequest(data) {
  */
 export function* signoutRequest() {
     yield safeCall(call(signout));
+    yield put({
+        type: 'Reducer: show app success',
+        payload: 'You have been signed out!',
+    });
     return yield call(() => Promise.resolve(clearToken() || true));
 }
 
@@ -151,7 +155,7 @@ export function* watchSigninRequest() {
 
 export function* watchSignoutRequest() {
     while (true) {
-        yield take('Saga: signout');
-        yield signinRequest();
+        yield take('Saga: sign out');
+        yield signoutRequest();
     }
 }

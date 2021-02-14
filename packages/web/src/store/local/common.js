@@ -17,6 +17,8 @@ const defaultState = {
     signinLoading: false,
 
     error: '',
+
+    success: '',
 };
 
 export default createReducer(defaultState, {
@@ -54,5 +56,15 @@ export default createReducer(defaultState, {
     'Reducer: hide app error': (state) => ({
         ...state,
         error: '',
+    }),
+
+    'Reducer: show app success': (state, { payload: success }) => ({
+        ...state,
+        success,
+    }),
+
+    'Reducer: hide app success': (state) => ({
+        ...state,
+        success: '',
     }),
 });

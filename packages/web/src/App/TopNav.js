@@ -1,7 +1,22 @@
-import { AppBar, Toolbar, Typography, IconButton, Divider } from '@material-ui/core';
-import { MenuBookRounded as MenuBookRoundedIcon } from '@material-ui/icons';
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    IconButton,
+    Divider,
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    ListItemText,
+} from '@material-ui/core';
+import {
+    ExitToAppRounded as ExitToAppRoundedIcon,
+    MenuBookRounded as MenuBookRoundedIcon,
+    SyncRounded as SyncRoundedIcon,
+} from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import { usePopupState, bindTrigger, bindMenu } from 'material-ui-popup-state/hooks';
 
 import ListIcon from '../components/Icons/List';
 import ChartIcon from '../components/Icons/Chart';
@@ -72,8 +87,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function TopNav() {
+export default function TopNav({ onSignOut }) {
     const classes = useStyles();
+    const popupState = usePopupState({ variant: 'popover', popupId: 'settingMenu' });
+
     return (
         <AppBar elevation={0} classes={{ root: classes.appbarRoot }}>
             <Toolbar variant="dense">
@@ -95,9 +112,31 @@ export default function TopNav() {
                     <ChartIcon />
                 </IconButton>
                 <Divider orientation="vertical" classes={{ root: classes.divider }} />
-                <IconButton edge="end" aria-label="settings" title="settings">
+                <IconButton
+                    {...bindTrigger(popupState)}
+                    edge="end"
+                    aria-label="settings"
+                    title="settings">
                     <SettingIcon />
                 </IconButton>
+                <Menu {...bindMenu(popupState)}>
+                    <MenuItem onClick={popupState.close}>
+                        <ListItemIcon>
+                            <SyncRoundedIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText primary="Re-fetch data" />
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => {
+                            onSignOut();
+                            popupState.close();
+                        }}>
+                        <ListItemIcon>
+                            <ExitToAppRoundedIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText primary="Sign Out" />
+                    </MenuItem>
+                </Menu>
             </Toolbar>
         </AppBar>
     );

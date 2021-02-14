@@ -64,7 +64,7 @@ describe('Test fetch transaction requests:', () => {
             .put({ type: 'Reducer: hide app loading' })
             .put({
                 type: 'Reducer: show app error',
-                payload: 'validation (E)',
+                payload: 'validation',
             })
             .run());
 });
@@ -122,7 +122,7 @@ describe('Test synchronize transaction requests:', () => {
             ])
             .put({
                 type: 'Reducer: show app error',
-                payload: 'Something went wrong when synchronizing data (E_SYNC_FAIL)',
+                payload: 'Something went wrong when synchronizing data',
             })
             .run());
 });
@@ -190,7 +190,7 @@ describe('Test sign in requests:', () => {
             .put({ type: 'Reducer: hide signin loading' })
             .put({
                 type: 'Reducer: show app error',
-                payload: 'Login error (E_UNAUTHORIZED)',
+                payload: 'Login error',
             })
             .returns(false)
             .run());
@@ -200,6 +200,10 @@ describe('Test sign out requests:', () => {
     test('sign out', () =>
         expectSaga(signoutRequest)
             .provide([[matchers.call.fn(clearToken), false]])
+            .put({
+                type: 'Reducer: show app success',
+                payload: 'You have been signed out!',
+            })
             .returns(true)
             .run());
 });
