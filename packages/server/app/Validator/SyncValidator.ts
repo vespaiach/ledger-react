@@ -26,16 +26,12 @@ export default class SyncValidator {
   constructor(private ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    payload: schema.array().members(
-      schema.object().members({
-        id: schema.number.optional(),
-        date: schema.date({ format: 'iso' }),
-        amount: schema.number(),
-        description: schema.string({ escape: true, trim: true }, [rules.maxLength(255)]),
-        category: schema.string({ escape: true, trim: true }, [rules.maxLength(63)]),
-        transactionType: schema.string({ escape: true, trim: true }, [rules.transactionType()]),
-      })
-    ),
+    id: schema.number.optional(),
+    date: schema.date({ format: 'iso' }),
+    amount: schema.number(),
+    description: schema.string({ escape: true, trim: true }, [rules.maxLength(255)]),
+    category: schema.string({ escape: true, trim: true }, [rules.maxLength(63)]),
+    transaction_type: schema.string({ escape: true, trim: true }, [rules.transactionType()]),
   })
 
   /**

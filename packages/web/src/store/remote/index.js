@@ -11,6 +11,7 @@ import axios from 'axios/lib/axios';
 import fetchAdapter from 'axios-fetch-adapter';
 import attachBearer from './attachBearer';
 import toCamelCase from './toCamelCase';
+import toSnackCase from './toSnackCase';
 
 /**
  * Axios uses xhr adapter by default. In order to leverage service worker for caching, fetch adapter is used instead
@@ -30,6 +31,7 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(attachBearer);
+axiosInstance.interceptors.request.use(toSnackCase);
 axiosInstance.interceptors.response.use(toCamelCase);
 
 export default axiosInstance;

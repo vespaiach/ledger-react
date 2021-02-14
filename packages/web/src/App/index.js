@@ -21,8 +21,8 @@ const useStyles = makeStyles((theme) => ({
 function App() {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const processing = useSelector((state) => state.common.processing);
     const showSignIn = useSelector((state) => state.common.showSignIn);
-    const appLoading = useSelector((state) => state.common.loading);
     const error = useSelector((state) => state.common.error);
     const success = useSelector((state) => state.common.success);
     const year = useSelector((state) => state.transaction.year);
@@ -91,11 +91,17 @@ function App() {
                 onClose={closeErrorMessage}
             />
             <Snackbar
-                open={appLoading}
+                open={Boolean(processing)}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 message={
                     <>
-                        <span>Loading transactions</span>
+                        {processing === 'load' ? (
+                            <span>Loading transactions</span>
+                        ) : processing === 'sync' ? (
+                            <span>Saving transactions</span>
+                        ) : (
+                            ''
+                        )}
                         <div className="lds-ellipsis">
                             <div></div>
                             <div></div>

@@ -10,14 +10,13 @@
 import { createReducer } from '../../utils/reducer';
 
 const defaultState = {
-    loading: false,
+    processing: '',
 
     showSignIn: false,
     lastAction: null,
     signinLoading: false,
 
     error: '',
-
     success: '',
 };
 
@@ -25,16 +24,6 @@ export default createReducer(defaultState, {
     'Reducer: show signin loading': (state) => ({ ...state, signinLoading: true }),
 
     'Reducer: hide signin loading': (state) => ({ ...state, signinLoading: false }),
-
-    'Reducer: show app loading': (state) => ({
-        ...state,
-        loading: true,
-    }),
-
-    'Reducer: hide app loading': (state) => ({
-        ...state,
-        loading: false,
-    }),
 
     'Reducer: show sign in dialog': (state, { payload: lastAction }) => ({
         ...state,
@@ -66,5 +55,20 @@ export default createReducer(defaultState, {
     'Reducer: hide app success': (state) => ({
         ...state,
         success: '',
+    }),
+
+    'Reducer: show app synchronizing': (state) => ({
+        ...state,
+        processing: 'sync',
+    }),
+
+    'Reducer: show app loading': (state) => ({
+        ...state,
+        processing: 'load',
+    }),
+
+    'Reducer: clear app process': (state) => ({
+        ...state,
+        processing: '',
     }),
 });

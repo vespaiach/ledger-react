@@ -46,6 +46,7 @@ export default function TransDetails({ detail, onClose, onEdit, onDelete }) {
                         <AttachMoneyRoundedIcon />
                     </ListItemIcon>
                     <ListItemText>
+                        {detail.transactionType === 'in' ? '+' : '-'}
                         <NumberFormat
                             value={detail.amount}
                             displayType={'text'}

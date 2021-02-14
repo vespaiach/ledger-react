@@ -25,7 +25,7 @@ import FilterDialog from './FilterDialog';
 
 const useStyles = makeStyles((theme) => ({
     formTitleRoot: {
-        margin: theme.spacing(2, 0, 1, 0),
+        margin: theme.spacing(3, 0, 2, 0),
     },
     padding: {
         height: 48,
@@ -167,13 +167,18 @@ export default function Transactions() {
                 <TransactionForm
                     id={editing.id}
                     amount={editing.amount}
+                    transactionType={editing.transactionType}
                     date={editing.date}
                     description={editing.description}
                     category={editing.category}
                     categories={categories}
-                    onSubmit={(data) =>
-                        dispatch({ type: 'Saga: sync transactions', payload: data })
-                    }
+                    onSubmit={(data) => {
+                        dispatch({
+                            type: 'Saga: sync transactions',
+                            payload: data,
+                        });
+                        setEditing(null);
+                    }}
                     onCancel={() => setEditing(null)}
                 />
             </>

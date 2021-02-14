@@ -52,7 +52,9 @@ export default function TransactionList({ onEdit, onDelete, onDetail, data, tota
                     disableGutters
                     button
                     onClick={() => onDetail(data[index])}>
-                    <Typography variant="h6">{`$`}</Typography>
+                    <Typography variant="h6">
+                        {data[index].transactionType === 'in' ? '+' : '-'}
+                    </Typography>
                     <div className={classes.boxMid}>
                         <Typography variant="h6">
                             <NumberFormat

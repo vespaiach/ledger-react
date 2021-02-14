@@ -41,6 +41,7 @@ export default class TransactionsController {
    *      date: DateTime,
    *      amount: number,
    *      description: string,
+   *      transaction_type: string,
    *      category: string
    *   }
    *   ...
@@ -54,59 +55,41 @@ export default class TransactionsController {
    *      amount: number,
    *      description: string,
    *      category: string
+   *      transaction_type: string,
    *      status: string // Can be one of these value: ['updated', 'missed', 'created']
    *   }
    */
   public async sync({ request }: HttpContextContract) {
-    const { payload } = await request.validate(SyncValidator)
-
-    const results: {
-      id: number | undefined
-      date: DateTime
-      amount: number
-      description: string
-      category: string
-      transactionType: string
-      status: string
-    }[] = []
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { id, date, amount, description, category, transaction_type } = await request.validate(
+      SyncValidator
+    )
 
     try {
-      for (const item of payload) {
-        if (item.id) {
-          const tran = await Transaction.find(item.id)
-          if (tran) {
-            tran.date = item.date
-            tran.amount = item.amount
-            tran.description = item.description
-            tran.category = item.category
-            tran.transactionType =
-              item.transactionType === TransactionType.Expense
-                ? TransactionType.Expense
-                : TransactionType.Income
-            await tran.save()
-            results.push({ ...item, status: 'updated' })
-          } else {
-            results.push({ ...item, status: 'missed' })
-          }
-        } else {
-          const tran = new Transaction()
-          tran.date = item.date
-          tran.amount = item.amount
-          tran.description = item.description
-          tran.category = item.category
-          tran.transactionType =
-            item.transactionType === TransactionType.Expense
-              ? TransactionType.Expense
-              : TransactionType.Income
-          await tran.save()
-          results.push({ ...item, id: tran.id, status: 'created' })
+      let tran
+      if (id) {
+        tran = await Transaction.find(id)
+        if (!tran) {
+          throw new Error(`Wrong id: ${id}`)
         }
+      } else {
+        tran = new Transaction()
       }
+
+      tran.date = date
+      tran.amount = amount
+      tran.description = description
+      tran.category = category
+      tran.transactionType =
+        transaction_type === TransactionType.Expense
+          ? TransactionType.Expense
+          : TransactionType.Income
+      await tran.save()
     } catch (e) {
       Logger.error(e)
       throw new SyncException('Synchronize fail')
     }
 
-    return results
+    return
   }
 }

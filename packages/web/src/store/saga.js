@@ -35,7 +35,7 @@ export function* handleApiError(response, currentAction) {
 export function* fetchTransactionRequest(year) {
     yield put({ type: 'Reducer: show app loading' });
     const response = yield safeCall(call(fetchTransactions, year));
-    yield put({ type: 'Reducer: hide app loading' });
+    yield put({ type: 'Reducer: clear app process' });
 
     if (response.ok) {
         yield put({
@@ -65,12 +65,19 @@ export function* fetchTransactionRequest(year) {
  *
  */
 export function* syncTransactionRequest(data) {
+    yield put({
+        type: 'Reducer: show app synchronizing',
+    });
     const response = yield safeCall(call(syncTransactions, data));
+    yield put({
+        type: 'Reducer: clear app process',
+    });
 
     if (response.ok) {
+        const year = yield select((state) => state.transaction.year);
         yield put({
-            type: 'Reducer: update transactions',
-            payload: response.data,
+            type: 'Saga: fetch transactions',
+            payload: year,
         });
     } else {
         yield handleApiError(response, { type: 'Saga: sync transactions', payload: data });

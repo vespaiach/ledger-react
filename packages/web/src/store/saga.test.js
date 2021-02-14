@@ -16,7 +16,7 @@ describe('Test fetch transaction requests:', () => {
         expectSaga(fetchTransactionRequest, year)
             .provide([[matchers.call.fn(fetchTransactions, year), { ok: true, data: [{ id: 1 }] }]])
             .put({ type: 'Reducer: show app loading' })
-            .put({ type: 'Reducer: hide app loading' })
+            .put({ type: 'Reducer: clear app process' })
             .put({
                 type: 'Reducer: store transactions',
                 payload: [{ id: 1 }],
@@ -35,7 +35,7 @@ describe('Test fetch transaction requests:', () => {
                 ],
             ])
             .put({ type: 'Reducer: show app loading' })
-            .put({ type: 'Reducer: hide app loading' })
+            .put({ type: 'Reducer: clear app process' })
             .put({
                 type: 'Reducer: show sign in dialog',
                 payload: {
@@ -61,7 +61,7 @@ describe('Test fetch transaction requests:', () => {
                 ],
             ])
             .put({ type: 'Reducer: show app loading' })
-            .put({ type: 'Reducer: hide app loading' })
+            .put({ type: 'Reducer: clear app process' })
             .put({
                 type: 'Reducer: show app error',
                 payload: 'validation',

@@ -1,4 +1,12 @@
-import { TextField, InputAdornment, makeStyles, Button } from '@material-ui/core';
+import {
+    Radio,
+    TextField,
+    InputAdornment,
+    makeStyles,
+    Button,
+    FormControlLabel,
+    RadioGroup,
+} from '@material-ui/core';
 import {
     AttachMoney as AttachMoneyIcon,
     CalendarToday as CalendarTodayIcon,
@@ -40,12 +48,17 @@ const useStyles = makeStyles((theme) => ({
     btnCancelRoot: {
         flex: '0 0 126px',
     },
+    radioGroupRoot: {
+        flexFlow: 'row',
+        marginBottom: 4,
+    },
 }));
 
 export default function Form({
     id = null,
     amount = '',
     date = null,
+    transactionType = 'ex',
     description = '',
     category = '',
     categories = [],
@@ -59,6 +72,7 @@ export default function Form({
         initialValues: {
             id,
             amount,
+            transactionType,
             date,
             description,
             category,
@@ -76,6 +90,15 @@ export default function Form({
 
     return (
         <form onSubmit={formik.handleSubmit} className={classes.form}>
+            <RadioGroup
+                aria-label="transaction type"
+                name="transactionType"
+                value={formik.values.transactionType}
+                classes={{ root: classes.radioGroupRoot }}
+                onChange={formik.handleChange}>
+                <FormControlLabel value="in" control={<Radio />} label="Income" />
+                <FormControlLabel value="ex" control={<Radio />} label="Expense" />
+            </RadioGroup>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <DateTimePicker
                     clearable
