@@ -25,15 +25,19 @@ function App() {
     const appLoading = useSelector((state) => state.common.loading);
     const error = useSelector((state) => state.common.error);
     const success = useSelector((state) => state.common.success);
+    const year = useSelector((state) => state.transaction.year);
     const closeErrorMessage = () => dispatch({ type: 'Reducer: hide app error' });
     const closeSuccessMessage = () => dispatch({ type: 'Reducer: hide app success' });
     const handleSignOut = () => {
         dispatch({ type: 'Saga: sign out' });
     };
+    const handleRefesh = () => {
+        dispatch({ type: 'Saga: fetch transactions', payload: year });
+    };
 
     return (
         <>
-            <TopNav onSignOut={handleSignOut} />
+            <TopNav onRefesh={handleRefesh} onSignOut={handleSignOut} />
             <Switch>
                 <Route exact path="/transactions">
                     <Transactions />

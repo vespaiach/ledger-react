@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function TopNav({ onSignOut }) {
+export default function TopNav({ onRefesh, onSignOut }) {
     const classes = useStyles();
     const popupState = usePopupState({ variant: 'popover', popupId: 'settingMenu' });
 
@@ -120,7 +120,11 @@ export default function TopNav({ onSignOut }) {
                     <SettingIcon />
                 </IconButton>
                 <Menu {...bindMenu(popupState)}>
-                    <MenuItem onClick={popupState.close}>
+                    <MenuItem
+                        onClick={() => {
+                            onRefesh();
+                            popupState.close();
+                        }}>
                         <ListItemIcon>
                             <SyncRoundedIcon fontSize="small" />
                         </ListItemIcon>
