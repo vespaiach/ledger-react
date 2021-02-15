@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <b>Ledger</b> is a web application that provides intuitive tools for managing personal balance transactions
+  <b>Ledger</b> is a small web application managing personal money balance
   <br>
   It is built with React/Redux and awesome GUI framework: <a href="https://github.com/mui-org/material-ui" title="Material UI">Material UI</a>
 </p>
@@ -14,11 +14,11 @@
 
 # Motivation
 
-Are you fed up with tracking your expending balance transactions in excel files? If so, let's give this web application a try
+I'm trying to bring my money balance excel file to web application
 
 # Live Playground
 
-The demo version at: https://www.vespaiach.com/ . Please use the account below to login:
+The demo version at: https://www.vespaiach.com/ . Use the account below to login:
 
 -   email: test@test.com
 -   password: 12345678
@@ -33,7 +33,7 @@ Development environment requirements :
 -   Docker
 -   Docker compose
 
-This repository contains both backend project and frontend project. In order to prevent confliction of packages resolving, lerna tool is using to make sure both projects use their own dependency package folder separately.
+I am using Lerna to make sure both backend project and frontend project work well to gether in a mono repo.
 
 Backend is using Adonisjs framework version 5. Frontend is React application combined with Redux, Redux Saga and Material UI framework
 
@@ -78,26 +78,11 @@ node ace db:seed
 
 _Note_: Before running database migration, please create a .env file and config all necessary environment variables (refer to .env.example for more details).
 
-## Start backend server:
-
-Run backend server:
+## Start development:
 
 ```
-cd ./packages/server
-cp ./.env.example .env
-npm install
-node ace serve --watch
-```
-
-## Start frontend server:
-
-Run frontend server:
-
-```
-cd ./packages/web
-cp ./.env.template .env
-npm install
-npm start
+cd ./package/server
+npm run dev
 ```
 
 # Deployment

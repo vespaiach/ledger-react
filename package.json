@@ -1,10 +1,12 @@
 {
-    "name": "monthly-budgets",
+    "name": "ledger",
     "private": true,
     "devDependencies": {
+        "eslint": "^7.19.0",
         "lerna": "^3.22.1"
     },
     "scripts": {
-        "lerna": "lerna"
+        "bootstrap": "lerna bootstrap",
+        "dev": "lerna run dev --parallel"
     }
 }

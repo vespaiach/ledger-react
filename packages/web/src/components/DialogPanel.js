@@ -1,35 +1,18 @@
-import { Container, Dialog, IconButton, Paper, Slide } from '@material-ui/core';
+import { AppBar, Dialog, IconButton, Typography, Slide, Toolbar, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { forwardRef } from 'react';
 import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';
+import clsx from 'clsx';
 
 const SlideUp = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ExtendedPaper = forwardRef(function ExtendedPaper({ btnCloseRoot, onClose, ...other }, ref) {
-    return (
-        <>
-            <IconButton
-                classes={{ root: btnCloseRoot }}
-                onClick={(evt) => {
-                    evt.stopPropagation();
-                    if (onClose) {
-                        onClose();
-                    }
-                }}>
-                <CloseRoundedIcon />
-            </IconButton>
-            <Paper ref={ref} {...other} />
-        </>
-    );
-});
-
-const useStyles = makeStyles((theme) => ({
-    dialogRoot: {
-        '& .MuiBackdrop-root': {
-            backgroundColor: 'rgba(0, 0, 0, 0.75)',
-        },
+const useStyles = makeStyles({
+    dialogTitleRoot: {
+        textAlign: 'center',
+        flexGrow: 1,
+        fontWeight: 600,
     },
     btnCloseRoot: {
         color: 'white',
@@ -37,43 +20,51 @@ const useStyles = makeStyles((theme) => ({
     dialogScrollPaper: {
         flexFlow: 'column nowrap',
     },
-    dialogPaperFullScreen: {
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8,
+    btnReset: {
+        padding: 0,
     },
-    boxContent: {
-        background: 'rgba(0,0,0,0.07)',
+    hidden: {
+        visibility: 'hidden',
     },
-}));
+});
 
-export default function DialogPanel({ open, title, footer, children, onClose, ...rest }) {
+export default function DialogPanel({ open, title, children, onClose, onReset, ...rest }) {
     const classes = useStyles();
 
     return (
-        <Dialog
-            {...rest}
-            fullScreen
-            classes={{
-                root: classes.dialogRoot,
-                scrollPaper: classes.dialogScrollPaper,
-                paperFullScreen: classes.dialogPaperFullScreen,
-            }}
-            open={open}
-            onClose={onClose}
-            PaperComponent={ExtendedPaper}
-            PaperProps={{ btnCloseRoot: classes.btnCloseRoot, onClose }}
-            TransitionComponent={SlideUp}>
-            <Container maxWidth="xs" disableGutters>
-                {title}
-            </Container>
-            <div className={classes.boxContent}>
-                <Container maxWidth="xs" disableGutters>
-                    {children}
-                </Container>
-            </div>
-            <Container maxWidth="xs" disableGutters>
-                {footer}
-            </Container>
+        <Dialog {...rest} fullScreen open={open} onClose={onClose} TransitionComponent={SlideUp}>
+            <AppBar position="static" color="transparent" elevation={3}>
+                <Toolbar variant="dense">
+                    <IconButton
+                        edge="start"
+                        className={classes.menuButton}
+                        onClick={onClose}
+                        color="default"
+                        aria-label="menu">
+                        <CloseRoundedIcon />
+                    </IconButton>
+                    <Typography
+                        classes={{ root: classes.dialogTitleRoot }}
+                        variant="subtitle1"
+                        color="primary">
+                        {title}
+                    </Typography>
+                    <Button
+                        disableRipple
+                        variant="text"
+                        className={clsx(!onReset && classes.hidden)}
+                        classes={{ root: classes.btnReset }}
+                        onClick={(evt) => {
+                            evt.stopPropagation();
+                            if (onReset) {
+                                onReset();
+                            }
+                        }}>
+                        Reset
+                    </Button>
+                </Toolbar>
+            </AppBar>
+            {children}
         </Dialog>
     );
 }

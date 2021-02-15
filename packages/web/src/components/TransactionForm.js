@@ -1,4 +1,12 @@
-import { TextField, InputAdornment, makeStyles, Button } from '@material-ui/core';
+import {
+    Radio,
+    TextField,
+    InputAdornment,
+    makeStyles,
+    Button,
+    FormControlLabel,
+    RadioGroup,
+} from '@material-ui/core';
 import {
     AttachMoney as AttachMoneyIcon,
     CalendarToday as CalendarTodayIcon,
@@ -35,10 +43,14 @@ const useStyles = makeStyles((theme) => ({
     },
     btnSubmitRoot: {
         flex: 1,
-        marginRight: theme.spacing(3),
+        marginLeft: theme.spacing(3),
     },
     btnCancelRoot: {
         flex: '0 0 126px',
+    },
+    radioGroupRoot: {
+        flexFlow: 'row',
+        marginBottom: 4,
     },
 }));
 
@@ -46,12 +58,12 @@ export default function Form({
     id = null,
     amount = '',
     date = null,
+    transactionType = 'ex',
     description = '',
     category = '',
     categories = [],
     onSubmit,
     onCancel,
-    loading,
     reset,
 }) {
     const classes = useStyles();
@@ -60,6 +72,7 @@ export default function Form({
         initialValues: {
             id,
             amount,
+            transactionType,
             date,
             description,
             category,
@@ -77,6 +90,15 @@ export default function Form({
 
     return (
         <form onSubmit={formik.handleSubmit} className={classes.form}>
+            <RadioGroup
+                aria-label="transaction type"
+                name="transactionType"
+                value={formik.values.transactionType}
+                classes={{ root: classes.radioGroupRoot }}
+                onChange={formik.handleChange}>
+                <FormControlLabel value="in" control={<Radio />} label="Income" />
+                <FormControlLabel value="ex" control={<Radio />} label="Expense" />
+            </RadioGroup>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <DateTimePicker
                     clearable
@@ -95,7 +117,6 @@ export default function Form({
                         });
                     }}
                     fullWidth
-                    disabled={loading}
                     error={formik.touched.date && Boolean(formik.errors.date)}
                     helperText={formik.touched.date && formik.errors.date}
                     inputVariant="filled"
@@ -114,7 +135,6 @@ export default function Form({
             </MuiPickersUtilsProvider>
             <TextField
                 fullWidth
-                disabled={loading}
                 variant="filled"
                 size="small"
                 label="Amount"
@@ -137,39 +157,39 @@ export default function Form({
                 }}
             />
             <Autocomplete
-                disabled={loading}
                 name="category"
                 freeSolo
+                disableClearable
                 value={formik.values.category}
                 onChange={(_, value, source) => {
-                    if (source === 'remove-option' || source === 'select-option') {
+                    if (
+                        source === 'remove-option' ||
+                        source === 'select-option' ||
+                        source === 'clear'
+                    ) {
                         formik.handleChange({
                             name: 'category',
                             target: { name: 'category', value },
                         });
                     }
                 }}
-                onInputChange={(evt) => {
-                    if (evt) {
-                        formik.handleChange(evt);
-                    }
-                }}
                 size="small"
-                options={categories.map((c) => c.name)}
-                renderInput={({ InputProps, ...rest }) => (
-                    <TextField
-                        {...rest}
-                        name="category"
-                        variant="filled"
-                        label="Category"
-                        error={formik.touched.category && Boolean(formik.errors.category)}
-                        helperText={formik.touched.category && formik.errors.category}
-                        InputProps={InputProps}
-                    />
-                )}
+                options={categories}
+                renderInput={(props) =>
+                    console.log(props) || (
+                        <TextField
+                            {...props}
+                            name="category"
+                            variant="filled"
+                            label="Category"
+                            InputProps={{ ...props.InputProps, type: 'search' }}
+                            error={formik.touched.category && Boolean(formik.errors.category)}
+                            helperText={formik.touched.category && formik.errors.category}
+                        />
+                    )
+                }
             />
             <TextField
-                disabled={loading}
                 variant="filled"
                 multiline
                 label="Description"
@@ -183,19 +203,21 @@ export default function Form({
             />
             <div className={classes.boxBtns}>
                 <Button
+                    size="large"
+                    onClick={onCancel}
+                    variant="contained"
+                    disableElevation
+                    classes={{ root: classes.btnCancelRoot }}>
+                    Cancel
+                </Button>
+                <Button
                     type="submit"
                     color="primary"
                     classes={{ root: classes.btnSubmitRoot }}
                     size="large"
+                    disableElevation
                     variant="contained">
                     Submit
-                </Button>
-                <Button
-                    size="large"
-                    onClick={onCancel}
-                    variant="contained"
-                    classes={{ root: classes.btnCancelRoot }}>
-                    Cancel
                 </Button>
             </div>
         </form>

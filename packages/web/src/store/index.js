@@ -1,40 +1,17 @@
-import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
+import { createStore, compose, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { all, fork } from 'redux-saga/effects';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
+import { routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 
-import { watchSubmitSignupForm } from '../routes/Signup/saga';
-import { watchSubmitSigninForm } from '../routes/Signin/saga';
-import { watchSubmitRecoveryForm } from '../routes/Recovery/saga';
 import {
-    watchSaveIncomesRequest,
-    watchFetchIncomeDetailRequest,
-    watchEditIncomeRequest,
-    watchAddIncomeRequest,
-} from '../routes/IncomeForm/saga';
-import {
-    watchSaveExpensesRequest,
-    watchFetchExpenseDetailRequest,
-    watchEditExpenseRequest,
-    watchAddExpenseRequest,
-} from '../routes/ExpenseForm/saga';
-import { watchFetchIncomeListRequest, watchDeleteIncomeRequest } from '../routes/IncomeList/saga';
-import {
-    watchFetchExpenseListRequest,
-    watchDeleteExpenseRequest,
-} from '../routes/ExpenseList/saga';
-import { watchFetchMeRequest, watchSignoutRequest } from '../App/saga';
-import { watchFetchMonthlySumCategoriesRequest } from '../routes/MonthlyReport/saga';
-import app from '../App/store';
-import signup from '../routes/Signup/store';
-import signin from '../routes/Signin/store';
-import recovery from '../routes/Recovery/store';
-import ins from '../routes/IncomeList/store';
-import inForm from '../routes/IncomeForm/store';
-import exs from '../routes/ExpenseList/store';
-import exForm from '../routes/ExpenseForm/store';
-import monthly from '../routes/MonthlyReport/store';
+    watchFetchRequest,
+    watchSyncRequest,
+    watchSigninRequest,
+    watchSignoutRequest,
+    watchDeleteRequest,
+} from './saga';
+import localStore from './local';
 
 const history = createBrowserHistory();
 const sagaMiddleware = createSagaMiddleware({
@@ -54,42 +31,18 @@ const composeEnhancers =
     compose;
 
 const store = createStore(
-    combineReducers({
-        router: connectRouter(history),
-        app,
-        signup,
-        signin,
-        recovery,
-        ins,
-        inForm,
-        exs,
-        exForm,
-        monthly,
-    }),
+    localStore,
     composeEnhancers(applyMiddleware(sagaMiddleware, routerMiddleware(history)))
 );
 
 const saga = function* rootSaga() {
     yield all(
         [
-            watchSubmitSignupForm,
-            watchSubmitSigninForm,
-            watchSubmitRecoveryForm,
-            watchFetchIncomeListRequest,
-            watchFetchMeRequest,
-            watchSaveIncomesRequest,
-            watchDeleteIncomeRequest,
-            watchFetchIncomeDetailRequest,
-            watchEditIncomeRequest,
-            watchAddIncomeRequest,
-            watchFetchExpenseListRequest,
-            watchDeleteExpenseRequest,
-            watchSaveExpensesRequest,
-            watchFetchExpenseDetailRequest,
-            watchEditExpenseRequest,
-            watchAddExpenseRequest,
+            watchFetchRequest,
+            watchSyncRequest,
+            watchSigninRequest,
             watchSignoutRequest,
-            watchFetchMonthlySumCategoriesRequest,
+            watchDeleteRequest,
         ].map(fork)
     );
 };

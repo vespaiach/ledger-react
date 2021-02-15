@@ -1,14 +1,11 @@
 import { List, ListItem, Typography, IconButton, Divider } from '@material-ui/core';
-import clsx from 'clsx';
-import {
-    EditRounded as EditRoundedIcon,
-    DeleteForeverRounded as DeleteRoundedIcon,
-} from '@material-ui/icons';
+import { DeleteForeverRounded as DeleteRoundedIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
-import { AutoSizer, List as VirtualList, WindowScroller, InfiniteLoader } from 'react-virtualized';
+import { AutoSizer, List as VirtualList, WindowScroller } from 'react-virtualized';
 import NumberFormat from 'react-number-format';
 import { format } from 'date-fns';
-import { Skeleton } from '@material-ui/lab';
+
+import EditIcon from './Icons/Edit';
 
 const useStyles = makeStyles((theme) => ({
     listRoot: {
@@ -44,86 +41,58 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function TransactionList({
-    onLoadMore,
-    onEdit,
-    onDelete,
-    onDetail,
-    loaderRef,
-    data,
-    totalRows,
-}) {
+export default function TransactionList({ onEdit, onDelete, onDetail, data, totalRows }) {
     const classes = useStyles();
-    const isRowLoaded = (index) => !!data[index];
     const rowRenderer = ({ index, style, key }) => {
         return (
             <div key={key} style={style}>
-                {data[index] ? (
-                    <ListItem
-                        alignItems="flex-start"
-                        disableGutters
-                        button
-                        onClick={() => onDetail(index)}>
-                        <Typography variant="h6">{`$`}</Typography>
-                        <div className={classes.boxMid}>
-                            <Typography variant="h6">
-                                <NumberFormat
-                                    value={data[index].amount}
-                                    displayType={'text'}
-                                    thousandSeparator={true}
-                                />
-                            </Typography>
-                            <Typography variant="body2">
-                                {format(data[index].date, 'LLL do, yyyy')} -{' '}
-                                {format(data[index].date, 'HH:mm')}
-                            </Typography>
-                        </div>
-                        <div className={classes.boxDesc}>
-                            <Typography variant="h6">{data[index].category}</Typography>
-                            <Typography
-                                variant="body2"
-                                noWrap
-                                classes={{ root: classes.typoEllipsis }}>
-                                {data[index].description}
-                            </Typography>
-                        </div>
-                        <div className={classes.boxGrow} />
-                        <div className={classes.boxBtns}>
-                            <IconButton
-                                aria-label="edit income transaction"
-                                onClick={(evt) => {
-                                    evt.stopPropagation();
-                                    onEdit(index);
-                                }}>
-                                <EditRoundedIcon />
-                            </IconButton>
-                            <IconButton
-                                aria-label="delete income transaction"
-                                onClick={(evt) => {
-                                    evt.stopPropagation();
-                                    onDelete(index);
-                                }}>
-                                <DeleteRoundedIcon />
-                            </IconButton>
-                        </div>
-                    </ListItem>
-                ) : (
-                    <ListItem alignItems="flex-start" disableGutters>
-                        <Skeleton variant="text" height={38} width={20} />
-                        <div className={classes.boxMid}>
-                            <Skeleton variant="text" height={38} />
-                            <Skeleton variant="text" />
-                        </div>
-                        <div className={clsx(classes.boxGrow, classes.boxDesc)}>
-                            <Skeleton variant="text" height={38} width="30%" />
-                            <Skeleton variant="text" width="100%" />
-                        </div>
-                        <div className={clsx(classes.boxBtns, classes.boxBtnsSkeleton)}>
-                            <Skeleton variant="circle" height={24} width={24} />
-                            <Skeleton variant="circle" height={24} width={24} />
-                        </div>
-                    </ListItem>
-                )}
+                <ListItem
+                    alignItems="flex-start"
+                    disableGutters
+                    button
+                    onClick={() => onDetail(data[index])}>
+                    <Typography variant="h6">
+                        {data[index].transactionType === 'in' ? '+' : '-'}
+                    </Typography>
+                    <div className={classes.boxMid}>
+                        <Typography variant="h6">
+                            <NumberFormat
+                                value={data[index].amount}
+                                displayType={'text'}
+                                thousandSeparator={true}
+                            />
+                        </Typography>
+                        <Typography variant="body2">
+                            {format(data[index].date, 'LLL do, yyyy')} -{' '}
+                            {format(data[index].date, 'HH:mm')}
+                        </Typography>
+                    </div>
+                    <div className={classes.boxDesc}>
+                        <Typography variant="h6">{data[index].category}</Typography>
+                        <Typography variant="body2" noWrap classes={{ root: classes.typoEllipsis }}>
+                            {data[index].description}
+                        </Typography>
+                    </div>
+                    <div className={classes.boxGrow} />
+                    <div className={classes.boxBtns}>
+                        <IconButton
+                            aria-label="edit income transaction"
+                            onClick={(evt) => {
+                                evt.stopPropagation();
+                                onEdit(data[index]);
+                            }}>
+                            <EditIcon />
+                        </IconButton>
+                        <IconButton
+                            aria-label="delete income transaction"
+                            onClick={(evt) => {
+                                evt.stopPropagation();
+                                onDelete(data[index]);
+                            }}>
+                            <DeleteRoundedIcon />
+                        </IconButton>
+                    </div>
+                </ListItem>
                 <Divider />
             </div>
         );
@@ -132,33 +101,23 @@ export default function TransactionList({
     return (
         <AutoSizer disableHeight>
             {({ width }) => (
-                <InfiniteLoader
-                    ref={loaderRef}
-                    isRowLoaded={isRowLoaded}
-                    loadMoreRows={onLoadMore}
-                    rowCount={totalRows}>
-                    {({ onRowsRendered, registerChild }) => (
-                        <WindowScroller>
-                            {({ height, isScrolling, onChildScroll, scrollTop }) => (
-                                <List
-                                    autoHeight
-                                    width={width}
-                                    height={height}
-                                    isScrolling={isScrolling}
-                                    onScroll={onChildScroll}
-                                    scrollTop={scrollTop}
-                                    component={VirtualList}
-                                    classes={{ root: classes.listRoot }}
-                                    rowRenderer={rowRenderer}
-                                    rowHeight={69}
-                                    rowCount={totalRows}
-                                    onRowsRendered={onRowsRendered}
-                                    ref={registerChild}
-                                />
-                            )}
-                        </WindowScroller>
+                <WindowScroller>
+                    {({ height, isScrolling, onChildScroll, scrollTop }) => (
+                        <List
+                            autoHeight
+                            width={width}
+                            height={height}
+                            isScrolling={isScrolling}
+                            onScroll={onChildScroll}
+                            scrollTop={scrollTop}
+                            component={VirtualList}
+                            classes={{ root: classes.listRoot }}
+                            rowRenderer={rowRenderer}
+                            rowHeight={69}
+                            rowCount={totalRows}
+                        />
                     )}
-                </InfiniteLoader>
+                </WindowScroller>
             )}
         </AutoSizer>
     );

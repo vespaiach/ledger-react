@@ -1,6 +1,13 @@
+/**
+ * Ledger API Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen
+ */
+
 import Factory from '@ioc:Adonis/Lucid/Factory'
-import Expense from 'App/Models/Expense'
-import Income from 'App/Models/Income'
+import Transaction from 'App/Models/Trasactions'
+import TransactionType from 'App/Models/TransactionType'
 import { DateTime } from 'luxon'
 
 const expensesCategories = [
@@ -19,22 +26,17 @@ const expensesCategories = [
 
 const incomeCategories = ['savings', 'paycheck', 'bonus', 'interest', 'other']
 
-export const ExpensesFactory = Factory.define(Expense, ({ faker }) => {
-  const ex = new Expense()
-  ex.date = DateTime.fromJSDate(faker.date.between('2021-01-01', '2020-06-01'))
-  ex.amount = parseFloat(faker.finance.amount(1, 10000, 2))
-  ex.description = faker.lorem.sentence()
-  ex.category = expensesCategories[faker.random.number(expensesCategories.length - 1)]
-  ex.userId = 1
-  return ex
-}).build()
-
-export const IncomesFactory = Factory.define(Income, ({ faker }) => {
-  const ex = new Income()
-  ex.date = DateTime.fromJSDate(faker.date.between('2021-01-01', '2020-06-01'))
-  ex.amount = parseFloat(faker.finance.amount(1, 10000, 2))
-  ex.description = faker.lorem.sentence()
-  ex.category = incomeCategories[faker.random.number(incomeCategories.length - 1)]
-  ex.userId = 1
-  return ex
+export const TransactionsFactory = Factory.define(Transaction, ({ faker }) => {
+  const tran = new Transaction()
+  tran.date = DateTime.fromJSDate(faker.date.between('2021-02-07', '2020-04-01'))
+  tran.amount = parseFloat(faker.finance.amount(1, 100000, 2))
+  tran.description = faker.lorem.sentence()
+  if (faker.random.boolean()) {
+    tran.category = expensesCategories[faker.random.number(expensesCategories.length - 1)]
+    tran.transactionType = TransactionType.Expense
+  } else {
+    tran.category = incomeCategories[faker.random.number(incomeCategories.length - 1)]
+    tran.transactionType = TransactionType.Income
+  }
+  return tran
 }).build()

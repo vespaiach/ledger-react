@@ -1,16 +1,22 @@
 import { createReducer } from '../utils/reducer';
 
 const defaultState = {
-    loading: false,
+    appLoading: false,
+    showSignIn: false,
+
     flashMessage: '',
     flashMessageSeverity: '',
-    confirm: null,
-    me: null,
+
+    signinLoading: false,
+    authorized: false,
+
+    errorMessage: '',
+    errorSeverity: '',
 };
 
 export default createReducer(defaultState, {
-    'Reducer - app: set app loading on': (state) => ({ ...state, loading: true }),
-    'Reducer - app: set app loading off': (state) => ({ ...state, loading: false }),
+    'Reducer - app: set app loading on': (state) => ({ ...state, appLoading: true }),
+    'Reducer - app: set app loading off': (state) => ({ ...state, appLoading: false }),
 
     'Reducer - app: set flash message': (state, { payload: { message, severity = 'info' } }) => ({
         ...state,
@@ -23,46 +29,16 @@ export default createReducer(defaultState, {
         flashMessageSeverity: '',
     }),
 
-    'Reducer - app: set me': (state, { payload: me }) => ({ ...state, me }),
+    'Reducer - app: authorized': (state) => ({ ...state, authorized: true }),
     'Reducer - app: clear login info': (state) => ({ ...state, me: null }),
 
-    'Reducer - app: confirm': (state, { payload: confirm }) => ({ ...state, confirm }),
-    'Reducer - app: clear confirm': (state) => ({ ...state, confirm: null }),
+    'Reducer - app: clear error': (state) => ({ ...state, errorMessage: '', errorSeverity: '' }),
+    'Reducer - app: set error': (state, { payload: { message, severity } }) => ({
+        ...state,
+        errorMessage: message,
+        errorSeverity: severity,
+    }),
 
-    'Reducer - app: clear API error': (state) => ({ ...state, apiError: null }),
-    'Reducer - app: set API error': (state, { payload: apiResponse }) => {
-        if (apiResponse.status === 422) {
-            const tmp = {
-                ...state,
-                apiError: {
-                    title: apiResponse.statusText,
-                },
-            };
-
-            if (apiResponse.data) {
-                if (apiResponse.data.errors && Array.isArray(apiResponse.data.errors)) {
-                    tmp.apiError.messages = apiResponse.data.errors.map(
-                        (e) => `"${e.field}" ${e.message}`
-                    );
-                } else {
-                    tmp.apiError.messages = Object.values(apiResponse.data).reduce((acc, ers) => {
-                        acc = acc.concat(ers);
-                        return acc;
-                    }, []);
-                }
-                return tmp;
-            }
-
-            tmp.apiError.messages = ['Unknown error'];
-
-            return tmp;
-        }
-        return {
-            ...state,
-            apiError: {
-                title: 'Error',
-                messages: ['Unknown error'],
-            },
-        };
-    },
+    'Reducer: close sign in dialog': (state) => ({ ...state, showSignIn: false, lastAction: null }),
+    'Reducer: open sign in dialog': (state) => ({ ...state, showSignIn: true }),
 });

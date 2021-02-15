@@ -1,3 +1,10 @@
+/**
+ * Ledger API Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
+ */
+
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import Hash from '@ioc:Adonis/Core/Hash'
@@ -6,72 +13,36 @@ import Env from '@ioc:Adonis/Core/Env'
 import { DateTime } from 'luxon'
 import User from 'App/Models/User'
 import { base64 } from '@poppinss/utils'
+import WrongCredentialsException from 'App/Exceptions/WrongCredentialsException'
+import Logger from '@ioc:Adonis/Core/Logger'
 
 export default class UsersController {
   /**
-   * Login user via session and return logined user account
+   * Exchange email & password for opaque token
    */
-  public async login({ request, auth }: HttpContextContract) {
-    const { email, password, remember } = await request.validate({
+  public async signin({ request, auth }: HttpContextContract) {
+    const { email, password } = await request.validate({
       schema: schema.create({
         email: schema.string({ trim: true }, [rules.email()]),
         password: schema.string({ trim: true }),
-        remember: schema.boolean.optional(),
       }),
     })
 
-    await auth.attempt(email, password, remember)
-
-    return auth.user
+    try {
+      const token = await auth.use('api').attempt(email, password)
+      return token.toJSON()
+    } catch (e) {
+      Logger.info(e)
+      throw new WrongCredentialsException('Wrong credentials', 'E_WRONG_CREDENTIALS')
+    }
   }
 
   /**
-   * Logout
+   * Sign out token
    */
-  public async logout({ auth }: HttpContextContract) {
-    await auth.logout()
+  public async signout({ auth }: HttpContextContract) {
+    await auth.use('api').logout()
     return
-  }
-
-  /**
-   * Return user information
-   */
-  public async me({ auth }: HttpContextContract) {
-    return auth.user
-  }
-
-  /**
-   * Register a new account with
-   *  name
-   *  email
-   *  password
-   */
-  public async register({ request }: HttpContextContract) {
-    const { email, password, name } = await request.validate({
-      schema: schema.create({
-        name: schema.string({ trim: true }),
-        email: schema.string({ trim: true }, [
-          rules.email(),
-          rules.unique({ column: 'email', table: 'users' }),
-        ]),
-        password: schema.string({ trim: true }, [rules.minLength(8)]),
-      }),
-      messages: {
-        'name.required': 'name is required',
-        'email.required': 'email is required',
-        'email.email': 'email is invalid',
-        'email.unique': 'email is duplicated',
-        'password.required': 'password is required',
-        'password.minLength': 'password is not enough 8 characters',
-      },
-    })
-
-    const user = new User()
-    user.name = name
-    user.password = password
-    user.email = email
-
-    return await user.save()
   }
 
   /**

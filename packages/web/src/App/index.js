@@ -1,192 +1,117 @@
-import { CircularProgress, Backdrop } from '@material-ui/core';
-import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { Snackbar, Container, IconButton, makeStyles, Fab } from '@material-ui/core';
+import { Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles } from '@material-ui/styles';
+import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';
 
-import Signup from '../routes/Signup';
-import Signin from '../routes/Signin';
-import Recovery from '../routes/Recovery';
 import NotFound from '../routes/Errors/NotFound';
-import IncomeForm from '../routes/IncomeForm';
-import IncomeList from '../routes/IncomeList';
-import ExpenseForm from '../routes/ExpenseForm';
-import ExpenseList from '../routes/ExpenseList';
-import FlashMessage from '../components/FlashMessage';
-import PrivatePageShell from '../components/PrivatePageShell';
-import ConfirmDialog from '../components/ConfirmDialog';
-import { useState, useMemo } from 'react';
-import SortDialog from '../components/SortDialog';
-import useCounting from '../hooks/useCounting';
-import SearchDialog from '../components/SearchingDialog';
-import MonthlyReport from '../routes/MonthlyReport';
+import MonthlyReport from '../routes/Reports';
+import Transactions from '../routes/Transactions';
+import DialogPanel from '../components/DialogPanel';
+import Signin from '../routes/Signin';
+import TopNav from './TopNav';
 
 const useStyles = makeStyles((theme) => ({
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
+    successSnackbar: {
+        '& .MuiSnackbarContent-root': {
+            background: theme.palette.success.main,
+        },
+    },
+    botGap: {
+        height: theme.spacing(5),
     },
 }));
 
 function App() {
-    const dispatch = useDispatch();
-    const location = useLocation();
-    const tabValue = useMemo(() => {
-        const tabIndex = {
-            '/portal/incomes/new': 0,
-            '/portal/incomes': 0,
-            '/portal/expenses': 1,
-            '/portal/expenses/new': 1,
-            '/portal/monthly_reports': 2,
-        };
-        if (tabIndex[location.pathname] !== undefined) {
-            return tabIndex[location.pathname];
-        } else {
-            if (/\/portal\/incomes\/\d+/gi.test(location.pathname)) {
-                return 0;
-            } else if (/\/portal\/expenses\/\d+/gi.test(location.pathname)) {
-                return 1;
-            }
-        }
-        return 2;
-    }, [location.pathname]);
-
-    const incomeSorting = useSelector((state) => state.ins.sort);
-    const incomeSearching = useSelector((state) => state.ins.search);
-    const expenseSorting = useSelector((state) => state.exs.sort);
-    const expenseSearching = useSelector((state) => state.exs.search);
-    const {
-        searchingCount,
-        searching,
-        sorting,
-        onSortApply,
-        onSearchApply,
-        onSortReset,
-        onSearchReset,
-    } = useCounting({
-        tabValue,
-        incomeSearching,
-        incomeSorting,
-        expenseSearching,
-        expenseSorting,
-        dispatch,
-    });
     const classes = useStyles();
-    const loading = useSelector((state) => state.app.loading);
-    const flashMessage = useSelector((state) => state.app.flashMessage);
-    const flashMessageSeverity = useSelector((state) => state.app.flashMessageSeverity);
-    const user = useSelector((state) => state.app.me);
-    const confirm = useSelector((state) => state.app.confirm);
-    const showConfirmDialog = useMemo(() => Boolean(confirm), [confirm]);
-    const confirmObj = useMemo(() => confirm || {}, [confirm]);
-    const [dialog, setDialog] = useState('');
-
-    const handleClose = () => dispatch({ type: 'Reducer - app: clear flash message' });
+    const dispatch = useDispatch();
+    const processing = useSelector((state) => state.common.processing);
+    const showSignIn = useSelector((state) => state.common.showSignIn);
+    const error = useSelector((state) => state.common.error);
+    const success = useSelector((state) => state.common.success);
+    const year = useSelector((state) => state.transaction.year);
+    const closeErrorMessage = () => dispatch({ type: 'Reducer: hide app error' });
+    const closeSuccessMessage = () => dispatch({ type: 'Reducer: hide app success' });
+    const handleSignOut = () => {
+        dispatch({ type: 'Saga: sign out' });
+    };
+    const handleRefesh = () => {
+        dispatch({ type: 'Saga: fetch transactions', payload: year });
+    };
 
     return (
         <>
+            <TopNav onRefesh={handleRefesh} onSignOut={handleSignOut} />
             <Switch>
-                <Route exact path="/signin">
-                    <Signin />
-                </Route>
-                <Route exact path="/signup">
-                    <Signup />
-                </Route>
-                <Route exact path="/recovery">
-                    <Recovery />
-                </Route>
-                <Route path="/portal">
-                    <PrivatePageShell
-                        userName={user && user.name}
-                        userEmail={user && user.email}
-                        tabValue={tabValue}
-                        searchingCount={searchingCount}
-                        onExit={() => dispatch({ type: 'Saga - app: sign out' })}
-                        onSearch={() => setDialog('search')}
-                        onSort={() => setDialog('sort')}>
-                        <Switch>
-                            <Route
-                                exact
-                                path={['/portal/incomes/new', '/portal/incomes/:id(\\d+)']}>
-                                <IncomeForm />
-                            </Route>
-                            <Route
-                                exact
-                                path={['/portal/expenses/new', '/portal/expenses/:id(\\d+)']}>
-                                <ExpenseForm />
-                            </Route>
-                            <Route exact path="/portal/incomes">
-                                <IncomeList />
-                            </Route>
-                            <Route exact path="/portal/expenses">
-                                <ExpenseList />
-                            </Route>
-                            <Route exact path="/portal/monthly_reports">
-                                <MonthlyReport />
-                            </Route>
-                            <Route>
-                                <Redirect to="/portal/monthly_reports" />
-                            </Route>
-                        </Switch>
-                    </PrivatePageShell>
-                </Route>
-                <Route exact path="/">
-                    <Redirect to="/portal/incomes" />
+                <Route exact path="/transactions">
+                    <Transactions />
                 </Route>
                 <Route path="*">
                     <NotFound />
                 </Route>
             </Switch>
-            <Backdrop className={classes.backdrop} open={loading}>
-                <CircularProgress color="inherit" />
-            </Backdrop>
-            <FlashMessage
-                open={Boolean(flashMessage)}
-                message={flashMessage}
-                severity={flashMessageSeverity}
-                timeout={3000}
-                onClose={handleClose}
-            />
-            <ConfirmDialog
-                open={showConfirmDialog}
-                title={confirmObj.title}
-                message={confirmObj.message}
-                type={confirmObj.type}
-                onYes={() =>
-                    dispatch({ type: confirmObj.payload.type, payload: confirmObj.payload.payload })
+            <DialogPanel
+                open={showSignIn}
+                title="Sign In"
+                onClose={() => dispatch({ type: 'Reducer: close sign in dialog' })}>
+                <Container maxWidth="xs">
+                    <Signin />
+                </Container>
+            </DialogPanel>
+            <Snackbar
+                classes={{ root: classes.successSnackbar }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                autoHideDuration={5000}
+                open={Boolean(success)}
+                action={
+                    <IconButton
+                        size="small"
+                        aria-label="close"
+                        color="inherit"
+                        onClick={closeSuccessMessage}>
+                        <CloseRoundedIcon fontSize="small" />
+                    </IconButton>
                 }
-                onNo={() => dispatch({ type: 'Reducer - app: clear confirm' })}
+                message={success}
+                onClose={closeSuccessMessage}
             />
-            <SortDialog
-                value={sorting}
-                open={dialog === 'sort'}
-                onClose={() => setDialog('')}
-                onReset={() => {
-                    onSortReset();
-                    setDialog(null);
-                }}
-                onApply={(payload) => {
-                    onSortApply(payload);
-                    setDialog(null);
-                }}
+            <Snackbar
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                open={Boolean(error)}
+                autoHideDuration={5000}
+                action={
+                    <IconButton
+                        size="small"
+                        aria-label="close"
+                        color="inherit"
+                        onClick={closeErrorMessage}>
+                        <CloseRoundedIcon fontSize="small" />
+                    </IconButton>
+                }
+                message={error}
+                onClose={closeErrorMessage}
             />
-            <SearchDialog
-                onClose={() => setDialog('')}
-                open={dialog === 'search'}
-                dateFrom={searching.byDateFrom}
-                dateTo={searching.byDateTo}
-                amountFrom={searching.byAmountFrom}
-                amountTo={searching.byAmountTo}
-                category={searching.byCategory}
-                onReset={() => {
-                    onSearchReset();
-                    setDialog(null);
-                }}
-                onApply={(payload) => {
-                    onSearchApply(payload);
-                    setDialog(null);
-                }}
-                categories={[]}
+            <Snackbar
+                open={Boolean(processing)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                message={
+                    <>
+                        {processing === 'load' ? (
+                            <span>Loading transactions</span>
+                        ) : processing === 'sync' ? (
+                            <span>Saving transactions</span>
+                        ) : (
+                            ''
+                        )}
+                        <div className="lds-ellipsis">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </>
+                }
             />
+            <div className={classes.botGap} />
         </>
     );
 }
