@@ -97,6 +97,7 @@ export default function TransactionList({ onEdit, onDelete, onDetail, data, tota
             </div>
         );
     };
+    const norowRender = () => <Typography>NO TRANSACTION</Typography>;
 
     return (
         <AutoSizer disableHeight>
@@ -115,6 +116,7 @@ export default function TransactionList({ onEdit, onDelete, onDetail, data, tota
                             rowRenderer={rowRenderer}
                             rowHeight={69}
                             rowCount={totalRows}
+                            noRowsRenderer={norowRender}
                         />
                     )}
                 </WindowScroller>

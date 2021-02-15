@@ -1,5 +1,5 @@
 import { Snackbar, Container, IconButton, makeStyles, Fab } from '@material-ui/core';
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';
 
@@ -44,6 +44,9 @@ function App() {
             <Switch>
                 <Route exact path="/transactions">
                     <Transactions />
+                </Route>
+                <Route exact path="/">
+                    <Redirect to="/transactions" />
                 </Route>
                 <Route path="*">
                     <NotFound />
