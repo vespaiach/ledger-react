@@ -1,4 +1,4 @@
-import { Snackbar, Container, IconButton, makeStyles, Fab } from '@material-ui/core';
+import { Snackbar, Container, IconButton, makeStyles } from '@material-ui/core';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';

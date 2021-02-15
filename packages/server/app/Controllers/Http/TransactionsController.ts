@@ -82,6 +82,9 @@ export default class TransactionsController {
     return
   }
 
+  /**
+   * Delete transaction
+   */
   public async delete({ params }: HttpContextContract) {
     const { id } = params
 
@@ -93,5 +96,35 @@ export default class TransactionsController {
     }
 
     return
+  }
+
+  public async years() {
+    const a = await Transaction.query().orderBy('date', 'asc').first()
+    console.log(a)
+    debugger
+    const [start, end] = await Promise.all([
+      Transaction.query().orderBy('date', 'asc').first(),
+      Transaction.query().orderBy('date', 'desc').first(),
+    ])
+
+    const results: number[] = []
+    const fromDate = start?.date
+    const toDate = end?.date
+
+    if (fromDate && toDate) {
+      for (let i = fromDate.year; i <= toDate.year; i++) {
+        results.push(i)
+      }
+    } else {
+      if (fromDate) {
+        results.push(fromDate.year)
+      } else if (toDate) {
+        results.push(toDate.year)
+      } else {
+        results.push(new Date().getFullYear())
+      }
+    }
+
+    return results
   }
 }

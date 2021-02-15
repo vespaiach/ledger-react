@@ -11,6 +11,7 @@ Route.group(() => {
   Route.group(() => {
     Route.get('transactions', 'TransactionsController.get')
     Route.post('transactions', 'TransactionsController.sync')
+    Route.get('transactions/years', 'TransactionsController.years')
     Route.delete('transactions/:id', 'TransactionsController.delete')
     Route.get('ping', 'UsersController.ping')
     Route.put('signout', 'UsersController.signout')
