@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function TransDetails({ detail, onClose, onEdit, onDelete }) {
+export default function TransDetailDialog({ detail, onClose, onEdit, onDelete }) {
     const classes = useStyles();
 
     let el = <div />;

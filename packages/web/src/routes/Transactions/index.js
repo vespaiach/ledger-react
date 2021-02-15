@@ -23,7 +23,7 @@ import {
 import TransactionList from '../../components/TransationList';
 import { useCategories, useTransactions } from './hooks';
 import TransactionForm from '../../components/TransactionForm';
-import TransDetails from './TransDetails';
+import TransDetailDialog from './TransDetailDialog';
 import DeletingDialog from './DeletingDialog';
 import DatabaseSearchIcon from '../../components/Icons/DatabaseSearch';
 import SortingIcon from '../../components/Icons/Sorting';
@@ -172,58 +172,80 @@ export default function Transactions() {
     let el = null;
     if (editing) {
         el = (
-            <>
-                <Typography
-                    color="primary"
-                    variant="h6"
-                    component="h2"
-                    classes={{ root: classes.formTitleRoot }}>
-                    {editing.id ? 'Edit Transaction' : 'Add Transaction'}
-                </Typography>
-                <TransactionForm
-                    id={editing.id}
-                    amount={editing.amount}
-                    transactionType={editing.transactionType}
-                    date={editing.date}
-                    description={editing.description}
-                    category={editing.category}
-                    categories={categories}
-                    onSubmit={(data) => {
-                        dispatch({
-                            type: 'Saga: sync transactions',
-                            payload: data,
-                        });
-                        setEditing(null);
-                    }}
-                    onCancel={() => setEditing(null)}
-                />
-            </>
+            <Container maxWidth="sm">
+                <Grid container>
+                    <Grid item xs={12} classes={{ root: classes.gridRowRoot }}>
+                        <Typography
+                            color="primary"
+                            variant="h6"
+                            component="h2"
+                            classes={{ root: classes.formTitleRoot }}>
+                            {editing.id ? 'Edit Transaction' : 'Add Transaction'}
+                        </Typography>
+                        <TransactionForm
+                            id={editing.id}
+                            amount={editing.amount}
+                            transactionType={editing.transactionType}
+                            date={editing.date}
+                            description={editing.description}
+                            category={editing.category}
+                            categories={categories}
+                            onSubmit={(data) => {
+                                dispatch({
+                                    type: 'Saga: sync transactions',
+                                    payload: data,
+                                });
+                                setEditing(null);
+                            }}
+                            onCancel={() => setEditing(null)}
+                        />
+                    </Grid>
+                </Grid>
+            </Container>
         );
     } else {
         el = (
-            <>
-                <TransactionList
-                    data={filteredTransactions}
-                    totalRows={filteredTransactions.length}
-                    onEdit={(item) => {
-                        setEditing(item);
-                    }}
-                    onDelete={(item) => {
-                        setDeleting(item);
-                    }}
-                    onDetail={(item) => {
-                        setDetail(item);
-                    }}
-                />
-                <Fab
-                    size="small"
-                    color="secondary"
-                    aria-label="add"
-                    className={classes.fab}
-                    onClick={() => setEditing({})}>
-                    <AddRoundedIcon />
-                </Fab>
-            </>
+            <Container>
+                <Grid container>
+                    <Grid item xs={12} classes={{ root: classes.gridRowRoot }}>
+                        <TransactionList
+                            data={filteredTransactions}
+                            totalRows={filteredTransactions.length}
+                            onEdit={(item) => {
+                                setEditing(item);
+                            }}
+                            onDelete={(item) => {
+                                setDeleting(item);
+                            }}
+                            onDetail={(item) => {
+                                setDetail(item);
+                            }}
+                        />
+                        <Fab
+                            size="small"
+                            color="secondary"
+                            aria-label="add"
+                            className={classes.fab}
+                            onClick={() => setEditing({})}>
+                            <AddRoundedIcon />
+                        </Fab>
+                        <Fade in={trigger}>
+                            <Fab
+                                aria-label="go to top"
+                                className={classes.fabUp}
+                                size="small"
+                                onClick={() => {
+                                    document.body.scrollTop = 0;
+                                    document.documentElement.scrollTop = 0;
+                                }}
+                                variant="extended">
+                                <ExpandLessRoundedIcon />
+                                top
+                            </Fab>
+                        </Fade>
+                    </Grid>
+                </Grid>
+            </Container>
         );
     }
 
@@ -293,59 +315,39 @@ export default function Transactions() {
                     </IconButton>
                 </div>
             </Box>
-            <Container>
-                <Grid container>
-                    <Grid item xs={12} classes={{ root: classes.gridRowRoot }}>
-                        {el}
-                        <DeletingDialog
-                            open={Boolean(deleting)}
-                            onClose={() => setDeleting(null)}
-                            onDelete={() => {
-                                dispatch({
-                                    type: 'Saga: delete transactions',
-                                    payload: deleting.id,
-                                });
-                                setDeleting(null);
-                            }}
-                        />
-                        <TransDetails
-                            detail={detail}
-                            onClose={() => setDetail(null)}
-                            onEdit={(item) => {
-                                setDetail(null);
-                                setEditing(item);
-                            }}
-                            onDelete={(item) => {
-                                setDetail(null);
-                                setDeleting(item);
-                            }}
-                        />
-                        <FilterDialog
-                            open={showFilterDialog}
-                            filter={filter}
-                            dispatch={dispatch}
-                            onReset={() => dispatch({ type: 'Reducer: reset transaction filter' })}
-                            onClose={() => {
-                                setShowFilterDialog(false);
-                            }}
-                        />
-                    </Grid>
-                </Grid>
-            </Container>
-            <Fade in={trigger}>
-                <Fab
-                    aria-label="go to top"
-                    className={classes.fabUp}
-                    size="small"
-                    onClick={() => {
-                        document.body.scrollTop = 0;
-                        document.documentElement.scrollTop = 0;
-                    }}
-                    variant="extended">
-                    <ExpandLessRoundedIcon />
-                    top
-                </Fab>
-            </Fade>
+            {el}
+            <DeletingDialog
+                open={Boolean(deleting)}
+                onClose={() => setDeleting(null)}
+                onDelete={() => {
+                    dispatch({
+                        type: 'Saga: delete transactions',
+                        payload: deleting.id,
+                    });
+                    setDeleting(null);
+                }}
+            />
+            <TransDetailDialog
+                detail={detail}
+                onClose={() => setDetail(null)}
+                onEdit={(item) => {
+                    setDetail(null);
+                    setEditing(item);
+                }}
+                onDelete={(item) => {
+                    setDetail(null);
+                    setDeleting(item);
+                }}
+            />
+            <FilterDialog
+                open={showFilterDialog}
+                filter={filter}
+                dispatch={dispatch}
+                onReset={() => dispatch({ type: 'Reducer: reset transaction filter' })}
+                onClose={() => {
+                    setShowFilterDialog(false);
+                }}
+            />
         </>
     );
 }
