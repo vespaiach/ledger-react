@@ -92,7 +92,7 @@ export default function TopNav({ onRefesh, onSignOut }) {
     const popupState = usePopupState({ variant: 'popover', popupId: 'settingMenu' });
 
     return (
-        <AppBar elevation={0} classes={{ root: classes.appbarRoot }}>
+        <AppBar elevation={3} classes={{ root: classes.appbarRoot }}>
             <Toolbar variant="dense">
                 <MenuBookRoundedIcon classes={{ root: classes.logoRoot }} />
                 <Typography variant="h6">Ledger</Typography>

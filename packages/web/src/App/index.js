@@ -45,9 +45,6 @@ function App() {
                 <Route exact path="/transactions">
                     <Transactions />
                 </Route>
-                <Route exact path="/reports">
-                    <MonthlyReport />
-                </Route>
                 <Route path="*">
                     <NotFound />
                 </Route>
