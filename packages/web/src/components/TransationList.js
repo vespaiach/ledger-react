@@ -1,12 +1,11 @@
 import { List, ListItem, Typography, IconButton, Divider } from '@material-ui/core';
-import {
-    EditRounded as EditRoundedIcon,
-    DeleteForeverRounded as DeleteRoundedIcon,
-} from '@material-ui/icons';
+import { DeleteForeverRounded as DeleteRoundedIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { AutoSizer, List as VirtualList, WindowScroller } from 'react-virtualized';
 import NumberFormat from 'react-number-format';
 import { format } from 'date-fns';
+
+import EditIcon from './Icons/Edit';
 
 const useStyles = makeStyles((theme) => ({
     listRoot: {
@@ -82,7 +81,7 @@ export default function TransactionList({ onEdit, onDelete, onDetail, data, tota
                                 evt.stopPropagation();
                                 onEdit(data[index]);
                             }}>
-                            <EditRoundedIcon />
+                            <EditIcon />
                         </IconButton>
                         <IconButton
                             aria-label="delete income transaction"

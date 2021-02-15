@@ -9,6 +9,7 @@ import {
     watchSyncRequest,
     watchSigninRequest,
     watchSignoutRequest,
+    watchDeleteRequest,
 } from './saga';
 import localStore from './local';
 
@@ -36,7 +37,13 @@ const store = createStore(
 
 const saga = function* rootSaga() {
     yield all(
-        [watchFetchRequest, watchSyncRequest, watchSigninRequest, watchSignoutRequest].map(fork)
+        [
+            watchFetchRequest,
+            watchSyncRequest,
+            watchSigninRequest,
+            watchSignoutRequest,
+            watchDeleteRequest,
+        ].map(fork)
     );
 };
 sagaMiddleware.run(saga);

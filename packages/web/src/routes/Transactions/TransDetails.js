@@ -13,7 +13,6 @@ import {
     DescriptionRounded as DescriptionRoundedIcon,
     CategoryRounded as CategoryRoundedIcon,
     AttachMoneyRounded as AttachMoneyRoundedIcon,
-    EditRounded as EditRoundedIcon,
     DeleteForeverRounded as DeleteRoundedIcon,
 } from '@material-ui/icons';
 import NumberFormat from 'react-number-format';
@@ -21,6 +20,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { format } from 'date-fns';
 
 import DialogPanel from '../../components/DialogPanel';
+import EditIcon from '../../components/Icons/Edit';
 
 const useStyles = makeStyles((theme) => ({
     infoPanel: {
@@ -102,7 +102,7 @@ export default function TransDetails({ detail, onClose, onEdit, onDelete }) {
                             onClick={() => {
                                 onEdit(detail);
                             }}>
-                            <EditRoundedIcon />
+                            <EditIcon />
                         </IconButton>
                         <IconButton
                             aria-label="delete income transaction"

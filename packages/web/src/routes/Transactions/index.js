@@ -9,10 +9,16 @@ import {
     Typography,
     Box,
     Badge,
+    Fab,
+    Fade,
 } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ArrowDropDown as ArrowDropDownIcon } from '@material-ui/icons';
+import {
+    AddRounded as AddRoundedIcon,
+    ArrowDropDown as ArrowDropDownIcon,
+    ExpandLessRounded as ExpandLessRoundedIcon,
+} from '@material-ui/icons';
 
 import TransactionList from '../../components/TransationList';
 import { useCategories, useTransactions } from './hooks';
@@ -53,6 +59,16 @@ const useStyles = makeStyles((theme) => ({
     },
     grow: {
         flexGrow: 1,
+    },
+    fab: {
+        position: 'fixed',
+        bottom: theme.spacing(2),
+        right: theme.spacing(2),
+    },
+    fabUp: {
+        position: 'fixed',
+        bottom: theme.spacing(2),
+        right: theme.spacing(9),
     },
 }));
 
@@ -185,19 +201,29 @@ export default function Transactions() {
         );
     } else {
         el = (
-            <TransactionList
-                data={filteredTransactions}
-                totalRows={filteredTransactions.length}
-                onEdit={(item) => {
-                    setEditing(item);
-                }}
-                onDelete={(item) => {
-                    setDeleting(item);
-                }}
-                onDetail={(item) => {
-                    setDetail(item);
-                }}
-            />
+            <>
+                <TransactionList
+                    data={filteredTransactions}
+                    totalRows={filteredTransactions.length}
+                    onEdit={(item) => {
+                        setEditing(item);
+                    }}
+                    onDelete={(item) => {
+                        setDeleting(item);
+                    }}
+                    onDetail={(item) => {
+                        setDetail(item);
+                    }}
+                />
+                <Fab
+                    size="small"
+                    color="secondary"
+                    aria-label="add"
+                    className={classes.fab}
+                    onClick={() => setEditing({})}>
+                    <AddRoundedIcon />
+                </Fab>
+            </>
         );
     }
 
@@ -274,9 +300,13 @@ export default function Transactions() {
                         <DeletingDialog
                             open={Boolean(deleting)}
                             onClose={() => setDeleting(null)}
-                            onDelete={() =>
-                                dispatch({ type: 'Saga: sync transactions', payload: deleting.id })
-                            }
+                            onDelete={() => {
+                                dispatch({
+                                    type: 'Saga: delete transactions',
+                                    payload: deleting.id,
+                                });
+                                setDeleting(null);
+                            }}
                         />
                         <TransDetails
                             detail={detail}
@@ -302,6 +332,20 @@ export default function Transactions() {
                     </Grid>
                 </Grid>
             </Container>
+            <Fade in={trigger}>
+                <Fab
+                    aria-label="go to top"
+                    className={classes.fabUp}
+                    size="small"
+                    onClick={() => {
+                        document.body.scrollTop = 0;
+                        document.documentElement.scrollTop = 0;
+                    }}
+                    variant="extended">
+                    <ExpandLessRoundedIcon />
+                    top
+                </Fab>
+            </Fade>
         </>
     );
 }

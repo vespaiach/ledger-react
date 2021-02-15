@@ -19,7 +19,7 @@ export default class SyncException extends Exception {
   public async handle(error: this, { response }: HttpContextContract) {
     response.status(error.status).send({
       code: 'E_SYNC_FAIL',
-      message: 'Something went wrong when synchronizing data',
+      message: 'Something went wrong when updating data',
     })
   }
 }

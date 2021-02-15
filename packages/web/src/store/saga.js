@@ -11,7 +11,7 @@ import { select, call, put, take } from 'redux-saga/effects';
 
 import { safeCall } from '../utils/saga';
 import { clearToken, setToken } from '../utils/token';
-import { signout, fetchTransactions, syncTransactions, signin } from './remote';
+import { signout, fetchTransactions, syncTransactions, signin, deleteTransactions } from './remote';
 
 /**
  * Check if server return 401:
@@ -84,6 +84,26 @@ export function* syncTransactionRequest(data) {
     }
 }
 
+export function* deleteTransactionRequest(data) {
+    yield put({
+        type: 'Reducer: show app synchronizing',
+    });
+    const response = yield safeCall(call(deleteTransactions, data));
+    yield put({
+        type: 'Reducer: clear app process',
+    });
+
+    if (response.ok) {
+        const year = yield select((state) => state.transaction.year);
+        yield put({
+            type: 'Saga: fetch transactions',
+            payload: year,
+        });
+    } else {
+        yield handleApiError(response, { type: 'Saga: delete transactions', payload: data });
+    }
+}
+
 /**
  *
  * Signin request.
@@ -150,6 +170,13 @@ export function* watchSyncRequest() {
     while (true) {
         const { payload } = yield take('Saga: sync transactions');
         yield syncTransactionRequest(payload);
+    }
+}
+
+export function* watchDeleteRequest() {
+    while (true) {
+        const { payload } = yield take('Saga: delete transactions');
+        yield deleteTransactionRequest(payload);
     }
 }
 

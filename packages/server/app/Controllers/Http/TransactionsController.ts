@@ -47,17 +47,6 @@ export default class TransactionsController {
    *   ...
    * ]
    *
-   * @return
-   * [
-   *   {
-   *      id: number | undefined,
-   *      date: DateTime,
-   *      amount: number,
-   *      description: string,
-   *      category: string
-   *      transaction_type: string,
-   *      status: string // Can be one of these value: ['updated', 'missed', 'created']
-   *   }
    */
   public async sync({ request }: HttpContextContract) {
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -87,6 +76,19 @@ export default class TransactionsController {
       await tran.save()
     } catch (e) {
       Logger.error(e)
+      throw new SyncException('Synchronize fail')
+    }
+
+    return
+  }
+
+  public async delete({ params }: HttpContextContract) {
+    const { id } = params
+
+    const tran = await Transaction.findOrFail(id)
+    if (tran) {
+      await tran.delete()
+    } else {
       throw new SyncException('Synchronize fail')
     }
 

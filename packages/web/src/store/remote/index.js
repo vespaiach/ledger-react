@@ -50,6 +50,10 @@ export function syncTransactions(data) {
     return axiosInstance.post('/transactions', data);
 }
 
+export function deleteTransactions(data) {
+    return axiosInstance.delete(`/transactions/${data}`);
+}
+
 export function signin(data) {
     return axiosInstance.post('/signin', data);
 }

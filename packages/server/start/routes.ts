@@ -11,6 +11,7 @@ Route.group(() => {
   Route.group(() => {
     Route.get('transactions', 'TransactionsController.get')
     Route.post('transactions', 'TransactionsController.sync')
+    Route.delete('transactions/:id', 'TransactionsController.delete')
     Route.get('ping', 'UsersController.ping')
     Route.put('signout', 'UsersController.signout')
   }).middleware('auth')
@@ -19,7 +20,7 @@ Route.group(() => {
   Route.post('recovery', 'UsersController.recovery')
 })
   .prefix('api')
-  .where('year', /^[0-9]+$/)
+  .where('id', /^[0-9]+$/)
 
 Route.get('/*', async ({ view }) => {
   return view.render('home')

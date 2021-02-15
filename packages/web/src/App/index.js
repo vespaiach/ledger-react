@@ -1,4 +1,4 @@
-import { Snackbar, Container, IconButton, makeStyles } from '@material-ui/core';
+import { Snackbar, Container, IconButton, makeStyles, Fab } from '@material-ui/core';
 import { Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';
@@ -15,6 +15,9 @@ const useStyles = makeStyles((theme) => ({
         '& .MuiSnackbarContent-root': {
             background: theme.palette.success.main,
         },
+    },
+    botGap: {
+        height: theme.spacing(5),
     },
 }));
 
@@ -111,6 +114,7 @@ function App() {
                     </>
                 }
             />
+            <div className={classes.botGap} />
         </>
     );
 }

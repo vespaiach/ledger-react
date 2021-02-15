@@ -159,33 +159,35 @@ export default function Form({
             <Autocomplete
                 name="category"
                 freeSolo
+                disableClearable
                 value={formik.values.category}
                 onChange={(_, value, source) => {
-                    if (source === 'remove-option' || source === 'select-option') {
+                    if (
+                        source === 'remove-option' ||
+                        source === 'select-option' ||
+                        source === 'clear'
+                    ) {
                         formik.handleChange({
                             name: 'category',
                             target: { name: 'category', value },
                         });
                     }
                 }}
-                onInputChange={(evt) => {
-                    if (evt) {
-                        formik.handleChange(evt);
-                    }
-                }}
                 size="small"
-                options={categories.map((c) => c.name)}
-                renderInput={({ InputProps, ...rest }) => (
-                    <TextField
-                        {...rest}
-                        name="category"
-                        variant="filled"
-                        label="Category"
-                        error={formik.touched.category && Boolean(formik.errors.category)}
-                        helperText={formik.touched.category && formik.errors.category}
-                        InputProps={InputProps}
-                    />
-                )}
+                options={categories}
+                renderInput={(props) =>
+                    console.log(props) || (
+                        <TextField
+                            {...props}
+                            name="category"
+                            variant="filled"
+                            label="Category"
+                            InputProps={{ ...props.InputProps, type: 'search' }}
+                            error={formik.touched.category && Boolean(formik.errors.category)}
+                            helperText={formik.touched.category && formik.errors.category}
+                        />
+                    )
+                }
             />
             <TextField
                 variant="filled"
