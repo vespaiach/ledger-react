@@ -8,7 +8,7 @@
  */
 
 import axios from 'axios/lib/axios';
-import fetchAdapter from 'axios-fetch-adapter';
+import fetchAdapter from '@vespaiach/axios-fetch-adapter';
 import attachBearer from './attachBearer';
 import toCamelCase from './toCamelCase';
 import toSnackCase from './toSnackCase';
