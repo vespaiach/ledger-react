@@ -5,9 +5,10 @@ import {
     fetchTransactionRequest,
     signinRequest,
     signoutRequest,
+    fetchYearListRequest,
     syncTransactionRequest,
 } from './saga';
-import { fetchTransactions, signin, syncTransactions } from './remote';
+import { fetchTransactions, getYears, signin, syncTransactions } from './remote';
 import { clearToken, setToken } from '../utils/token';
 
 describe('Test fetch transaction requests:', () => {
@@ -78,10 +79,13 @@ describe('Test synchronize transaction requests:', () => {
 
     test('sync transactions - return 200', () =>
         expectSaga(syncTransactionRequest, data)
+            .withState({ transaction: { year: 2021 } })
             .provide([[matchers.call.fn(syncTransactions, data), { ok: true, data: response }]])
+            .put({ type: 'Reducer: show app synchronizing' })
+            .put({ type: 'Reducer: clear app process' })
             .put({
-                type: 'Reducer: update transactions',
-                payload: response,
+                type: 'Saga: fetch transactions',
+                payload: 2021,
             })
             .run());
 
@@ -205,5 +209,35 @@ describe('Test sign out requests:', () => {
                 payload: 'You have been signed out!',
             })
             .returns(true)
+            .run());
+});
+
+describe('Test years requests:', () => {
+    test('get list of years - return 200', () =>
+        expectSaga(fetchYearListRequest)
+            .provide([[matchers.call.fn(getYears), { ok: true, data: [2020, 2021] }]])
+            .put({
+                type: 'Reducer: store years',
+                payload: [2020, 2021],
+            })
+            .run());
+
+    test('get list of years - return 401', () =>
+        expectSaga(fetchYearListRequest)
+            .provide([
+                [
+                    matchers.call.fn(getYears),
+                    {
+                        ok: false,
+                        status: 401,
+                    },
+                ],
+            ])
+            .put({
+                type: 'Reducer: show sign in dialog',
+                payload: {
+                    type: 'Saga: fetch years',
+                },
+            })
             .run());
 });

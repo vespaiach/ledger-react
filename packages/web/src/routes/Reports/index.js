@@ -111,7 +111,7 @@ export default function Report() {
 
     return (
         <>
-            <Box boxShadow={3} className={classes.pageHead}>
+            {/* <Box boxShadow={3} className={classes.pageHead}>
                 <div className={classes.padding} />
                 <div className={classes.pageHeadTitle}>
                     <Typography variant="h6" component="h1">
@@ -182,7 +182,7 @@ export default function Report() {
                     </IconButton>
                 </div>
             </Box>
-            {el}
+            {el} */}
         </>
     );
 }

@@ -1,6 +1,6 @@
 import { createStore, compose, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import { all, fork } from 'redux-saga/effects';
+import { all, fork, put } from 'redux-saga/effects';
 import { routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 
@@ -10,6 +10,7 @@ import {
     watchSigninRequest,
     watchSignoutRequest,
     watchDeleteRequest,
+    watchYearRequest,
 } from './saga';
 import localStore from './local';
 
@@ -43,6 +44,7 @@ const saga = function* rootSaga() {
             watchSigninRequest,
             watchSignoutRequest,
             watchDeleteRequest,
+            watchYearRequest,
         ].map(fork)
     );
 };
