@@ -41,7 +41,7 @@ export function* handleApiError(response, currentAction) {
  */
 export function* fetchTransactionRequest(year) {
     yield put({ type: 'Reducer: show app loading' });
-    fork(fetchYearListRequest);
+    yield fork(fetchYearListRequest);
     const response = yield safeCall(call(fetchTransactions, year));
     yield put({ type: 'Reducer: clear app process' });
 

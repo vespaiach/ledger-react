@@ -8,9 +8,7 @@ export default class Transaction extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column({
-    consume: (value: Date) => DateTime.fromJSDate(value),
-  })
+  @column.dateTime()
   public date: DateTime
 
   @column()

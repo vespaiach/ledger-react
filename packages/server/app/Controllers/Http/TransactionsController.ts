@@ -99,9 +99,6 @@ export default class TransactionsController {
   }
 
   public async years() {
-    const a = await Transaction.query().orderBy('date', 'asc').first()
-    console.log(a)
-    debugger
     const [start, end] = await Promise.all([
       Transaction.query().orderBy('date', 'asc').first(),
       Transaction.query().orderBy('date', 'desc').first(),
@@ -112,7 +109,7 @@ export default class TransactionsController {
     const toDate = end?.date
 
     if (fromDate && toDate) {
-      for (let i = fromDate.year; i <= toDate.year; i++) {
+      for (let i = toDate.year; i >= fromDate.year; i--) {
         results.push(i)
       }
     } else {

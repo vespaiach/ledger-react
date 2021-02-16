@@ -16,7 +16,6 @@ export function formatCurrency(money, prefix) {
 
 export function getMonthName(m) {
     const months = [
-        '',
         'January',
         'February',
         'March',
