@@ -61,3 +61,7 @@ export function signin(data) {
 export function signout() {
     return axiosInstance.put('/signout');
 }
+
+export function getYears() {
+    return axiosInstance.get('/transactions/years');
+}

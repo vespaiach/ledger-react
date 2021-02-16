@@ -107,7 +107,7 @@ export default function TopNav({ onRefesh, onSignOut }) {
                 <IconButton
                     aria-label="transaction reports"
                     title="transaction reports"
-                    to="/reports"
+                    to="/reports/monthly"
                     component={Link}>
                     <ChartIcon />
                 </IconButton>

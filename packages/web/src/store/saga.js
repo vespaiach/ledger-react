@@ -7,11 +7,18 @@
  *
  */
 
-import { select, call, put, take } from 'redux-saga/effects';
+import { select, call, put, take, fork } from 'redux-saga/effects';
 
 import { safeCall } from '../utils/saga';
 import { clearToken, setToken } from '../utils/token';
-import { signout, fetchTransactions, syncTransactions, signin, deleteTransactions } from './remote';
+import {
+    signout,
+    fetchTransactions,
+    syncTransactions,
+    signin,
+    deleteTransactions,
+    getYears,
+} from './remote';
 
 /**
  * Check if server return 401:
@@ -34,6 +41,7 @@ export function* handleApiError(response, currentAction) {
  */
 export function* fetchTransactionRequest(year) {
     yield put({ type: 'Reducer: show app loading' });
+    yield fork(fetchYearListRequest);
     const response = yield safeCall(call(fetchTransactions, year));
     yield put({ type: 'Reducer: clear app process' });
 
@@ -44,6 +52,23 @@ export function* fetchTransactionRequest(year) {
         });
     } else {
         yield handleApiError(response, { type: 'Saga: fetch transactions', payload: year });
+    }
+}
+
+/**
+ * Fetch a list of years
+ */
+export function* fetchYearListRequest() {
+    const fetchedAt = yield select((state) => state.transaction.yearFetchedAt);
+
+    if (!fetchedAt) {
+        const response = yield safeCall(call(getYears));
+        if (response.ok) {
+            yield put({
+                type: 'Reducer: store years',
+                payload: response.data,
+            });
+        }
     }
 }
 
@@ -191,5 +216,12 @@ export function* watchSignoutRequest() {
     while (true) {
         yield take('Saga: sign out');
         yield signoutRequest();
+    }
+}
+
+export function* watchYearRequest() {
+    while (true) {
+        yield take('Saga: fetch years');
+        yield fetchYearListRequest();
     }
 }

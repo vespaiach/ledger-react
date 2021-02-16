@@ -8,7 +8,7 @@ export default class Transaction extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column()
+  @column.dateTime()
   public date: DateTime
 
   @column()

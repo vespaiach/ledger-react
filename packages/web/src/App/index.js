@@ -1,10 +1,10 @@
-import { Snackbar, Container, IconButton, makeStyles, Fab } from '@material-ui/core';
+import { Snackbar, Container, IconButton, makeStyles } from '@material-ui/core';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';
 
 import NotFound from '../routes/Errors/NotFound';
-import MonthlyReport from '../routes/Reports';
+import MonthlyReport from '../routes/Reports/Monthly';
 import Transactions from '../routes/Transactions';
 import DialogPanel from '../components/DialogPanel';
 import Signin from '../routes/Signin';
@@ -44,6 +44,9 @@ function App() {
             <Switch>
                 <Route exact path="/transactions">
                     <Transactions />
+                </Route>
+                <Route exact path="/reports/monthly">
+                    <MonthlyReport />
                 </Route>
                 <Route exact path="/">
                     <Redirect to="/transactions" />

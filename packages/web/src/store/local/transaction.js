@@ -10,7 +10,7 @@
 import { createReducer } from '../../utils/reducer';
 
 const currentYear = new Date().getFullYear();
-const listOfYear = [2021, 2020, 2019, 2018];
+const listOfYear = [2021, 2020];
 const defaultState = {
     list: [],
     filter: {
@@ -36,9 +36,16 @@ const defaultState = {
 
     year: currentYear,
     listOfYear,
+    yearFetchedAt: null,
 };
 
 export default createReducer(defaultState, {
+    'Reducer: store years': (state, { payload }) => ({
+        ...state,
+        listOfYear: payload,
+        fetchedAt: Date.now(),
+    }),
+
     'Reducer: set year': (state, { payload: year }) => ({ ...state, year }),
 
     'Reducer: save sorting function': (state, { payload }) => {
