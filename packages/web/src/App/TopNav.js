@@ -87,12 +87,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function TopNav({ onRefesh, onSignOut }) {
+export default function TopNav({ elevation = 0, onRefesh, onSignOut }) {
     const classes = useStyles();
     const popupState = usePopupState({ variant: 'popover', popupId: 'settingMenu' });
 
     return (
-        <AppBar elevation={3} classes={{ root: classes.appbarRoot }}>
+        <AppBar elevation={elevation} classes={{ root: classes.appbarRoot }}>
             <Toolbar variant="dense">
                 <MenuBookRoundedIcon classes={{ root: classes.logoRoot }} />
                 <Typography variant="h6">Ledger</Typography>

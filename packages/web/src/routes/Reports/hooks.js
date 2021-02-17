@@ -1,5 +1,16 @@
+/**
+ *
+ * Ledger Web App Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
+ *
+ */
 import { useMemo } from 'react';
 
+/**
+ * Aggregate transaction records by transaction type, transaction category and transction month
+ */
 export function useMonthlyReport({ transactions, year, month }) {
     return useMemo(() => {
         const aggregateMonthlyIncome = {};

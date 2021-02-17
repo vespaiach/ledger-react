@@ -1,3 +1,11 @@
+/**
+ *
+ * Ledger Web App Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
+ *
+ */
 import { useCallback, useMemo } from 'react';
 
 function useDateFrom(val, enable) {
@@ -65,6 +73,10 @@ function useTransactionType(income, expense) {
     );
 }
 
+/**
+ * Every transaction record will pass to a pipe of filtering functions.
+ * If all the filtering functions return true, that record will be kept in hook's return
+ */
 export function useTransactions({ data, filter, sortingFn }) {
     const dateFromFilter = useDateFrom(filter.dateFrom, filter.enableDateFilter);
     const dateToFilter = useDateTo(filter.dateTo, filter.enableDateFilter);

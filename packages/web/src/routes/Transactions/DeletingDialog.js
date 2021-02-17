@@ -1,3 +1,11 @@
+/**
+ *
+ * Ledger Web App Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
+ *
+ */
 import { Grid, Container, Typography, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { DeleteForeverRounded as DeleteForeverRoundedIcon } from '@material-ui/icons';
@@ -26,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+/**
+ * Show confirmation dialog before deleting a record
+ */
 export default function DeletingDialog({ open, onClose, onDelete }) {
     const classes = useStyles();
     return (

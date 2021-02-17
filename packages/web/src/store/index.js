@@ -1,6 +1,14 @@
+/**
+ *
+ * Ledger Web App Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
+ *
+ */
 import { createStore, compose, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import { all, fork, put } from 'redux-saga/effects';
+import { all, fork } from 'redux-saga/effects';
 import { routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 

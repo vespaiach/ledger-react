@@ -33,7 +33,7 @@ Development environment requirements :
 -   Docker
 -   Docker compose
 
-I am using Lerna to make sure both backend project and frontend project work well to gether in a mono repo.
+I am using Lerna to make sure both backend project and frontend project work well together in a mono repo.
 
 Backend is using Adonisjs framework version 5. Frontend is React application combined with Redux, Redux Saga and Material UI framework
 

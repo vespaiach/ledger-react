@@ -1,10 +1,13 @@
-import { Grid, Container, Typography, Box } from '@material-ui/core';
+/**
+ *
+ * Ledger Web App Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
+ *
+ */
+import { Grid, Container, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router-dom';
-import {
-    MenuBookRounded as MenuBookRoundedIcon,
-    ArrowRightAltRounded as ArrowRightAltRoundedIcon,
-} from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({

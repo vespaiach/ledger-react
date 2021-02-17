@@ -1,3 +1,11 @@
+/**
+ *
+ * Ledger Web App Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
+ *
+ */
 import {
     InputAdornment,
     Container,
@@ -17,7 +25,7 @@ import {
 import DateFnsUtils from '@date-io/date-fns';
 import { makeStyles } from '@material-ui/core/styles';
 
-import DialogPanel from '../../../components/DialogPanel';
+import DialogPanel from '../../components/DialogPanel';
 
 const useStyles = makeStyles((theme) => ({
     checkboxTypo: {
