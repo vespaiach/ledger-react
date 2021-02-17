@@ -14,17 +14,12 @@ const defaultState = {
 
     showSignIn: false,
     lastAction: null,
-    signinLoading: false,
 
     error: '',
     success: '',
 };
 
 export default createReducer(defaultState, {
-    'Reducer: show signin loading': (state) => ({ ...state, signinLoading: true }),
-
-    'Reducer: hide signin loading': (state) => ({ ...state, signinLoading: false }),
-
     'Reducer: show sign in dialog': (state, { payload: lastAction }) => ({
         ...state,
         showSignIn: true,

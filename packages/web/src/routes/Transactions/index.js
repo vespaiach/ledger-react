@@ -1,3 +1,11 @@
+/**
+ *
+ * Ledger Web App Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
+ *
+ */
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Container,

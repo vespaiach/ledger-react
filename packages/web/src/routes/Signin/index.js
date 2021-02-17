@@ -1,3 +1,11 @@
+/**
+ *
+ * Ledger Web App Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
+ *
+ */
 import {
     Button,
     TextField,
@@ -13,7 +21,7 @@ import {
     Visibility as VisibilityIcon,
 } from '@material-ui/icons';
 import * as yup from 'yup';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import { Alert } from '@material-ui/lab';
@@ -41,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Signin() {
     const dispatch = useDispatch();
+    const loading = useSelector((state) => state.common.processing === 'load');
     const classes = useStyles();
     const [passwordVisibility, setPasswordVisibility] = useState(false);
     const formik = useFormik({
@@ -57,10 +66,12 @@ export default function Signin() {
             password: yup.string('enter password').required('password is required').min(8),
         }),
         onSubmit: ({ email, remember, password }) => {
-            dispatch({
-                type: 'Saga: signin',
-                payload: { email, password, remember },
-            });
+            if (!loading) {
+                dispatch({
+                    type: 'Saga: sign in',
+                    payload: { email, password, remember },
+                });
+            }
         },
     });
 
@@ -117,7 +128,13 @@ export default function Signin() {
                 }
                 label="Remember me"
             />
-            <Button variant="contained" color="primary" fullWidth size="large" type="submit">
+            <Button
+                disabled={loading}
+                variant="contained"
+                color="primary"
+                fullWidth
+                size="large"
+                type="submit">
                 Submit
             </Button>
         </form>

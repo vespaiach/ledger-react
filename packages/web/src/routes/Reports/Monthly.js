@@ -1,3 +1,11 @@
+/**
+ *
+ * Ledger Web App Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
+ *
+ */
 import { Box, Container, Grid, IconButton, Menu, MenuItem, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useEffect, useState } from 'react';

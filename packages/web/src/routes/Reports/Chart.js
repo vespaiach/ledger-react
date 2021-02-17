@@ -1,3 +1,11 @@
+/**
+ *
+ * Ledger Web App Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
+ *
+ */
 import { ListItemText, List, ListItem, ListItemIcon, Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {

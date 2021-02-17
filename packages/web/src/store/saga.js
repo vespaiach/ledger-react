@@ -143,9 +143,13 @@ export function* deleteTransactionRequest(data) {
  * }
  */
 export function* signinRequest(data) {
-    yield put({ type: 'Reducer: show signin loading' });
+    yield put({
+        type: 'Reducer: show app loading',
+    });
     const response = yield safeCall(call(signin, data));
-    yield put({ type: 'Reducer: hide signin loading' });
+    yield put({
+        type: 'Reducer: clear app process',
+    });
 
     if (response.ok) {
         const result = yield call(setToken, response.data.token);
@@ -207,7 +211,7 @@ export function* watchDeleteRequest() {
 
 export function* watchSigninRequest() {
     while (true) {
-        const { payload } = yield take('Saga: signin');
+        const { payload } = yield take('Saga: sign in');
         yield signinRequest(payload);
     }
 }
