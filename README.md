@@ -14,7 +14,7 @@
 
 # Motivation
 
-I'm trying to bring my money balance excel file to web application
+I'm trying to bring my money balance excel file to web application.
 
 # Live Playground
 
@@ -45,43 +45,21 @@ Download project:
 git clone https://github.com/vespaiach/ledger
 ```
 
-Install Lerna:
+Before bootstraping project, go to folder ./packages/server and update .env file. (Refer to .env.example for more details)
 
 ```
-cd ./ledger
+cd ./ledger // Root folder of project
 npm install
+npm run bootstrap
+
+// Create an account to access web app
+npm run createacc -- -- <email> <password>
 ```
 
-Bootstrap all packages:
-
-```
-npm run lerna bootstrap
-
-```
-
-## Start PostgresQL and migrate database
-
-Run PostgresQL:
+## Start development servers:
 
 ```
 cd ./ledger
-docker-compose up -d
-```
-
-Run database migration and seeds:
-
-```
-cd ./package/server
-node ace migration:run
-node ace db:seed
-```
-
-_Note_: Before running database migration, please create a .env file and config all necessary environment variables (refer to .env.example for more details).
-
-## Start development:
-
-```
-cd ./package/server
 npm run dev
 ```
 

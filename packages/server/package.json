@@ -7,7 +7,10 @@
     "start": "node server.js",
     "dev": "node ace serve --watch",
     "lint": "eslint . --ext=.ts",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "migrate": "node ace migration:run",
+    "seed": "node ace db:seed",
+    "createacc": "node ace create:owner"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^3.0.0",

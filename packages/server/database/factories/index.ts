@@ -26,9 +26,13 @@ const expensesCategories = [
 
 const incomeCategories = ['savings', 'paycheck', 'bonus', 'interest', 'other']
 
+const fromDate = new Date()
+const toDate = new Date(fromDate)
+toDate.setMonth(-12)
+
 export const TransactionsFactory = Factory.define(Transaction, ({ faker }) => {
   const tran = new Transaction()
-  tran.date = DateTime.fromJSDate(faker.date.between('2021-02-07', '2020-04-01'))
+  tran.date = DateTime.fromJSDate(faker.date.between(fromDate, toDate))
   tran.amount = parseFloat(faker.finance.amount(1, 100000, 2))
   tran.description = faker.lorem.sentence()
   if (faker.random.boolean()) {

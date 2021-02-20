@@ -6,8 +6,9 @@
         "lerna": "^3.22.1"
     },
     "scripts": {
-        "bootstrap": "lerna bootstrap",
+        "bootstrap": "lerna bootstrap && lerna run migrate && lerna run seed",
         "dev": "lerna run dev --parallel",
-        "build": "lerna run build --parallel"
+        "build": "lerna run build --parallel",
+        "createacc": "lerna run createacc"
     }
 }

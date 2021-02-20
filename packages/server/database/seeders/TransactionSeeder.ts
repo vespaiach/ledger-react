@@ -6,19 +6,10 @@
  */
 
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
-import User from 'App/Models/User'
 import { TransactionsFactory } from 'Database/factories'
 
-export default class ExpenseSeeder extends BaseSeeder {
+export default class TransactionSeeder extends BaseSeeder {
   public async run() {
-    await User.updateOrCreate(
-      { id: 1 },
-      {
-        email: 'test@test.com',
-        password: '12345678',
-      }
-    )
-
     await TransactionsFactory.createMany(300)
   }
 }
