@@ -175,19 +175,17 @@ export default function Form({
                 }}
                 size="small"
                 options={categories}
-                renderInput={(props) =>
-                    console.log(props) || (
-                        <TextField
-                            {...props}
-                            name="category"
-                            variant="filled"
-                            label="Category"
-                            InputProps={{ ...props.InputProps, type: 'search' }}
-                            error={formik.touched.category && Boolean(formik.errors.category)}
-                            helperText={formik.touched.category && formik.errors.category}
-                        />
-                    )
-                }
+                renderInput={(props) => (
+                    <TextField
+                        {...props}
+                        name="category"
+                        variant="filled"
+                        label="Category"
+                        InputProps={{ ...props.InputProps, type: 'search' }}
+                        error={formik.touched.category && Boolean(formik.errors.category)}
+                        helperText={formik.touched.category && formik.errors.category}
+                    />
+                )}
             />
             <TextField
                 variant="filled"
