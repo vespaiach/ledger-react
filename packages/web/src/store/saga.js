@@ -6,8 +6,8 @@
  * @copyright Toan Nguyen <nta.toan@gmail.com>
  *
  */
-
 import { select, call, put, take, fork } from 'redux-saga/effects';
+import { clearCacheStorage } from '../utils/cacheStorage';
 
 import { safeCall } from '../utils/saga';
 import { clearToken, setToken } from '../utils/token';
@@ -99,6 +99,7 @@ export function* syncTransactionRequest(data) {
     });
 
     if (response.ok) {
+        yield call(clearCacheStorage, process.env.REACT_APP_CACHE_NAME);
         const year = yield select((state) => state.transaction.year);
         yield put({
             type: 'Saga: fetch transactions',
@@ -119,6 +120,7 @@ export function* deleteTransactionRequest(data) {
     });
 
     if (response.ok) {
+        yield call(clearCacheStorage, process.env.REACT_APP_CACHE_NAME);
         const year = yield select((state) => state.transaction.year);
         yield put({
             type: 'Saga: fetch transactions',

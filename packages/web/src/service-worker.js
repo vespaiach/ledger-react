@@ -56,7 +56,7 @@ registerRoute(
     },
 
     new CacheFirst({
-        cacheName: 'cache_first_resource',
+        cacheName: process.env.REACT_APP_CACHE_NAME,
         plugins: [
             new ExpirationPlugin({ maxAgeSeconds: 7 * 24 * 60 * 60, purgeOnQuotaError: true }),
         ],
