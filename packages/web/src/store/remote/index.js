@@ -41,7 +41,7 @@ export function ping() {
 }
 
 export function fetchTransactions(year) {
-    return axiosInstance.get('/transactions?wb=cache_first', {
+    return axiosInstance.get('/transactions?wb=cache', {
         params: { year },
     });
 }
@@ -63,5 +63,5 @@ export function signout() {
 }
 
 export function getYears() {
-    return axiosInstance.get('/transactions/years?wb=cache_first');
+    return axiosInstance.get('/transactions/years?wb=cache');
 }

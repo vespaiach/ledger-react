@@ -11,7 +11,7 @@ import { clientsClaim } from 'workbox-core';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
-import { CacheFirst } from 'workbox-strategies';
+import { NetworkFirst } from 'workbox-strategies';
 
 clientsClaim();
 
@@ -51,11 +51,11 @@ registerRoute(
         return (
             request.method === 'GET' &&
             url.origin === self.location.origin &&
-            url.search.indexOf('wb=cache_first') > -1
+            url.search.indexOf('wb=cache') > -1
         );
     },
 
-    new CacheFirst({
+    new NetworkFirst({
         cacheName: 'cache_first_resource',
         plugins: [
             new ExpirationPlugin({ maxAgeSeconds: 7 * 24 * 60 * 60, purgeOnQuotaError: true }),
