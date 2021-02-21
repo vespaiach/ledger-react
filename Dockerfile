@@ -1,7 +1,6 @@
 FROM node:12 AS web_builder
 ARG NODE_ENV=production
 ARG REACT_APP_BASE_API_URL=/api
-ARG REACT_APP_CACHE_NAME=ledger_cf_bucket
 WORKDIR /app
 COPY ["./packages/web/package.json", "./packages/web/package-lock.json", "/app/"]
 RUN npm ci

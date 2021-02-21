@@ -18,7 +18,6 @@ import {
 } from './saga';
 import { fetchTransactions, getYears, signin, syncTransactions } from './remote';
 import { clearToken, setToken } from '../utils/token';
-import { clearCacheStorage } from '../utils/cacheStorage';
 
 describe('Test fetch transaction requests:', () => {
     const year = 2020;
@@ -92,10 +91,7 @@ describe('Test synchronize transaction requests:', () => {
     test('sync transactions - return 200', () =>
         expectSaga(syncTransactionRequest, data)
             .withState({ transaction: { year: 2021 } })
-            .provide([
-                [matchers.call.fn(syncTransactions, data), { ok: true, data: response }],
-                [matchers.call.fn(clearCacheStorage)],
-            ])
+            .provide([[matchers.call.fn(syncTransactions, data), { ok: true, data: response }]])
             .put({ type: 'Reducer: show app synchronizing' })
             .put({ type: 'Reducer: clear app process' })
             .put({
@@ -114,7 +110,6 @@ describe('Test synchronize transaction requests:', () => {
                         status: 401,
                     },
                 ],
-                [matchers.call.fn(clearCacheStorage)],
             ])
             .put({
                 type: 'Reducer: show sign in dialog',
@@ -139,7 +134,6 @@ describe('Test synchronize transaction requests:', () => {
                         },
                     },
                 ],
-                [matchers.call.fn(clearCacheStorage)],
             ])
             .put({
                 type: 'Reducer: show app error',
