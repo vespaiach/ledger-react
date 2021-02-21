@@ -9,7 +9,6 @@
 import { createStore, compose, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { all, fork } from 'redux-saga/effects';
-import { routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 
 import {
@@ -39,10 +38,7 @@ const composeEnhancers =
         })) ||
     compose;
 
-const store = createStore(
-    localStore,
-    composeEnhancers(applyMiddleware(sagaMiddleware, routerMiddleware(history)))
-);
+const store = createStore(localStore, composeEnhancers(applyMiddleware(sagaMiddleware)));
 
 const saga = function* rootSaga() {
     yield all(
