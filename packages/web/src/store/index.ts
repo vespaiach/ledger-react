@@ -8,18 +8,11 @@
  */
 import { createStore, compose, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import { all, fork } from 'redux-saga/effects';
 import { createBrowserHistory } from 'history';
 
-import {
-    watchFetchRequest,
-    watchSyncRequest,
-    watchSigninRequest,
-    watchSignoutRequest,
-    watchDeleteRequest,
-    watchYearRequest,
-} from './saga';
+import saga from './saga';
 import localStore from './local';
+import postgresRepository from '../repositories/postgres';
 
 const history = createBrowserHistory();
 const sagaMiddleware = createSagaMiddleware({
@@ -39,20 +32,7 @@ const composeEnhancers =
     compose;
 
 const store = createStore(localStore, composeEnhancers(applyMiddleware(sagaMiddleware)));
-
-const saga = function* rootSaga() {
-    yield all(
-        [
-            watchFetchRequest,
-            watchSyncRequest,
-            watchSigninRequest,
-            watchSignoutRequest,
-            watchDeleteRequest,
-            watchYearRequest,
-        ].map(fork)
-    );
-};
-sagaMiddleware.run(saga);
+sagaMiddleware.run(saga(postgresRepository));
 
 export { history };
 export default store;

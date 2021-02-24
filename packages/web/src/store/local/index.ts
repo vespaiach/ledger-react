@@ -9,10 +9,12 @@
 
 import { combineReducers } from 'redux';
 
-import common from './common';
+import wholeApp from './wholeApp';
 import transaction from './transaction';
+import transactionFilter from './transactionFilter';
 
 export default combineReducers({
-    common,
+    wholeApp,
     transaction,
+    transactionFilter,
 });

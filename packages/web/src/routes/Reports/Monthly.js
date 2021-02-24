@@ -62,7 +62,7 @@ export default function Report() {
     const monthPopupState = usePopupState({ variant: 'popover', popupId: 'monthMenu' });
     const yearPopupState = usePopupState({ variant: 'popover', popupId: 'yearMenu' });
 
-    const listOfYear = useSelector((state) => state.transaction.listOfYear);
+    const years = useSelector((state) => state.transaction.years);
     const transactions = useSelector((state) => state.transaction.list);
     const [month, setMonth] = useState(() => {
         return new Date().getMonth();
@@ -108,7 +108,7 @@ export default function Report() {
                         <ArrowDropDownIcon />
                     </Typography>
                     <Menu {...bindMenu(yearPopupState)}>
-                        {listOfYear.map((y) => (
+                        {years.map((y) => (
                             <MenuItem
                                 key={y}
                                 selected={year === y}

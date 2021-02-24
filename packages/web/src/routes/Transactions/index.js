@@ -145,9 +145,9 @@ export default function Transactions() {
 
     const rawTransactions = useSelector((state) => state.transaction.list);
     const year = useSelector((state) => state.transaction.year);
-    const listOfYear = useSelector((state) => state.transaction.listOfYear);
+    const years = useSelector((state) => state.transaction.years);
     const filter = useSelector((state) => state.transaction.filter);
-    const sortingFn = useSelector((state) => state.transaction.sortingFn);
+    const sortingFunction = useSelector((state) => state.transaction.sortingFunction);
 
     /**
      * Transaction list after apply filtering
@@ -155,7 +155,7 @@ export default function Transactions() {
     const filteredTransactions = useTransactions({
         data: rawTransactions,
         filter,
-        sortingFn,
+        sortingFunction,
     });
     const categories = useCategories({ data: rawTransactions });
     const selectYear = (year) => () => {
@@ -276,7 +276,7 @@ export default function Transactions() {
                         keepMounted
                         open={Boolean(menuAnchorEl)}
                         onClose={() => setMenuAnchorEl(null)}>
-                        {listOfYear.map((it) => (
+                        {years.map((it) => (
                             <MenuItem key={it} selected={year === it} onClick={selectYear(it)}>
                                 {it}
                             </MenuItem>
@@ -298,7 +298,7 @@ export default function Transactions() {
                         {listOfSorting.map((it) => (
                             <MenuItem
                                 key={it.val}
-                                selected={sortingFn === it.val}
+                                selected={sortingFunction === it.val}
                                 onClick={selectSorting(it.val)}>
                                 {it.text}
                             </MenuItem>

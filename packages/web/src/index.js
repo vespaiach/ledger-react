@@ -10,6 +10,7 @@ import App from './App';
 import theme from './theme';
 import store from './store';
 
+
 ReactDOM.render(
     <Router>
         <ThemeProvider theme={theme}>

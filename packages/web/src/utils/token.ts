@@ -12,7 +12,7 @@
  * Save bearer token to local storage
  */
 
-export function setToken(token) {
+export function setToken(token: string): Promise<boolean> {
     return new Promise((res) => {
         try {
             localStorage.setItem('__sig', token);

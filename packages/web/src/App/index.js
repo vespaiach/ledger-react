@@ -24,10 +24,10 @@ const useStyles = makeStyles((theme) => ({
 function App() {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const processing = useSelector((state) => state.common.processing);
+    const tasking = useSelector((state) => state.common.tasking);
     const showSignIn = useSelector((state) => state.common.showSignIn);
-    const error = useSelector((state) => state.common.error);
-    const success = useSelector((state) => state.common.success);
+    const errorMessage = useSelector((state) => state.common.errorMessage);
+    const successMessage = useSelector((state) => state.common.successMessage);
     const year = useSelector((state) => state.transaction.year);
     const closeErrorMessage = () => dispatch({ type: 'Reducer: hide app error' });
     const closeSuccessMessage = () => dispatch({ type: 'Reducer: hide app success' });
@@ -67,7 +67,7 @@ function App() {
                 classes={{ root: classes.successSnackbar }}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 autoHideDuration={5000}
-                open={Boolean(success)}
+                open={Boolean(successMessage)}
                 action={
                     <IconButton
                         size="small"
@@ -77,12 +77,12 @@ function App() {
                         <CloseRoundedIcon fontSize="small" />
                     </IconButton>
                 }
-                message={success}
+                message={successMessage}
                 onClose={closeSuccessMessage}
             />
             <Snackbar
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                open={Boolean(error)}
+                open={Boolean(errorMessage)}
                 autoHideDuration={5000}
                 action={
                     <IconButton
@@ -93,17 +93,17 @@ function App() {
                         <CloseRoundedIcon fontSize="small" />
                     </IconButton>
                 }
-                message={error}
+                message={errorMessage}
                 onClose={closeErrorMessage}
             />
             <Snackbar
-                open={Boolean(processing)}
+                open={Boolean(tasking)}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 message={
                     <>
-                        {processing === 'load' ? (
+                        {tasking === 'load' ? (
                             <span>Loading transactions</span>
-                        ) : processing === 'sync' ? (
+                        ) : tasking === 'sync' ? (
                             <span>Saving transactions</span>
                         ) : (
                             ''

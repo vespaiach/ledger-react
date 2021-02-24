@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Signin() {
     const dispatch = useDispatch();
-    const loading = useSelector((state) => state.common.processing === 'load');
+    const loading = useSelector((state) => state.common.tasking === 'load');
     const classes = useStyles();
     const [passwordVisibility, setPasswordVisibility] = useState(false);
     const formik = useFormik({

@@ -77,7 +77,7 @@ function useTransactionType(income, expense) {
  * Every transaction record will pass to a pipe of filtering functions.
  * If all the filtering functions return true, that record will be kept in hook's return
  */
-export function useTransactions({ data, filter, sortingFn }) {
+export function useTransactions({ data, filter, sortingFunction }) {
     const dateFromFilter = useDateFrom(filter.dateFrom, filter.enableDateFilter);
     const dateToFilter = useDateTo(filter.dateTo, filter.enableDateFilter);
     const amountFromFilter = useAmountFrom(filter.amountFrom, filter.enableAmountFilter);
@@ -102,7 +102,7 @@ export function useTransactions({ data, filter, sortingFn }) {
         transactionTypeFilter,
     ]);
 
-    return useMemo(() => (sortingFn ? filtered.sort(sortingFn) : filtered), [filtered, sortingFn]);
+    return useMemo(() => (sortingFunction ? filtered.sort(sortingFunction) : filtered), [filtered, sortingFunction]);
 }
 
 export function useCategories({ data }) {
