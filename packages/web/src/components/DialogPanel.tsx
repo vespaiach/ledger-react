@@ -1,11 +1,29 @@
-import { AppBar, Dialog, IconButton, Typography, Slide, Toolbar, Button } from '@material-ui/core';
+/**
+ *
+ * Ledger Web App Source Code.
+ *
+ * @license MIT
+ * @copyright Toan Nguyen <nta.toan@gmail.com>
+ *
+ */
+
+import {
+    AppBar,
+    Dialog,
+    IconButton,
+    Typography,
+    Slide,
+    Toolbar,
+    Button,
+    SlideProps,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { forwardRef } from 'react';
+import { forwardRef, ReactElement, ReactNode } from 'react';
 import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 
-const SlideUp = forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
+const SlideUp = forwardRef(function Transition(props: SlideProps, ref) {
+    return <Slide direction="up" ref={ref} children={props.children} />;
 });
 
 const useStyles = makeStyles({
@@ -28,19 +46,22 @@ const useStyles = makeStyles({
     },
 });
 
-export default function DialogPanel({ open, title, children, onClose, onReset, ...rest }) {
+interface DialogPanelProps {
+    open: boolean;
+    title: string;
+    children: ReactNode;
+    onClose: () => void;
+    onReset?: () => void;
+}
+
+export default function DialogPanel({ open, title, children, onClose, onReset }: DialogPanelProps) {
     const classes = useStyles();
 
     return (
-        <Dialog {...rest} fullScreen open={open} onClose={onClose} TransitionComponent={SlideUp}>
+        <Dialog fullScreen open={open} onClose={onClose} TransitionComponent={SlideUp}>
             <AppBar position="static" color="transparent" elevation={3}>
                 <Toolbar variant="dense">
-                    <IconButton
-                        edge="start"
-                        className={classes.menuButton}
-                        onClick={onClose}
-                        color="default"
-                        aria-label="menu">
+                    <IconButton edge="start" onClick={onClose} color="default" aria-label="menu">
                         <CloseRoundedIcon />
                     </IconButton>
                     <Typography

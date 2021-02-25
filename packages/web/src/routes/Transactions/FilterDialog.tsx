@@ -23,11 +23,22 @@ import {
     CalendarTodayRounded as CalendarTodayRoundedIcon,
 } from '@material-ui/icons';
 import DateFnsUtils from '@date-io/date-fns';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 
 import DialogPanel from '../../components/DialogPanel';
+import { Action } from '../../types';
+import {
+    amountFilterEnableRequest,
+    amountFromFilterRequest,
+    amountToFilterRequest,
+    dateFilterEnableRequest,
+    dateFromFilterRequest,
+    dateToFilterRequest,
+    expenseFilterRequest,
+    incomeFilterRequest,
+} from '../../actions/trans';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme, { [key: string]: boolean }>((theme) => ({
     checkboxTypo: {
         flexGrow: 1,
     },
@@ -41,26 +52,26 @@ const useStyles = makeStyles((theme) => ({
     subTextAmount: {
         marginBottom: theme.spacing(3),
         color: (props) =>
-            props.enableAmountFilter === false
+            props.allowAmountFilter === false
                 ? theme.palette.text.disabled
                 : theme.palette.text.primary,
     },
     subTextDate: {
         marginBottom: theme.spacing(3),
         color: (props) =>
-            props.enableDateFilter === false
+            props.allowDateFilter === false
                 ? theme.palette.text.disabled
                 : theme.palette.text.primary,
     },
     textAmount: {
         color: (props) =>
-            props.enableAmountFilter === false
+            props.allowAmountFilter === false
                 ? theme.palette.text.disabled
                 : theme.palette.text.primary,
     },
     textDate: {
         color: (props) =>
-            props.enableDateFilter === false
+            props.allowDateFilter === false
                 ? theme.palette.text.disabled
                 : theme.palette.text.primary,
     },
@@ -80,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function parseNumber(val) {
+function parseNumber(val: string) {
     try {
         const num = parseFloat(val);
         if (num > 0) {
@@ -92,10 +103,38 @@ function parseNumber(val) {
     return 0;
 }
 
-export default function FilterDialog({ open, filter, dispatch, onClose, onReset }) {
+interface FilterDialogProps {
+    open: boolean;
+    dateFrom: Date | null;
+    dateTo: Date | null;
+    amountFrom: number | null;
+    amountTo: number | null;
+    showIncome: boolean;
+    showExpense: boolean;
+    allowDateFilter: boolean;
+    allowAmountFilter: boolean;
+    dispatch: (a: Action | Omit<Action, 'payload'>) => Action | Omit<Action, 'payload'>;
+    onClose: () => void;
+    onReset: () => void;
+}
+
+export default function FilterDialog({
+    open,
+    dateFrom,
+    dateTo,
+    amountFrom,
+    amountTo,
+    showIncome,
+    showExpense,
+    allowDateFilter,
+    allowAmountFilter,
+    dispatch,
+    onClose,
+    onReset,
+}: FilterDialogProps) {
     const classes = useStyles({
-        enableAmountFilter: filter.enableAmountFilter,
-        enableDateFilter: filter.enableDateFilter,
+        allowAmountFilter,
+        allowDateFilter,
     });
 
     return (
@@ -103,43 +142,31 @@ export default function FilterDialog({ open, filter, dispatch, onClose, onReset 
             <Container maxWidth="sm">
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Box
-                            display="flex"
-                            alignItems="center"
-                            classes={{ root: classes.boxIncome }}>
+                        <Box display="flex" alignItems="center" className={classes.boxIncome}>
                             <Box flexGrow="1">
                                 <Typography variant="h6">Income</Typography>
                                 <Typography variant="body2">Show income transactions</Typography>
                             </Box>
                             <Checkbox
                                 inputProps={{ 'aria-label': 'primary checkbox' }}
-                                checked={filter.income}
-                                value={filter.income}
+                                checked={showIncome}
+                                value={showIncome}
                                 onChange={(evt) => {
-                                    dispatch({
-                                        type: 'Reducer: filter transactions by income type',
-                                        payload: evt.target.checked,
-                                    });
+                                    dispatch(incomeFilterRequest(evt.target.checked));
                                 }}
                             />
                         </Box>
-                        <Box
-                            display="flex"
-                            alignItems="center"
-                            classes={{ root: classes.boxExpense }}>
+                        <Box display="flex" alignItems="center" className={classes.boxExpense}>
                             <Box flexGrow="1">
                                 <Typography variant="h6">Expense</Typography>
                                 <Typography variant="body2">Show expense transactions</Typography>
                             </Box>
                             <Checkbox
                                 inputProps={{ 'aria-label': 'primary checkbox' }}
-                                checked={filter.expense}
-                                value={filter.expense}
+                                checked={showExpense}
+                                value={showExpense}
                                 onChange={(evt) => {
-                                    dispatch({
-                                        type: 'Reducer: filter transactions by expense type',
-                                        payload: evt.target.checked,
-                                    });
+                                    dispatch(expenseFilterRequest(evt.target.checked));
                                 }}
                             />
                         </Box>
@@ -160,15 +187,11 @@ export default function FilterDialog({ open, filter, dispatch, onClose, onReset 
                                 </Typography>
                             </Box>
                             <Switch
-                                checked={filter.enableAmountFilter}
+                                checked={allowAmountFilter}
                                 edge="end"
                                 inputProps={{ 'aria-label': 'secondary checkbox' }}
                                 onChange={(evt) =>
-                                    dispatch({
-                                        type: evt.target.checked
-                                            ? 'Reducer: set filter transactions by amount on'
-                                            : 'Reducer: set filter transactions by amount off',
-                                    })
+                                    dispatch(amountFilterEnableRequest(evt.target.checked))
                                 }
                             />
                         </Box>
@@ -176,10 +199,10 @@ export default function FilterDialog({ open, filter, dispatch, onClose, onReset 
                             display="flex"
                             alignItems="center"
                             justifyContent="space-between"
-                            classes={{ root: classes.boxMinMax }}>
+                            className={classes.boxMinMax}>
                             <TextField
-                                disabled={!filter.enableAmountFilter}
-                                value={filter.amountFrom}
+                                disabled={!allowAmountFilter}
+                                value={amountFrom}
                                 label="Min amount"
                                 size="small"
                                 type="number"
@@ -195,17 +218,15 @@ export default function FilterDialog({ open, filter, dispatch, onClose, onReset 
                                 }}
                                 variant="outlined"
                                 onChange={(evt) => {
-                                    const amountFrom = parseNumber(evt.target.value);
-                                    dispatch({
-                                        type: 'Reducer: filter transactions by amountFrom',
-                                        payload: amountFrom,
-                                    });
+                                    dispatch(
+                                        amountFromFilterRequest(parseNumber(evt.target.value))
+                                    );
                                 }}
                             />
                             <div> - </div>
                             <TextField
-                                disabled={!filter.enableAmountFilter}
-                                value={filter.amountTo}
+                                disabled={!allowAmountFilter}
+                                value={amountTo}
                                 label="Max amount"
                                 type="number"
                                 size="small"
@@ -221,11 +242,7 @@ export default function FilterDialog({ open, filter, dispatch, onClose, onReset 
                                 }}
                                 variant="outlined"
                                 onChange={(evt) => {
-                                    const amountTo = parseNumber(evt.target.value);
-                                    dispatch({
-                                        type: 'Reducer: filter transactions by amountTo',
-                                        payload: amountTo,
-                                    });
+                                    dispatch(amountToFilterRequest(parseNumber(evt.target.value)));
                                 }}
                             />
                         </Box>
@@ -245,13 +262,9 @@ export default function FilterDialog({ open, filter, dispatch, onClose, onReset 
                             </Box>
                             <Switch
                                 edge="end"
-                                checked={filter.enableDateFilter}
+                                checked={allowDateFilter}
                                 onChange={(evt) =>
-                                    dispatch({
-                                        type: evt.target.checked
-                                            ? 'Reducer: set filter transactions by date on'
-                                            : 'Reducer: set filter transactions by date off',
-                                    })
+                                    dispatch(dateFilterEnableRequest(evt.target.checked))
                                 }
                                 inputProps={{ 'aria-label': 'secondary checkbox' }}
                             />
@@ -259,27 +272,18 @@ export default function FilterDialog({ open, filter, dispatch, onClose, onReset 
                         <div className={classes.boxDate}>
                             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                 <DateTimePicker
-                                    disabled={!filter.enableDateFilter}
+                                    disabled={!allowDateFilter}
                                     clearable
                                     size="small"
                                     label="From date"
                                     format="MMM do, yyyy HH:mm"
-                                    value={filter.dateFrom}
-                                    onChange={(value) => {
-                                        dispatch({
-                                            type: 'Reducer: filter transactions by dateFrom',
-                                            payload: value,
-                                        });
-                                    }}
+                                    value={dateFrom}
+                                    onChange={(value) => dispatch(dateFromFilterRequest(value))}
                                     fullWidth
                                     inputVariant="outlined"
                                     InputProps={{
                                         endAdornment: (
-                                            <InputAdornment
-                                                position="end"
-                                                classes={{
-                                                    root: classes.adornment,
-                                                }}>
+                                            <InputAdornment position="end">
                                                 <CalendarTodayRoundedIcon />
                                             </InputAdornment>
                                         ),
@@ -288,27 +292,18 @@ export default function FilterDialog({ open, filter, dispatch, onClose, onReset 
                             </MuiPickersUtilsProvider>
                             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                 <DateTimePicker
-                                    disabled={!filter.enableDateFilter}
+                                    disabled={!allowDateFilter}
                                     clearable
                                     size="small"
                                     label="To date"
                                     format="MMM do, yyyy HH:mm"
-                                    value={filter.dateTo}
-                                    onChange={(value) => {
-                                        dispatch({
-                                            type: 'Reducer: filter transactions by dateTo',
-                                            payload: value,
-                                        });
-                                    }}
+                                    value={dateTo}
+                                    onChange={(value) => dispatch(dateToFilterRequest(value))}
                                     fullWidth
                                     inputVariant="outlined"
                                     InputProps={{
                                         endAdornment: (
-                                            <InputAdornment
-                                                position="end"
-                                                classes={{
-                                                    root: classes.adornment,
-                                                }}>
+                                            <InputAdornment position="end">
                                                 <CalendarTodayRoundedIcon />
                                             </InputAdornment>
                                         ),

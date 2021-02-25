@@ -34,10 +34,16 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+interface DeletingDialogProps {
+    open: boolean;
+    onClose: () => void;
+    onDelete: () => void;
+}
+
 /**
  * Show confirmation dialog before deleting a record
  */
-export default function DeletingDialog({ open, onClose, onDelete }) {
+export default function DeletingDialog({ open, onClose, onDelete }: DeletingDialogProps) {
     const classes = useStyles();
     return (
         <DialogPanel title="Confirmation" open={open} onClose={onClose}>

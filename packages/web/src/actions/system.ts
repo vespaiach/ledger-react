@@ -1,4 +1,4 @@
-import { Action, AppMessageSeverity } from '../types';
+import { Action, AppMessageSeverity } from '../types.d';
 
 export const SHOW_MESSAGE = 'show app message';
 export const CLEAR_MESSAGE = 'clear app message';

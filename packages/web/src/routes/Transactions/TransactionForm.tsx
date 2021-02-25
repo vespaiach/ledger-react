@@ -18,13 +18,14 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useEffect } from 'react';
 
-import MoneyInput from './MoneyInput';
+import MoneyInput from '../../components/MoneyInput';
+import { TransactionType } from '../../types.d';
 
 const validationSchema = yup.object({
-    amount: yup.number('Enter amount').required('Amount is required'),
-    date: yup.date('Enter date').required('Date is required'),
-    category: yup.string('Enter category').required('Category is required'),
-    description: yup.string('Enter description').required('Description is required'),
+    amount: yup.number().required('Amount is required'),
+    date: yup.date().required('Date is required'),
+    category: yup.string().required('Category is required'),
+    description: yup.string().required('Description is required'),
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -54,28 +55,48 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+interface TransactionFormProps {
+    id?: number;
+    amount?: number;
+    date?: Date;
+    transactionType?: TransactionType;
+    description?: string;
+    category?: string;
+    categories: string[];
+    onSubmit: (data: {
+        id?: number;
+        amount: number;
+        date: Date;
+        transactionType: TransactionType;
+        description: string;
+        category: string;
+    }) => void;
+    onCancel: () => void;
+    reset?: boolean;
+}
+
 export default function Form({
-    id = null,
-    amount = '',
-    date = null,
-    transactionType = 'ex',
-    description = '',
-    category = '',
+    id,
+    amount,
+    date,
+    transactionType,
+    description,
+    category,
     categories = [],
     onSubmit,
     onCancel,
     reset,
-}) {
+}: TransactionFormProps) {
     const classes = useStyles();
 
     const formik = useFormik({
         initialValues: {
             id,
-            amount,
-            transactionType,
-            date,
-            description,
-            category,
+            amount: amount || 0,
+            transactionType: transactionType || TransactionType.Expense,
+            date: date || new Date(),
+            description: description || '',
+            category: category || '',
         },
         validationSchema,
         onSubmit,
@@ -157,7 +178,6 @@ export default function Form({
                 }}
             />
             <Autocomplete
-                name="category"
                 freeSolo
                 disableClearable
                 value={formik.values.category}

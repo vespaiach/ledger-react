@@ -20,7 +20,7 @@ const sagaMiddleware = createSagaMiddleware({
         console.error(e);
     },
 });
-const typedWindow = typeof window !== 'undefined' && window;
+const typedWindow = typeof window !== 'undefined' && (window as any);
 const composeEnhancers =
     (process.env.NODE_ENV === 'development' &&
         typeof typedWindow !== 'undefined' &&

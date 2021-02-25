@@ -29,6 +29,7 @@ import { format } from 'date-fns';
 
 import DialogPanel from '../../components/DialogPanel';
 import EditIcon from '../../components/Icons/Edit';
+import { Transaction } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
     infoPanel: {
@@ -42,11 +43,23 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function TransDetailDialog({ detail, onClose, onEdit, onDelete }) {
+interface TransDetailDialogProps {
+    transaction: Transaction | null | undefined;
+    onClose: () => void;
+    onEdit: (t: Transaction) => void;
+    onDelete: (t: Transaction) => void;
+}
+
+export default function TransDetailDialog({
+    transaction,
+    onClose,
+    onEdit,
+    onDelete,
+}: TransDetailDialogProps) {
     const classes = useStyles();
 
     let el = <div />;
-    if (detail) {
+    if (transaction) {
         el = (
             <List>
                 <ListItem>
@@ -54,9 +67,9 @@ export default function TransDetailDialog({ detail, onClose, onEdit, onDelete })
                         <AttachMoneyRoundedIcon />
                     </ListItemIcon>
                     <ListItemText>
-                        {detail.transactionType === 'in' ? '+' : '-'}
+                        {transaction.transactionType === 'in' ? '+' : '-'}
                         <NumberFormat
-                            value={detail.amount}
+                            value={transaction.amount}
                             displayType={'text'}
                             thousandSeparator={true}
                         />
@@ -66,32 +79,32 @@ export default function TransDetailDialog({ detail, onClose, onEdit, onDelete })
                     <ListItemIcon>
                         <CalendarTodayRoundedIcon />
                     </ListItemIcon>
-                    <ListItemText primary={format(detail.date, 'LLL do, yyyy')} />
+                    <ListItemText primary={format(transaction.date, 'LLL do, yyyy')} />
                 </ListItem>
                 <ListItem>
                     <ListItemIcon>
                         <QueryBuilderRoundedIcon />
                     </ListItemIcon>
-                    <ListItemText primary={format(detail.date, 'HH:mm')} />
+                    <ListItemText primary={format(transaction.date, 'HH:mm')} />
                 </ListItem>
                 <ListItem>
                     <ListItemIcon>
                         <CategoryRoundedIcon />
                     </ListItemIcon>
-                    <ListItemText primary={detail.category} />
+                    <ListItemText primary={transaction.category} />
                 </ListItem>
                 <ListItem>
                     <ListItemIcon>
                         <DescriptionRoundedIcon />
                     </ListItemIcon>
-                    <ListItemText primary={detail.description} />
+                    <ListItemText primary={transaction.description} />
                 </ListItem>
             </List>
         );
     }
 
     return (
-        <DialogPanel title="Transaction Details" open={Boolean(detail)} onClose={onClose}>
+        <DialogPanel title="Transaction Details" open={Boolean(transaction)} onClose={onClose}>
             <Container classes={{ root: classes.infoPanel }} maxWidth={false}>
                 <Container maxWidth="sm">
                     <Grid container spacing={3}>
@@ -108,7 +121,9 @@ export default function TransDetailDialog({ detail, onClose, onEdit, onDelete })
                             aria-label="edit income transaction"
                             color="primary"
                             onClick={() => {
-                                onEdit(detail);
+                                if (transaction) {
+                                    onEdit(transaction);
+                                }
                             }}>
                             <EditIcon />
                         </IconButton>
@@ -116,7 +131,9 @@ export default function TransDetailDialog({ detail, onClose, onEdit, onDelete })
                             aria-label="delete income transaction"
                             color="primary"
                             onClick={() => {
-                                onDelete(detail);
+                                if (transaction) {
+                                    onDelete(transaction);
+                                }
                             }}>
                             <DeleteRoundedIcon />
                         </IconButton>

@@ -5,7 +5,8 @@ import { AutoSizer, List as VirtualList, WindowScroller } from 'react-virtualize
 import NumberFormat from 'react-number-format';
 import { format } from 'date-fns';
 
-import EditIcon from './Icons/Edit';
+import EditIcon from '../../components/Icons/Edit';
+import { Transaction } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
     listRoot: {
@@ -41,9 +42,23 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function TransactionList({ onEdit, onDelete, onDetail, data, totalRows }) {
+interface TransactionListProps {
+    onEdit: (data: Transaction) => void;
+    onDelete: (data: Transaction) => void;
+    onDetail: (data: Transaction) => void;
+    data: Transaction[];
+    totalRows: number;
+}
+
+export default function TransactionList({
+    onEdit,
+    onDelete,
+    onDetail,
+    data,
+    totalRows,
+}: TransactionListProps) {
     const classes = useStyles();
-    const rowRenderer = ({ index, style, key }) => {
+    const rowRenderer = ({ index, style, key }: { index: number; style: any; key: string }) => {
         return (
             <div key={key} style={style}>
                 <ListItem
@@ -69,7 +84,7 @@ export default function TransactionList({ onEdit, onDelete, onDetail, data, tota
                     </div>
                     <div className={classes.boxDesc}>
                         <Typography variant="h6">{data[index].category}</Typography>
-                        <Typography variant="body2" noWrap classes={{ root: classes.typoEllipsis }}>
+                        <Typography variant="body2" noWrap>
                             {data[index].description}
                         </Typography>
                     </div>
@@ -101,7 +116,7 @@ export default function TransactionList({ onEdit, onDelete, onDetail, data, tota
 
     return (
         <AutoSizer disableHeight>
-            {({ width }) => (
+            {({ width }: { width: number }) => (
                 <WindowScroller>
                     {({ height, isScrolling, onChildScroll, scrollTop }) => (
                         <List

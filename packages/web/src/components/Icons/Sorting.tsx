@@ -1,6 +1,6 @@
 import { SvgIcon } from '@material-ui/core';
 
-export default function Sorting({ title, ...rest }) {
+export default function Sorting({ title = 'sorting', ...rest }: { [key: string]: string }) {
     return (
         <SvgIcon {...rest}>
             <title>{title}</title>

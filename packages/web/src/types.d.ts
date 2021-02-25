@@ -78,6 +78,12 @@ export type RemoteRepository = {
     signout: () => Promise<HTTPResult | HTTPResult<APIError>>;
 };
 
+export type AppRootState = {
+    wholeApp: WholeAppState;
+    transaction: TransactionState;
+    transactionFilter: TransactionFilterState;
+};
+
 export interface WholeAppState {
     /**
      * We need to show a message about what application is doing.

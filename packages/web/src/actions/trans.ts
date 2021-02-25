@@ -41,16 +41,15 @@ export const transactionList = (transactions: Transaction[]): Action<string, Tra
 });
 
 export const transactionCreatingRequest = (payload: {
-    [key: string]: string | number;
-}): Action<string, { [key: string]: string | number }> => ({
+    [key: string]: string | number | Date | undefined;
+}): Action<string, { [key: string]: string | Date | undefined | number }> => ({
     type: RECORD_TRANSACTION,
     payload,
 });
 
 export const transactionUpdatingRequest = (payload: {
-    id: number;
-    [key: string]: string | number;
-}): Action<string, { id: number; [key: string]: string | number }> => ({
+    [key: string]: string | number | Date | undefined;
+}): Action<string, { [key: string]: string | Date | number | undefined }> => ({
     type: UPDATE_TRANSACTION,
     payload,
 });
@@ -58,4 +57,42 @@ export const transactionUpdatingRequest = (payload: {
 export const transactionDeletingRequest = (id: number): Action<string, number> => ({
     type: DELETE_TRANSACTION,
     payload: id,
+});
+
+export const incomeFilterRequest = (income: boolean): Action<string, boolean> => ({
+    type: FILTER_INCOME,
+    payload: income,
+});
+
+export const expenseFilterRequest = (expense: boolean): Action<string, boolean> => ({
+    type: FILTER_EXPENSE,
+    payload: expense,
+});
+
+export const amountFilterEnableRequest = (enable: boolean): Omit<Action, 'payload'> => ({
+    type: enable ? ENABLE_AMOUNT_FILTER : DISABLE_AMOUNT_FILTER,
+});
+
+export const dateFilterEnableRequest = (enable: boolean): Omit<Action, 'payload'> => ({
+    type: enable ? ENABLE_DATE_FILTER : DISABLE_DATE_FILTER,
+});
+
+export const dateFromFilterRequest = (dateFrom: Date | null): Action => ({
+    type: FILTER_DATE_FROM,
+    payload: dateFrom,
+});
+
+export const dateToFilterRequest = (dateTo: Date | null): Action => ({
+    type: FILTER_DATE_TO,
+    payload: dateTo,
+});
+
+export const amountFromFilterRequest = (amountFrom: number): Action => ({
+    type: FILTER_AMOUNT_FROM,
+    payload: amountFrom,
+});
+
+export const amountToFilterRequest = (amountTo: number): Action => ({
+    type: FILTER_AMOUNT_TO,
+    payload: amountTo,
 });

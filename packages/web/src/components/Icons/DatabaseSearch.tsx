@@ -1,6 +1,6 @@
 import { SvgIcon } from '@material-ui/core';
 
-export default function DatabaseSearch({ title, ...rest }) {
+export default function DatabaseSearch({ title = 'Search', ...rest }: { [key: string]: string }) {
     return (
         <SvgIcon {...rest}>
             <title>{title}</title>
