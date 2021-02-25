@@ -1,21 +1,13 @@
+import { Action as ReduxAction } from 'redux';
+
 /**
  * Redux action
  */
-export interface Action<T = string, P = any> {
-    type: T;
-    payload: P;
-}
+export type Action<T = string, P = any> = ReduxAction<T> & { payload?: P };
 
 export enum TransactionType {
     Income = 'in',
     Expense = 'ex',
-}
-
-export enum AppMessageSeverity {
-    Error = 'error',
-    Information = 'information',
-    Loading = 'loading',
-    Success = 'success',
 }
 
 export interface Record {
@@ -46,7 +38,7 @@ export interface HTTPResult<T> {
 
 export interface APIError {
     message: string;
-    code: string;
+    code: AppMessageCode;
 }
 
 /**
@@ -84,12 +76,44 @@ export type AppRootState = {
     transactionFilter: TransactionFilterState;
 };
 
+export enum AppBusyCode {
+    Idle,
+    Loading,
+    Saving,
+}
+
+/**
+ * Server + client message and error codes.
+ */
+export enum AppMessageCode {
+    // Server exception
+    QueryTransactionFailure = 'E_QUERY_TRANSACTION',
+    UpdateTransactionFailure = 'E_UPDATE_TRANSACTION',
+    DeleteTransactionFailure = 'E_DELETE_TRANSACTION',
+    CreateTransactionFailure = 'E_CREATE_TRANSACTION',
+
+    ValidationFailure = 'E_VALIDATION_FAILURE',
+    InternalServerFailure = 'E_INTERNAL_SERVER',
+    WrongCredentialFailure = 'E_WRONG_CREDENTIALS',
+    AuthorizedFailure = 'E_UNAUTHORIZED',
+
+    // Client exception
+    NetworkError = 'E_NETWORK',
+    UnknownError = 'E_UNKNOWN',
+
+    // Success
+    CreateTrasactionSuccess = 'S_CREATE_TRANSACTION',
+    UpdateTransactionSuccess = 'S_UPDATE_TRANSACTION',
+    DeleteTransactionSuccess = 'S_DELETE_TRANSACTION',
+    SignoutSuccess = 'S_SIGNOUT',
+}
+
 export interface WholeAppState {
     /**
-     * We need to show a message about what application is doing.
+     * We don't want to show detail error, just a general message.
      */
-    message: string | null;
-    messageSeverity: AppMessageSeverity | null;
+    messageCode: AppMessageCode | null;
+    busyCode: AppBusyCode;
     /**
      * When user's session timeout, we need keep the current action
      * and then re-execute it after user's login.

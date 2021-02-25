@@ -30,7 +30,7 @@ export const yearList = (payload: number[]): Action<string, number[]> => ({
     payload,
 });
 
-export const transactionRequest = (year: number): Action<string, number> => ({
+export const transactionRequestAction = (year: number): Action<string, number> => ({
     type: GET_TRANSACTION,
     payload: year,
 });

@@ -1,36 +1,30 @@
-import { Action, AppMessageSeverity } from '../types.d';
+import { Action, AppBusyCode, AppMessageCode } from '../types.d';
 
+export const BUSY = 'show app busy';
+export const IDLE = 'show app idle';
 export const SHOW_MESSAGE = 'show app message';
 export const CLEAR_MESSAGE = 'clear app message';
 
-export const loadingDisplay = (
-    message: string
-): Action<string, { message: string; severity: AppMessageSeverity }> => ({
-    type: SHOW_MESSAGE,
-    payload: { message, severity: AppMessageSeverity.Loading },
+export const appLoadingAction = (): Action<string, AppBusyCode> => ({
+    type: BUSY,
+    payload: AppBusyCode.Loading,
 });
 
-export const errorDisplay = (
-    message: string
-): Action<string, { message: string; severity: AppMessageSeverity }> => ({
-    type: SHOW_MESSAGE,
-    payload: { message, severity: AppMessageSeverity.Error },
+export const appSavingAction = (): Action<string, AppBusyCode> => ({
+    type: BUSY,
+    payload: AppBusyCode.Saving,
 });
 
-export const successDisplay = (
-    message: string
-): Action<string, { message: string; severity: AppMessageSeverity }> => ({
-    type: SHOW_MESSAGE,
-    payload: { message, severity: AppMessageSeverity.Success },
+export const appIdleAction = (): Action<string, AppBusyCode> => ({
+    type: IDLE,
+    payload: AppBusyCode.Idle,
 });
 
-export const informationDisplay = (
-    message: string
-): Action<string, { message: string; severity: AppMessageSeverity }> => ({
+export const showMessageAction = (code: AppMessageCode): Action<string, AppMessageCode> => ({
     type: SHOW_MESSAGE,
-    payload: { message, severity: AppMessageSeverity.Information },
+    payload: code,
 });
 
-export const messageClear = (): Omit<Action, 'payload'> => ({
+export const clearMessageAction = (): Action => ({
     type: CLEAR_MESSAGE,
 });

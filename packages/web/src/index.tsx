@@ -6,10 +6,9 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
-import App from './App';
+import App from './App/index';
 import theme from './theme';
 import store from './store';
-
 
 ReactDOM.render(
     <Router>

@@ -26,26 +26,42 @@ const defaultState: TransactionState = {
 };
 
 export default createReducer<TransactionState>(defaultState, {
-    [RECEIVE_LIST_YEAR]: (state: TransactionState, action: Action<string, number[]>) => ({
-        ...state,
-        years: action.payload,
-        refetchListYears: false,
-    }),
+    [RECEIVE_LIST_YEAR]: (state: TransactionState, action: Action<string, number[]>) => {
+        if (action.payload) {
+            return {
+                ...state,
+                years: action.payload,
+                refetchListYears: false,
+            };
+        }
+        return state;
+    },
 
     [SELECT_YEAR]: (state, { payload }: Action<string, number>) => ({
         ...state,
         year: payload,
     }),
 
-    [RECEIVE_TRANSACTION]: (state: TransactionState, action: Action<string, Transaction[]>) => {
-        return {
-            ...state,
-            list: action.payload,
-        };
+    [RECEIVE_TRANSACTION]: (
+        state: TransactionState,
+        { payload }: Action<string, Transaction[]>
+    ) => {
+        if (payload) {
+            return {
+                ...state,
+                list: payload,
+            };
+        }
+        return state;
     },
 
-    [SORT_TRANSACTION]: (state, action: Action<string, SortingFunction>) => ({
-        ...state,
-        sortingFunction: action.payload,
-    }),
+    [SORT_TRANSACTION]: (state, { payload }: Action<string, SortingFunction>) => {
+        if (payload) {
+            return {
+                ...state,
+                sortingFunction: payload,
+            };
+        }
+        return state;
+    },
 });

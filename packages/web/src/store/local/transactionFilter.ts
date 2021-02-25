@@ -45,7 +45,7 @@ export default createReducer<TransactionFilterState>(defaultState, {
         state: TransactionFilterState,
         { payload }: Action<string, Transaction[]>
     ) => {
-        if (payload.length === 0) {
+        if (!payload || payload.length === 0) {
             return state;
         }
 
@@ -146,37 +146,57 @@ export default createReducer<TransactionFilterState>(defaultState, {
         },
     }),
 
-    [FILTER_DATE_FROM]: (state, { payload }: Action<string, Date>) => ({
-        ...state,
-        dateFrom: {
-            origin: state.dateFrom.origin,
-            value: payload,
-        },
-    }),
+    [FILTER_DATE_FROM]: (state, { payload }: Action<string, Date>) => {
+        if (payload) {
+            return {
+                ...state,
+                dateFrom: {
+                    origin: state.dateFrom.origin,
+                    value: payload,
+                },
+            };
+        }
+        return state;
+    },
 
-    [FILTER_DATE_TO]: (state, { payload }: Action<string, Date>) => ({
-        ...state,
-        dateTo: {
-            origin: state.dateTo.origin,
-            value: payload,
-        },
-    }),
+    [FILTER_DATE_TO]: (state, { payload }: Action<string, Date>) => {
+        if (payload) {
+            return {
+                ...state,
+                dateTo: {
+                    origin: state.dateTo.origin,
+                    value: payload,
+                },
+            };
+        }
+        return state;
+    },
 
-    [FILTER_AMOUNT_FROM]: (state, { payload }: Action<string, number>) => ({
-        ...state,
-        amountFrom: {
-            origin: state.amountFrom.origin,
-            value: payload,
-        },
-    }),
+    [FILTER_AMOUNT_FROM]: (state, { payload }: Action<string, number>) => {
+        if (payload) {
+            return {
+                ...state,
+                amountFrom: {
+                    origin: state.amountFrom.origin,
+                    value: payload,
+                },
+            };
+        }
+        return state;
+    },
 
-    [FILTER_AMOUNT_TO]: (state, { payload }: Action<string, number>) => ({
-        ...state,
-        amountTo: {
-            origin: state.amountTo.origin,
-            value: payload,
-        },
-    }),
+    [FILTER_AMOUNT_TO]: (state, { payload }: Action<string, number>) => {
+        if (payload) {
+            return {
+                ...state,
+                amountTo: {
+                    origin: state.amountTo.origin,
+                    value: payload,
+                },
+            };
+        }
+        return state;
+    },
 
     [RESET_FILTER_VALUES]: (state) => {
         return {

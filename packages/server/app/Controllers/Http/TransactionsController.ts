@@ -7,13 +7,14 @@
 
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { DateTime } from 'luxon'
-import Logger from '@ioc:Adonis/Core/Logger'
 
 import Transaction from 'App/Models/Trasactions'
 import TransactionType from 'App/Models/TransactionType'
 import SyncValidator from 'App/Validator/SyncValidator'
-import SyncException from 'App/Exceptions/SyncException'
 import GetValidator from 'App/Validator/GetValidator'
+import { ExceptionCode } from 'App/Exceptions/Code'
+import InternalServerException from 'App/Exceptions/InternalServerException'
+import UnprocesableException from 'App/Exceptions/UnprocesableException'
 
 export default class TransactionsController {
   /**
@@ -29,80 +30,140 @@ export default class TransactionsController {
     query = query.andWhere('date', '>', fromDate.toSQL())
     query = query.andWhere('date', '<', toDate.toSQL())
 
-    return await query.orderBy('date', 'desc')
+    try {
+      return await query.orderBy('date', 'desc')
+    } catch (error) {
+      throw new InternalServerException(
+        'Could not query transaction',
+        ExceptionCode.QueryTransactionFailure,
+        { error, year }
+      )
+    }
   }
 
   /**
-   * Update batch of transactions or create if they are new.
-   * Payload will be an array:
-   * [
-   *   {
-   *      id: number | undefined,
-   *      date: DateTime,
-   *      amount: number,
-   *      description: string,
-   *      transaction_type: string,
-   *      category: string
-   *   }
-   *   ...
-   * ]
-   *
+   * Create a new transaction.
    */
-  public async sync({ request }: HttpContextContract) {
+  public async create({ request }: HttpContextContract) {
+    const record = await request.validate(SyncValidator)
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { id, date, amount, description, category, transaction_type } = await request.validate(
-      SyncValidator
-    )
+    const { date, amount, description, category, transaction_type } = record
+
+    const tran = new Transaction()
+    tran.date = date
+    tran.amount = amount
+    tran.description = description
+    tran.category = category
+    tran.transactionType =
+      transaction_type === TransactionType.Expense
+        ? TransactionType.Expense
+        : TransactionType.Income
 
     try {
-      let tran
-      if (id) {
-        tran = await Transaction.find(id)
-        if (!tran) {
-          throw new Error(`Wrong id: ${id}`)
-        }
-      } else {
-        tran = new Transaction()
-      }
-
-      tran.date = date
-      tran.amount = amount
-      tran.description = description
-      tran.category = category
-      tran.transactionType =
-        transaction_type === TransactionType.Expense
-          ? TransactionType.Expense
-          : TransactionType.Income
       await tran.save()
-    } catch (e) {
-      Logger.error(e)
-      throw new SyncException('Synchronize fail')
+    } catch (error) {
+      throw new InternalServerException(
+        'Server got error. Could not create a new transaction.',
+        ExceptionCode.InternalServerFailure,
+        { error, record }
+      )
     }
 
     return
   }
 
   /**
-   * Delete transaction
+   * Update a transaction.
+   */
+  public async update({ request }: HttpContextContract) {
+    const record = await request.validate(SyncValidator)
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { id, date, amount, description, category, transaction_type } = record
+
+    let tran: Transaction | null
+    if (id) {
+      tran = await Transaction.find(id)
+      if (!tran) {
+        throw new UnprocesableException(
+          'Could not find transaction to update',
+          ExceptionCode.ValidationFailure,
+          { record }
+        )
+      }
+    } else {
+      throw new UnprocesableException('Missing id parameter', ExceptionCode.ValidationFailure, {
+        record,
+      })
+    }
+
+    tran.date = date
+    tran.amount = amount
+    tran.description = description
+    tran.category = category
+    tran.transactionType =
+      transaction_type === TransactionType.Expense
+        ? TransactionType.Expense
+        : TransactionType.Income
+
+    try {
+      await tran.save()
+    } catch (error) {
+      throw new InternalServerException(
+        'Server got error. Could not update transaction',
+        ExceptionCode.InternalServerFailure,
+        { error, record }
+      )
+    }
+
+    return
+  }
+
+  /**
+   * Delete transaction.
    */
   public async delete({ params }: HttpContextContract) {
     const { id } = params
 
-    const tran = await Transaction.findOrFail(id)
+    const tran = await Transaction.find(id)
     if (tran) {
-      await tran.delete()
+      try {
+        await tran.delete()
+      } catch (error) {
+        throw new InternalServerException(
+          'Server got error. Could not delete transaction',
+          ExceptionCode.InternalServerFailure,
+          { id, error }
+        )
+      }
     } else {
-      throw new SyncException('Synchronize fail')
+      throw new UnprocesableException(
+        'Could not find transaction to delete',
+        ExceptionCode.DeleteTransactionFailure,
+        { id }
+      )
     }
 
     return
   }
 
+  /**
+   * Get list of years that have transaction data.
+   */
   public async years() {
-    const [start, end] = await Promise.all([
-      Transaction.query().orderBy('date', 'asc').first(),
-      Transaction.query().orderBy('date', 'desc').first(),
-    ])
+    let start: Transaction | null
+    let end: Transaction | null
+    try {
+      ;[start, end] = await Promise.all([
+        Transaction.query().orderBy('date', 'asc').first(),
+        Transaction.query().orderBy('date', 'desc').first(),
+      ])
+    } catch (error) {
+      throw new InternalServerException(
+        'Could not query the list of available years',
+        ExceptionCode.QueryTransactionFailure,
+        { error }
+      )
+    }
 
     const results: number[] = []
     const fromDate = start?.date

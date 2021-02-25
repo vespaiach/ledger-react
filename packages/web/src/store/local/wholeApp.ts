@@ -8,15 +8,15 @@
  */
 
 import { REQUIRE_SIGNIN, CLOSE_SIGNIN } from '../../actions/auth';
-import { CLEAR_MESSAGE, SHOW_MESSAGE } from '../../actions/system';
-import { Action, AppMessageSeverity, WholeAppState } from '../../types.d';
+import { BUSY, CLEAR_MESSAGE, IDLE, SHOW_MESSAGE } from '../../actions/system';
+import { Action, AppBusyCode, AppMessageCode, WholeAppState } from '../../types.d';
 import { createReducer } from '../../utils/reducer';
 
 const defaultState: WholeAppState = {
     retainedAction: null,
     showSigninDialog: false,
-    message: null,
-    messageSeverity: null,
+    messageCode: null,
+    busyCode: AppBusyCode.Idle,
 };
 
 export default createReducer<WholeAppState>(defaultState, {
@@ -32,15 +32,33 @@ export default createReducer<WholeAppState>(defaultState, {
         retainedAction: null,
     }),
 
-    [SHOW_MESSAGE]: (state, { payload }) => ({
-        ...state,
-        message: payload,
-        messageSeverity: AppMessageSeverity.Error,
-    }),
+    [SHOW_MESSAGE]: (state, { payload }: Action<string, AppMessageCode>) => {
+        if (payload) {
+            return {
+                ...state,
+                messageCode: payload,
+            };
+        }
+        return state;
+    },
 
     [CLEAR_MESSAGE]: (state) => ({
         ...state,
-        message: null,
-        messageSeverity: null,
+        messageCode: null,
+    }),
+
+    [BUSY]: (state, { payload }: Action<string, AppBusyCode>) => {
+        if (payload) {
+            return {
+                ...state,
+                busyCode: payload,
+            };
+        }
+        return state;
+    },
+
+    [IDLE]: (state) => ({
+        ...state,
+        busyCode: AppBusyCode.Idle,
     }),
 });

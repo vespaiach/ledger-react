@@ -8,7 +8,12 @@
  */
 
 import { all, select, call, put, take, fork } from 'redux-saga/effects';
-import { errorDisplay, loadingDisplay, messageClear, successDisplay } from '../actions/system';
+import {
+    appLoadingAction,
+    appSavingAction,
+    appIdleAction,
+    showMessageAction,
+} from '../actions/system';
 import {
     transactionList,
     transactionRequest,
@@ -22,7 +27,14 @@ import {
     DELETE_TRANSACTION,
     GET_LIST_YEAR,
 } from '../actions/trans';
-import { HTTPResult, Action, Transaction, APIError, RemoteRepository } from '../types';
+import {
+    HTTPResult,
+    Action,
+    Transaction,
+    APIError,
+    RemoteRepository,
+    AppMessageCode,
+} from '../types.d';
 
 import { clearToken, setToken } from '../utils/token';
 import { CLOSE_SIGNIN, requireSignin, SIGNIN, SIGNOUT } from '../actions/auth';
@@ -38,7 +50,7 @@ export function* check401(response: HTTPResult<APIError>, currentAction: Action)
     if (response.status === 401) {
         yield put(requireSignin(currentAction));
     } else {
-        yield put(errorDisplay(response.data.message || 'Unknown error'));
+        yield put(showMessageAction(response.data.code));
     }
 }
 
@@ -49,7 +61,7 @@ export function* fetchTransactionRequest(repo: RemoteRepository, year: number) {
     yield fork(fetchYearListRequest, repo);
 
     try {
-        yield put(loadingDisplay('Loading transactions'));
+        yield put(appLoadingAction());
         const response: YieldReturn<ReturnType<typeof repo.getTransactions>> = yield call(
             repo.getTransactions,
             {
@@ -59,12 +71,13 @@ export function* fetchTransactionRequest(repo: RemoteRepository, year: number) {
 
         if (response.ok) {
             yield put(transactionList(response.data as Transaction[]));
-            yield put(messageClear());
+            yield put(appIdleAction());
         } else {
             yield check401(response as HTTPResult<APIError>, transactionRequest(year));
         }
     } catch (e) {
-        yield put(errorDisplay('Network error'));
+        console.error(e);
+        yield put(showMessageAction(AppMessageCode.NetworkError));
     }
 }
 
@@ -84,6 +97,7 @@ export function* fetchYearListRequest(repo: RemoteRepository) {
             }
         } catch (e) {
             console.error(e);
+            yield put(showMessageAction(AppMessageCode.NetworkError));
         }
     }
 }
@@ -92,12 +106,12 @@ export function* fetchYearListRequest(repo: RemoteRepository) {
  * Create a transactions
  */
 export function* createTransactionRequest(repo: RemoteRepository, data: Omit<Transaction, 'id'>) {
-    yield put(loadingDisplay('Saving transaction'));
+    yield put(appSavingAction());
     const response: YieldReturn<ReturnType<typeof repo.createTransaction>> = yield call(
         repo.createTransaction,
         data
     );
-    yield put(messageClear());
+    yield put(appIdleAction());
 
     if (response.ok) {
         const year = yield select((state) => state.transaction.year);
@@ -111,12 +125,12 @@ export function* createTransactionRequest(repo: RemoteRepository, data: Omit<Tra
  * Update a transaction
  */
 export function* updateTransactionRequest(repo: RemoteRepository, data: Transaction) {
-    yield put(loadingDisplay('Saving transaction'));
+    yield put(appSavingAction());
     const response: YieldReturn<ReturnType<typeof repo.updateTransaction>> = yield call(
         repo.updateTransaction,
         data
     );
-    yield put(messageClear());
+    yield put(appIdleAction());
 
     if (response.ok) {
         const year = yield select((state) => state.transaction.year);
@@ -130,12 +144,12 @@ export function* updateTransactionRequest(repo: RemoteRepository, data: Transact
  * Delete a transaction
  */
 export function* deleteTransactionRequest(repo: RemoteRepository, data: number) {
-    yield put(loadingDisplay('Saving transaction'));
+    yield put(appSavingAction());
     const response: YieldReturn<ReturnType<typeof repo.deleteTransaction>> = yield call(
         repo.deleteTransaction,
         data
     );
-    yield put(messageClear());
+    yield put(appIdleAction());
 
     if (response.ok) {
         const year = yield select((state) => state.transaction.year);
@@ -160,9 +174,9 @@ export function* deleteTransactionRequest(repo: RemoteRepository, data: number) 
  */
 export function* signinRequest(repo: RemoteRepository, data: { email: string; password: string }) {
     try {
-        yield put(loadingDisplay('Sign in'));
+        yield put(appLoadingAction());
         const response: YieldReturn<ReturnType<typeof repo.signin>> = yield call(repo.signin, data);
-        yield put(messageClear());
+        yield put(appIdleAction());
 
         if (response.ok) {
             const result = yield call(setToken, (response.data as { token: string }).token);
@@ -174,15 +188,16 @@ export function* signinRequest(repo: RemoteRepository, data: { email: string; pa
                 yield put({ type: CLOSE_SIGNIN });
                 return true;
             } else {
-                yield put(errorDisplay("Couldn't store token to local storage"));
+                yield put(showMessageAction(AppMessageCode.UnknownError));
                 return false;
             }
         } else {
-            yield put(errorDisplay((response.data as APIError).message || 'Unknown error'));
+            yield put(showMessageAction((response.data as APIError).code));
             return false;
         }
     } catch (e) {
-        yield put(errorDisplay('Network error'));
+        console.error(e);
+        yield put(showMessageAction(AppMessageCode.NetworkError));
     }
 }
 
@@ -194,16 +209,17 @@ export function* signoutRequest(repo: RemoteRepository) {
         const response: YieldReturn<ReturnType<typeof repo.signout>> = yield call(repo.signout);
 
         if (response.ok) {
-            yield put(successDisplay('You have beend signed out'));
+            yield put(showMessageAction(AppMessageCode.SignoutSuccess));
             yield call(() => {
                 clearToken();
                 return Promise.resolve(true);
             });
         } else {
-            yield put(errorDisplay((response as HTTPResult<APIError>).data.message));
+            yield put(showMessageAction((response as HTTPResult<APIError>).data.code));
         }
     } catch (e) {
-        yield put(errorDisplay('Network error'));
+        console.error(e);
+        yield put(showMessageAction(AppMessageCode.NetworkError));
     }
 }
 
@@ -214,7 +230,9 @@ export function watchFetchRequest(repository: RemoteRepository) {
     return function* () {
         while (true) {
             const { payload }: Action<string, number> = yield take(GET_TRANSACTION);
-            yield fetchTransactionRequest(repository, payload);
+            if (payload) {
+                yield fetchTransactionRequest(repository, payload);
+            }
         }
     };
 }
@@ -264,7 +282,9 @@ function watchSigninRequest(repository: RemoteRepository) {
             const { payload }: Action<string, { email: string; password: string }> = yield take(
                 SIGNIN
             );
-            yield signinRequest(repository, payload);
+            if (payload) {
+                yield signinRequest(repository, payload);
+            }
         }
     };
 }

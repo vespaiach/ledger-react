@@ -7,7 +7,10 @@
 
 import BaseException from 'App/Exceptions/BaseException'
 
-export default class WrongCredentialsException extends BaseException {
+/**
+ * Server exception.
+ */
+export default class InternalServerException extends BaseException {
   constructor(message: string, code: string, real: any) {
     super(500, message, code, real)
   }

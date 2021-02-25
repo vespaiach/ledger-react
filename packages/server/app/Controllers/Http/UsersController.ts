@@ -3,6 +3,7 @@
  *
  * @license MIT
  * @copyright Toan Nguyen <nta.toan@gmail.com>
+ *
  */
 
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
@@ -10,11 +11,13 @@ import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import Hash from '@ioc:Adonis/Core/Hash'
 import Mail from '@ioc:Adonis/Addons/Mail'
 import Env from '@ioc:Adonis/Core/Env'
-import { DateTime } from 'luxon'
-import User from 'App/Models/User'
 import { base64 } from '@poppinss/utils'
+import { DateTime } from 'luxon'
+
+import User from 'App/Models/User'
 import WrongCredentialsException from 'App/Exceptions/WrongCredentialsException'
-import Logger from '@ioc:Adonis/Core/Logger'
+import { ExceptionCode } from 'App/Exceptions/Code'
+import InternalServerException from 'App/Exceptions/InternalServerException'
 
 export default class UsersController {
   /**
@@ -31,9 +34,12 @@ export default class UsersController {
     try {
       const token = await auth.use('api').attempt(email, password)
       return token.toJSON()
-    } catch (e) {
-      Logger.info(e)
-      throw new WrongCredentialsException('Wrong credentials', 'E_WRONG_CREDENTIALS')
+    } catch (error) {
+      throw new WrongCredentialsException(
+        'Wrong credentials',
+        ExceptionCode.WrongCredentialFailure,
+        { error, email }
+      )
     }
   }
 
@@ -41,7 +47,13 @@ export default class UsersController {
    * Sign out token
    */
   public async signout({ auth }: HttpContextContract) {
-    await auth.use('api').logout()
+    try {
+      await auth.use('api').logout()
+    } catch (error) {
+      throw new InternalServerException('Server failed', ExceptionCode.InternalServerFailure, {
+        error,
+      })
+    }
     return
   }
 
