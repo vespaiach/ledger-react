@@ -20,6 +20,7 @@ import { getMonthName } from '../../utils/format';
 import BarChartIcon from '../../components/Icons/BarChart';
 import LineChartIcon from '../../components/Icons/LineChart';
 import { useMonthlyReport } from './hooks';
+import { AppRootState, Transaction } from '../../types.d';
 
 const useStyles = makeStyles((theme) => ({
     padding: {
@@ -62,8 +63,11 @@ export default function Report() {
     const monthPopupState = usePopupState({ variant: 'popover', popupId: 'monthMenu' });
     const yearPopupState = usePopupState({ variant: 'popover', popupId: 'yearMenu' });
 
-    const years = useSelector((state) => state.transaction.years);
-    const transactions = useSelector((state) => state.transaction.list);
+    const years = useSelector<AppRootState, number[]>((state) => state.transaction.years);
+    const transactions = useSelector<AppRootState, Transaction[]>(
+        (state) => state.transaction.list
+    );
+
     const [month, setMonth] = useState(() => {
         return new Date().getMonth();
     });
@@ -150,7 +154,6 @@ export default function Report() {
                     </Grid>
                     <Grid item xs={12} sm={12} md={4}>
                         <TransactionTable
-                            className={classes.incomeTableRoot}
                             caption={
                                 data.income.list.length > 0
                                     ? 'Total income by categories'

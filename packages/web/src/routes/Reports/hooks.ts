@@ -7,14 +7,23 @@
  *
  */
 import { useMemo } from 'react';
+import { Transaction } from '../../types.d';
 
 /**
  * Aggregate transaction records by transaction type, transaction category and transction month
  */
-export function useMonthlyReport({ transactions, year, month }) {
+export function useMonthlyReport({
+    transactions,
+    year,
+    month,
+}: {
+    transactions: Transaction[];
+    year: number;
+    month: number;
+}) {
     return useMemo(() => {
-        const aggregateMonthlyIncome = {};
-        const aggregateMonthlyExpense = {};
+        const aggregateMonthlyIncome: { [key: string]: number } = {};
+        const aggregateMonthlyExpense: { [key: string]: number } = {};
         let totalMonthlyIncome = 0;
         let totalMonthlyExpense = 0;
         const firstDayOfMonth = new Date(year, month, 1);

@@ -29,7 +29,7 @@ import { format } from 'date-fns';
 
 import DialogPanel from '../../components/DialogPanel';
 import EditIcon from '../../components/Icons/Edit';
-import { Transaction } from '../../types';
+import { Transaction } from '../../types.d';
 
 const useStyles = makeStyles((theme) => ({
     infoPanel: {

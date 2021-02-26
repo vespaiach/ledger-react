@@ -87,7 +87,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function TopNav({ elevation = 0, onRefesh, onSignOut }) {
+interface TopNavProps {
+    elevation?: number;
+    onRefesh: () => void;
+    onSignout: () => void;
+}
+
+export default function TopNav({ elevation = 0, onRefesh, onSignout }: TopNavProps) {
     const classes = useStyles();
     const popupState = usePopupState({ variant: 'popover', popupId: 'settingMenu' });
 
@@ -132,7 +138,7 @@ export default function TopNav({ elevation = 0, onRefesh, onSignOut }) {
                     </MenuItem>
                     <MenuItem
                         onClick={() => {
-                            onSignOut();
+                            onSignout();
                             popupState.close();
                         }}>
                         <ListItemIcon>

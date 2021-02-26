@@ -6,7 +6,7 @@ import NumberFormat from 'react-number-format';
 import { format } from 'date-fns';
 
 import EditIcon from '../../components/Icons/Edit';
-import { Transaction } from '../../types';
+import { Transaction } from '../../types.d';
 
 const useStyles = makeStyles((theme) => ({
     listRoot: {

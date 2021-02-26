@@ -165,6 +165,7 @@ export default function Form({
                 error={formik.touched.amount && Boolean(formik.errors.amount)}
                 helperText={formik.touched.amount && formik.errors.amount}
                 InputProps={{
+                    // @ts-ignore: Don't know the exact type
                     inputComponent: MoneyInput,
                     endAdornment: (
                         <InputAdornment

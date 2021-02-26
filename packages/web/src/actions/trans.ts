@@ -1,4 +1,4 @@
-import { Action, Transaction } from '../types';
+import { Action, Transaction } from '../types.d';
 
 export const GET_LIST_YEAR = 'get list of available years';
 export const RECEIVE_LIST_YEAR = 'receive list of available years';

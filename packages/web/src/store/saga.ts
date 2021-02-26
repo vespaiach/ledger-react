@@ -16,7 +16,7 @@ import {
 } from '../actions/system';
 import {
     transactionList,
-    transactionRequest,
+    transactionRequestAction,
     yearList,
     transactionCreatingRequest,
     transactionDeletingRequest,
@@ -37,7 +37,7 @@ import {
 } from '../types.d';
 
 import { clearToken, setToken } from '../utils/token';
-import { CLOSE_SIGNIN, requireSignin, SIGNIN, SIGNOUT } from '../actions/auth';
+import { CLOSE_SIGNIN, requireSigninAction, SIGNIN, SIGNOUT } from '../actions/auth';
 
 type YieldReturn<T> = T extends Promise<infer U> ? U : T;
 
@@ -48,7 +48,7 @@ type YieldReturn<T> = T extends Promise<infer U> ? U : T;
  */
 export function* check401(response: HTTPResult<APIError>, currentAction: Action) {
     if (response.status === 401) {
-        yield put(requireSignin(currentAction));
+        yield put(requireSigninAction(currentAction));
     } else {
         yield put(showMessageAction(response.data.code));
     }
@@ -73,7 +73,7 @@ export function* fetchTransactionRequest(repo: RemoteRepository, year: number) {
             yield put(transactionList(response.data as Transaction[]));
             yield put(appIdleAction());
         } else {
-            yield check401(response as HTTPResult<APIError>, transactionRequest(year));
+            yield check401(response as HTTPResult<APIError>, transactionRequestAction(year));
         }
     } catch (e) {
         console.error(e);
@@ -115,7 +115,7 @@ export function* createTransactionRequest(repo: RemoteRepository, data: Omit<Tra
 
     if (response.ok) {
         const year = yield select((state) => state.transaction.year);
-        yield put(transactionRequest(year));
+        yield put(transactionRequestAction(year));
     } else {
         yield check401(response as HTTPResult<APIError>, transactionCreatingRequest(data));
     }
@@ -134,7 +134,7 @@ export function* updateTransactionRequest(repo: RemoteRepository, data: Transact
 
     if (response.ok) {
         const year = yield select((state) => state.transaction.year);
-        yield put(transactionRequest(year));
+        yield put(transactionRequestAction(year));
     } else {
         yield check401(response as HTTPResult<APIError>, transactionUpdatingRequest(data));
     }
@@ -153,7 +153,7 @@ export function* deleteTransactionRequest(repo: RemoteRepository, data: number) 
 
     if (response.ok) {
         const year = yield select((state) => state.transaction.year);
-        yield put(transactionRequest(year));
+        yield put(transactionRequestAction(year));
     } else {
         yield check401(response as HTTPResult<APIError>, transactionDeletingRequest(data));
     }

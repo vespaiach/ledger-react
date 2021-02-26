@@ -18,7 +18,7 @@ import {
     SlideProps,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { forwardRef, ReactElement, ReactNode } from 'react';
+import { forwardRef, ReactNode } from 'react';
 import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 

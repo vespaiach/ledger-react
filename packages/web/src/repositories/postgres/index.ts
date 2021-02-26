@@ -8,7 +8,7 @@
  */
 import qs from 'query-string';
 
-import { HTTPResult, RemoteRepository } from '../../types';
+import { HTTPResult, RemoteRepository } from '../../types.d';
 import { getToken } from '../../utils/token';
 
 const createFetchRequest = (

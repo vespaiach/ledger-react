@@ -16,6 +16,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
 import { formatCurrency } from '../../utils/format';
+import { Transaction } from '../../types.d';
 
 const useStyles = makeStyles((theme) => ({
     headRow: {
@@ -23,7 +24,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function TransactionTable({ className, caption, transactions = [] }) {
+interface TransactionTableProps {
+    className?: string;
+    caption: string;
+    transactions?: Transaction[];
+}
+
+export default function TransactionTable({
+    className,
+    caption,
+    transactions = [],
+}: TransactionTableProps) {
     const classes = useStyles();
     return (
         <TableContainer className={className}>

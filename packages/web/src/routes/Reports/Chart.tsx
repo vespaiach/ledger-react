@@ -67,7 +67,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Chart({ height, incomeTotal, expenseTotal }) {
+interface ChartProps {
+    height: number;
+    incomeTotal: number;
+    expenseTotal: number;
+}
+
+export default function Chart({ height, incomeTotal, expenseTotal }: ChartProps) {
     const classes = useStyles();
     const { incomeHeight, expenseHeight } = useMemo(() => {
         const max = incomeTotal > expenseTotal ? incomeTotal : expenseTotal;
@@ -86,19 +92,15 @@ export default function Chart({ height, incomeTotal, expenseTotal }) {
                 <div className={classes.expenseBar} style={{ height: expenseHeight }} />
             </div>
             <div className={classes.boxLegend}>
-                <List className={classes.root} component="div">
+                <List component="div">
                     <ListItem component="div" classes={{ root: classes.itemRoot }}>
-                        <ListItemIcon
-                            classes={{ root: classes.incomeAvatarRoot }}
-                            variant="rounded">
+                        <ListItemIcon classes={{ root: classes.incomeAvatarRoot }}>
                             <TurnedInRoundedIcon />
                         </ListItemIcon>
                         <ListItemText primary={formatCurrency(incomeTotal)} secondary="Incomes" />
                     </ListItem>
                     <ListItem component="div" classes={{ root: classes.itemRoot }}>
-                        <ListItemIcon
-                            classes={{ root: classes.expenseAvatarRoot }}
-                            variant="rounded">
+                        <ListItemIcon classes={{ root: classes.expenseAvatarRoot }}>
                             <TurnedInRoundedIcon />
                         </ListItemIcon>
                         <ListItemText primary={formatCurrency(expenseTotal)} secondary="Expenses" />
@@ -111,8 +113,7 @@ export default function Chart({ height, incomeTotal, expenseTotal }) {
                                     incomeTotal > expenseTotal
                                         ? classes.incomeAvatarRoot
                                         : classes.expenseAvatarRoot,
-                            }}
-                            variant="rounded">
+                            }}>
                             {incomeTotal > expenseTotal ? (
                                 <AddRoundedIcon />
                             ) : incomeTotal < expenseTotal ? (

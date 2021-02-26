@@ -24,7 +24,7 @@ import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { useState } from 'react';
-import { Alert } from '@material-ui/lab';
+import { AppBusyCode, AppRootState } from '../../types.d';
 
 const useStyles = makeStyles((theme) => ({
     formSignup: {
@@ -48,9 +48,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Signin() {
-    const dispatch = useDispatch();
-    const loading = useSelector((state) => state.common.tasking === 'load');
     const classes = useStyles();
+    const dispatch = useDispatch();
+
+    const loading = useSelector<AppRootState, boolean>(
+        (state) => state.wholeApp.busyCode === AppBusyCode.Loading
+    );
     const [passwordVisibility, setPasswordVisibility] = useState(false);
     const formik = useFormik({
         initialValues: {
@@ -59,11 +62,8 @@ export default function Signin() {
             remember: false,
         },
         validationSchema: yup.object({
-            email: yup
-                .string('enter email')
-                .required('email is required')
-                .email('enter a valid email'),
-            password: yup.string('enter password').required('password is required').min(8),
+            email: yup.string().required('email is required').email('enter a valid email'),
+            password: yup.string().required('password is required').min(8),
         }),
         onSubmit: ({ email, remember, password }) => {
             if (!loading) {
@@ -77,7 +77,7 @@ export default function Signin() {
 
     return (
         <form className={classes.formSignup} onSubmit={formik.handleSubmit}>
-            <Typography component={Alert} severity="error" classes={{ root: classes.lineOneRoot }}>
+            <Typography classes={{ root: classes.lineOneRoot }}>
                 You haven't signed in or your session has been expired.
             </Typography>
             <Typography classes={{ root: classes.lineTwoRoot }}>

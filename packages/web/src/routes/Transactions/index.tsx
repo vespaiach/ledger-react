@@ -37,7 +37,7 @@ import DeletingDialog from './DeletingDialog';
 import DatabaseSearchIcon from '../../components/Icons/DatabaseSearch';
 import SortingIcon from '../../components/Icons/Sorting';
 import FilterDialog from './FilterDialog';
-import { SortingFunction, Transaction, AppRootState, Action } from '../../types';
+import { SortingFunction, Transaction, AppRootState, Action } from '../../types.d';
 import {
     transactionCreatingRequest,
     transactionDeletingRequest,

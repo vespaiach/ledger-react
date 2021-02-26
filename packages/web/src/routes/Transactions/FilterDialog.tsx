@@ -26,7 +26,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 
 import DialogPanel from '../../components/DialogPanel';
-import { Action } from '../../types';
+import { Action } from '../../types.d';
 import {
     amountFilterEnableRequest,
     amountFromFilterRequest,

@@ -2,7 +2,7 @@ import { IconButton, makeStyles, Snackbar } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';
 
-import { AppBusyCode, AppMessageCode, AppRootState } from '../types';
+import { AppBusyCode, AppMessageCode, AppRootState } from '../types.d';
 import { clearMessageAction } from '../actions/system';
 
 const useStyles = makeStyles((theme) => ({

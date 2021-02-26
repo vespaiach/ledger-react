@@ -38,7 +38,7 @@ function App() {
 
     return (
         <>
-            <TopNav onRefesh={handleRefesh} onSignOut={handleSignOut} />
+            <TopNav onRefesh={handleRefesh} onSignout={handleSignOut} />
             <Switch>
                 <Route exact path="/transactions">
                     <Transactions />
