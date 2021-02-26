@@ -31,7 +31,7 @@ export default class SyncValidator {
     amount: schema.number(),
     description: schema.string({ escape: true, trim: true }, [rules.maxLength(255)]),
     category: schema.string({ escape: true, trim: true }, [rules.maxLength(63)]),
-    transaction_type: schema.string({ escape: true, trim: true }, [rules.transactionType()]),
+    transactionType: schema.string({ escape: true, trim: true }, [rules.transactionType()]),
   })
 
   /**

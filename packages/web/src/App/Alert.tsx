@@ -11,6 +11,11 @@ const useStyles = makeStyles((theme) => ({
             background: theme.palette.success.main,
         },
     },
+    errorSnackbar: {
+        '& .MuiSnackbarContent-root': {
+            background: theme.palette.error,
+        },
+    },
 }));
 
 function getMessage(code: AppMessageCode | null): string {
@@ -48,6 +53,27 @@ function getMessage(code: AppMessageCode | null): string {
     }
 }
 
+const getAlertColor = (
+    code: AppMessageCode | null,
+    successClass: string,
+    errorClass: string
+): string => {
+    switch (code) {
+        case AppMessageCode.AuthorizedFailure:
+        case AppMessageCode.CreateTransactionFailure:
+        case AppMessageCode.UpdateTransactionFailure:
+        case AppMessageCode.DeleteTransactionFailure:
+        case AppMessageCode.InternalServerFailure:
+        case AppMessageCode.QueryTransactionFailure:
+        case AppMessageCode.NetworkError:
+        case AppMessageCode.ValidationFailure:
+        case AppMessageCode.WrongCredentialFailure:
+            return errorClass;
+        default:
+            return successClass;
+    }
+};
+
 export default function Alert() {
     const dispatch = useDispatch();
     const classes = useStyles();
@@ -62,7 +88,13 @@ export default function Alert() {
     return (
         <>
             <Snackbar
-                classes={{ root: classes.successSnackbar }}
+                classes={{
+                    root: getAlertColor(
+                        messageCode,
+                        classes.successSnackbar,
+                        classes.errorSnackbar
+                    ),
+                }}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 autoHideDuration={5000}
                 open={busyCode === AppBusyCode.Idle && messageCode !== null}

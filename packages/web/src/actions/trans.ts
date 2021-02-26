@@ -1,4 +1,4 @@
-import { Action, Transaction } from '../types.d';
+import { Action, SortingFunction, Transaction } from '../types.d';
 
 export const GET_LIST_YEAR = 'get list of available years';
 export const RECEIVE_LIST_YEAR = 'receive list of available years';
@@ -59,14 +59,12 @@ export const transactionDeletingRequest = (id: number): Action<string, number> =
     payload: id,
 });
 
-export const incomeFilterRequest = (income: boolean): Action<string, boolean> => ({
-    type: FILTER_INCOME,
-    payload: income,
+export const incomeFilterAction = (income: boolean): Action<string, boolean> => ({
+    type: income ? FILTER_INCOME : NOT_FILTER_INCOME,
 });
 
-export const expenseFilterRequest = (expense: boolean): Action<string, boolean> => ({
-    type: FILTER_EXPENSE,
-    payload: expense,
+export const expenseFilterAction = (expense: boolean): Action<string, boolean> => ({
+    type: expense ? FILTER_EXPENSE : NOT_FILTER_EXPENSE,
 });
 
 export const amountFilterEnableRequest = (enable: boolean): Omit<Action, 'payload'> => ({
@@ -95,4 +93,20 @@ export const amountFromFilterRequest = (amountFrom: number): Action => ({
 export const amountToFilterRequest = (amountTo: number): Action => ({
     type: FILTER_AMOUNT_TO,
     payload: amountTo,
+});
+
+export const sortTransactionAction = (
+    payload: SortingFunction
+): Action<string, SortingFunction> => ({
+    type: SORT_TRANSACTION,
+    payload,
+});
+
+export const selectYearAction = (payload: number): Action<string, number> => ({
+    type: SELECT_YEAR,
+    payload,
+});
+
+export const resetFilterAction = (): Action => ({
+    type: RESET_FILTER_VALUES,
 });

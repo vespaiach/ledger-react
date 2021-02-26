@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface TransDetailDialogProps {
+    open: boolean;
     transaction: Transaction | null | undefined;
     onClose: () => void;
     onEdit: (t: Transaction) => void;
@@ -51,6 +52,7 @@ interface TransDetailDialogProps {
 }
 
 export default function TransDetailDialog({
+    open,
     transaction,
     onClose,
     onEdit,
@@ -104,7 +106,7 @@ export default function TransDetailDialog({
     }
 
     return (
-        <DialogPanel title="Transaction Details" open={Boolean(transaction)} onClose={onClose}>
+        <DialogPanel title="Transaction Details" open={open} onClose={onClose}>
             <Container classes={{ root: classes.infoPanel }} maxWidth={false}>
                 <Container maxWidth="sm">
                     <Grid container spacing={3}>

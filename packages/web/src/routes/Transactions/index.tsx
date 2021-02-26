@@ -39,10 +39,13 @@ import SortingIcon from '../../components/Icons/Sorting';
 import FilterDialog from './FilterDialog';
 import { SortingFunction, Transaction, AppRootState, Action } from '../../types.d';
 import {
+    sortTransactionAction,
+    selectYearAction,
     transactionCreatingRequest,
     transactionDeletingRequest,
     transactionRequestAction,
     transactionUpdatingRequest,
+    resetFilterAction,
 } from '../../actions/trans';
 
 const useStyles = makeStyles((theme) => ({
@@ -209,14 +212,11 @@ export default function Transactions() {
 
     const selectYear = (year: number) => () => {
         yearMenuState.close();
-        dispatch({ type: 'Reducer: set year', payload: year });
+        dispatch(selectYearAction(year));
     };
     const selectSorting = (payload: SortingFunction) => () => {
         sortingMenuState.close();
-        dispatch({
-            type: 'Reducer: save sorting function',
-            payload,
-        });
+        dispatch(sortTransactionAction(payload));
     };
 
     /**
@@ -411,6 +411,7 @@ export default function Transactions() {
                 }}
             />
             <TransDetailDialog
+                open={Boolean(judgingTransaction && judgingTransaction.mode === 'view')}
                 transaction={judgingTransaction && judgingTransaction.item}
                 onClose={() => setJudgingTransaction(null)}
                 onEdit={(item) => {
@@ -431,7 +432,7 @@ export default function Transactions() {
                 allowAmountFilter={allowAmountFilter}
                 allowDateFilter={allowDateFilter}
                 dispatch={dispatch}
-                onReset={() => dispatch({ type: 'Reducer: reset transaction filter' })}
+                onReset={() => dispatch(resetFilterAction())}
                 onClose={() => {
                     setShowFilterDialog(false);
                 }}

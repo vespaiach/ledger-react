@@ -133,7 +133,7 @@ export default createReducer<TransactionFilterState>(defaultState, {
     [FILTER_EXPENSE]: (state) => ({
         ...state,
         expense: {
-            origin: state.income.origin,
+            origin: state.expense.origin,
             value: true,
         },
     }),
@@ -141,8 +141,8 @@ export default createReducer<TransactionFilterState>(defaultState, {
     [NOT_FILTER_EXPENSE]: (state) => ({
         ...state,
         expense: {
-            origin: state.income.origin,
-            value: true,
+            origin: state.expense.origin,
+            value: false,
         },
     }),
 

@@ -23,7 +23,7 @@ import { CloseRounded as CloseRoundedIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 
 const SlideUp = forwardRef(function Transition(props: SlideProps, ref) {
-    return <Slide direction="up" ref={ref} children={props.children} />;
+    return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const useStyles = makeStyles({

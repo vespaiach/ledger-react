@@ -46,8 +46,7 @@ export default class TransactionsController {
    */
   public async create({ request }: HttpContextContract) {
     const record = await request.validate(SyncValidator)
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { date, amount, description, category, transaction_type } = record
+    const { date, amount, description, category, transactionType } = record
 
     const tran = new Transaction()
     tran.date = date
@@ -55,9 +54,7 @@ export default class TransactionsController {
     tran.description = description
     tran.category = category
     tran.transactionType =
-      transaction_type === TransactionType.Expense
-        ? TransactionType.Expense
-        : TransactionType.Income
+      transactionType === TransactionType.Expense ? TransactionType.Expense : TransactionType.Income
 
     try {
       await tran.save()
@@ -69,16 +66,15 @@ export default class TransactionsController {
       )
     }
 
-    return
+    return tran
   }
 
   /**
    * Update a transaction.
    */
-  public async update({ request }: HttpContextContract) {
+  public async update({ request, response }: HttpContextContract) {
     const record = await request.validate(SyncValidator)
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { id, date, amount, description, category, transaction_type } = record
+    const { id, date, amount, description, category, transactionType } = record
 
     let tran: Transaction | null
     if (id) {
@@ -101,9 +97,7 @@ export default class TransactionsController {
     tran.description = description
     tran.category = category
     tran.transactionType =
-      transaction_type === TransactionType.Expense
-        ? TransactionType.Expense
-        : TransactionType.Income
+      transactionType === TransactionType.Expense ? TransactionType.Expense : TransactionType.Income
 
     try {
       await tran.save()
@@ -115,13 +109,13 @@ export default class TransactionsController {
       )
     }
 
-    return
+    response.status(204)
   }
 
   /**
    * Delete transaction.
    */
-  public async delete({ params }: HttpContextContract) {
+  public async delete({ params, response }: HttpContextContract) {
     const { id } = params
 
     const tran = await Transaction.find(id)
@@ -143,7 +137,7 @@ export default class TransactionsController {
       )
     }
 
-    return
+    response.status(204)
   }
 
   /**

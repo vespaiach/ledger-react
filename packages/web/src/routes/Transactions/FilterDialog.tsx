@@ -34,8 +34,8 @@ import {
     dateFilterEnableRequest,
     dateFromFilterRequest,
     dateToFilterRequest,
-    expenseFilterRequest,
-    incomeFilterRequest,
+    expenseFilterAction,
+    incomeFilterAction,
 } from '../../actions/trans';
 
 const useStyles = makeStyles<Theme, { [key: string]: boolean }>((theme) => ({
@@ -152,7 +152,7 @@ export default function FilterDialog({
                                 checked={showIncome}
                                 value={showIncome}
                                 onChange={(evt) => {
-                                    dispatch(incomeFilterRequest(evt.target.checked));
+                                    dispatch(incomeFilterAction(evt.target.checked));
                                 }}
                             />
                         </Box>
@@ -166,7 +166,7 @@ export default function FilterDialog({
                                 checked={showExpense}
                                 value={showExpense}
                                 onChange={(evt) => {
-                                    dispatch(expenseFilterRequest(evt.target.checked));
+                                    dispatch(expenseFilterAction(evt.target.checked));
                                 }}
                             />
                         </Box>

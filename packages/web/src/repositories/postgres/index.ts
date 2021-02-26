@@ -21,7 +21,7 @@ const createFetchRequest = (
         'Content-Type': 'application/json',
         'Accept-Charset': 'utf-8',
         'Accept-Language': 'en-US,en',
-        Accept: 'text/html, application/json',
+        Accept: 'application/json',
     });
 
     if (tokenInclude) {
@@ -60,7 +60,7 @@ const handleFetchRequest = async (
     const request = createFetchRequest(method, endpoint, params, tokenInclude);
     const response = await fetch(request);
     const result: HTTPResult<any> = { ok: response.ok, status: response.status, data: null };
-    if (response.status !== 204) {
+    if (response.status !== 204 && !response.bodyUsed) {
         result.data = await response.json();
     }
     return result;
