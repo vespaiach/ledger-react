@@ -11,7 +11,16 @@ export default class Transaction extends BaseModel {
   @column.dateTime()
   public date: DateTime
 
-  @column()
+  /**
+   *
+   * Underlying, node-postgres decide to leave bigint as string. This should be done in node-postgres lib instead.
+   * https://github.com/brianc/node-postgres/issues/339
+   * https://github.com/brianc/node-pg-types
+   *
+   */
+  @column({
+    consume: (value: string) => parseFloat(value),
+  })
   public amount: number
 
   @column()

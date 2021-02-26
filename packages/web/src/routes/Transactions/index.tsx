@@ -41,6 +41,7 @@ import { SortingFunction, Transaction, AppRootState, Action } from '../../types.
 import {
     transactionCreatingRequest,
     transactionDeletingRequest,
+    transactionRequestAction,
     transactionUpdatingRequest,
 } from '../../actions/trans';
 
@@ -222,7 +223,7 @@ export default function Transactions() {
      * Load transactions by year
      */
     useEffect(() => {
-        dispatch({ type: 'Saga: fetch transactions', payload: year });
+        dispatch(transactionRequestAction(year));
     }, [year, dispatch]);
 
     let el = null;

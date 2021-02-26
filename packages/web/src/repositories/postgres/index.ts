@@ -31,7 +31,7 @@ const createFetchRequest = (
         }
     }
 
-    let url = `${process.env.REACT_APP_API_ORIGIN}/${endpoint}`;
+    let url = `${process.env.REACT_APP_API_ORIGIN}${endpoint}`;
     const requestBody: { [key: string]: any } = {
         method,
         headers,

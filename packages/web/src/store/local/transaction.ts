@@ -49,7 +49,10 @@ export default createReducer<TransactionState>(defaultState, {
         if (payload) {
             return {
                 ...state,
-                list: payload,
+                list: payload.map((tr) => ({
+                    ...tr,
+                    date: new Date(tr.date),
+                })),
             };
         }
         return state;
