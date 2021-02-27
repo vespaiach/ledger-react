@@ -8,22 +8,30 @@
 import Logger from '@ioc:Adonis/Core/Logger'
 import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { ExceptionCode } from './Code'
 
 export default class ExceptionHandler extends HttpExceptionHandler {
-  protected ignoreStatuses = [422]
-
   constructor() {
     super(Logger)
   }
 
   public async handle(error, ctx: HttpContextContract) {
-    if (error.code === 'E_VALIDATION_FAILURE') {
-      return ctx.response.status(400).send({
-        code: 'E_VALIDATION_FAILURE',
-        message: 'Payload syntax error',
-      })
+    if (error.code === ExceptionCode.ValidationFailure) {
+      return ctx.response
+        .status(400)
+        .send({ message: 'Data validation failure', code: ExceptionCode.ValidationFailure })
+    } else if (error.code === 'E_UNAUTHORIZED_ACCESS') {
+      return ctx.response
+        .status(401)
+        .send({ message: error.message, code: ExceptionCode.AuthorizedFailure })
     }
 
-    return super.handle(error, ctx)
+    return ctx.response
+      .status(500)
+      .send({ message: 'Unknown error occurred', code: ExceptionCode.InternalServerFailure })
+  }
+
+  public report(error) {
+    Logger.error(error, error.message, error.code)
   }
 }

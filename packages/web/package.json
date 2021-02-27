@@ -12,24 +12,29 @@
         "@testing-library/jest-dom": "^5.11.4",
         "@testing-library/react": "^11.1.0",
         "@testing-library/user-event": "^12.1.10",
-        "@vespaiach/axios-fetch-adapter": "^0.1.1",
-        "axios": "^0.21.1",
+        "@types/jest": "^26.0.15",
+        "@types/node": "^12.0.0",
+        "@types/react": "^16.9.53",
+        "@types/react-dom": "^16.9.8",
         "clsx": "^1.1.1",
-        "connected-react-router": "^6.8.0",
+        "d3-axis": "^2.0.0",
+        "d3-scale": "^3.2.3",
+        "d3-selection": "^2.0.0",
         "date-fns": "^2.16.1",
         "formik": "^2.2.6",
         "humps": "^2.0.1",
         "material-ui-popup-state": "^1.7.1",
-        "query-string": "^6.13.8",
+        "query-string": "^6.14.0",
         "react": "^17.0.1",
         "react-dom": "^17.0.1",
         "react-number-format": "^4.4.4",
         "react-redux": "^7.2.2",
         "react-router-dom": "^5.2.0",
-        "react-scripts": "4.0.1",
+        "react-scripts": "4.0.2",
         "react-virtualized": "^9.22.3",
         "redux": "^4.0.5",
         "redux-saga": "^1.1.3",
+        "typescript": "^4.0.3",
         "web-vitals": "^0.2.4",
         "workbox-background-sync": "^5.1.3",
         "workbox-broadcast-update": "^5.1.3",
@@ -44,6 +49,15 @@
         "workbox-strategies": "^5.1.3",
         "workbox-streams": "^5.1.3",
         "yup": "^0.32.8"
+    },
+    "devDependencies": {
+        "@types/d3-axis": "^2.0.0",
+        "@types/d3-scale": "^3.2.2",
+        "@types/d3-selection": "^2.0.0",
+        "@types/react-redux": "^7.1.16",
+        "@types/react-router-dom": "^5.1.7",
+        "@types/react-virtualized": "^9.21.11",
+        "redux-saga-test-plan": "^4.0.1"
     },
     "scripts": {
         "dev": "react-scripts start",
@@ -85,10 +99,5 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
-    },
-    "devDependencies": {
-        "eslint": "^7.18.0",
-        "prettier": "^2.2.1",
-        "redux-saga-test-plan": "^4.0.1"
     }
 }

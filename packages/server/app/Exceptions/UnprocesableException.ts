@@ -3,12 +3,16 @@
  *
  * @license MIT
  * @copyright Toan Nguyen
+ *
  */
 
 import BaseException from 'App/Exceptions/BaseException'
 
-export default class WrongCredentialsException extends BaseException {
+/**
+ * Unable to save/delete/update records.
+ */
+export default class UnprocesableException extends BaseException {
   constructor(message: string, code: string, real: any) {
-    super(500, message, code, real)
+    super(422, message, code, real)
   }
 }

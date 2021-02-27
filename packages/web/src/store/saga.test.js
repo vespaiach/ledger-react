@@ -15,15 +15,15 @@ import {
     signoutRequest,
     fetchYearListRequest,
     syncTransactionRequest,
-} from './saga';
-import { fetchTransactions, getYears, signin, syncTransactions } from './remote';
+} from './sideEffect';
+import { fetchTransactions, getYears, signin, syncTransactions } from '../repositories/remote';
 import { clearToken, setToken } from '../utils/token';
 
 describe('Test fetch transaction requests:', () => {
     const year = 2020;
     test('fetch transactions - return 200', () =>
         expectSaga(fetchTransactionRequest, year)
-            .withState({ transaction: { yearFetchedAt: new Date() } })
+            .withState({ transaction: { refetchListYears: new Date() } })
             .provide([[matchers.call.fn(fetchTransactions, year), { ok: true, data: [{ id: 1 }] }]])
             .put({ type: 'Reducer: show app loading' })
             .put({ type: 'Reducer: clear app process' })
@@ -35,7 +35,7 @@ describe('Test fetch transaction requests:', () => {
 
     test('fetch transactions - return 401', () =>
         expectSaga(fetchTransactionRequest, year)
-            .withState({ transaction: { yearFetchedAt: new Date() } })
+            .withState({ transaction: { refetchListYears: new Date() } })
             .provide([
                 [
                     matchers.call.fn(fetchTransactions, year),
@@ -58,7 +58,7 @@ describe('Test fetch transaction requests:', () => {
 
     test('fetch transactions - return other error', () =>
         expectSaga(fetchTransactionRequest, year)
-            .withState({ transaction: { yearFetchedAt: new Date() } })
+            .withState({ transaction: { refetchListYears: new Date() } })
             .provide([
                 [
                     matchers.call.fn(fetchTransactions, year),
@@ -226,7 +226,7 @@ describe('Test sign out requests:', () => {
 describe('Test years requests:', () => {
     test('get list of years - return 200', () =>
         expectSaga(fetchYearListRequest)
-            .withState({ transaction: { yearFetchedAt: null } })
+            .withState({ transaction: { refetchListYears: null } })
             .provide([[matchers.call.fn(getYears), { ok: true, data: [2020, 2021] }]])
             .put({
                 type: 'Reducer: store years',
@@ -236,7 +236,7 @@ describe('Test years requests:', () => {
 
     test('get list of years - return 401', () =>
         expectSaga(fetchYearListRequest)
-            .withState({ transaction: { yearFetchedAt: null } })
+            .withState({ transaction: { refetchListYears: null } })
             .provide([
                 [
                     matchers.call.fn(getYears),
