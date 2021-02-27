@@ -10,5 +10,10 @@
         "dev": "lerna run dev --parallel",
         "build": "lerna run build --parallel",
         "createacc": "lerna run createacc"
+    },
+    "dependencies": {
+        "d3-axis": "^2.0.0",
+        "d3-scale": "^3.2.3",
+        "d3-selection": "^2.0.0"
     }
 }

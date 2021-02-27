@@ -15,7 +15,7 @@ import {
     Table,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
-import { formatCurrency } from '../../utils/format';
+import FormatCurrency from '../../components/FormatCurrency';
 
 const useStyles = makeStyles((theme) => ({
     headRow: {
@@ -51,7 +51,9 @@ export default function TransactionTable({
                             <TableCell component="th" scope="row">
                                 {row.name}
                             </TableCell>
-                            <TableCell align="right">{formatCurrency(row.total, null)}</TableCell>
+                            <TableCell align="right">
+                                <FormatCurrency money={row.total} />
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

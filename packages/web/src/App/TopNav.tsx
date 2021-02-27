@@ -113,7 +113,7 @@ export default function TopNav({ elevation = 0, onRefesh, onSignout }: TopNavPro
                 <IconButton
                     aria-label="transaction reports"
                     title="transaction reports"
-                    to="/reports/monthly"
+                    to="/reports"
                     component={Link}>
                     <ChartIcon />
                 </IconButton>

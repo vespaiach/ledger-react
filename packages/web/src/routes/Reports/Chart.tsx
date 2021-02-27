@@ -14,7 +14,7 @@ import {
     RemoveRounded as RemoveRoundedIcon,
 } from '@material-ui/icons';
 import { useMemo } from 'react';
-import { formatCurrency } from '../../utils/format';
+import FormatCurrency from '../../components/FormatCurrency';
 
 const useStyles = makeStyles((theme) => ({
     boxChart: {
@@ -97,13 +97,19 @@ export default function Chart({ height, incomeTotal, expenseTotal }: ChartProps)
                         <ListItemIcon classes={{ root: classes.incomeAvatarRoot }}>
                             <TurnedInRoundedIcon />
                         </ListItemIcon>
-                        <ListItemText primary={formatCurrency(incomeTotal)} secondary="Incomes" />
+                        <ListItemText
+                            primary={<FormatCurrency money={incomeTotal} />}
+                            secondary="Incomes"
+                        />
                     </ListItem>
                     <ListItem component="div" classes={{ root: classes.itemRoot }}>
                         <ListItemIcon classes={{ root: classes.expenseAvatarRoot }}>
                             <TurnedInRoundedIcon />
                         </ListItemIcon>
-                        <ListItemText primary={formatCurrency(expenseTotal)} secondary="Expenses" />
+                        <ListItemText
+                            primary={<FormatCurrency money={expenseTotal} />}
+                            secondary="Expenses"
+                        />
                     </ListItem>
                     <Divider />
                     <ListItem component="div" classes={{ root: classes.itemRoot }}>
@@ -123,7 +129,9 @@ export default function Chart({ height, incomeTotal, expenseTotal }: ChartProps)
                             )}
                         </ListItemIcon>
                         <ListItemText
-                            primary={formatCurrency(Math.abs(incomeTotal - expenseTotal))}
+                            primary={
+                                <FormatCurrency money={Math.abs(incomeTotal - expenseTotal)} />
+                            }
                             secondary="Balance"
                         />
                     </ListItem>

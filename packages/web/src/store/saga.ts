@@ -48,7 +48,7 @@ type YieldReturn<T> = T extends Promise<infer U> ? U : T;
  */
 export function* check401(response: HTTPResult<APIError>, currentAction: Action) {
     if (response.status === 401) {
-        yield put(requireSigninAction(currentAction));
+        yield all([put(requireSigninAction(currentAction)), put(appIdleAction())]);
     } else {
         yield put(showMessageAction(response.data.code));
     }

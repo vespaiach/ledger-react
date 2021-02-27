@@ -3,7 +3,7 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import NotFound from '../routes/Errors/NotFound';
-import MonthlyReport from '../routes/Reports/Monthly';
+import Reports from '../routes/Reports';
 import Transactions from '../routes/Transactions';
 import DialogPanel from '../components/DialogPanel';
 import Signin from '../routes/Signin';
@@ -43,8 +43,8 @@ function App() {
                 <Route exact path="/transactions">
                     <Transactions />
                 </Route>
-                <Route exact path="/reports/monthly">
-                    <MonthlyReport />
+                <Route exact path="/reports">
+                    <Reports />
                 </Route>
                 <Route exact path="/">
                     <Redirect to="/transactions" />

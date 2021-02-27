@@ -1,7 +1,7 @@
 import NumberFormat from 'react-number-format';
 import { format } from 'date-fns';
 
-export function formatCurrency(money, prefix) {
+export function formatCurrency(money: number, prefix: string) {
     return (
         <NumberFormat
             value={money}
@@ -9,12 +9,12 @@ export function formatCurrency(money, prefix) {
             thousandSeparator={true}
             prefix={prefix}
             decimalScale={2}
-            fixedDecimalScale={2}
+            fixedDecimalScale
         />
     );
 }
 
-export function getMonthName(m) {
+export function getMonthName(m: number) {
     const months = [
         'January',
         'February',
@@ -32,10 +32,10 @@ export function getMonthName(m) {
     return months[m];
 }
 
-export function formatLongDate(dt) {
+export function formatLongDate(dt: string) {
     return format(new Date(dt), 'LLL do, yyyy HH:mm');
 }
 
-export function formatShortDate(dt) {
+export function formatShortDate(dt: string) {
     return format(new Date(dt), 'MM/dd/yy HH:mm');
 }

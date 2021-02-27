@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import { AppBusyCode, AppRootState } from '../../types.d';
+import { userSigninAction } from '../../actions/auth';
 
 const useStyles = makeStyles((theme) => ({
     formSignup: {
@@ -65,12 +66,9 @@ export default function Signin() {
             email: yup.string().required('email is required').email('enter a valid email'),
             password: yup.string().required('password is required').min(8),
         }),
-        onSubmit: ({ email, remember, password }) => {
+        onSubmit: ({ email, password }) => {
             if (!loading) {
-                dispatch({
-                    type: 'Saga: sign in',
-                    payload: { email, password, remember },
-                });
+                dispatch(userSigninAction(email, password));
             }
         },
     });

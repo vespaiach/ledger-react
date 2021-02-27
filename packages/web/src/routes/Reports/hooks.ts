@@ -6,8 +6,10 @@
  * @copyright Toan Nguyen <nta.toan@gmail.com>
  *
  */
+import { totalmem } from 'os';
 import { useMemo } from 'react';
-import { Transaction } from '../../types.d';
+import { Transaction, TransactionType } from '../../types.d';
+import { getMonthName } from '../../utils/format';
 
 /**
  * Aggregate transaction records by transaction type, transaction category and transction month
@@ -63,4 +65,59 @@ export function useMonthlyReport({
             },
         };
     }, [transactions, year, month]);
+}
+
+export interface MonthAggregation {
+    name: string;
+    totalIncome: number;
+    totalExpense: number;
+}
+
+/**
+ * Aggregate income and expense by months.
+ */
+export function use12Months(
+    transactions: Transaction[]
+): { aggregation: MonthAggregation[]; min: number; max: number } {
+    return useMemo<{ aggregation: MonthAggregation[]; min: number; max: number }>(() => {
+        let min = 0;
+        let max = 0;
+        const months: MonthAggregation[] = [];
+        for (let i = 0; i < 12; i++) {
+            months[i] = {
+                name: getMonthName(i),
+                totalIncome: 0,
+                totalExpense: 0,
+            };
+        }
+
+        if (!transactions.length) {
+            return { aggregation: months, min, max };
+        }
+
+        transactions.forEach((t: Transaction) => {
+            const month = t.date.getMonth();
+            if (t.transactionType === TransactionType.Expense) {
+                months[month].totalExpense += t.amount;
+            } else {
+                months[month].totalIncome += t.amount;
+            }
+        });
+
+        min = months[0].totalIncome;
+        max = months[0].totalIncome;
+
+        months.forEach((m) => {
+            const totalMin = Math.min(m.totalIncome, m.totalExpense);
+            const totalMax = Math.max(m.totalIncome, m.totalExpense);
+            if (min > totalMin) {
+                min = totalMin;
+            }
+            if (max < totalMax) {
+                max = totalMax;
+            }
+        });
+
+        return { aggregation: months, min, max };
+    }, [transactions]);
 }

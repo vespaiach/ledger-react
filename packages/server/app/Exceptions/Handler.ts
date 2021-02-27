@@ -20,6 +20,10 @@ export default class ExceptionHandler extends HttpExceptionHandler {
       return ctx.response
         .status(400)
         .send({ message: 'Data validation failure', code: ExceptionCode.ValidationFailure })
+    } else if (error.code === 'E_UNAUTHORIZED_ACCESS') {
+      return ctx.response
+        .status(401)
+        .send({ message: error.message, code: ExceptionCode.AuthorizedFailure })
     }
 
     return ctx.response
