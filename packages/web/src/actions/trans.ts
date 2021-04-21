@@ -26,87 +26,87 @@ export const RESET_FILTER_VALUES = 'reset all filter values to default';
 export const yearRequest = (): Omit<Action, 'payload'> => ({ type: GET_LIST_YEAR });
 
 export const yearList = (payload: number[]): Action<string, number[]> => ({
-    type: RECEIVE_LIST_YEAR,
-    payload,
+  type: RECEIVE_LIST_YEAR,
+  payload,
 });
 
 export const transactionRequestAction = (year: number): Action<string, number> => ({
-    type: GET_TRANSACTION,
-    payload: year,
+  type: GET_TRANSACTION,
+  payload: year,
 });
 
 export const transactionList = (transactions: Transaction[]): Action<string, Transaction[]> => ({
-    type: RECEIVE_TRANSACTION,
-    payload: transactions,
+  type: RECEIVE_TRANSACTION,
+  payload: transactions,
 });
 
 export const transactionCreatingRequest = (payload: {
-    [key: string]: string | number | Date | undefined;
+  [key: string]: string | number | Date | undefined;
 }): Action<string, { [key: string]: string | Date | undefined | number }> => ({
-    type: RECORD_TRANSACTION,
-    payload,
+  type: RECORD_TRANSACTION,
+  payload,
 });
 
 export const transactionUpdatingRequest = (payload: {
-    [key: string]: string | number | Date | undefined;
+  [key: string]: string | number | Date | undefined;
 }): Action<string, { [key: string]: string | Date | number | undefined }> => ({
-    type: UPDATE_TRANSACTION,
-    payload,
+  type: UPDATE_TRANSACTION,
+  payload,
 });
 
 export const transactionDeletingRequest = (id: number): Action<string, number> => ({
-    type: DELETE_TRANSACTION,
-    payload: id,
+  type: DELETE_TRANSACTION,
+  payload: id,
 });
 
 export const incomeFilterAction = (income: boolean): Action<string, boolean> => ({
-    type: income ? FILTER_INCOME : NOT_FILTER_INCOME,
+  type: income ? FILTER_INCOME : NOT_FILTER_INCOME,
 });
 
 export const expenseFilterAction = (expense: boolean): Action<string, boolean> => ({
-    type: expense ? FILTER_EXPENSE : NOT_FILTER_EXPENSE,
+  type: expense ? FILTER_EXPENSE : NOT_FILTER_EXPENSE,
 });
 
 export const amountFilterEnableRequest = (enable: boolean): Omit<Action, 'payload'> => ({
-    type: enable ? ENABLE_AMOUNT_FILTER : DISABLE_AMOUNT_FILTER,
+  type: enable ? ENABLE_AMOUNT_FILTER : DISABLE_AMOUNT_FILTER,
 });
 
 export const dateFilterEnableRequest = (enable: boolean): Omit<Action, 'payload'> => ({
-    type: enable ? ENABLE_DATE_FILTER : DISABLE_DATE_FILTER,
+  type: enable ? ENABLE_DATE_FILTER : DISABLE_DATE_FILTER,
 });
 
 export const dateFromFilterRequest = (dateFrom: Date | null): Action => ({
-    type: FILTER_DATE_FROM,
-    payload: dateFrom,
+  type: FILTER_DATE_FROM,
+  payload: dateFrom,
 });
 
 export const dateToFilterRequest = (dateTo: Date | null): Action => ({
-    type: FILTER_DATE_TO,
-    payload: dateTo,
+  type: FILTER_DATE_TO,
+  payload: dateTo,
 });
 
 export const amountFromFilterRequest = (amountFrom: number): Action => ({
-    type: FILTER_AMOUNT_FROM,
-    payload: amountFrom,
+  type: FILTER_AMOUNT_FROM,
+  payload: amountFrom,
 });
 
 export const amountToFilterRequest = (amountTo: number): Action => ({
-    type: FILTER_AMOUNT_TO,
-    payload: amountTo,
+  type: FILTER_AMOUNT_TO,
+  payload: amountTo,
 });
 
 export const sortTransactionAction = (
-    payload: SortingFunction
+  payload: SortingFunction
 ): Action<string, SortingFunction> => ({
-    type: SORT_TRANSACTION,
-    payload,
+  type: SORT_TRANSACTION,
+  payload,
 });
 
 export const selectYearAction = (payload: number): Action<string, number> => ({
-    type: SELECT_YEAR,
-    payload,
+  type: SELECT_YEAR,
+  payload,
 });
 
 export const resetFilterAction = (): Action => ({
-    type: RESET_FILTER_VALUES,
+  type: RESET_FILTER_VALUES,
 });

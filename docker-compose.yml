@@ -4,8 +4,10 @@ services:
     db:
         image: postgres
         restart: always
+        user: "${UID}:${GID}"
         volumes:
             - ./tmp/pgdata:/var/lib/postgresql/data
+            - /etc/passwd:/etc/passwd:ro
         environment:
             - POSTGRES_PASSWORD=123
             - POSTGRES_DB=budgets

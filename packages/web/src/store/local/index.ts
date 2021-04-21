@@ -14,7 +14,7 @@ import transaction from './transaction';
 import transactionFilter from './transactionFilter';
 
 export default combineReducers({
-    wholeApp,
-    transaction,
-    transactionFilter,
+  wholeApp,
+  transaction,
+  transactionFilter,
 });

@@ -1,102 +1,102 @@
 {
-    "name": "monthly-budgets",
-    "version": "0.1.0",
-    "private": true,
-    "dependencies": {
-        "@date-io/date-fns": "^1.3.13",
-        "@date-io/dayjs": "^1.3.13",
-        "@material-ui/core": "^4.11.2",
-        "@material-ui/icons": "^4.11.2",
-        "@material-ui/lab": "^4.0.0-alpha.57",
-        "@material-ui/pickers": "^3.2.10",
-        "@testing-library/jest-dom": "^5.11.4",
-        "@testing-library/react": "^11.1.0",
-        "@testing-library/user-event": "^12.1.10",
-        "@types/jest": "^26.0.15",
-        "@types/node": "^12.0.0",
-        "@types/react": "^16.9.53",
-        "@types/react-dom": "^16.9.8",
-        "clsx": "^1.1.1",
-        "d3-axis": "^2.0.0",
-        "d3-scale": "^3.2.3",
-        "date-fns": "^2.16.1",
-        "formik": "^2.2.6",
-        "humps": "^2.0.1",
-        "material-ui-popup-state": "^1.7.1",
-        "query-string": "^6.14.0",
-        "react": "^17.0.1",
-        "react-dom": "^17.0.1",
-        "react-number-format": "^4.4.4",
-        "react-redux": "^7.2.2",
-        "react-router-dom": "^5.2.0",
-        "react-scripts": "4.0.2",
-        "react-virtualized": "^9.22.3",
-        "redux": "^4.0.5",
-        "redux-saga": "^1.1.3",
-        "typescript": "^4.0.3",
-        "web-vitals": "^0.2.4",
-        "workbox-background-sync": "^5.1.3",
-        "workbox-broadcast-update": "^5.1.3",
-        "workbox-cacheable-response": "^5.1.3",
-        "workbox-core": "^5.1.3",
-        "workbox-expiration": "^5.1.3",
-        "workbox-google-analytics": "^5.1.3",
-        "workbox-navigation-preload": "^5.1.3",
-        "workbox-precaching": "^5.1.3",
-        "workbox-range-requests": "^5.1.3",
-        "workbox-routing": "^5.1.3",
-        "workbox-strategies": "^5.1.3",
-        "workbox-streams": "^5.1.3",
-        "yup": "^0.32.8",
-        "@types/react-redux": "^7.1.16",
-        "@types/d3-axis": "^2.0.0",
-        "@types/d3-scale": "^3.2.2",
-        "@types/react-router-dom": "^5.1.7",
-        "@types/react-virtualized": "^9.21.11"
-    },
-    "devDependencies": {
-        "redux-saga-test-plan": "^4.0.1"
-    },
-    "scripts": {
-        "dev": "react-scripts start",
-        "start": "react-scripts start",
-        "build": "react-scripts build",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject"
-    },
-    "eslintConfig": {
-        "extends": [
-            "react-app",
-            "react-app/jest"
-        ],
-        "rules": {
-            "semi": [
-                "warn",
-                "always"
-            ]
-        }
-    },
-    "prettier": {
-        "trailingComma": "es5",
-        "tabWidth": 4,
-        "semi": true,
-        "jsxSingleQuote": false,
-        "bracketSpacing": true,
-        "jsxBracketSameLine": true,
-        "arrowParens": "always",
-        "singleQuote": true,
-        "printWidth": 100
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
+  "name": "monthly-budgets",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@date-io/date-fns": "^1.3.13",
+    "@date-io/dayjs": "^1.3.13",
+    "@material-ui/core": "^4.11.2",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.57",
+    "@material-ui/pickers": "^3.2.10",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.53",
+    "@types/react-dom": "^16.9.8",
+    "clsx": "^1.1.1",
+    "d3-axis": "^2.0.0",
+    "d3-scale": "^3.2.3",
+    "date-fns": "^2.16.1",
+    "formik": "^2.2.6",
+    "humps": "^2.0.1",
+    "material-ui-popup-state": "^1.7.1",
+    "query-string": "^6.14.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-number-format": "^4.4.4",
+    "react-redux": "^7.2.2",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.2",
+    "react-virtualized": "^9.22.3",
+    "redux": "^4.0.5",
+    "redux-saga": "^1.1.3",
+    "typescript": "^4.0.3",
+    "web-vitals": "^0.2.4",
+    "workbox-background-sync": "^5.1.3",
+    "workbox-broadcast-update": "^5.1.3",
+    "workbox-cacheable-response": "^5.1.3",
+    "workbox-core": "^5.1.3",
+    "workbox-expiration": "^5.1.3",
+    "workbox-google-analytics": "^5.1.3",
+    "workbox-navigation-preload": "^5.1.3",
+    "workbox-precaching": "^5.1.3",
+    "workbox-range-requests": "^5.1.3",
+    "workbox-routing": "^5.1.3",
+    "workbox-strategies": "^5.1.3",
+    "workbox-streams": "^5.1.3",
+    "yup": "^0.32.8",
+    "@types/react-redux": "^7.1.16",
+    "@types/d3-axis": "^2.0.0",
+    "@types/d3-scale": "^3.2.2",
+    "@types/react-router-dom": "^5.1.7",
+    "@types/react-virtualized": "^9.21.11"
+  },
+  "devDependencies": {
+    "redux-saga-test-plan": "^4.0.1"
+  },
+  "scripts": {
+    "dev": "react-scripts start",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "rules": {
+      "semi": [
+        "warn",
+        "always"
+      ]
     }
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": true,
+    "jsxSingleQuote": false,
+    "bracketSpacing": true,
+    "jsxBracketSameLine": true,
+    "arrowParens": "always",
+    "singleQuote": true,
+    "printWidth": 100
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }

@@ -1,19 +1,27 @@
 {
-    "name": "ledger",
-    "private": true,
-    "devDependencies": {
-        "eslint": "^7.19.0",
-        "lerna": "^3.22.1"
-    },
-    "scripts": {
-        "bootstrap": "lerna bootstrap && lerna run migrate && lerna run seed",
-        "dev": "lerna run dev --parallel",
-        "build": "lerna run build --parallel",
-        "createacc": "lerna run createacc"
-    },
-    "dependencies": {
-        "d3-axis": "^2.0.0",
-        "d3-scale": "^3.2.3",
-        "d3-selection": "^2.0.0"
-    }
+  "name": "ledger",
+  "private": true,
+  "devDependencies": {
+    "eslint": "^7.19.0",
+    "lerna": "^3.22.1",
+    "prettier": "^2.2.1"
+  },
+  "scripts": {
+    "bootstrap": "lerna bootstrap && lerna run migrate && lerna run seed",
+    "dev": "lerna run dev --parallel",
+    "build": "lerna run build --parallel",
+    "createacc": "lerna run createacc",
+    "prettier:clean": "prettier **/* -w"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": true,
+    "jsxSingleQuote": false,
+    "bracketSpacing": true,
+    "jsxBracketSameLine": true,
+    "arrowParens": "always",
+    "singleQuote": true,
+    "printWidth": 100
+  }
 }

@@ -6,25 +6,25 @@ export const SHOW_MESSAGE = 'show app message';
 export const CLEAR_MESSAGE = 'clear app message';
 
 export const appLoadingAction = (): Action<string, AppBusyCode> => ({
-    type: BUSY,
-    payload: AppBusyCode.Loading,
+  type: BUSY,
+  payload: AppBusyCode.Loading,
 });
 
 export const appSavingAction = (): Action<string, AppBusyCode> => ({
-    type: BUSY,
-    payload: AppBusyCode.Saving,
+  type: BUSY,
+  payload: AppBusyCode.Saving,
 });
 
 export const appIdleAction = (): Action<string, AppBusyCode> => ({
-    type: IDLE,
-    payload: AppBusyCode.Idle,
+  type: IDLE,
+  payload: AppBusyCode.Idle,
 });
 
 export const showMessageAction = (code: AppMessageCode): Action<string, AppMessageCode> => ({
-    type: SHOW_MESSAGE,
-    payload: code,
+  type: SHOW_MESSAGE,
+  payload: code,
 });
 
 export const clearMessageAction = (): Action => ({
-    type: CLEAR_MESSAGE,
+  type: CLEAR_MESSAGE,
 });

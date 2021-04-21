@@ -19,15 +19,11 @@
     "./start/kernel",
     {
       "file": "./start/validationRules",
-      "environment": [
-        "web"
-      ]
+      "environment": ["web"]
     },
     {
       "file": "./start/events",
-      "environment": [
-        "web"
-      ]
+      "environment": ["web"]
     }
   ],
   "providers": [
@@ -49,7 +45,5 @@
       "reloadServer": false
     }
   ],
-  "aceProviders": [
-    "@adonisjs/repl"
-  ]
+  "aceProviders": ["@adonisjs/repl"]
 }
