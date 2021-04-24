@@ -11,7 +11,8 @@
     "dev": "lerna run dev --parallel",
     "build": "lerna run build --parallel",
     "createacc": "lerna run createacc",
-    "prettier:clean": "prettier **/* -w"
+    "prettier:clean": "prettier **/* -w",
+    "lerna": "lerna"
   },
   "prettier": {
     "trailingComma": "es5",
