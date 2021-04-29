@@ -11,15 +11,15 @@ import theme from './theme';
 import store from './store';
 
 ReactDOM.render(
-    <Router>
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Provider store={store}>
-                <App />
-            </Provider>
-        </ThemeProvider>
-    </Router>,
-    document.getElementById('root')
+  <Router>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </ThemeProvider>
+  </Router>,
+  document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change
