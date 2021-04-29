@@ -1,46 +1,6 @@
-// import { Category, Transaction } from '@prisma/client';
-// import { IResolvers } from 'graphql-tools';
-// import { RootContext } from './types';
-
-import { Category } from '.prisma/client';
+import { Category, Transaction } from '.prisma/client';
 import { RequestHandler, Express, NextFunction } from 'express';
-import { isNamedExportBindings } from 'typescript';
 import { RootContext } from './types';
-
-// const root: IResolvers<unknown, RootContext, Record<string, unknown>> = {
-//   Query: {
-//     categories: (_, __, { prisma }) => {
-//       return prisma.category.findMany();
-//     },
-//     transactions: (_, args: { year: number }, { prisma }) => {
-//       const fromDate = new Date(args.year, 0, 1, 0, 0);
-//       const toDate = new Date(args.year, 11, 31, 0, 0);
-//       return prisma.transaction.findMany({
-//         where: {
-//           date: {
-//             gte: fromDate,
-//             lt: toDate,
-//           },
-//         },
-//         include: {
-//           category: true,
-//         },
-//       }) as Promise<Transaction[]>;
-//     },
-//   },
-
-//   Category: {
-//     transactions: (parent: Category, _, ctx) => {
-//       return ctx.loader.loadTransactionsByCategoryIds.load(parent.id);
-//     },
-//   },
-
-//   Transaction: {
-//     category: (parent: Transaction & { category: Category }) => {
-//       return parent.category;
-//     },
-//   },
-// };
 
 const getCategories: RequestHandler<unknown, Category[], unknown, unknown, RootContext> = async (
   _,
@@ -94,7 +54,31 @@ const getYears: RequestHandler<unknown, number[], unknown, unknown, RootContext>
   }
 };
 
+const getTransactions: RequestHandler<
+  unknown,
+  Transaction[],
+  unknown,
+  { year: number },
+  RootContext
+> = (req, res, next) => {
+  if (isNaN(req.query.year)) {
+    next(new Error('Invalid year query'));
+    return;
+  }
+  const fromDate = new Date(req.query.year, 0, 1, 0, 0);
+  const toDate = new Date(req.query.year, 11, 31, 0, 0);
+  return res.locals.prisma.transaction.findMany({
+    where: {
+      date: {
+        gte: fromDate,
+        lt: toDate,
+      },
+    },
+  }) as Promise<Transaction[]>;
+};
+
 export default function createRouter(app: Express) {
-  app.get('/years', getYears);
-  app.get('/categories', getCategories);
+  app.get('/api/years', getYears);
+  app.get('/api/categories', getCategories);
+  app.get('/api/transactions', getTransactions);
 }
