@@ -1,33 +1,38 @@
 import { Action as ReduxAction } from 'redux';
+import { APIResponse } from 'just-hooks';
 
 /**
  * Redux action
  */
-export type Action<T = string, P = any> = ReduxAction<T> & { payload?: P };
+export type Action<P = never> = [P] extends [never]
+  ? ReduxAction<string>
+  : ReduxAction<string> & { payload: P };
 
 export enum TransactionType {
-  Income = 'in',
-  Expense = 'ex',
+  Income = 'INCOME',
+  Expense = 'EXPENSE',
 }
 
-export interface Record {
-  readonly id: number;
-  [key: string]: any;
+export interface Category {
+  id: number;
+  name: string;
+  transactionType: TransactionType;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 /**
  * Transaction record.
- *   date: date and time that transaction is recorded
- *   amount: amount of transaction
- *   description: transaction note
- *   transactionType: transaction type
  */
-export interface Transaction extends Record {
+export interface Transaction {
+  id: number;
   date: Date;
   amount: number;
   description: string;
-  category: string;
+  categoryId: number;
   transactionType: TransactionType;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface HTTPResult<T> {
@@ -44,37 +49,19 @@ export interface APIError {
 /**
  * Data repository
  */
-export type RemoteRepository = {
-  getTransactions: (params?: {
-    [key: string]: string | number;
-  }) => Promise<HTTPResult<Transaction[]> | HTTPResult<APIError>>;
+export interface RemoteRepository {
+  getTransactions: (year?: number) => Promise<APIResponse<Transaction[]>>;
 
-  updateTransaction: (params: {
-    [key: string]: string | number;
-  }) => Promise<HTTPResult<any> | HTTPResult<APIError>>;
+  updateTransaction: (params: Transaction) => Promise<APIResponse<void>>;
 
-  createTransaction: (params: {
-    [key: string]: string | number;
-  }) => Promise<HTTPResult<Transaction> | HTTPResult<APIError>>;
+  createTransaction: (params: Omit<Transaction, 'id'>) => Promise<APIResponse<Transaction>>;
 
-  deleteTransaction: (params: number) => Promise<HTTPResult | HTTPResult<APIError>>;
+  deleteTransaction: (params: number) => Promise<APIResponse<void>>;
 
-  getYears: (params?: {
-    [key: string]: string | number;
-  }) => Promise<HTTPResult<number[]> | HTTPResult<APIError>>;
+  getYears: () => Promise<APIResponse<number[]>>;
 
-  signin: (params: {
-    [key: string]: string | number;
-  }) => Promise<HTTPResult<{ token: string }> | HTTPResult<APIError>>;
-
-  signout: () => Promise<HTTPResult | HTTPResult<APIError>>;
-};
-
-export type AppRootState = {
-  wholeApp: WholeAppState;
-  transaction: TransactionState;
-  transactionFilter: TransactionFilterState;
-};
+  getCategories: () => Promise<APIResponse<Category[]>>;
+}
 
 export enum AppBusyCode {
   Idle,
@@ -114,12 +101,8 @@ export interface WholeAppState {
    */
   messageCode: AppMessageCode | null;
   busyCode: AppBusyCode;
-  /**
-   * When user's session timeout, we need keep the current action
-   * and then re-execute it after user's login.
-   */
-  retainedAction: Action | null;
-  showSigninDialog: boolean;
+  transaction: TransactionState;
+  categories: Category[] | null;
 }
 
 export type SortingFunction = (transaction1: Transaction, transaction2: Transaction) => number;
@@ -133,15 +116,12 @@ export interface TransactionState {
   /**
    * We load list of transaction by year.
    */
-  year: currentYear;
+  year: number;
   /**
    * List of year that the server has transaction data.
    */
-  years: number[];
-  /**
-   * Set this variable to true to make application fetch list of year again.
-   */
-  refetchListYears: boolean;
+  years: number[] | null;
+  filtering: TransactionFilterState;
 }
 
 /**
@@ -163,3 +143,5 @@ export type TransactionFilterState = {
   enableAmountFilter: FilterValue<boolean>;
   enableDateFilter: FilterValue<boolean>;
 };
+
+export type YieldReturn<T> = T extends Promise<infer U> ? U : T;

@@ -24,7 +24,7 @@ import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { useState } from 'react';
-import { AppBusyCode, AppRootState } from '../../types.d';
+import { AppBusyCode, AppRootState } from '../../types';
 import { userSigninAction } from '../../actions/auth';
 
 const useStyles = makeStyles((theme) => ({

@@ -8,7 +8,7 @@
  */
 import { totalmem } from 'os';
 import { useMemo } from 'react';
-import { Transaction, TransactionType } from '../../types.d';
+import { Transaction, TransactionType } from '../../types';
 import { getMonthName } from '../../utils/format';
 
 /**

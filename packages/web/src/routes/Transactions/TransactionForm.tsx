@@ -19,7 +19,7 @@ import * as yup from 'yup';
 import { useEffect } from 'react';
 
 import MoneyInput from '../../components/MoneyInput';
-import { TransactionType } from '../../types.d';
+import { TransactionType } from '../../types';
 
 const validationSchema = yup.object({
   amount: yup.number().required('Amount is required'),

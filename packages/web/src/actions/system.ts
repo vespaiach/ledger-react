@@ -1,26 +1,26 @@
-import { Action, AppBusyCode, AppMessageCode } from '../types.d';
+import { Action, AppBusyCode, AppMessageCode } from '../types';
 
 export const BUSY = 'show app busy';
 export const IDLE = 'show app idle';
 export const SHOW_MESSAGE = 'show app message';
 export const CLEAR_MESSAGE = 'clear app message';
 
-export const appLoadingAction = (): Action<string, AppBusyCode> => ({
+export const appLoadingAction = (): Action<AppBusyCode> => ({
   type: BUSY,
   payload: AppBusyCode.Loading,
 });
 
-export const appSavingAction = (): Action<string, AppBusyCode> => ({
+export const appSavingAction = (): Action<AppBusyCode> => ({
   type: BUSY,
   payload: AppBusyCode.Saving,
 });
 
-export const appIdleAction = (): Action<string, AppBusyCode> => ({
+export const appIdleAction = (): Action<AppBusyCode> => ({
   type: IDLE,
   payload: AppBusyCode.Idle,
 });
 
-export const showMessageAction = (code: AppMessageCode): Action<string, AppMessageCode> => ({
+export const showMessageAction = (code: AppMessageCode): Action<AppMessageCode> => ({
   type: SHOW_MESSAGE,
   payload: code,
 });

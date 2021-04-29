@@ -12,7 +12,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { scaleBand, scaleLinear } from 'd3-scale';
 import { axisBottom } from 'd3-axis';
 
-import { Transaction } from '../../types.d';
+import { Transaction } from '../../types';
 import { use12Months } from './hooks';
 
 const useStyles = makeStyles((theme) => ({

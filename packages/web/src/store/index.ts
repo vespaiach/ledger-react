@@ -11,8 +11,8 @@ import createSagaMiddleware from 'redux-saga';
 import { createBrowserHistory } from 'history';
 
 import saga from './saga';
-import localStore from './local';
-import postgresRepository from '../repositories/postgres';
+import localStore from './state';
+import repo from './repo';
 
 const history = createBrowserHistory();
 const sagaMiddleware = createSagaMiddleware({
@@ -32,7 +32,7 @@ const composeEnhancers =
   compose;
 
 const store = createStore(localStore, composeEnhancers(applyMiddleware(sagaMiddleware)));
-sagaMiddleware.run(saga(postgresRepository));
+sagaMiddleware.run(saga(repo));
 
 export { history };
 export default store;

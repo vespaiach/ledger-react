@@ -8,7 +8,7 @@ import Transactions from '../routes/Transactions';
 import DialogPanel from '../components/DialogPanel';
 import Signin from '../routes/Signin';
 import TopNav from './TopNav';
-import { AppRootState } from '../types.d';
+import { AppRootState } from '../types';
 import { closeSigninAction, userSignoutAction } from '../actions/auth';
 import { transactionRequestAction } from '../actions/trans';
 import Alert from './Alert';

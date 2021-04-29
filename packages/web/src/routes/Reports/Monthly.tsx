@@ -13,7 +13,7 @@ import { useDispatch } from 'react-redux';
 import Chart from './Chart';
 import TransactionTable from './Table';
 import { useMonthlyReport } from './hooks';
-import { Transaction } from '../../types.d';
+import { Transaction } from '../../types';
 
 interface ReportProps {
   transactions: Transaction[];

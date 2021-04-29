@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom';
 import { getMonthName } from '../../utils/format';
 import LineChartIcon from '../../components/Icons/LineChart';
 import Monthly from './Monthly';
-import { AppRootState, Transaction } from '../../types.d';
+import { AppRootState, Transaction } from '../../types';
 import Yearly from './Yearly';
 import { transactionRequestAction } from '../../actions/trans';
 

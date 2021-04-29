@@ -7,7 +7,7 @@
  *
  */
 import { useCallback, useMemo } from 'react';
-import { SortingFunction, Transaction } from '../../types.d';
+import { SortingFunction, Transaction } from '../../types';
 
 function useDateFrom(val: Date | null, enable: boolean) {
   return useCallback(
