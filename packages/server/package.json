@@ -23,7 +23,6 @@
   },
   "scripts": {
     "seeding": "ts-node ./src/seeding",
-    "dev": "nodemon",
-    "predev": "prisma migrate resolve --applied \"20210421162637_init\""
+    "dev": "nodemon"
   }
 }
