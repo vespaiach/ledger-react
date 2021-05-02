@@ -29,9 +29,21 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Start back-end server
+      - name: restore lerna
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Dependencies installation
         run: |
+          yarn install
           yarn run bootstrap
+      
+      - name: Start back-end server
+        run:
           yarn run dev:server
       
       - name: Run test suits
