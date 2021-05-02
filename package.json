@@ -2,15 +2,17 @@
   "name": "ledger",
   "private": true,
   "devDependencies": {
+    "@commitlint/cli": "^12.1.1",
+    "@commitlint/config-conventional": "^12.1.1",
     "eslint": "^7.19.0",
+    "husky": "^6.0.0",
     "lerna": "^3.22.1",
     "prettier": "^2.2.1"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap && lerna run migrate && lerna run seed",
-    "dev": "lerna run dev --parallel",
-    "build": "lerna run build --parallel",
-    "createacc": "lerna run createacc",
+    "bootstrap": "lerna bootstrap",
+    "dev:server": "lerna run --scope server dev",
+    "test:server": "lerna run --scope test-server test",
     "prettier:clean": "prettier **/* -w",
     "lerna": "lerna"
   },

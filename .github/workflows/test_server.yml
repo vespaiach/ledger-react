@@ -1,0 +1,41 @@
+name: API Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  run_integration_test:
+    runs-on: ubuntu-18.04
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: budgets
+          POSTGRES_USER: budgets
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Start back-end server
+        run: |
+          yarn run bootstrap
+          yarn run dev:server
+      
+      - name: Run test suits
+        env:
+          DATABASE_URL: postgresql://budgets:budgets@localhost:5432/budgets?schema=public
+        run:
+          yarn run test:dev
