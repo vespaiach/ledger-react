@@ -9,10 +9,13 @@ config();
 
 import { request } from '../utils/clientRequest';
 import { release, initDbConnection, exec } from '../utils/db';
-import { uniqName } from '../utils/string';
+import { getSchemaName, uniqName } from '../utils/string';
 import { Category, TransactionType } from '@prisma/client';
 
-const connectionString = 'postgresql://budgets:budgets@localhost:5432/budgets?schema=public';
+const connectionString =
+  process.env.DATABASE_URL || 'postgresql://budgets:budgets@localhost:5432/budgets?schema=public';
+
+const SCHEMA = getSchemaName(connectionString) || 'public';
 
 t.before(() => {
   initDbConnection(connectionString);
@@ -37,7 +40,7 @@ t.test('Create a new category', async (t) => {
   );
 
   const dbCategoryResponse = await exec<Category>({
-    text: 'SELECT id, name, "transactionType" FROM public."Category" WHERE id = $1',
+    text: `SELECT id, name, "transactionType" FROM ${SCHEMA}."Category" WHERE id = $1`,
     values: [response.data.id],
   });
 
@@ -75,7 +78,7 @@ t.test('Select categories', async (t) => {
   const apiCategoryResponse = result.data.sort((a, b) => a.id - b.id);
 
   const dbCategoryResponse = await exec<Category>(
-    'SELECT id, name, "transactionType" FROM public."Category" ORDER BY id'
+    `SELECT id, name, "transactionType" FROM ${SCHEMA}."Category" ORDER BY id`
   );
 
   t.ok(apiCategoryResponse.length === dbCategoryResponse.rowCount, 'should have the same length');
@@ -102,7 +105,8 @@ t.test('Update category', async (t) => {
   const updatingName = uniqName('cat-');
 
   const dbCategoryResponse = await exec<Category>({
-    text: 'INSERT INTO public."Category" ("name","transactionType") VALUES ($1, $2) RETURNING id;',
+    text:
+      `INSERT INTO ${SCHEMA}."Category" ("name","transactionType") VALUES ($1, $2) RETURNING id;`,
     values: [name, TransactionType.INCOME],
   });
 
@@ -124,7 +128,7 @@ t.test('Update category', async (t) => {
   );
 
   const dbCategoryUpdatingResponse = await exec<Category>({
-    text: 'SELECT id, name, "transactionType" FROM public."Category" WHERE id = $1',
+    text: `SELECT id, name, "transactionType" FROM ${SCHEMA}."Category" WHERE id = $1`,
     values: [dbCategoryResponse.rows[0].id],
   });
 
@@ -153,7 +157,8 @@ t.test('Delete a category', async (t) => {
    * Should allow to delete an empty category
    */
   const deletingDbResponse = await exec<Category>({
-    text: 'INSERT INTO public."Category" ("name","transactionType") VALUES ($1, $2) RETURNING id;',
+    text:
+      `INSERT INTO ${SCHEMA}."Category" ("name","transactionType") VALUES ($1, $2) RETURNING id;`,
     values: ['deleting', TransactionType.INCOME],
   });
 
@@ -165,7 +170,7 @@ t.test('Delete a category', async (t) => {
   t.ok(deletingApiResponse.statusCode === 200, 'should delete immediately');
 
   const deletedDbResponse = await exec<Category>({
-    text: 'SELECT id, name, "transactionType" FROM public."Category" WHERE id = $1',
+    text: `SELECT id, name, "transactionType" FROM ${SCHEMA}."Category" WHERE id = $1`,
     values: [deletingDbResponse.rows[0].id],
   });
 
@@ -175,11 +180,12 @@ t.test('Delete a category', async (t) => {
    * Should not allow to delete a not empty category
    */
   const newDeletingDbResponse = await exec<Category>({
-    text: 'INSERT INTO public."Category" ("name","transactionType") VALUES ($1, $2) RETURNING id;',
+    text:
+      `INSERT INTO ${SCHEMA}."Category" ("name","transactionType") VALUES ($1, $2) RETURNING id;`,
     values: ['deleting', TransactionType.INCOME],
   });
   await exec<Category>({
-    text: `INSERT INTO public."Transaction" (amount,"date",description,"transactionType","categoryId") VALUES ($1, $2, $3, $4, $5);`,
+    text: `INSERT INTO ${SCHEMA}."Transaction" (amount,"date",description,"transactionType","categoryId") VALUES ($1, $2, $3, $4, $5);`,
     values: [
       1,
       new Date(),
@@ -199,6 +205,6 @@ t.test('Delete a category', async (t) => {
   t.end();
 });
 
-t.tearDown(() => {
+t.teardown(() => {
   release();
 });

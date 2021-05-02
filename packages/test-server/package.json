@@ -19,6 +19,7 @@
   },
   "scripts": {
     "test": "tap --ts --no-coverage -R=specy --color",
-    "load": "ts-node index.ts && ts-node ./utils/createSchema.ts"
+    "load": "ts-node index.ts && ts-node ./utils/createSchema.ts",
+    "prisma:generate": "npx prisma generate"
   }
 }

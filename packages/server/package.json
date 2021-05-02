@@ -5,9 +5,7 @@
   "author": "Toan Nguyen",
   "license": "MIT",
   "devDependencies": {
-    "nodemon": "^2.0.7",
-    "prisma": "^2.21.2",
-    "ts-node": "^9.1.1"
+    "nodemon": "^2.0.7"
   },
   "dependencies": {
     "@prisma/client": "^2.21.2",
@@ -19,10 +17,15 @@
     "faker": "^5.5.3",
     "graphql": "^15.5.0",
     "lodash": "^4.17.21",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "prisma": "^2.21.2",
+    "ts-node": "^9.1.1"
   },
   "scripts": {
     "seeding": "ts-node ./src/seeding",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "build": "NODE_ENV=production tsc",
+    "prisma:generate": "npx prisma generate",
+    "start": "node ./out/server.js"
   }
 }

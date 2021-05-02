@@ -7,14 +7,16 @@ on:
     branches: [ main ]
 
 jobs:
-  run_integration_test:
+  integration-test:
     runs-on: ubuntu-18.04
 
+    container: node:lts-buster
+
     services:
-      postgres:
+      db:
         image: postgres
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: budgets
           POSTGRES_DB: budgets
           POSTGRES_USER: budgets
         options: >-
@@ -22,31 +24,26 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
+      
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
 
-      - uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Dependencies installation
         run: |
-          npm install
+          npm ci
           npm run bootstrap
-      
-      - name: Start back-end server
-        run:
-          npm run dev:server
-      
-      - name: Run test suits
+          
+      - name: Build api server
         env:
-          DATABASE_URL: postgresql://budgets:budgets@localhost:5432/budgets?schema=public
+          NODE_ENV: development 
         run:
-          npm run test:dev
+          npm run build:server
+      
+      - name: Run api test suits
+        env:
+          DATABASE_URL: postgresql://budgets:budgets@db:5432/budgets?schema=api$test
+        run:
+          npm run test
