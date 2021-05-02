@@ -29,25 +29,24 @@ jobs:
         with:
           node-version: '14'
 
-      - name: restore lerna
-        uses: actions/cache@v2
+      - uses: actions/cache@v2
         with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Dependencies installation
         run: |
-          yarn install
-          yarn run bootstrap
+          npm install
+          npm run bootstrap
       
       - name: Start back-end server
         run:
-          yarn run dev:server
+          npm run dev:server
       
       - name: Run test suits
         env:
           DATABASE_URL: postgresql://budgets:budgets@localhost:5432/budgets?schema=public
         run:
-          yarn run test:dev
+          npm run test:dev
