@@ -13,19 +13,19 @@ services:
     ports:
       - 5432:5432
 
-  budgets-server:
-    build:
-      context: .
-      dockerfile: Dockerfile.server
-    container_name: budgets-server
-    ports:
-      - 3333:3333
-    volumes:
-      - ./packages/server:/workspace
-    environment: 
-      - PORT=3333
-    depends_on: 
-      - budgets-postgres
+  # budgets-server:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.server
+  #   container_name: budgets-server
+  #   ports:
+  #     - 3333:3333
+  #   volumes:
+  #     - ./packages/server:/workspace
+  #   environment: 
+  #     - PORT=3333
+  #   depends_on: 
+  #     - budgets-postgres
 
 volumes:
   budgets-db:

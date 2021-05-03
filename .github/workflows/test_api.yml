@@ -1,0 +1,47 @@
+name: API Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-18.04
+
+    env:
+      DATABASE_URL: postgresql://budgets:budgets@db:5432/budgets?schema=api$test
+
+    container: node:lts-buster
+
+    services:
+      db:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: budgets
+          POSTGRES_DB: budgets
+          POSTGRES_USER: budgets
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Dependencies installation
+        run: |
+          npm ci
+          npm run bootstrap
+          
+      - name: Build api server
+        env:
+          NODE_ENV: test 
+        run:
+          npm run build:server
+      
+      - name: Run api test suits
+        run:
+          npm run test

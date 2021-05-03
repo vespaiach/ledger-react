@@ -2,15 +2,20 @@
   "name": "ledger",
   "private": true,
   "devDependencies": {
+    "@commitlint/cli": "^12.1.1",
+    "@commitlint/config-conventional": "^12.1.1",
     "eslint": "^7.19.0",
+    "husky": "^6.0.0",
     "lerna": "^3.22.1",
     "prettier": "^2.2.1"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap && lerna run migrate && lerna run seed",
-    "dev": "lerna run dev --parallel",
-    "build": "lerna run build --parallel",
-    "createacc": "lerna run createacc",
+    "bootstrap": "lerna bootstrap",
+    "build:server": "lerna run --scope test-server prisma:generate && lerna run --scope server prisma:generate && lerna run --scope server prisma:deploy && lerna run --scope server build:test",
+    "start:server": "lerna run --scope server start",
+    "dev:server": "lerna run --scope server dev",
+    "test:server": "lerna run --scope test-server test --stream",
+    "test": "npm run start:server & npm run test:server",
     "prettier:clean": "prettier **/* -w",
     "lerna": "lerna"
   },
@@ -24,5 +29,9 @@
     "arrowParens": "always",
     "singleQuote": true,
     "printWidth": 100
+  },
+  "dependencies": {
+    "concurrently": "^6.0.2",
+    "tree-kill": "^1.2.2"
   }
 }
