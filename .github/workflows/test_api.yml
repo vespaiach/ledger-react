@@ -10,6 +10,9 @@ jobs:
   integration-test:
     runs-on: ubuntu-18.04
 
+    env:
+      DATABASE_URL: postgresql://budgets:budgets@db:5432/budgets?schema=api$test
+
     container: node:lts-buster
 
     services:
@@ -35,12 +38,10 @@ jobs:
           
       - name: Build api server
         env:
-          NODE_ENV: development 
+          NODE_ENV: test 
         run:
           npm run build:server
       
       - name: Run api test suits
-        env:
-          DATABASE_URL: postgresql://budgets:budgets@db:5432/budgets?schema=api$test
         run:
           npm run test
