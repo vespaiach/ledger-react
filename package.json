@@ -11,7 +11,7 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "build:server": "lerna run --scope test-server prisma:generate && lerna run --scope server prisma:generate && lerna run --scope server build",
+    "build:server": "lerna run --scope test-server prisma:generate && lerna run --scope server prisma:generate && lerna run --scope server prisma:deploy && lerna run --scope server build:test",
     "start:server": "lerna run --scope server start",
     "dev:server": "lerna run --scope server dev",
     "test:server": "lerna run --scope test-server test --stream",

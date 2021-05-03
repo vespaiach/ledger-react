@@ -24,8 +24,9 @@
   "scripts": {
     "seeding": "ts-node ./src/seeding",
     "dev": "nodemon",
-    "build": "NODE_ENV=production tsc",
+    "build:test": "NODE_ENV=test tsc",
     "prisma:generate": "npx prisma generate",
+    "prisma:deploy": "npx prisma migrate deploy",
     "start": "node ./out/server.js"
   }
 }
