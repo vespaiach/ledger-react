@@ -57,6 +57,38 @@ export type ListYearsRequest = RequestHandler<
   RootContext
 >;
 
+export type CreateTransactionRequest = RequestHandler<
+  unknown,
+  ResponseData<Transaction>,
+  Omit<Transaction, 'id'>,
+  unknown,
+  RootContext
+>;
+
+export type UpdateTransactionRequest = RequestHandler<
+  unknown,
+  ResponseData<Transaction>,
+  { id: number } & Partial<Transaction>,
+  unknown,
+  RootContext
+>;
+
+export type QueryTransactionRequest = RequestHandler<
+  unknown,
+  ResponseData<Transaction[]>,
+  unknown,
+  { year: number },
+  RootContext
+>;
+
+export type DeleteTransactionRequest = RequestHandler<
+  unknown,
+  ResponseData,
+  unknown,
+  { id: number },
+  RootContext
+>;
+
 /**
  * Hypertext Transfer Protocol (HTTP) response status codes.
  * @see {@link https://en.wikipedia.org/wiki/List_of_HTTP_status_codes}
