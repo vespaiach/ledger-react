@@ -10,11 +10,6 @@ jobs:
   integration-test:
     runs-on: ubuntu-18.04
 
-    env:
-      DATABASE_URL: postgresql://budgets:budgets@db:5432/budgets?schema=api$test
-
-    container: node:lts-buster
-
     services:
       db:
         image: postgres
@@ -27,21 +22,24 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 5432:5432
       
     steps:
       - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Dependencies installation
         run: |
           npm ci
           npm run bootstrap
           
-      - name: Build api server
-        env:
-          NODE_ENV: test 
-        run:
-          npm run build:server
-      
       - name: Run api test suits
         run:
-          npm run test
+          make test-server-ci

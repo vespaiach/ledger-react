@@ -132,10 +132,10 @@ t.test('Update category', async (t) => {
     values: [dbCategoryResponse.rows[0].id],
   });
 
-  t.ok(dbCategoryUpdatingResponse.rows[0].id == updateTypeResult.data.id, 'should match id');
-  t.ok(dbCategoryUpdatingResponse.rows[0].name == updateTypeResult.data.name, 'should match name');
+  t.ok(dbCategoryUpdatingResponse.rows[0].id === updateTypeResult.data.id, 'should match id');
+  t.ok(dbCategoryUpdatingResponse.rows[0].name === updateTypeResult.data.name, 'should match name');
   t.ok(
-    dbCategoryUpdatingResponse.rows[0].transactionType == updateTypeResult.data.transactionType,
+    dbCategoryUpdatingResponse.rows[0].transactionType === updateTypeResult.data.transactionType,
     'should match type'
   );
 
