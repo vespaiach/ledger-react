@@ -22,9 +22,10 @@
     "ts-node": "^9.1.1"
   },
   "scripts": {
-    "seeding": "ts-node ./src/seeding",
+    "seed": "ts-node ./src/seeding",
     "dev": "nodemon",
     "build": "NODE_ENV=product tsc",
+    "prisma:migrate:dev": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:deploy": "prisma migrate deploy",
     "start": "node ./out/server.js"

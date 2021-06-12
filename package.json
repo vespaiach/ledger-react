@@ -15,7 +15,10 @@
     "test:server": "lerna run --scope test-server test",
     "test": "npm run start:server & npm run test:server",
     "prettier:clean": "prettier **/* -w",
-    "lerna": "lerna"
+    "lerna": "lerna",
+    "server:seed": "lerna run --scope server seed",
+    "server:migrate-dev": "lerna run --scope server prisma:migrate:dev",
+    "server:dev": "npm run server:migrate-dev && lerna run --scope server dev"
   },
   "prettier": {
     "trailingComma": "es5",
