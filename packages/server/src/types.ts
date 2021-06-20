@@ -57,18 +57,35 @@ export type ListYearsRequest = RequestHandler<
   RootContext
 >;
 
+export type CreatingTransactionPayload = {
+  amount: number;
+  date: string;
+  description: string;
+  transactionType: string;
+  categoryId: number;
+};
+
 export type CreateTransactionRequest = RequestHandler<
   unknown,
   ResponseData<Transaction>,
-  Omit<Transaction, 'id'>,
+  CreatingTransactionPayload,
   unknown,
   RootContext
 >;
 
+export type UpdatingTransactionPayload = {
+  id: number;
+  amount?: number;
+  date?: string;
+  description?: string;
+  transactionType?: string;
+  categoryId?: number;
+};
+
 export type UpdateTransactionRequest = RequestHandler<
   unknown,
   ResponseData<Transaction>,
-  { id: number } & Partial<Transaction>,
+  UpdatingTransactionPayload,
   unknown,
   RootContext
 >;
@@ -467,4 +484,3 @@ export enum HttpStatusCode {
    */
   NETWORK_AUTHENTICATION_REQUIRED = 511,
 }
-
