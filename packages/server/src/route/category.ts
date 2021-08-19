@@ -1,5 +1,6 @@
 import { TransactionType } from '@prisma/client';
-import HttpStatusCode, {
+import {
+  HttpStatusCode,
   CreateCategoryRequest,
   DeleteCategoryRequest,
   QueryCategoriesRequest,
