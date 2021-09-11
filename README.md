@@ -1,71 +1,46 @@
-<p align="center">
-    <a href="https://www.vespaiach.com/">
-        <img src="https://raw.githubusercontent.com/vespaiach/ledger/main/ledger.svg" height="56" width="56" data-canonical-src="https://www.vespaiach.com/ledger.svg" title="Ledger"/>
-    </a>
-</p>
+# Getting Started with Create React App
 
-<p align="center">
-  <b>Ledger</b> is a small web application managing personal money balance
-  <br>
-  It is built with React/Redux and awesome GUI framework: <a href="https://github.com/mui-org/material-ui" title="Material UI">Material UI</a>
-</p>
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-<br>
+## Available Scripts
 
-# Motivation
+In the project directory, you can run:
 
-I'm trying to bring my money balance excel file to web application.
+### `yarn start`
 
-# Live Playground
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The demo version at: https://www.vespaiach.com/ . Use the account below to login:
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
 
--   email: test@test.com
--   password: 12345678
+### `yarn test`
 
-# Development
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-Development environment requirements :
+### `yarn build`
 
--   Node.js >= 12.0.0
--   PostgreSQL
--   TypeScript
--   Docker
--   Docker compose
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-I am using Lerna to make sure both backend project and frontend project work well together in a mono repo.
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-Backend is using Adonisjs framework version 5. Frontend is React application combined with Redux, Redux Saga and Material UI framework
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-## Download and bootstrap project:
+### `yarn eject`
 
-Download project:
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-```
-git clone https://github.com/vespaiach/ledger
-```
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Before bootstraping project, go to folder ./packages/server and update .env file. (Refer to .env.example for more details)
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-```
-cd ./ledger // Root folder of project
-npm install
-npm run bootstrap
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-// Create an account to access web app
-npm run createacc -- -- <email> <password>
-```
+## Learn More
 
-## Start development servers:
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-```
-cd ./ledger
-npm run dev
-```
-
-# Deployment
-
-Normally, backend code should be deployed in one host and frontend code in another code. However, this web application is leveraging Adonisjs framework and making the frontend application become a view of Adonisjs. Hence, we can deploy it in one host.
-
--   Build docker image (Dockerfile in root folder)
--   Deploy docker image
+To learn React, check out the [React documentation](https://reactjs.org/).
