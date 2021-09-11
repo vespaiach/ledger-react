@@ -1,38 +1,16 @@
 {
   "name": "ledger",
-  "private": true,
   "devDependencies": {
-    "@commitlint/cli": "^12.1.1",
-    "@commitlint/config-conventional": "^12.1.1",
-    "eslint": "^7.19.0",
-    "husky": "^6.0.0",
-    "lerna": "^3.22.1",
-    "prettier": "^2.2.1"
+    "@typescript-eslint/eslint-plugin": "^4.31.0",
+    "@typescript-eslint/parser": "^4.31.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-react": "^7.25.1",
+    "prettier": "^2.4.0",
+    "typescript": "^4.4.3"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "build:server": "lerna run --scope test-server prisma:generate && lerna run --scope server prisma:generate && lerna run --scope server prisma:deploy && lerna run --scope server build",
-    "test:server": "lerna run --scope test-server test",
-    "test": "npm run start:server & npm run test:server",
-    "prettier:clean": "prettier **/* -w",
-    "lerna": "lerna",
-    "server:seed": "lerna run --scope server seed",
-    "server:migrate-dev": "lerna run --scope server prisma:migrate:dev",
-    "server:dev": "npm run server:migrate-dev && lerna run --scope server dev"
+    "dev": "webpack"
   },
-  "prettier": {
-    "trailingComma": "es5",
-    "tabWidth": 2,
-    "semi": true,
-    "jsxSingleQuote": false,
-    "bracketSpacing": true,
-    "jsxBracketSameLine": true,
-    "arrowParens": "always",
-    "singleQuote": true,
-    "printWidth": 100
-  },
-  "dependencies": {
-    "concurrently": "^6.0.2",
-    "tree-kill": "^1.2.2"
-  }
+  "dependencies": {}
 }
