@@ -1,0 +1,59 @@
+query getTransactionsByDate($dateInput: DateInput) {
+  transactionsByDate(input: $dateInput) {
+    id
+    amount
+    date
+    description
+    updatedAt
+    reason {
+      id
+      text
+      updatedAt
+    }
+  }
+}
+
+query getTransactionsByAmount($amountInput: AmountInput) {
+  transactionsByAmount(input: $amountInput) {
+    id
+    amount
+    date
+    description
+    updatedAt
+    reason {
+      id
+      text
+      updatedAt
+    }
+  }
+}
+
+query getTransactionsByReason($reasonId: Int!) {
+  transactionsByReason(reasonId: $reasonId) {
+    id
+    amount
+    date
+    description
+    updatedAt
+    reason {
+      id
+      text
+      updatedAt
+    }
+  }
+}
+
+query getTransactionsById($transactionId: Int!) {
+  transactionsById(id: $transactionId) {
+    id
+    amount
+    date
+    description
+    updatedAt
+    reason {
+      text
+      id
+      updatedAt
+    }
+  }
+}

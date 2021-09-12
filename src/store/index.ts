@@ -1,27 +1,41 @@
-import { createStore, compose, applyMiddleware } from 'redux';
+import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
+import { createTransform, persistStore, persistReducer } from 'redux-persist';
 import createSagaMiddleware from 'redux-saga';
+import { all, fork } from 'redux-saga/effects';
 
-import saga from './saga';
-import localStore from './state';
-import repo from './repo';
+const reducers = combineReducers({});
+const sagaMiddleWare = createSagaMiddleware();
 
-const sagaMiddleware = createSagaMiddleware({
-  onError: (e) => {
-    console.error(e);
-  },
-});
-const typedWindow = typeof window !== 'undefined' && (window as any);
-const composeEnhancers =
-  (process.env.NODE_ENV === 'development' &&
-    typeof typedWindow !== 'undefined' &&
-    typedWindow.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
-    typedWindow.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-      trace: true,
-      traceLimit: 25,
-    })) ||
-  compose;
+function* rootSaga() {
+  yield all(
+    [
+      ...Object.values(appNotificationSagas),
+      ...Object.values(cardSagas),
+      ...Object.values(configSagas),
+      ...Object.values(discoverySagas),
+      ...Object.values(eventSagas),
+      ...Object.values(eventsSagas),
+      ...Object.values(friendsSagas),
+      ...Object.values(friendshipSagas),
+      ...Object.values(notificationsSagas),
+      ...Object.values(paymentSagas),
+      ...Object.values(rsvpSagas),
+      ...Object.values(sessionSagas),
+      ...Object.values(storeSagas),
+      ...Object.values(eventsAcceptedSagas),
+      ...Object.values(userSagas),
+    ].map(fork)
+  );
+}
 
-const store = createStore(localStore, composeEnhancers(applyMiddleware(sagaMiddleware)));
-sagaMiddleware.run(saga(repo));
+function store() {
+  const composeEnhancers =
+    (process.env.NODE_ENV === 'development' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+    compose;
+  const store = createStore(reducers, composeEnhancers(applyMiddleware(sagaMiddleWare)));
 
-export { store };
+  sagaMiddleWare.run(rootSaga);
+  return { store };
+}
+
+export default store();
