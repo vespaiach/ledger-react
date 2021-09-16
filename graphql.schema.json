@@ -9,41 +9,6 @@
     "subscriptionType": null,
     "types": [
       {
-        "kind": "INPUT_OBJECT",
-        "name": "AmountInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "amountFrom",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "amountTo",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
         "kind": "SCALAR",
         "name": "Boolean",
         "description": "The `Boolean` scalar type represents `true` or `false`.",
@@ -59,41 +24,6 @@
         "description": null,
         "fields": null,
         "inputFields": null,
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "DateInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "dateFrom",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "dateFrom_String_format_date",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "dateTo",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "dateTo_String_format_date",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
         "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
@@ -160,6 +90,49 @@
       },
       {
         "kind": "OBJECT",
+        "name": "Pagination",
+        "description": null,
+        "fields": [
+          {
+            "name": "totalPages",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "totalRecords",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "Query",
         "description": null,
         "fields": [
@@ -184,7 +157,7 @@
             "deprecationReason": null
           },
           {
-            "name": "transactionsByAmount",
+            "name": "totalPages",
             "description": null,
             "args": [
               {
@@ -192,7 +165,7 @@
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "AmountInput",
+                  "name": "TransactionFilterInput",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -204,53 +177,16 @@
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Transaction",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "Pagination",
+                "ofType": null
               }
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "transactionsByDate",
-            "description": null,
-            "args": [
-              {
-                "name": "input",
-                "description": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "DateInput",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Transaction",
-                  "ofType": null
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "transactionsById",
+            "name": "transactionById",
             "description": null,
             "args": [
               {
@@ -279,20 +215,16 @@
             "deprecationReason": null
           },
           {
-            "name": "transactionsByReason",
+            "name": "transactions",
             "description": null,
             "args": [
               {
-                "name": "reasonId",
+                "name": "input",
                 "description": null,
                 "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
+                  "kind": "INPUT_OBJECT",
+                  "name": "TransactionFilterInput",
+                  "ofType": null
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -490,6 +422,101 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "TransactionFilterInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "amountFrom",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "amountTo",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "dateFrom",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "dateFrom_String_format_date",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "dateTo",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "dateTo_String_format_date",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "limit",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "offset",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reason",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },

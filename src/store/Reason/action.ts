@@ -1,10 +1,20 @@
-import { Action } from 'redux';
-import { Maybe, Reason } from '../../graphql.generated';
-import { LedgerAction, ReasonActionType } from '../actionTypes';
+import { Reason } from '../../graphql.generated';
+import { ReasonActionType } from '../types';
 
-export const requestReasonAction = (): LedgerAction => ({ type: ReasonActionType.REQUEST });
+export interface RequestReasonsAction {
+  type: ReasonActionType.REQUEST;
+}
 
-export const receiveReasonAction = (payload: Maybe<Reason[]>): LedgerAction => ({
+export interface ReceiveReasonsAction {
+  type: ReasonActionType.RECEIVE;
+  payload: Reason[];
+}
+
+export const requestReasons = (): RequestReasonsAction => ({
+  type: ReasonActionType.REQUEST,
+});
+
+export const receiveReasons = (reasons: Reason[]): ReceiveReasonsAction => ({
   type: ReasonActionType.RECEIVE,
-  payload,
+  payload: reasons,
 });

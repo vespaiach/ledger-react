@@ -1,31 +1,20 @@
 import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
-import { createTransform, persistStore, persistReducer } from 'redux-persist';
 import createSagaMiddleware from 'redux-saga';
 import { all, fork } from 'redux-saga/effects';
 
-const reducers = combineReducers({});
+import * as reasonSagas from './Reason/saga';
+import * as transactionSagas from './Transaction/saga';
+import { reasonReducer } from './Reason';
+import { transactionReducer } from './Transaction';
+
+const reducers = combineReducers({
+  reason: reasonReducer,
+  transaction: transactionReducer,
+});
 const sagaMiddleWare = createSagaMiddleware();
 
 function* rootSaga() {
-  yield all(
-    [
-      ...Object.values(appNotificationSagas),
-      ...Object.values(cardSagas),
-      ...Object.values(configSagas),
-      ...Object.values(discoverySagas),
-      ...Object.values(eventSagas),
-      ...Object.values(eventsSagas),
-      ...Object.values(friendsSagas),
-      ...Object.values(friendshipSagas),
-      ...Object.values(notificationsSagas),
-      ...Object.values(paymentSagas),
-      ...Object.values(rsvpSagas),
-      ...Object.values(sessionSagas),
-      ...Object.values(storeSagas),
-      ...Object.values(eventsAcceptedSagas),
-      ...Object.values(userSagas),
-    ].map(fork)
-  );
+  yield all([...Object.values(reasonSagas), ...Object.values(transactionSagas)].map(fork));
 }
 
 function store() {
@@ -37,5 +26,5 @@ function store() {
   sagaMiddleWare.run(rootSaga);
   return { store };
 }
-
+export type AppState = ReturnType<typeof reducers>;
 export default store();

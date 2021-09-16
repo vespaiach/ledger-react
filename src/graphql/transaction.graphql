@@ -1,59 +1,21 @@
-query getTransactionsByDate($dateInput: DateInput) {
-  transactionsByDate(input: $dateInput) {
-    id
-    amount
-    date
-    description
-    updatedAt
+query getTransactions($transactionsInput: TransactionFilterInput) {
+  transactions(input: $transactionsInput) {
     reason {
       id
       text
       updatedAt
     }
+    id
+    amount
+    date
+    description
+    updatedAt
   }
 }
 
-query getTransactionsByAmount($amountInput: AmountInput) {
-  transactionsByAmount(input: $amountInput) {
-    id
-    amount
-    date
-    description
-    updatedAt
-    reason {
-      id
-      text
-      updatedAt
-    }
-  }
-}
-
-query getTransactionsByReason($reasonId: Int!) {
-  transactionsByReason(reasonId: $reasonId) {
-    id
-    amount
-    date
-    description
-    updatedAt
-    reason {
-      id
-      text
-      updatedAt
-    }
-  }
-}
-
-query getTransactionsById($transactionId: Int!) {
-  transactionsById(id: $transactionId) {
-    id
-    amount
-    date
-    description
-    updatedAt
-    reason {
-      text
-      id
-      updatedAt
-    }
+query getTotalPages($transactionsInput: TransactionFilterInput) {
+  totalPages(input: $transactionsInput) {
+    totalRecords
+    totalPages
   }
 }
