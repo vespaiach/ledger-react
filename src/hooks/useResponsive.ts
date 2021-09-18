@@ -1,14 +1,15 @@
-import { useMediaQuery } from '@mui/material';
+import { Theme, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/system';
 import { useMemo } from 'react';
 
 interface ResponsiveReturn {
   iconEdge: 'start' | 'end';
   containerGutter: boolean;
+  theme: Theme;
 }
 
 export function useResponsive(): ResponsiveReturn {
-  const theme = useTheme();
+  const theme = useTheme<Theme>();
   const matches = useMediaQuery(theme.breakpoints.down('md'));
 
   return useMemo(() => {
@@ -18,6 +19,7 @@ export function useResponsive(): ResponsiveReturn {
     return {
       iconEdge,
       containerGutter,
+      theme,
     };
-  }, [matches]);
+  }, [matches, theme]);
 }
