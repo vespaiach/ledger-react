@@ -17,9 +17,10 @@ function* rootSaga() {
   yield all([...Object.values(reasonSagas), ...Object.values(transactionSagas)].map(fork));
 }
 
+const typedWindow = typeof window !== 'undefined' && (window as any);
 function store() {
   const composeEnhancers =
-    (process.env.NODE_ENV === 'development' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+    (process.env.NODE_ENV === 'development' && typedWindow.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
     compose;
   const store = createStore(reducers, composeEnhancers(applyMiddleware(sagaMiddleWare)));
 

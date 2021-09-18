@@ -5,7 +5,7 @@ import {
   DocumentNode,
   ApolloQueryResult,
 } from '@apollo/client';
-import { call, put, PutEffect, SagaReturnType } from '@redux-saga/core/effects';
+import { put } from '@redux-saga/core/effects';
 
 import { appGotError } from './Shared/action';
 import { SagaReturn } from './types';
@@ -45,5 +45,3 @@ export function* mutate(m: DocumentNode, variables = {}) {
     yield put(appGotError('Network error'));
   }
 }
-
-export function 
