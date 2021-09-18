@@ -1,0 +1,21 @@
+query getTransactions($transactionsInput: TransactionFilterInput) {
+  transactions(input: $transactionsInput) {
+    reason {
+      id
+      text
+      updatedAt
+    }
+    id
+    amount
+    date
+    description
+    updatedAt
+  }
+}
+
+query getTotalPages($transactionsInput: TransactionFilterInput) {
+  totalPages(input: $transactionsInput) {
+    totalRecords
+    totalPages
+  }
+}
