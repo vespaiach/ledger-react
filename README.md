@@ -1,46 +1,71 @@
-# Getting Started with Create React App
+<p align="center">
+    <a href="https://www.vespaiach.com/">
+        <img src="https://raw.githubusercontent.com/vespaiach/ledger/main/ledger.svg" height="56" width="56" data-canonical-src="https://www.vespaiach.com/ledger.svg" title="Ledger"/>
+    </a>
+</p>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
+  <b>Ledger</b> is a small web application managing personal money balance
+  <br>
+  It is built with React/Redux and awesome GUI framework: <a href="https://github.com/mui-org/material-ui" title="Material UI">Material UI</a>
+</p>
 
-## Available Scripts
+<br>
 
-In the project directory, you can run:
+# Motivation
 
-### `yarn start`
+I'm trying to bring my money balance excel file to web application.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+# Live Playground
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+The demo version at: https://www.vespaiach.com/ . Use the account below to login:
 
-### `yarn test`
+-   email: test@test.com
+-   password: 12345678
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# Development
 
-### `yarn build`
+Development environment requirements :
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+-   Node.js >= 12.0.0
+-   PostgreSQL
+-   TypeScript
+-   Docker
+-   Docker compose
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+I am using Lerna to make sure both backend project and frontend project work well together in a mono repo.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Backend is using Adonisjs framework version 5. Frontend is React application combined with Redux, Redux Saga and Material UI framework
 
-### `yarn eject`
+## Download and bootstrap project:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Download project:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+git clone https://github.com/vespaiach/ledger
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Before bootstraping project, go to folder ./packages/server and update .env file. (Refer to .env.example for more details)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
+cd ./ledger // Root folder of project
+npm install
+npm run bootstrap
 
-## Learn More
+// Create an account to access web app
+npm run createacc -- -- <email> <password>
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Start development servers:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+cd ./ledger
+npm run dev
+```
+
+# Deployment
+
+Normally, backend code should be deployed in one host and frontend code in another code. However, this web application is leveraging Adonisjs framework and making the frontend application become a view of Adonisjs. Hence, we can deploy it in one host.
+
+-   Build docker image (Dockerfile in root folder)
+-   Deploy docker image

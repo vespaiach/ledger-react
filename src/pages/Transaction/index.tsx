@@ -1,11 +1,14 @@
 import { Box, Container } from '@mui/material';
+import { useResponsive } from '../../hooks/useResponsive';
 
 import { Master } from '../Master';
 
 export function List() {
+  const { containerGutter } = useResponsive();
+
   return (
     <Master>
-      <Container maxWidth="md" disableGutters sx={{ marginTop: '78px' }}>
+      <Container maxWidth="md" sx={{ marginTop: '78px' }} disableGutters={!containerGutter}>
         <Box sx={{ my: 2 }}>
           {[...new Array(112)]
             .map(
