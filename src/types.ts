@@ -32,8 +32,3 @@ export enum AppCommand {
 }
 
 export type CommandFunc = (command: AppCommand, data?: unknown) => void;
-
-export interface CommonPaneProps {
-  onClose: (...args: unknown[]) => void;
-  history: MemoryHistory
-}

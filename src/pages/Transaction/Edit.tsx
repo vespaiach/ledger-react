@@ -1,15 +1,17 @@
+import { useContext } from 'react';
+
 import { Pane, PaneCommand } from '../../components/Pane';
-import { CommonPaneProps, TransactionModel } from '../../types';
+import { PaneHistory } from '../../contexts/paneHistory';
 
-interface EditProps extends CommonPaneProps {
-  transaction?: TransactionModel;
-}
+interface EditProps {}
 
-export function Edit({ onClose, history }: EditProps) {
+export function Edit({}: EditProps) {
+  const history = useContext(PaneHistory);
+
   const handlePaneCommand = (command: PaneCommand) => {
     switch (command) {
       case PaneCommand.Close:
-        history.goBack();
+        history.back();
         break;
     }
   };

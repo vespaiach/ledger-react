@@ -5,6 +5,7 @@ import { createMemoryHistory } from 'history';
 import { Skeleton } from '../components/Skeleton';
 import { CommandFunc, AppCommand } from '../types';
 import { Edit as TransactionForm } from './Transaction/Edit';
+import { PaneHistory } from '../contexts/paneHistory';
 
 interface MasterProps {
   children: React.ReactNode;
@@ -19,22 +20,14 @@ export function Master({ children }: MasterProps) {
     }
   };
 
-  const handleClosePane = () => {
-    history.goBack();
-  };
-
   return (
-    <>
+    <PaneHistory.Provider value={history}>
       <Skeleton onCommand={handleCommand}>{children}</Skeleton>
       <Router history={history}>
         <Switch>
-          <Route
-            exact
-            path="/transaction/add"
-            render={() => <TransactionForm onClose={handleClosePane} history={history} />}
-          />
+          <Route exact path="/transaction/add" render={() => <TransactionForm />} />
         </Switch>
       </Router>
-    </>
+    </PaneHistory.Provider>
   );
 }

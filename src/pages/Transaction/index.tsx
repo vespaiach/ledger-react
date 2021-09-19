@@ -36,7 +36,7 @@ export function TransactionList() {
     });
   };
 
-  const rowRenderer: ListRowRenderer = ({ index, isVisible, key, style, isScrolling }) => {
+  const rowRenderer: ListRowRenderer = ({ index, isVisible, key, style }) => {
     const trans = transactions[index];
 
     if (!isVisible) {
