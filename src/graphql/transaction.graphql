@@ -14,7 +14,7 @@ query getTransactions($transactionsInput: TransactionFilterInput) {
 }
 
 query getTotalPages($transactionsInput: TransactionFilterInput) {
-  totalPages(input: $transactionsInput) {
+  getTotalPages(input: $transactionsInput) {
     totalRecords
     totalPages
   }

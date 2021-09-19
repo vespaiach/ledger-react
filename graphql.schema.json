@@ -137,27 +137,7 @@
         "description": null,
         "fields": [
           {
-            "name": "reasons",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Reason",
-                  "ofType": null
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "totalPages",
+            "name": "getTotalPages",
             "description": null,
             "args": [
               {
@@ -180,6 +160,26 @@
                 "kind": "OBJECT",
                 "name": "Pagination",
                 "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reasons",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Reason",
+                  "ofType": null
+                }
               }
             },
             "isDeprecated": false,

@@ -7,6 +7,7 @@ import {
   RequestTransactionPagesAction,
   UpdateTransactionTotalPagesAction,
   UpdateTransactionPageAction,
+  SetTransactionPageAction,
 } from './Transaction/action';
 
 export enum ReasonActionType {
@@ -22,6 +23,7 @@ export enum TransactionActionType {
   PAGES = '@Transaction/request-total-pages',
   RECEIVE = '@Transaction/receive',
   RECEIVE_PAGE = '@Transaction/receive-total-pages',
+  SET_PAGE = '@Transaction/set-page-status',
 }
 
 export enum SharedActionType {
@@ -32,7 +34,7 @@ export enum SharedActionType {
 export type SagaReturn<T> = {
   error?: string;
   data?: T;
-}
+};
 
 export type LedgerAction =
   | UpdateTransactionFilterAction
@@ -41,6 +43,7 @@ export type LedgerAction =
   | ReceiveTransactionsAction
   | UpdateTransactionTotalPagesAction
   | UpdateTransactionPageAction
+  | SetTransactionPageAction
   | RequestReasonsAction
   | ReceiveReasonsAction
   | AppLoadingAction

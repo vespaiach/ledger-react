@@ -1,5 +1,4 @@
-import { AppBar, Container, IconButton, Toolbar, useMediaQuery } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { AppBar, Container, IconButton, Toolbar } from '@mui/material';
 import {
   MoreVertRounded as MoreVertIcon,
   SearchRounded as SearchIcon,
@@ -9,6 +8,7 @@ import {
 
 import { HideOnScroll } from './HideOnScroll';
 import { AppCommand, CommandFunc } from '../types';
+import { useResponsive } from '../hooks/useResponsive';
 
 interface MasterProps {
   children: React.ReactNode;
@@ -16,9 +16,7 @@ interface MasterProps {
 }
 
 export function Skeleton({ children, onCommand }: MasterProps) {
-  const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.down('lg'));
-  const iconEdge = matches ? 'end' : 'start';
+  const { iconEdge } = useResponsive();
 
   const handleClick = (command: AppCommand) => (args?: unknown) => {
     onCommand && onCommand(command, args);

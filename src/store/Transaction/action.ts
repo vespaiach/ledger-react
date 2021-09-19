@@ -9,14 +9,12 @@ export interface TransactionFilter {
   dateFrom: Maybe<number>;
   dateTo: Maybe<number>;
   reason: Maybe<number>;
-  offset: number;
-  limit: number;
 }
 
 export interface TransactionState {
   filter: TransactionFilter;
   data: Transaction[];
-  pages: Maybe<boolean[]>;
+  pages: (boolean | null)[];
 }
 
 export interface UpdateTransactionFilterAction {
@@ -42,6 +40,10 @@ export interface UpdateTransactionTotalPagesAction {
 
 export interface RequestTransactionsAction {
   type: TransactionActionType.REQUEST;
+  payload: {
+    startIndex: number;
+    endIndex?: number;
+  };
 }
 
 export interface RequestTransactionPagesAction {
@@ -53,9 +55,29 @@ export interface ReceiveTransactionsAction {
   payload: {
     data: Transaction[];
     offset: number;
-    limit: number;
   };
 }
+
+/**
+ * status:
+ *  - False: loading
+ *  - True: loaded
+ */
+export interface SetTransactionPageAction {
+  type: TransactionActionType.SET_PAGE;
+  payload: {
+    page: number;
+    status: boolean;
+  };
+}
+
+export const setPageStatus = (page: number, status: boolean): SetTransactionPageAction => ({
+  type: TransactionActionType.SET_PAGE,
+  payload: {
+    page,
+    status,
+  },
+});
 
 export const updateFilter = (
   field: keyof TransactionFilter,
@@ -73,8 +95,15 @@ export const updatePage = (page: number): UpdateTransactionPageAction => ({
   payload: page,
 });
 
-export const requestTransactions = (): RequestTransactionsAction => ({
+export const requestTransactions = (
+  startIndex: number,
+  endIndex?: number
+): RequestTransactionsAction => ({
   type: TransactionActionType.REQUEST,
+  payload: {
+    startIndex,
+    endIndex,
+  },
 });
 
 export const requestTotalPages = (): RequestTransactionPagesAction => ({
@@ -83,11 +112,10 @@ export const requestTotalPages = (): RequestTransactionPagesAction => ({
 
 export const receiveTransactions = (
   transactions: Transaction[],
-  offset: number,
-  limit: number
+  offset: number
 ): ReceiveTransactionsAction => ({
   type: TransactionActionType.RECEIVE,
-  payload: { data: transactions, offset, limit },
+  payload: { data: transactions, offset },
 });
 
 export const receiveTotalPages = (payload: {

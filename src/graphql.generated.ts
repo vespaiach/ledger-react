@@ -36,14 +36,14 @@ export type Pagination = {
 
 export type Query = {
   __typename?: 'Query';
+  getTotalPages: Pagination;
   reasons: Array<Maybe<Reason>>;
-  totalPages: Pagination;
   transactionById?: Maybe<Transaction>;
   transactions: Array<Maybe<Transaction>>;
 };
 
 
-export type QueryTotalPagesArgs = {
+export type QueryGetTotalPagesArgs = {
   input?: Maybe<TransactionFilterInput>;
 };
 
@@ -109,7 +109,7 @@ export type GetTotalPagesQueryVariables = Exact<{
 }>;
 
 
-export type GetTotalPagesQuery = { __typename?: 'Query', totalPages: { __typename?: 'Pagination', totalRecords: number, totalPages: number } };
+export type GetTotalPagesQuery = { __typename?: 'Query', getTotalPages: { __typename?: 'Pagination', totalRecords: number, totalPages: number } };
 
 
 export const GetReasonsDocument = gql`
@@ -194,7 +194,7 @@ export type GetTransactionsLazyQueryHookResult = ReturnType<typeof useGetTransac
 export type GetTransactionsQueryResult = Apollo.QueryResult<GetTransactionsQuery, GetTransactionsQueryVariables>;
 export const GetTotalPagesDocument = gql`
     query getTotalPages($transactionsInput: TransactionFilterInput) {
-  totalPages(input: $transactionsInput) {
+  getTotalPages(input: $transactionsInput) {
     totalRecords
     totalPages
   }

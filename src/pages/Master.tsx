@@ -24,15 +24,17 @@ export function Master({ children }: MasterProps) {
   };
 
   return (
-    <Router history={history}>
+    <>
       <Skeleton onCommand={handleCommand}>{children}</Skeleton>
-      <Switch>
-        <Route
-          exact
-          path="/transaction/add"
-          render={() => <TransactionForm onClose={handleClosePane} history={history} />}
-        />
-      </Switch>
-    </Router>
+      <Router history={history}>
+        <Switch>
+          <Route
+            exact
+            path="/transaction/add"
+            render={() => <TransactionForm onClose={handleClosePane} history={history} />}
+          />
+        </Switch>
+      </Router>
+    </>
   );
 }
