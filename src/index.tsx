@@ -1,19 +1,16 @@
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+import { ApolloProvider } from '@apollo/client';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 
 import { App } from './App';
-import { theme } from './theme';
+import { store } from './store';
+import { gqlClient } from './store/utils';
 
 ReactDOM.render(
-  <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <App />
-  </ThemeProvider>,
+  <ApolloProvider client={gqlClient}>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </ApolloProvider>,
   document.querySelector('#root')
 );

@@ -13,19 +13,20 @@ const reducers = combineReducers({
 });
 const sagaMiddleWare = createSagaMiddleware();
 
+console.log(Object.values(reasonSagas))
 function* rootSaga() {
   yield all([...Object.values(reasonSagas), ...Object.values(transactionSagas)].map(fork));
 }
 
 const typedWindow = typeof window !== 'undefined' && (window as any);
-function store() {
+function createStoreInstance() {
   const composeEnhancers =
     (process.env.NODE_ENV === 'development' && typedWindow.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
     compose;
-  const store = createStore(reducers, composeEnhancers(applyMiddleware(sagaMiddleWare)));
+  const storeInstance = createStore(reducers, composeEnhancers(applyMiddleware(sagaMiddleWare)));
 
   sagaMiddleWare.run(rootSaga);
-  return { store };
+  return storeInstance;
 }
 export type AppState = ReturnType<typeof reducers>;
-export default store();
+export const store = createStoreInstance();

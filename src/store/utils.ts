@@ -5,13 +5,15 @@ import {
   DocumentNode,
   ApolloQueryResult,
 } from '@apollo/client';
-import { put } from '@redux-saga/core/effects';
+import { put, call } from '@redux-saga/core/effects';
 
 import { appGotError } from './Shared/action';
 import { SagaReturn } from './types';
 
-const gqlClient = new ApolloClient({
-  uri: process.env.GRAPHQL_API,
+console.log(process.env);
+
+export const gqlClient = new ApolloClient({
+  uri: process.env.REACT_APP_LEDGER_GRAPHQL_API,
   cache: new InMemoryCache(),
 });
 
@@ -22,18 +24,19 @@ export function* query<T = any>(
 ): Generator<ApolloQueryResult<T>, SagaReturn<T>, boolean> {
   try {
     // @ts-ignore
-    const result: ApolloQueryResult<T> = yield gqlClient.query<T>({
+    const { error, data } = yield call(gqlClient.query, {
       ...options,
       query: q,
       variables,
     });
 
-    if (result.error) {
-      return { error: result.error.message };
+    if (error) {
+      return { error: error.message };
     } else {
-      return { data: result.data };
+      return { data: data as T };
     }
   } catch (e) {
+    console.error(e);
     return { error: 'Network error' };
   }
 }
@@ -42,6 +45,7 @@ export function* mutate(m: DocumentNode, variables = {}) {
   try {
     return gqlClient.mutate({ mutation: m, variables });
   } catch (e) {
+    console.error(e);
     yield put(appGotError('Network error'));
   }
 }

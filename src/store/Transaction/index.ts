@@ -10,11 +10,9 @@ const intialState: TransactionState = {
     dateFrom: null,
     dateTo: null,
     reason: null,
-    offset: 0,
-    limit: 100,
   },
   data: [],
-  pages: null,
+  pages: [],
 };
 
 export function transactionReducer(
@@ -33,14 +31,27 @@ export function transactionReducer(
 
     case TransactionActionType.RECEIVE: {
       return update(state, {
-        data: { $splice: [[action.payload.offset, action.payload.limit, ...action.payload.data]] },
+        data: {
+          $splice: [
+            [
+              action.payload.offset,
+              action.payload.data.length,
+              ...action.payload.data.map((t) => ({ ...t, date: new Date(t.date) })),
+            ],
+          ],
+        },
       });
     }
 
     case TransactionActionType.RECEIVE_PAGE:
       return update(state, {
-        pages: { $set: Array(action.payload.totalPages).fill(false) },
+        pages: { $set: Array(action.payload.totalPages).fill(null) },
         data: { $set: Array(action.payload.totalRecords) },
+      });
+
+    case TransactionActionType.SET_PAGE:
+      return update(state, {
+        pages: { $splice: [[action.payload.page, 1, action.payload.status]] },
       });
 
     case TransactionActionType.UPDATE_PAGE: {
