@@ -3,9 +3,7 @@ import { useContext } from 'react';
 import { Pane, PaneCommand } from '../../components/Pane';
 import { PaneHistory } from '../../contexts/paneHistory';
 
-interface EditProps {}
-
-export function Edit({}: EditProps) {
+export function Edit() {
   const history = useContext(PaneHistory);
 
   const handlePaneCommand = (command: PaneCommand) => {

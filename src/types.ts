@@ -1,5 +1,4 @@
 import { Maybe } from 'graphql/jsutils/Maybe';
-import { History as MemoryHistory } from 'history';
 
 export interface TransactionModel {
   id?: number;
