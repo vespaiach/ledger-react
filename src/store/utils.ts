@@ -18,7 +18,7 @@ export const gqlClient = new ApolloClient({
 export function* query<T = any>(
   q: DocumentNode,
   variables = {},
-  options: Omit<QueryOptions<any>, 'query'> = { fetchPolicy: 'network-only' }
+  options: Omit<QueryOptions<any>, 'query' | 'variables'> = { fetchPolicy: 'network-only' }
 ): Generator<ApolloQueryResult<T>, SagaReturn<T>, boolean> {
   try {
     // @ts-ignore
@@ -27,6 +27,8 @@ export function* query<T = any>(
       query: q,
       variables,
     });
+
+    console.log(variables, data);
 
     if (error) {
       return { error: error.message };

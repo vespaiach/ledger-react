@@ -13,6 +13,7 @@ const intialState: TransactionState = {
   },
   data: [],
   pages: [],
+  lookup: {},
 };
 
 export function transactionReducer(
