@@ -10,8 +10,6 @@ import { put, call } from '@redux-saga/core/effects';
 import { appGotError } from './Shared/action';
 import { SagaReturn } from './types';
 
-console.log(process.env);
-
 export const gqlClient = new ApolloClient({
   uri: process.env.REACT_APP_LEDGER_GRAPHQL_API,
   cache: new InMemoryCache(),

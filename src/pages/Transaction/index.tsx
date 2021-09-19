@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Fab, Typography } from '@mui/material';
 import { RemoveRounded as MinusIcon, AddRounded as PlusIcon } from '@mui/icons-material';
 import List from 'react-virtualized/dist/es/List';
 import WindowScroller from 'react-virtualized/dist/es/WindowScroller';
@@ -8,12 +8,14 @@ import InfiniteLoader from 'react-virtualized/dist/es/InfiniteLoader';
 import AutoSizer from 'react-virtualized/dist/es/AutoSizer';
 import { Index, IndexRange, ListRowRenderer } from 'react-virtualized';
 import NumberFormat from 'react-number-format';
+import { KeyboardArrowUpRounded as UpIcon } from '@mui/icons-material';
 
 import { useResponsive } from '../../hooks/useResponsive';
 import { Master } from '../Master';
 import { formatDateTime } from '../../utils/date';
 import { requestTransactions } from '../../store/Transaction/action';
 import { AppState } from '../../store';
+import { ScrollToTop } from '../../components/ScrollToTop';
 
 const RowHeight = 61;
 
@@ -28,14 +30,13 @@ export function TransactionList() {
   };
 
   const loadMoreRows = ({ startIndex, stopIndex }: IndexRange) => {
-    console.log(startIndex, stopIndex);
     dispatch(requestTransactions(startIndex, stopIndex));
     return new Promise((res) => {
       resolveLoadingData.current = res;
     });
   };
 
-  const rowRenderer: ListRowRenderer = ({ index, isVisible, key, style }) => {
+  const rowRenderer: ListRowRenderer = ({ index, isVisible, key, style, isScrolling }) => {
     const trans = transactions[index];
 
     if (!isVisible) {
@@ -45,7 +46,7 @@ export function TransactionList() {
     if (!trans) {
       return (
         <div key={key} style={style}>
-          loading...
+          ...
         </div>
       );
     }
@@ -103,7 +104,12 @@ export function TransactionList() {
 
   return (
     <Master>
-      <Container maxWidth="md" sx={{ marginTop: '78px' }} disableGutters={!containerGutter}>
+      <Container
+        maxWidth="md"
+        sx={{ marginTop: '78px' }}
+        disableGutters={!containerGutter}
+        id="back-to-top-anchor"
+      >
         <Typography variant="h4" gutterBottom={false}>
           Transactions
         </Typography>
@@ -150,6 +156,11 @@ export function TransactionList() {
           )}
         </InfiniteLoader>
       </Container>
+      <ScrollToTop>
+        <Fab color="secondary" size="small" aria-label="scroll back to top">
+          <UpIcon />
+        </Fab>
+      </ScrollToTop>
     </Master>
   );
 }

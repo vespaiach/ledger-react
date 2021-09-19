@@ -20,7 +20,7 @@ import {
   updatePage,
 } from './action';
 
-const Limit = 100;
+const Limit = 50;
 
 export function* requestTransactionListSaga() {
   yield takeEvery(TransactionActionType.REQUEST, requestTransactionRunner);
