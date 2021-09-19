@@ -61,7 +61,7 @@ function* requestTransactionRunner({
       const result: SagaReturn<{ transactions: Transaction[] }> = yield query(
         GetTransactionsDocument,
         {
-          input: filter,
+          transactionsInput: { ...filter, offset: startPage * Limit, limit: Limit },
         }
       );
 

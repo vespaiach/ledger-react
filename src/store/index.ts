@@ -13,7 +13,6 @@ const reducers = combineReducers({
 });
 const sagaMiddleWare = createSagaMiddleware();
 
-console.log(Object.values(reasonSagas))
 function* rootSaga() {
   yield all([...Object.values(reasonSagas), ...Object.values(transactionSagas)].map(fork));
 }

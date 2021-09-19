@@ -15,6 +15,7 @@ export interface TransactionState {
   filter: TransactionFilter;
   data: Transaction[];
   pages: (boolean | null)[];
+  lookup: Record<number, number>;
 }
 
 export interface UpdateTransactionFilterAction {
