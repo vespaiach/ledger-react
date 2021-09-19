@@ -31,15 +31,19 @@ export function transactionReducer(
       });
 
     case TransactionActionType.RECEIVE: {
+      const { offset, data } = action.payload;
+      const len = data.length;
+      const idLookup = data.reduce<Record<number, number>>(
+        (a, t, index) => ((a[t.id] = offset + index), a),
+        {}
+      );
+
       return update(state, {
         data: {
-          $splice: [
-            [
-              action.payload.offset,
-              action.payload.data.length,
-              ...action.payload.data.map((t) => ({ ...t, date: new Date(t.date) })),
-            ],
-          ],
+          $splice: [[offset, len, ...data.map((t) => ({ ...t, date: new Date(t.date) }))]],
+        },
+        lookup: {
+          $merge: idLookup,
         },
       });
     }
