@@ -28,8 +28,6 @@ export function* query<T = any>(
       variables,
     });
 
-    console.log(variables, data);
-
     if (error) {
       return { error: error.message };
     } else {

@@ -16,6 +16,7 @@ import {
   SaveRounded as SaveIcon,
   EditRounded as EditIcon,
 } from '@mui/icons-material';
+import { useResponsive } from '../hooks/useResponsive';
 
 export enum PaneCommand {
   Close = 'close',
@@ -46,6 +47,7 @@ const icons = {
 };
 
 export function Pane({ children, onCommand, commands = [] }: PaneProps) {
+  const { theme, containerGutter } = useResponsive();
   const [open, setOpen] = useState(true);
   return (
     <Dialog
@@ -69,14 +71,18 @@ export function Pane({ children, onCommand, commands = [] }: PaneProps) {
           </IconButton>
           <ButtonGroup variant="text" color="primary" aria-label="Actions">
             {commands.map((c) => (
-              <Button startIcon={icons[c]} onClick={() => onCommand(c)}>
+              <Button key={c} startIcon={icons[c]} onClick={() => onCommand(c)}>
                 {c}
               </Button>
             ))}
           </ButtonGroup>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="md" disableGutters>
+      <Container
+        maxWidth="md"
+        disableGutters={!containerGutter}
+        sx={{ paddingTop: theme.spacing(2) }}
+      >
         {children}
       </Container>
     </Dialog>

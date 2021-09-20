@@ -1,15 +1,14 @@
+import { useHistory } from 'react-router';
+
 import { Pane, PaneCommand } from '../../components/Pane';
-import { CommonPaneProps, TransactionModel } from '../../types';
 
-interface EditProps extends CommonPaneProps {
-  transaction?: TransactionModel;
-}
+export function Edit() {
+  const history = useHistory();
 
-export function Edit({ onClose, history }: EditProps) {
   const handlePaneCommand = (command: PaneCommand) => {
     switch (command) {
       case PaneCommand.Close:
-        history.goBack();
+        history.go(-1);
         break;
     }
   };

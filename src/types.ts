@@ -1,5 +1,4 @@
 import { Maybe } from 'graphql/jsutils/Maybe';
-import { History as MemoryHistory } from 'history';
 
 export interface TransactionModel {
   id?: number;
@@ -32,8 +31,3 @@ export enum AppCommand {
 }
 
 export type CommandFunc = (command: AppCommand, data?: unknown) => void;
-
-export interface CommonPaneProps {
-  onClose: (...args: unknown[]) => void;
-  history: MemoryHistory
-}
