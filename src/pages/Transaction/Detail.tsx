@@ -45,7 +45,7 @@ export function TransactionDetail() {
       <PageHeader text="Transaction Detail" />
       <Box display="grid" gridTemplateColumns="110px auto">
         <Typography variant="body1" gridColumn="1" color="GrayText">
-          Amount
+          amount
         </Typography>
         <Typography variant="body1" component="p" gridColumn="2">
           <NumberFormat
@@ -56,19 +56,19 @@ export function TransactionDetail() {
           />
         </Typography>
         <Typography variant="body1" gridColumn="1" color="GrayText">
-          Date
+          date
         </Typography>
         <Typography variant="body1" component="p" gridColumn="2">
           {formatShortDateTime(transaction.date)}
         </Typography>
         <Typography variant="body1" gridColumn="1" color="GrayText">
-          Reason
+          reason
         </Typography>
         <Typography variant="body1" component="p" gridColumn="2">
           {transaction.reason.text}
         </Typography>
         <Typography variant="body1" gridColumn="1" color="GrayText">
-          Description
+          description
         </Typography>
         <Typography variant="body1" component="p" gridColumn="2">
           {transaction.description}

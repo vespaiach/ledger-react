@@ -66,6 +66,7 @@ export function TransactionList() {
           ...style,
           overflow: 'hidden',
           borderTop: index > 0 ? '1px solid rgba(255, 255, 255, 0.12)' : 'none',
+          cursor: 'pointer'
         }}
         role="button"
         onClick={() => {
