@@ -18,12 +18,13 @@ import { AppState } from '../../store';
 import { ScrollToTop } from '../../components/ScrollToTop';
 import { AppTopMenu } from '../../components/AppTopMenu';
 import { CommandFunc, AppCommand } from '../../types';
+import { PageHeader } from '../../components/PageHeader';
 
 const RowHeight = 61;
 
 export function TransactionList() {
   const dispatch = useDispatch();
-  const paneHistory = useHistory();
+  const history = useHistory();
   const transactions = useSelector((state: AppState) => state.transaction.data);
   const { containerGutter, theme } = useResponsive();
   const resolveLoadingData = useRef((values: unknown) => {});
@@ -67,7 +68,9 @@ export function TransactionList() {
           borderTop: index > 0 ? '1px solid rgba(255, 255, 255, 0.12)' : 'none',
         }}
         role="button"
-        onClick={() => console.log('a')}
+        onClick={() => {
+          history.push(`/transaction/detail/${trans.id}`);
+        }}
         pb={theme.spacing(1)}
         pt={theme.spacing(1)}
       >
@@ -99,7 +102,7 @@ export function TransactionList() {
 
   const handleCommand: CommandFunc = (command) => {
     if (command === AppCommand.AddTransaction) {
-      paneHistory.push('/transaction/add');
+      history.push('/transaction/add');
     }
   };
 
@@ -120,22 +123,17 @@ export function TransactionList() {
         disableGutters={!containerGutter}
         id="back-to-top-anchor"
       >
-        <Typography variant="h4" gutterBottom={false}>
-          Transactions
-        </Typography>
-        <Typography
-          variant="overline"
-          display="block"
-          color="text.disabled"
-          sx={{ marginLeft: theme.spacing(1), marginBottom: theme.spacing(2) }}
-        >
-          <NumberFormat
-            value={transactions.length}
-            displayType={'text'}
-            thousandSeparator={true}
-            prefix={'TOTAL ROW: '}
-          />
-        </Typography>
+        <PageHeader
+          text="Transactions"
+          subText={
+            <NumberFormat
+              value={transactions.length}
+              displayType={'text'}
+              thousandSeparator={true}
+              prefix={'TOTAL ROW: '}
+            />
+          }
+        />
         <InfiniteLoader
           isRowLoaded={isRowLoaded}
           loadMoreRows={loadMoreRows}

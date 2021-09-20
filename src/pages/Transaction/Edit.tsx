@@ -1,15 +1,14 @@
-import { useContext } from 'react';
+import { useHistory } from 'react-router';
 
 import { Pane, PaneCommand } from '../../components/Pane';
-import { PaneHistory } from '../../contexts/paneHistory';
 
 export function Edit() {
-  const history = useContext(PaneHistory);
+  const history = useHistory();
 
   const handlePaneCommand = (command: PaneCommand) => {
     switch (command) {
       case PaneCommand.Close:
-        history.back();
+        history.go(-1);
         break;
     }
   };
