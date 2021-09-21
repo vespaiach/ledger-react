@@ -1,3 +1,4 @@
+import { PopPaneAction, PushPaneAction } from './Pane/action';
 import { RequestReasonsAction, ReceiveReasonsAction } from './Reason/action';
 import { AppErrorAction, AppLoadingAction } from './Shared/action';
 import {
@@ -31,6 +32,11 @@ export enum SharedActionType {
   ERROR = '@Shared/application-error',
 }
 
+export enum PaneActionType {
+  PUSH = '@Pane/push',
+  POP = '@Pane/pop',
+}
+
 export type SagaReturn<T> = {
   error?: string;
   data?: T;
@@ -47,4 +53,6 @@ export type LedgerAction =
   | RequestReasonsAction
   | ReceiveReasonsAction
   | AppLoadingAction
-  | AppErrorAction;
+  | AppErrorAction
+  | PushPaneAction
+  | PopPaneAction;

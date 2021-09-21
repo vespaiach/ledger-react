@@ -9,22 +9,21 @@ import AutoSizer from 'react-virtualized/dist/es/AutoSizer';
 import { Index, IndexRange, ListRowRenderer } from 'react-virtualized';
 import NumberFormat from 'react-number-format';
 import { KeyboardArrowUpRounded as UpIcon } from '@mui/icons-material';
-import { useHistory } from 'react-router';
 
-import { useResponsive } from '../../hooks/useResponsive';
-import { formatDateTime } from '../../utils/date';
-import { requestTransactions } from '../../store/Transaction/action';
-import { AppState } from '../../store';
-import { ScrollToTop } from '../../components/ScrollToTop';
-import { AppTopMenu } from '../../components/AppTopMenu';
-import { CommandFunc, AppCommand } from '../../types';
-import { PageHeader } from '../../components/PageHeader';
+import { useResponsive } from '../hooks/useResponsive';
+import { formatDateTime } from '../utils/date';
+import { requestTransactions } from '../store/Transaction/action';
+import { AppState } from '../store';
+import { ScrollToTop } from '../components/ScrollToTop';
+import { AppTopMenu } from '../components/AppTopMenu';
+import { CommandFunc, AppCommand } from '../types';
+import { PageHeader } from '../components/PageHeader';
+import { pushPane } from '../store/Pane/action';
 
 const RowHeight = 61;
 
 export function TransactionList() {
   const dispatch = useDispatch();
-  const history = useHistory();
   const transactions = useSelector((state: AppState) => state.transaction.data);
   const { containerGutter, theme } = useResponsive();
   const resolveLoadingData = useRef((values: unknown) => {});
@@ -66,11 +65,11 @@ export function TransactionList() {
           ...style,
           overflow: 'hidden',
           borderTop: index > 0 ? '1px solid rgba(255, 255, 255, 0.12)' : 'none',
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
         role="button"
         onClick={() => {
-          history.push(`/transaction/detail/${trans.id}`);
+          dispatch(pushPane({ name: 'TransactionDetail', state: { id: trans.id } }));
         }}
         pb={theme.spacing(1)}
         pt={theme.spacing(1)}
@@ -103,7 +102,7 @@ export function TransactionList() {
 
   const handleCommand: CommandFunc = (command) => {
     if (command === AppCommand.AddTransaction) {
-      history.push('/transaction/add');
+      dispatch(pushPane({ name: 'TransactionForm' }));
     }
   };
 

@@ -1,33 +1,31 @@
 import { Typography } from '@mui/material';
+import { useDispatch } from 'react-redux';
 import { Box } from '@mui/system';
 import NumberFormat from 'react-number-format';
-import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
-import { PageHeader } from '../../components/PageHeader';
 
-import { Pane, PaneCommand } from '../../components/Pane';
-import { useResponsive } from '../../hooks/useResponsive';
-import { AppState } from '../../store';
-import { formatShortDateTime } from '../../utils/date';
+import { PageHeader } from '../components/PageHeader';
+import { Pane, PaneCommand } from '../components/Pane';
+import { formatShortDateTime } from '../utils/date';
+import { useTransaction } from '../hooks/useTransaction';
+import { PaneCommonProps } from '../types';
+import { popPane, pushPane } from '../store/Pane/action';
+import { Transaction } from '../graphql.generated';
 
-export function TransactionDetail() {
-  const { theme } = useResponsive();
-  const history = useHistory();
+interface TransactionDetailProps extends PaneCommonProps {}
 
-  const { id } = useParams<{ id: string }>();
-  const transaction = useSelector((state: AppState) => {
-    const num = parseInt(id);
-    return !isNaN(num)
-      ? typeof state.transaction.lookup[num] === 'number'
-        ? state.transaction.data[state.transaction.lookup[num]]
-        : null
-      : null;
-  });
+export function TransactionDetail({ state }: TransactionDetailProps) {
+  const dispath = useDispatch();
+  const transaction = useTransaction(state?.id);
 
   const handlePaneCommand = (command: PaneCommand) => {
     switch (command) {
       case PaneCommand.Close:
-        history.go(-1);
+        dispath(popPane());
+        break;
+      case PaneCommand.Edit:
+        dispath(
+          pushPane({ name: 'TransactionForm', state: { id: (transaction as Transaction).id } })
+        );
         break;
     }
   };

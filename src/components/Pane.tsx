@@ -71,7 +71,7 @@ export function Pane({ children, onCommand, commands = [] }: PaneProps) {
           </IconButton>
           <ButtonGroup variant="text" color="primary" aria-label="Actions">
             {commands.map((c) => (
-              <Button key={c} startIcon={icons[c]} onClick={() => onCommand(c)}>
+              <Button key={c} startIcon={icons[c]} onClick={() => onCommand(c)} title={c}>
                 {c}
               </Button>
             ))}

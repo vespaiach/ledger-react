@@ -6,10 +6,12 @@ import * as reasonSagas from './Reason/saga';
 import * as transactionSagas from './Transaction/saga';
 import { reasonReducer } from './Reason';
 import { transactionReducer } from './Transaction';
+import { paneReducer } from './Pane';
 
 const reducers = combineReducers({
   reason: reasonReducer,
   transaction: transactionReducer,
+  pane: paneReducer,
 });
 const sagaMiddleWare = createSagaMiddleware();
 
