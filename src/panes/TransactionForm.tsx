@@ -15,6 +15,7 @@ import { AppState } from '../store';
 import { popPane } from '../store/Pane/action';
 import { requestReasons } from '../store/Reason/action';
 import { PaneCommonProps } from '../types';
+import { MoneyInput } from '../components/MoneyInput';
 
 enum Mode {
   Create,
@@ -50,6 +51,25 @@ export function TransactionForm({ state }: TransactionFormProps) {
         }
       : {};
 
+  const handleValidate = (values: TransactionInput) => {
+    const errorMessages: Record<string, string> = {};
+
+    if (!values.amount) {
+      errorMessages.amount = 'You must enter amount';
+    }
+
+    if (!values.date) {
+      errorMessages.date = 'You must enter a date';
+    }
+
+    if (!values.reason) {
+      errorMessages.reason = 'You must enter a reason to category you transaction';
+    }
+
+    console.log(values)
+    return errorMessages;
+  };
+
   useEffect(() => {
     if (!reasons.length) {
       dispatch(requestReasons());
@@ -59,8 +79,12 @@ export function TransactionForm({ state }: TransactionFormProps) {
   return (
     <Pane onCommand={handlePaneCommand} commands={[PaneCommand.Save, PaneCommand.Close]}>
       <PageHeader text={mode === Mode.Create ? 'Add Transaction' : 'Update Transaction'} />
-      <Formik initialValues={initialValues} onSubmit={() => Promise.resolve()}>
-        {({ values, setFieldValue }) => {
+      <Formik
+        initialValues={initialValues}
+        onSubmit={() => Promise.resolve()}
+        validate={handleValidate}
+      >
+        {({ values, setFieldValue, errors }) => {
           return (
             <Box
               sx={{
@@ -80,12 +104,16 @@ export function TransactionForm({ state }: TransactionFormProps) {
                   },
                 }}
                 InputProps={{
+                  // @ts-ignore
+                  inputComponent: MoneyInput,
                   endAdornment: (
                     <InputAdornment position="end">
                       <DollarIcon />
                     </InputAdornment>
                   ),
                 }}
+                error={!!errors.amount}
+                helperText={errors.amount}
                 inputProps={{ maxLength: 200 }}
                 value={values.amount}
                 onChange={(evt) => setFieldValue('amount', evt.target.value)}
@@ -97,6 +125,8 @@ export function TransactionForm({ state }: TransactionFormProps) {
                       {...props}
                       variant="filled"
                       inputProps={{ ...props.inputProps, maxLength: 50 }}
+                      error={!!errors.date}
+                      helperText={errors.date}
                     />
                   )}
                   label="Date"
@@ -125,6 +155,8 @@ export function TransactionForm({ state }: TransactionFormProps) {
                         ...params.inputProps,
                         maxLength: 256,
                       }}
+                      error={!!errors.reason}
+                      helperText={errors.reason}
                     />
                   );
                 }}
