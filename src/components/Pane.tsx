@@ -15,6 +15,7 @@ import {
   CloseRounded as CloseIcon,
   SaveRounded as SaveIcon,
   EditRounded as EditIcon,
+  CancelRounded as CancelIcon,
 } from '@mui/icons-material';
 import { useResponsive } from '../hooks/useResponsive';
 
@@ -28,7 +29,7 @@ export enum PaneCommand {
 interface PaneProps {
   children?: React.ReactNode;
   onCommand: (command: PaneCommand) => void;
-  commands: (PaneCommand.Delete | PaneCommand.Save | PaneCommand.Edit)[];
+  commands: PaneCommand[];
 }
 
 const Transition = forwardRef(function Transition(
@@ -44,6 +45,7 @@ const icons = {
   [PaneCommand.Save]: <SaveIcon />,
   [PaneCommand.Delete]: <DeleteIcon />,
   [PaneCommand.Edit]: <EditIcon />,
+  [PaneCommand.Close]: <CancelIcon />,
 };
 
 export function Pane({ children, onCommand, commands = [] }: PaneProps) {
@@ -71,7 +73,12 @@ export function Pane({ children, onCommand, commands = [] }: PaneProps) {
           </IconButton>
           <ButtonGroup variant="text" color="primary" aria-label="Actions">
             {commands.map((c) => (
-              <Button key={c} startIcon={icons[c]} onClick={() => onCommand(c)} title={c}>
+              <Button
+                key={c}
+                startIcon={icons[c]}
+                onClick={c === PaneCommand.Close ? () => setOpen(false) : () => onCommand(c)}
+                title={c}
+              >
                 {c}
               </Button>
             ))}
