@@ -1,7 +1,15 @@
 import update from 'immutability-helper';
+import { Transaction } from '../../graphql.generated';
 
-import { LedgerAction, TransactionActionType } from '../types';
-import { TransactionState } from './action';
+import { FilterActionType, LedgerAction, PageActionType, TransactionActionType } from '../types';
+import { TransactionFilter } from './action';
+
+export interface TransactionState {
+  filter: TransactionFilter;
+  data: Transaction[];
+  pages: (boolean | null)[];
+  lookup: Record<number, number>;
+}
 
 const intialState: TransactionState = {
   filter: {
@@ -21,13 +29,24 @@ export function transactionReducer(
   action: LedgerAction
 ): TransactionState {
   switch (action.type) {
-    case TransactionActionType.UPDATE_FILTER:
+    case FilterActionType.UPDATE:
       return update(state, {
         filter: {
           [action.payload.field]: {
             $set: action.payload.value,
           },
         },
+      });
+
+    case PageActionType.RECEIVE:
+      return update(state, {
+        pages: { $set: Array(action.payload.totalPages).fill(null) },
+        data: { $set: Array(action.payload.totalRecords) },
+      });
+
+    case PageActionType.UPDATE:
+      return update(state, {
+        pages: { $splice: [[action.payload.page, 1, action.payload.status]] },
       });
 
     case TransactionActionType.RECEIVE: {
@@ -48,26 +67,23 @@ export function transactionReducer(
       });
     }
 
-    case TransactionActionType.RECEIVE_PAGE:
-      return update(state, {
-        pages: { $set: Array(action.payload.totalPages).fill(null) },
-        data: { $set: Array(action.payload.totalRecords) },
-      });
-
-    case TransactionActionType.SET_PAGE:
-      return update(state, {
-        pages: { $splice: [[action.payload.page, 1, action.payload.status]] },
-      });
-
-    case TransactionActionType.UPDATE_PAGE: {
-      if (state.pages) {
-        state.pages[action.payload] = true;
+    case TransactionActionType.RECEIVE_ONE: {
+      const index = state.data.findIndex((t) => t.id === action.payload.id);
+      if (index > -1) {
         return update(state, {
-          pages: { $set: [...state.pages] },
+          data: {
+            $splice: [[index, 1, { ...action.payload, date: new Date(action.payload.date) }]],
+          },
         });
       }
       return state;
     }
+
+    case TransactionActionType.RESET:
+      return update(state, {
+        data: { $set: intialState.data },
+        pages: { $set: intialState.pages },
+      });
 
     default:
       return state;

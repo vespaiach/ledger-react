@@ -1,10 +1,4 @@
-import {
-  InMemoryCache,
-  ApolloClient,
-  QueryOptions,
-  DocumentNode,
-  ApolloQueryResult,
-} from '@apollo/client';
+import { InMemoryCache, ApolloClient, QueryOptions, DocumentNode, ApolloQueryResult } from '@apollo/client';
 import { put, call } from '@redux-saga/core/effects';
 
 import { appGotError } from './Shared/action';
@@ -41,7 +35,13 @@ export function* query<T = any>(
 
 export function* mutate(m: DocumentNode, variables = {}) {
   try {
-    return gqlClient.mutate({ mutation: m, variables });
+    const { error, data } = yield gqlClient.mutate({ mutation: m, variables });
+
+    if (error) {
+      return { error: error.message };
+    } else {
+      return { data };
+    }
   } catch (e) {
     console.error(e);
     yield put(appGotError('Network error'));

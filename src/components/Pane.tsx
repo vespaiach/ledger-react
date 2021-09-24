@@ -1,13 +1,4 @@
-import {
-  AppBar,
-  Button,
-  ButtonGroup,
-  Container,
-  Dialog,
-  IconButton,
-  Slide,
-  Toolbar,
-} from '@mui/material';
+import { AppBar, Button, ButtonGroup, Container, Dialog, IconButton, Slide, Toolbar } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { forwardRef, useState } from 'react';
 import {
@@ -24,6 +15,7 @@ export enum PaneCommand {
   Save = 'save',
   Delete = 'delete',
   Edit = 'edit',
+  Cancel = 'cancel',
 }
 
 interface PaneProps {
@@ -46,6 +38,7 @@ const icons = {
   [PaneCommand.Delete]: <DeleteIcon />,
   [PaneCommand.Edit]: <EditIcon />,
   [PaneCommand.Close]: <CancelIcon />,
+  [PaneCommand.Cancel]: <CancelIcon />,
 };
 
 export function Pane({ children, onCommand, commands = [] }: PaneProps) {
@@ -57,8 +50,7 @@ export function Pane({ children, onCommand, commands = [] }: PaneProps) {
       open={open}
       onClose={() => setOpen(false)}
       TransitionComponent={Transition}
-      TransitionProps={{ unmountOnExit: true, onExited: () => onCommand(PaneCommand.Close) }}
-    >
+      TransitionProps={{ unmountOnExit: true, onExited: () => onCommand(PaneCommand.Close) }}>
       <AppBar elevation={0} position="sticky">
         <Toolbar>
           <IconButton
@@ -67,8 +59,7 @@ export function Pane({ children, onCommand, commands = [] }: PaneProps) {
             color="inherit"
             aria-label="Close pane"
             onClick={() => setOpen(false)}
-            sx={{ marginRight: 'auto' }}
-          >
+            sx={{ marginRight: 'auto' }}>
             <CloseIcon />
           </IconButton>
           <ButtonGroup variant="text" color="primary" aria-label="Actions">
@@ -76,20 +67,19 @@ export function Pane({ children, onCommand, commands = [] }: PaneProps) {
               <Button
                 key={c}
                 startIcon={icons[c]}
-                onClick={c === PaneCommand.Close ? () => setOpen(false) : () => onCommand(c)}
-                title={c}
-              >
+                onClick={
+                  c === PaneCommand.Close || c === PaneCommand.Cancel
+                    ? () => setOpen(false)
+                    : () => onCommand(c)
+                }
+                title={c}>
                 {c}
               </Button>
             ))}
           </ButtonGroup>
         </Toolbar>
       </AppBar>
-      <Container
-        maxWidth="md"
-        disableGutters={!containerGutter}
-        sx={{ paddingTop: theme.spacing(2) }}
-      >
+      <Container maxWidth="md" disableGutters={!containerGutter} sx={{ paddingTop: theme.spacing(2) }}>
         {children}
       </Container>
     </Dialog>

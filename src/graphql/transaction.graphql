@@ -19,3 +19,18 @@ query getTotalPages($transactionsInput: TransactionFilterInput) {
     totalPages
   }
 }
+
+mutation mutateTransaction($input: TransactionInput!) {
+  mutateTransaction(input: $input) {
+    id
+    amount
+    date
+    description
+    updatedAt
+    reason {
+      id
+      text
+      updatedAt
+    }
+  }
+}
