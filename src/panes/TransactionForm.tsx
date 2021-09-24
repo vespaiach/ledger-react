@@ -82,6 +82,7 @@ export function TransactionForm({ state }: TransactionFormProps) {
   return (
     <Pane
       onCommand={handlePaneCommand}
+      closeWhenCancel
       commands={
         mode === Mode.Edit ? [PaneCommand.Save, PaneCommand.Cancel] : [PaneCommand.Save, PaneCommand.Close]
       }>

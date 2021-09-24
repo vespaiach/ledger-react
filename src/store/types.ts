@@ -2,6 +2,7 @@ import { PopPaneAction, PushPaneAction } from './Pane/action';
 import { RequestReasonsAction, ReceiveReasonsAction } from './Reason/action';
 import { AppErrorAction, AppLoadingAction } from './Shared/action';
 import {
+  DeleteTransactionAction,
   ReceiveOneTransactionAction,
   ReceiveTotalPagesAction,
   ReceiveTransactionAction,
@@ -31,6 +32,7 @@ export enum FilterActionType {
 
 export enum TransactionActionType {
   SAVE = '@Transaction/create-update-transaction',
+  DELETE = '@Transaction/delete-transaction',
   REQUEST = '@Transaction/request-list-transaction',
   RECEIVE = '@Transaction/receive-list-transactions',
   RECEIVE_ONE = '@Transaction/receive-a-transaction',
@@ -58,6 +60,7 @@ export type LedgerAction =
   | ReceiveOneTransactionAction
   | ResetTransactionDataAction
   | SaveTransactionAction
+  | DeleteTransactionAction
   | RequestTotalPagesAction
   | ReceiveTotalPagesAction
   | UpdatePageAction

@@ -7,6 +7,7 @@ import {
   SaveRounded as SaveIcon,
   EditRounded as EditIcon,
   CancelRounded as CancelIcon,
+  CheckBoxRounded as YesIcon,
 } from '@mui/icons-material';
 import { useResponsive } from '../hooks/useResponsive';
 
@@ -16,12 +17,14 @@ export enum PaneCommand {
   Delete = 'delete',
   Edit = 'edit',
   Cancel = 'cancel',
+  Yes = 'yes',
 }
 
 interface PaneProps {
   children?: React.ReactNode;
   onCommand: (command: PaneCommand) => void;
   commands: PaneCommand[];
+  closeWhenCancel?: boolean;
 }
 
 const Transition = forwardRef(function Transition(
@@ -39,9 +42,10 @@ const icons = {
   [PaneCommand.Edit]: <EditIcon />,
   [PaneCommand.Close]: <CancelIcon />,
   [PaneCommand.Cancel]: <CancelIcon />,
+  [PaneCommand.Yes]: <YesIcon />,
 };
 
-export function Pane({ children, onCommand, commands = [] }: PaneProps) {
+export function Pane({ children, onCommand, commands = [], closeWhenCancel }: PaneProps) {
   const { theme, containerGutter } = useResponsive();
   const [open, setOpen] = useState(true);
   return (
@@ -68,7 +72,7 @@ export function Pane({ children, onCommand, commands = [] }: PaneProps) {
                 key={c}
                 startIcon={icons[c]}
                 onClick={
-                  c === PaneCommand.Close || c === PaneCommand.Cancel
+                  c === PaneCommand.Close || (closeWhenCancel && c === PaneCommand.Cancel)
                     ? () => setOpen(false)
                     : () => onCommand(c)
                 }
