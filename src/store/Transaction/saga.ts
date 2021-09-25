@@ -7,11 +7,13 @@ import {
   GetTransactionsDocument,
   GetTotalPagesDocument,
   MutateTransactionDocument,
+  DeleteTransactionDocument,
 } from '../../graphql.generated';
 import { appLoading, appGotError } from '../Shared/action';
 import { PageActionType, SagaReturn, TransactionActionType } from '../types';
 import { mutate, query } from '../utils';
 import {
+  DeleteTransactionAction,
   receiveOneTransaction,
   receiveTotalPages,
   receiveTransactions,
@@ -31,6 +33,10 @@ export function* requestTransactionsSaga() {
 
 export function* saveTransactionSaga() {
   yield takeEvery(TransactionActionType.SAVE, saveTransactionRunner);
+}
+
+export function* deleteTransactionSaga() {
+  yield takeEvery(TransactionActionType.DELETE, deleteTransactionRunner);
 }
 
 export function* requestPagesSaga() {
@@ -131,5 +137,21 @@ function* saveTransactionRunner(action: SaveTransactionAction) {
     } else {
       yield put(resetTransactionData());
     }
+  }
+}
+
+function* deleteTransactionRunner(action: DeleteTransactionAction) {
+  yield put(appLoading(true));
+
+  const result: SagaReturn<{ deleteTransaction: boolean }> = yield mutate(DeleteTransactionDocument, {
+    id: action.payload,
+  });
+
+  yield put(appLoading(false));
+
+  if (result.error) {
+    yield put(appGotError(result.error));
+  } else {
+    yield put(resetTransactionData());
   }
 }

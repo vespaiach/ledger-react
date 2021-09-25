@@ -34,3 +34,22 @@ mutation mutateTransaction($input: TransactionInput!) {
     }
   }
 }
+
+mutation mutateTransaction($input: TransactionInput!) {
+  mutateTransaction(input: $input) {
+    id
+    amount
+    date
+    description
+    updatedAt
+    reason {
+      id
+      text
+      updatedAt
+    }
+  }
+}
+
+mutation deleteTransaction($id: Int!) {
+  deleteTransaction(id: $id)
+}
