@@ -5,11 +5,12 @@ import '@fontsource/roboto/700.css';
 import './App.css';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { ThemeProvider } from '@emotion/react';
-import { CssBaseline } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
-import Transaction from './pages/Transaction';
+import { TransactionList } from './pages/TransactionList';
 import { theme } from './theme';
+import { Panes } from './panes';
 
 export function App() {
   return (
@@ -18,9 +19,10 @@ export function App() {
       <Router>
         <Switch>
           <Route path="/">
-            <Transaction />
+            <TransactionList />
           </Route>
         </Switch>
+        <Panes />
       </Router>
     </ThemeProvider>
   );

@@ -1,13 +1,4 @@
-import {
-  AppBar,
-  Button,
-  ButtonGroup,
-  Container,
-  Dialog,
-  IconButton,
-  Slide,
-  Toolbar,
-} from '@mui/material';
+import { AppBar, Button, ButtonGroup, Container, Dialog, IconButton, Slide, Toolbar } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { forwardRef, useState } from 'react';
 import {
@@ -15,6 +6,8 @@ import {
   CloseRounded as CloseIcon,
   SaveRounded as SaveIcon,
   EditRounded as EditIcon,
+  CancelRounded as CancelIcon,
+  CheckBoxRounded as YesIcon,
 } from '@mui/icons-material';
 import { useResponsive } from '../hooks/useResponsive';
 
@@ -23,12 +16,15 @@ export enum PaneCommand {
   Save = 'save',
   Delete = 'delete',
   Edit = 'edit',
+  Cancel = 'cancel',
+  Yes = 'yes',
 }
 
 interface PaneProps {
   children?: React.ReactNode;
   onCommand: (command: PaneCommand) => void;
-  commands: (PaneCommand.Delete | PaneCommand.Save | PaneCommand.Edit)[];
+  commands: PaneCommand[];
+  closeWhenCancel?: boolean;
 }
 
 const Transition = forwardRef(function Transition(
@@ -44,9 +40,12 @@ const icons = {
   [PaneCommand.Save]: <SaveIcon />,
   [PaneCommand.Delete]: <DeleteIcon />,
   [PaneCommand.Edit]: <EditIcon />,
+  [PaneCommand.Close]: <CancelIcon />,
+  [PaneCommand.Cancel]: <CancelIcon />,
+  [PaneCommand.Yes]: <YesIcon />,
 };
 
-export function Pane({ children, onCommand, commands = [] }: PaneProps) {
+export function Pane({ children, onCommand, commands = [], closeWhenCancel }: PaneProps) {
   const { theme, containerGutter } = useResponsive();
   const [open, setOpen] = useState(true);
   return (
@@ -55,8 +54,7 @@ export function Pane({ children, onCommand, commands = [] }: PaneProps) {
       open={open}
       onClose={() => setOpen(false)}
       TransitionComponent={Transition}
-      TransitionProps={{ unmountOnExit: true, onExited: () => onCommand(PaneCommand.Close) }}
-    >
+      TransitionProps={{ unmountOnExit: true, onExited: () => onCommand(PaneCommand.Close) }}>
       <AppBar elevation={0} position="sticky">
         <Toolbar>
           <IconButton
@@ -65,24 +63,27 @@ export function Pane({ children, onCommand, commands = [] }: PaneProps) {
             color="inherit"
             aria-label="Close pane"
             onClick={() => setOpen(false)}
-            sx={{ marginRight: 'auto' }}
-          >
+            sx={{ marginRight: 'auto' }}>
             <CloseIcon />
           </IconButton>
           <ButtonGroup variant="text" color="primary" aria-label="Actions">
             {commands.map((c) => (
-              <Button key={c} startIcon={icons[c]} onClick={() => onCommand(c)}>
+              <Button
+                key={c}
+                startIcon={icons[c]}
+                onClick={
+                  c === PaneCommand.Close || (closeWhenCancel && c === PaneCommand.Cancel)
+                    ? () => setOpen(false)
+                    : () => onCommand(c)
+                }
+                title={c}>
                 {c}
               </Button>
             ))}
           </ButtonGroup>
         </Toolbar>
       </AppBar>
-      <Container
-        maxWidth="md"
-        disableGutters={!containerGutter}
-        sx={{ paddingTop: theme.spacing(2) }}
-      >
+      <Container maxWidth="md" disableGutters={!containerGutter} sx={{ paddingTop: theme.spacing(2) }}>
         {children}
       </Container>
     </Dialog>

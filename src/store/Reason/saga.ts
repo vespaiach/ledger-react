@@ -10,15 +10,15 @@ export function* requestReasonListSaga() {
   yield takeEvery(ReasonActionType.REQUEST, requestReasonList);
 }
 
-async function* requestReasonList() {
+function* requestReasonList() {
   yield put(appLoading(true));
 
-  const result: SagaReturn<Reason[]> = yield query<Reason[]>(GetReasonsDocument);
+  const result: SagaReturn<{ reasons: Reason[] }> = yield query<Reason[]>(GetReasonsDocument);
 
   yield put(appLoading(false));
   if (result.error) {
     yield put(appGotError(result.error));
   } else {
-    yield put(receiveReasons(result.data ?? []));
+    yield put(receiveReasons(result.data?.reasons ?? []));
   }
 }

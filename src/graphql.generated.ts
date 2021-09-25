@@ -20,7 +20,13 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  deleteTransaction?: Maybe<Scalars['Boolean']>;
   mutateTransaction?: Maybe<Transaction>;
+};
+
+
+export type MutationDeleteTransactionArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -110,6 +116,20 @@ export type GetTotalPagesQueryVariables = Exact<{
 
 
 export type GetTotalPagesQuery = { __typename?: 'Query', getTotalPages: { __typename?: 'Pagination', totalRecords: number, totalPages: number } };
+
+export type MutateTransactionMutationVariables = Exact<{
+  input: TransactionInput;
+}>;
+
+
+export type MutateTransactionMutation = { __typename?: 'Mutation', mutateTransaction?: Maybe<{ __typename?: 'Transaction', id: number, amount: number, date: any, description?: Maybe<string>, updatedAt: any, reason: { __typename?: 'Reason', id: number, text: string, updatedAt: any } }> };
+
+export type DeleteTransactionMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteTransactionMutation = { __typename?: 'Mutation', deleteTransaction?: Maybe<boolean> };
 
 
 export const GetReasonsDocument = gql`
@@ -228,3 +248,76 @@ export function useGetTotalPagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetTotalPagesQueryHookResult = ReturnType<typeof useGetTotalPagesQuery>;
 export type GetTotalPagesLazyQueryHookResult = ReturnType<typeof useGetTotalPagesLazyQuery>;
 export type GetTotalPagesQueryResult = Apollo.QueryResult<GetTotalPagesQuery, GetTotalPagesQueryVariables>;
+export const MutateTransactionDocument = gql`
+    mutation mutateTransaction($input: TransactionInput!) {
+  mutateTransaction(input: $input) {
+    id
+    amount
+    date
+    description
+    updatedAt
+    reason {
+      id
+      text
+      updatedAt
+    }
+  }
+}
+    `;
+export type MutateTransactionMutationFn = Apollo.MutationFunction<MutateTransactionMutation, MutateTransactionMutationVariables>;
+
+/**
+ * __useMutateTransactionMutation__
+ *
+ * To run a mutation, you first call `useMutateTransactionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMutateTransactionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [mutateTransactionMutation, { data, loading, error }] = useMutateTransactionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useMutateTransactionMutation(baseOptions?: Apollo.MutationHookOptions<MutateTransactionMutation, MutateTransactionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MutateTransactionMutation, MutateTransactionMutationVariables>(MutateTransactionDocument, options);
+      }
+export type MutateTransactionMutationHookResult = ReturnType<typeof useMutateTransactionMutation>;
+export type MutateTransactionMutationResult = Apollo.MutationResult<MutateTransactionMutation>;
+export type MutateTransactionMutationOptions = Apollo.BaseMutationOptions<MutateTransactionMutation, MutateTransactionMutationVariables>;
+export const DeleteTransactionDocument = gql`
+    mutation deleteTransaction($id: Int!) {
+  deleteTransaction(id: $id)
+}
+    `;
+export type DeleteTransactionMutationFn = Apollo.MutationFunction<DeleteTransactionMutation, DeleteTransactionMutationVariables>;
+
+/**
+ * __useDeleteTransactionMutation__
+ *
+ * To run a mutation, you first call `useDeleteTransactionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTransactionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTransactionMutation, { data, loading, error }] = useDeleteTransactionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteTransactionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTransactionMutation, DeleteTransactionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteTransactionMutation, DeleteTransactionMutationVariables>(DeleteTransactionDocument, options);
+      }
+export type DeleteTransactionMutationHookResult = ReturnType<typeof useDeleteTransactionMutation>;
+export type DeleteTransactionMutationResult = Apollo.MutationResult<DeleteTransactionMutation>;
+export type DeleteTransactionMutationOptions = Apollo.BaseMutationOptions<DeleteTransactionMutation, DeleteTransactionMutationVariables>;

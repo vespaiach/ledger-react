@@ -1,33 +1,46 @@
 import { takeEvery, put, select } from '@redux-saga/core/effects';
 import { all } from 'redux-saga/effects';
 
+import { TransactionState } from './index';
 import {
   Transaction,
   GetTransactionsDocument,
   GetTotalPagesDocument,
+  MutateTransactionDocument,
+  DeleteTransactionDocument,
 } from '../../graphql.generated';
 import { appLoading, appGotError } from '../Shared/action';
-import { SagaReturn, TransactionActionType } from '../types';
-import { query } from '../utils';
+import { PageActionType, SagaReturn, TransactionActionType } from '../types';
+import { mutate, query } from '../utils';
 import {
+  DeleteTransactionAction,
+  receiveOneTransaction,
   receiveTotalPages,
   receiveTransactions,
   requestTotalPages,
   RequestTransactionsAction,
-  setPageStatus,
+  resetTransactionData,
+  SaveTransactionAction,
   TransactionFilter,
-  TransactionState,
   updatePage,
 } from './action';
 
 const Limit = 50;
 
-export function* requestTransactionListSaga() {
-  yield takeEvery(TransactionActionType.REQUEST, requestTransactionRunner);
+export function* requestTransactionsSaga() {
+  yield takeEvery(TransactionActionType.REQUEST, requestTransactionsRunner);
 }
 
-export function* requestTransactionTotalPagesSaga() {
-  yield takeEvery(TransactionActionType.PAGES, requestTotalPagesRunner);
+export function* saveTransactionSaga() {
+  yield takeEvery(TransactionActionType.SAVE, saveTransactionRunner);
+}
+
+export function* deleteTransactionSaga() {
+  yield takeEvery(TransactionActionType.DELETE, deleteTransactionRunner);
+}
+
+export function* requestPagesSaga() {
+  yield takeEvery(PageActionType.REQUEST, requestTotalPagesRunner);
 }
 
 /**
@@ -37,9 +50,7 @@ export function* requestTransactionTotalPagesSaga() {
  *  3. Check if that page is loaded or have to request it
  *    3.a. Update transaction list and page list
  */
-function* requestTransactionRunner({
-  payload: { startIndex, endIndex },
-}: RequestTransactionsAction) {
+function* requestTransactionsRunner({ payload: { startIndex, endIndex } }: RequestTransactionsAction) {
   const transaction: TransactionState = yield select((state) => state.transaction);
   const filter = transaction.filter;
 
@@ -56,24 +67,17 @@ function* requestTransactionRunner({
 
   for (let i = startPage; i < endPage; i++) {
     if (typeof transaction.pages[i] !== 'boolean') {
-      yield put(setPageStatus(i, false));
+      yield put(updatePage(i, false));
 
-      const result: SagaReturn<{ transactions: Transaction[] }> = yield query(
-        GetTransactionsDocument,
-        {
-          transactionsInput: { ...filter, offset: startPage * Limit, limit: Limit },
-        }
-      );
+      const result: SagaReturn<{ transactions: Transaction[] }> = yield query(GetTransactionsDocument, {
+        transactionsInput: { ...filter, offset: startPage * Limit, limit: Limit },
+      });
 
       if (result.error) {
         yield put(appGotError(result.error));
       } else {
         const data = result.data?.transactions || [];
-        yield all([
-          put(receiveTransactions(data, i * Limit)),
-          put(updatePage(i)),
-          put(setPageStatus(i, true)),
-        ]);
+        yield all([put(receiveTransactions(data, i * Limit)), put(updatePage(i, true))]);
       }
     }
   }
@@ -89,10 +93,9 @@ function* requestTotalPagesRunner() {
     totalRecords: number;
   }
 
-  const result: SagaReturn<{ getTotalPages: { totalPages: number; totalRecords: number } }> =
-    yield query(GetTotalPagesDocument, {
-      input: filter,
-    });
+  const result: SagaReturn<{ getTotalPages: Total }> = yield query(GetTotalPagesDocument, {
+    input: filter,
+  });
 
   yield put(appLoading(false));
 
@@ -100,5 +103,55 @@ function* requestTotalPagesRunner() {
     yield put(appGotError(result.error));
   } else {
     yield put(receiveTotalPages(result.data?.getTotalPages as Total));
+  }
+}
+
+function* saveTransactionRunner(action: SaveTransactionAction) {
+  const { payload } = action;
+  yield put(appLoading(true));
+
+  const updatingMode = Boolean(action.payload.id);
+  const id = payload.id ?? null;
+  const date = payload.date ? payload.date.toISOString() : null;
+  const amount = payload.amount ? parseFloat(String(payload.amount)) : null;
+  const reason = payload.reason ?? null;
+  const description = payload.description ?? null;
+
+  const result: SagaReturn<{ mutateTransaction: Transaction }> = yield mutate(MutateTransactionDocument, {
+    input: {
+      id,
+      date,
+      amount,
+      reason,
+      description,
+    },
+  });
+
+  yield put(appLoading(false));
+
+  if (result.error) {
+    yield put(appGotError(result.error));
+  } else {
+    if (updatingMode) {
+      yield put(receiveOneTransaction(result.data?.mutateTransaction as Transaction));
+    } else {
+      yield put(resetTransactionData());
+    }
+  }
+}
+
+function* deleteTransactionRunner(action: DeleteTransactionAction) {
+  yield put(appLoading(true));
+
+  const result: SagaReturn<{ deleteTransaction: boolean }> = yield mutate(DeleteTransactionDocument, {
+    id: action.payload,
+  });
+
+  yield put(appLoading(false));
+
+  if (result.error) {
+    yield put(appGotError(result.error));
+  } else {
+    yield put(resetTransactionData());
   }
 }

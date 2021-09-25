@@ -31,3 +31,15 @@ export enum AppCommand {
 }
 
 export type CommandFunc = (command: AppCommand, data?: unknown) => void;
+
+export type StateValue = string | number;
+
+export interface Pane {
+  name: 'TransactionDetail' | 'TransactionForm';
+  state?: Record<string, StateValue>;
+}
+
+export interface PaneCommonProps {
+  state?: Record<string, StateValue>;
+  index: number;
+}
