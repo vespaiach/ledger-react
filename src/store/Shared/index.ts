@@ -3,7 +3,7 @@ import { ShareState, UpdateFieldAction } from './action';
 
 const initialState: ShareState = {
   loading: false,
-  error: null,
+  error: '',
 };
 
 export function sharedReducer(state: ShareState = initialState, action: UpdateFieldAction<keyof ShareState>) {

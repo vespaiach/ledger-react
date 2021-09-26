@@ -7,21 +7,28 @@ import './App.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { Backdrop, CircularProgress, IconButton, Snackbar } from '@mui/material';
+import { Alert, Backdrop, CircularProgress, Snackbar } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { Close as CloseIcon } from '@mui/icons-material';
 
 import { TransactionList } from './pages/TransactionList';
 import { theme } from './theme';
 import { Panes } from './panes';
 import { AppState } from './store';
 import { updateField } from './store/Shared/action';
+import { useEffect, useState } from 'react';
 
 export function App() {
+  const [showError, setShowError] = useState(false);
   const dispatch = useDispatch();
   const shared = useSelector((state: AppState) => state.shared);
 
-  const handleCloseError = () => dispatch(updateField('error', ''));
+  useEffect(() => {
+    if (shared.error) {
+      setShowError(true);
+    }
+  }, [shared]);
+
+  const clearError = () => dispatch(updateField('error', ''));
 
   return (
     <ThemeProvider theme={theme}>
@@ -39,17 +46,19 @@ export function App() {
           </Backdrop>
         )}
         <Snackbar
-          open={Boolean(shared.error)}
+          open={showError}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           autoHideDuration={4000}
-          onClose={handleCloseError}
-          TransitionProps={{ onExited: handleCloseError }}
-          message={shared.error}
-          action={
-            <IconButton aria-label="close" color="inherit" sx={{ p: 0.5 }} onClick={handleCloseError}>
-              <CloseIcon />
-            </IconButton>
-          }
-        />
+          TransitionProps={{ onExited: clearError }}
+          onClose={() => setShowError(false)}>
+          <Alert
+            severity="error"
+            variant="filled"
+            sx={{ minWidth: '200px' }}
+            onClose={() => setShowError(false)}>
+            {shared.error}
+          </Alert>
+        </Snackbar>
       </Router>
     </ThemeProvider>
   );
