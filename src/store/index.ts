@@ -7,11 +7,13 @@ import * as transactionSagas from './Transaction/saga';
 import { reasonReducer } from './Reason';
 import { transactionReducer } from './Transaction';
 import { paneReducer } from './Pane';
+import { sharedReducer } from './Shared';
 
 const reducers = combineReducers({
   reason: reasonReducer,
   transaction: transactionReducer,
   pane: paneReducer,
+  shared: sharedReducer,
 });
 const sagaMiddleWare = createSagaMiddleware();
 
@@ -22,8 +24,7 @@ function* rootSaga() {
 const typedWindow = typeof window !== 'undefined' && (window as any);
 function createStoreInstance() {
   const composeEnhancers =
-    (process.env.NODE_ENV === 'development' && typedWindow.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
-    compose;
+    (process.env.NODE_ENV === 'development' && typedWindow.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
   const storeInstance = createStore(reducers, composeEnhancers(applyMiddleware(sagaMiddleWare)));
 
   sagaMiddleWare.run(rootSaga);

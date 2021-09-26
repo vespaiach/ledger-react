@@ -1,6 +1,6 @@
 import { PopPaneAction, PushPaneAction } from './Pane/action';
 import { RequestReasonsAction, ReceiveReasonsAction } from './Reason/action';
-import { AppErrorAction, AppLoadingAction } from './Shared/action';
+import { ResetAction } from './Shared/action';
 import {
   DeleteTransactionAction,
   ReceiveOneTransactionAction,
@@ -40,8 +40,8 @@ export enum TransactionActionType {
 }
 
 export enum SharedActionType {
-  LOADING = '@Shared/application-loading',
-  ERROR = '@Shared/application-error',
+  UPDATE = '@Shared/update-field',
+  RESET = '@Shared/reset',
 }
 
 export enum PaneActionType {
@@ -67,7 +67,6 @@ export type LedgerAction =
   | UpdateFilterAction
   | RequestReasonsAction
   | ReceiveReasonsAction
-  | AppLoadingAction
-  | AppErrorAction
   | PushPaneAction
-  | PopPaneAction;
+  | PopPaneAction
+  | ResetAction;
