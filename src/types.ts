@@ -29,6 +29,7 @@ export type StateValue = string | number;
 export interface Pane {
   name: 'TransactionDetail' | 'TransactionForm';
   state?: Record<string, StateValue>;
+  closing?: boolean;
 }
 
 export interface PaneCommonProps {

@@ -32,7 +32,10 @@ export interface ReceiveOneTransactionAction {
 
 export interface SaveTransactionAction {
   type: TransactionActionType.SAVE;
-  payload: TransactionInput;
+  payload: {
+    transactionInput: TransactionInput;
+    paneIndex: number;
+  };
 }
 
 export interface DeleteTransactionAction {
@@ -65,9 +68,15 @@ export const receiveOneTransaction = (payload: Transaction): ReceiveOneTransacti
   payload,
 });
 
-export const saveTransaction = (payload: TransactionInput): SaveTransactionAction => ({
+export const saveTransaction = (
+  transactionInput: TransactionInput,
+  paneIndex: number
+): SaveTransactionAction => ({
   type: TransactionActionType.SAVE,
-  payload,
+  payload: {
+    transactionInput,
+    paneIndex,
+  },
 });
 
 export const deleteTransaction = (id: number): DeleteTransactionAction => ({

@@ -13,6 +13,11 @@ export function paneReducer(state: PaneState = intialState, action: LedgerAction
       return update(state, { $push: [action.payload] });
 
     case PaneActionType.POP:
+      return update(state, {
+        $splice: [[state.length - 1, 1, { ...state[state.length - 1], closing: true }]],
+      });
+
+    case PaneActionType.REMOVE:
       return update(state, { $splice: [[state.length - 1, 1]] });
 
     default:

@@ -1,4 +1,4 @@
-import { PopPaneAction, PushPaneAction } from './Pane/action';
+import { PopPaneAction, PushPaneAction, RemovePaneAction } from './Pane/action';
 import { RequestReasonsAction, ReceiveReasonsAction } from './Reason/action';
 import { ResetAction } from './Shared/action';
 import {
@@ -47,6 +47,7 @@ export enum SharedActionType {
 export enum PaneActionType {
   PUSH = '@Pane/push',
   POP = '@Pane/pop',
+  REMOVE = '@Pane/remove', // need to animate before closing
 }
 
 export type SagaReturn<T> = {
@@ -69,4 +70,5 @@ export type LedgerAction =
   | ReceiveReasonsAction
   | PushPaneAction
   | PopPaneAction
+  | RemovePaneAction
   | ResetAction;

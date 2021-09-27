@@ -24,6 +24,7 @@ import {
   TransactionFilter,
   updatePage,
 } from './action';
+import { popPane } from '../Pane/action';
 
 const Limit = 50;
 
@@ -108,15 +109,17 @@ function* requestTotalPagesRunner() {
 }
 
 function* saveTransactionRunner(action: SaveTransactionAction) {
-  const { payload } = action;
+  const {
+    payload: { transactionInput, paneIndex },
+  } = action;
   yield put(updateField('loading', true));
 
-  const updatingMode = Boolean(action.payload.id);
-  const id = payload.id ?? null;
-  const date = payload.date ? payload.date.toISOString() : null;
-  const amount = payload.amount ? parseFloat(String(payload.amount)) : null;
-  const reason = payload.reason ?? null;
-  const description = payload.description ?? null;
+  const updatingMode = Boolean(transactionInput.id);
+  const id = transactionInput.id ?? null;
+  const date = transactionInput.date ? transactionInput.date.toISOString() : null;
+  const amount = transactionInput.amount ? parseFloat(String(transactionInput.amount)) : null;
+  const reason = transactionInput.reason ?? null;
+  const description = transactionInput.description ?? null;
 
   const result: SagaReturn<{ mutateTransaction: Transaction }> = yield mutate(MutateTransactionDocument, {
     input: {
@@ -134,7 +137,10 @@ function* saveTransactionRunner(action: SaveTransactionAction) {
     yield put(updateField('error', result.error));
   } else {
     if (updatingMode) {
-      yield put(receiveOneTransaction(result.data?.mutateTransaction as Transaction));
+      yield all([
+        put(receiveOneTransaction(result.data?.mutateTransaction as Transaction)),
+        put(popPane(paneIndex)),
+      ]);
     } else {
       yield put(resetTransactionData());
     }

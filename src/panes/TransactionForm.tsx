@@ -24,7 +24,7 @@ enum Mode {
 
 interface TransactionFormProps extends PaneCommonProps {}
 
-export function TransactionForm({ state }: TransactionFormProps) {
+export function TransactionForm({ state, index }: TransactionFormProps) {
   const dispatch = useDispatch();
   const reasons = useSelector((state: AppState) => state.reason.data.map((r) => r.text));
   const transaction = useTransaction(state?.id);
@@ -40,7 +40,7 @@ export function TransactionForm({ state }: TransactionFormProps) {
       description: transaction?.description || undefined,
     },
     onSubmit: (submitingData) => {
-      dispatch(saveTransaction(submitingData));
+      dispatch(saveTransaction(submitingData, index));
     },
     validate: (submitingData) => {
       const errorMessages: Record<string, string> = {};
@@ -65,7 +65,7 @@ export function TransactionForm({ state }: TransactionFormProps) {
     switch (command) {
       case PaneCommand.Close:
       case PaneCommand.Cancel:
-        dispatch(popPane());
+        dispatch(popPane(index));
         break;
       case PaneCommand.Save:
         submitForm();
@@ -81,8 +81,8 @@ export function TransactionForm({ state }: TransactionFormProps) {
 
   return (
     <Pane
+      index={index}
       onCommand={handlePaneCommand}
-      closeWhenCancel
       commands={
         mode === Mode.Edit ? [PaneCommand.Save, PaneCommand.Cancel] : [PaneCommand.Save, PaneCommand.Close]
       }>
