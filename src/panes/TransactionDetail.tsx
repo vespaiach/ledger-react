@@ -35,7 +35,7 @@ export function TransactionDetail({ state, index }: TransactionDetailProps) {
         setShowConfirmation(false);
         break;
       case PaneCommand.Yes:
-        dispath(deleteTransaction(transaction?.id as number));
+        dispath(deleteTransaction(transaction?.id as number, index));
         break;
     }
   };

@@ -77,7 +77,7 @@ export function TransactionForm({ state, index }: TransactionFormProps) {
     if (!reasons.length) {
       dispatch(requestReasons());
     }
-  }, [reasons, dispatch]);
+  }, [reasons.length, dispatch]);
 
   return (
     <Pane

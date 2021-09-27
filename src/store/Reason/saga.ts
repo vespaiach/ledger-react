@@ -1,4 +1,4 @@
-import { takeEvery, put } from 'redux-saga/effects';
+import { takeEvery, put, call } from 'redux-saga/effects';
 
 import { GetReasonsDocument, Reason } from '../../graphql.generated';
 import { updateField } from '../Shared/action';
@@ -11,7 +11,7 @@ export function* requestReasonListSaga() {
 }
 
 function* requestReasonList() {
-  const result: SagaReturn<{ reasons: Reason[] }> = yield query<Reason[]>(GetReasonsDocument);
+  const result: SagaReturn<{ reasons: Reason[] }> = yield call(query, GetReasonsDocument);
 
   if (result.error) {
     yield put(updateField('error', result.error));

@@ -18,6 +18,7 @@ import {
   receiveTotalPages,
   receiveTransactions,
   requestTotalPages,
+  requestTransactions,
   RequestTransactionsAction,
   resetTransactionData,
   SaveTransactionAction,
@@ -27,6 +28,8 @@ import {
 import { popPane } from '../Pane/action';
 
 const Limit = 50;
+let lastStartIndex: number = 0;
+let lastEndIndex: number | undefined;
 
 export function* requestTransactionsSaga() {
   yield takeEvery(TransactionActionType.REQUEST, requestTransactionsRunner);
@@ -86,6 +89,8 @@ function* requestTransactionsRunner({ payload: { startIndex, endIndex } }: Reque
     }
   }
 
+  lastStartIndex = startIndex;
+  lastEndIndex = endIndex;
   yield put(updateField('loading', false));
 }
 
@@ -151,7 +156,7 @@ function* deleteTransactionRunner(action: DeleteTransactionAction) {
   yield put(updateField('loading', true));
 
   const result: SagaReturn<{ deleteTransaction: boolean }> = yield mutate(DeleteTransactionDocument, {
-    id: action.payload,
+    id: action.payload.transactionId,
   });
 
   yield put(updateField('loading', false));
@@ -160,5 +165,9 @@ function* deleteTransactionRunner(action: DeleteTransactionAction) {
     yield put(updateField('error', result.error));
   } else {
     yield put(resetTransactionData());
+    yield all([
+      put(requestTransactions(lastStartIndex, lastEndIndex)),
+      put(popPane(action.payload.paneIndex)),
+    ]);
   }
 }

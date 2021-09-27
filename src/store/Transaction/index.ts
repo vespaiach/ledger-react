@@ -83,6 +83,7 @@ export function transactionReducer(
       return update(state, {
         data: { $set: intialState.data },
         pages: { $set: intialState.pages },
+        lookup: { $set: intialState.lookup },
       });
 
     default:
