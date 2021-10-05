@@ -1,0 +1,12 @@
+{
+  "name": "Ledger Frontend",
+  "description": "A small web application for money balance management",
+  "repository": "https://github.com/vespaiach/ledger",
+  "keywords": ["node", "graphql", "ledger", "react", "material-ui"],
+  "env": {
+    "NODE_ENV": {
+      "description": "Runtime environment",
+      "value": "deployment"
+    }
+  }
+}

@@ -12,60 +12,36 @@
 
 <br>
 
-# Motivation
-
-I'm trying to bring my money balance excel file to web application.
-
 # Live Playground
 
-The demo version at: https://www.vespaiach.com/ . Use the account below to login:
-
--   email: test@test.com
--   password: 12345678
+The demo version at: https://in-out-money.herokuapp.com/ 
 
 # Development
 
-Development environment requirements :
+To run web app at local, 
+ - First, you need to download and run back-end server [ledger-graphql](https://github.com/vespaiach/ledger-graphql)
+ - Download this repository and start with command `yarn start` 
 
--   Node.js >= 12.0.0
--   PostgreSQL
--   TypeScript
--   Docker
--   Docker compose
+This web application is bootstraped with [cra](https://create-react-app.dev/). Some of frameworks and libraries are using in this web application:
 
-I am using Lerna to make sure both backend project and frontend project work well together in a mono repo.
+ - React
+ - Redux/Redux Saga
+ - Material UI (v5.x)
+ - Graphql Codegen
+ - Appolo Client
 
-Backend is using Adonisjs framework version 5. Frontend is React application combined with Redux, Redux Saga and Material UI framework
+# Heroku deployment
 
-## Download and bootstrap project:
+## Create a new app on Heroku
 
-Download project:
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/vespaiach/ledger)
 
-```
-git clone https://github.com/vespaiach/ledger
-```
 
-Before bootstraping project, go to folder ./packages/server and update .env file. (Refer to .env.example for more details)
+## Manually deploy
 
-```
-cd ./ledger // Root folder of project
-npm install
-npm run bootstrap
-
-// Create an account to access web app
-npm run createacc -- -- <email> <password>
-```
-
-## Start development servers:
+Using heroku cli
 
 ```
-cd ./ledger
-npm run dev
+heroku git:remote -a <your_heroku_app_name>
+git push heroku main
 ```
-
-# Deployment
-
-Normally, backend code should be deployed in one host and frontend code in another code. However, this web application is leveraging Adonisjs framework and making the frontend application become a view of Adonisjs. Hence, we can deploy it in one host.
-
--   Build docker image (Dockerfile in root folder)
--   Deploy docker image

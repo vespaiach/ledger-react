@@ -4,25 +4,29 @@ import { SharedActionType } from '../types';
 
 export interface ShareState {
   error: Maybe<string>;
-  fetching: boolean;
+  loading: boolean;
 }
 
-export interface AppLoadingAction {
-  type: SharedActionType.LOADING;
-  payload: boolean;
+export interface UpdateFieldAction<F extends keyof ShareState> {
+  type: SharedActionType.UPDATE;
+  payload: {
+    field: string;
+    value: ShareState[F];
+  };
 }
 
-export interface AppErrorAction {
-  type: SharedActionType.ERROR;
-  payload: string;
+export interface ResetAction {
+  type: SharedActionType.RESET;
 }
 
-export const appGotError = (error: string): AppErrorAction => ({
-  type: SharedActionType.ERROR,
-  payload: error,
+export const updateField = <F extends keyof ShareState>(
+  field: F,
+  value: ShareState[F]
+): UpdateFieldAction<F> => ({
+  type: SharedActionType.UPDATE,
+  payload: { field, value },
 });
 
-export const appLoading = (loading: boolean): AppLoadingAction => ({
-  type: SharedActionType.LOADING,
-  payload: loading,
+export const reset = (): ResetAction => ({
+  type: SharedActionType.RESET,
 });

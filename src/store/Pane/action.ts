@@ -8,6 +8,12 @@ export interface PushPaneAction {
 
 export interface PopPaneAction {
   type: PaneActionType.POP;
+  payload: number;
+}
+
+export interface RemovePaneAction {
+  type: PaneActionType.REMOVE;
+  payload: number
 }
 
 export const pushPane = (pane: Pane): PushPaneAction => ({
@@ -15,6 +21,12 @@ export const pushPane = (pane: Pane): PushPaneAction => ({
   payload: pane,
 });
 
-export const popPane = (): PopPaneAction => ({
+export const removePane = (paneIndex: number): RemovePaneAction => ({
+  type: PaneActionType.REMOVE,
+  payload: paneIndex,
+});
+
+export const popPane = (paneIndex: number): PopPaneAction => ({
   type: PaneActionType.POP,
+  payload: paneIndex
 });

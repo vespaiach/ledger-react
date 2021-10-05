@@ -1,5 +1,3 @@
-import { Maybe } from 'graphql/jsutils/Maybe';
-
 export interface TransactionModel {
   id?: number;
   amount?: number;
@@ -13,12 +11,6 @@ export interface ReasonModel {
   id?: number;
   text?: string;
   updatedAt?: Date;
-}
-
-export interface NetworkState<T> {
-  fetching: boolean;
-  error: Maybe<string>;
-  data: Maybe<T>;
 }
 
 export enum AppCommand {
@@ -37,6 +29,7 @@ export type StateValue = string | number;
 export interface Pane {
   name: 'TransactionDetail' | 'TransactionForm';
   state?: Record<string, StateValue>;
+  closing?: boolean;
 }
 
 export interface PaneCommonProps {

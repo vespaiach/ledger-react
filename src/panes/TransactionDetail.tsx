@@ -15,7 +15,7 @@ import { deleteTransaction } from '../store/Transaction/action';
 
 interface TransactionDetailProps extends PaneCommonProps {}
 
-export function TransactionDetail({ state }: TransactionDetailProps) {
+export function TransactionDetail({ state, index }: TransactionDetailProps) {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const dispath = useDispatch();
   const transaction = useTransaction(state?.id);
@@ -23,7 +23,7 @@ export function TransactionDetail({ state }: TransactionDetailProps) {
   const handlePaneCommand = (command: PaneCommand) => {
     switch (command) {
       case PaneCommand.Close:
-        dispath(popPane());
+        dispath(popPane(index));
         break;
       case PaneCommand.Edit:
         dispath(pushPane({ name: 'TransactionForm', state: { id: (transaction as Transaction).id } }));
@@ -35,14 +35,14 @@ export function TransactionDetail({ state }: TransactionDetailProps) {
         setShowConfirmation(false);
         break;
       case PaneCommand.Yes:
-        dispath(deleteTransaction(transaction?.id as number));
+        dispath(deleteTransaction(transaction?.id as number, index));
         break;
     }
   };
 
   if (!transaction) {
     return (
-      <Pane onCommand={handlePaneCommand} commands={[]}>
+      <Pane onCommand={handlePaneCommand} commands={[]} index={index}>
         <PageHeader text="Transaction Detail" subText={'No data.'} />
       </Pane>
     );
@@ -50,6 +50,7 @@ export function TransactionDetail({ state }: TransactionDetailProps) {
 
   return (
     <Pane
+      index={index}
       onCommand={handlePaneCommand}
       commands={
         showConfirmation ? [PaneCommand.Yes, PaneCommand.Cancel] : [PaneCommand.Edit, PaneCommand.Delete]
