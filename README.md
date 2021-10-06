@@ -43,5 +43,6 @@ Using heroku cli
 
 ```
 heroku git:remote -a <your_heroku_app_name>
+heroku buildpacks:add -a <your_heroku_app_name> mars/create-react-app
 git push heroku main
 ```
