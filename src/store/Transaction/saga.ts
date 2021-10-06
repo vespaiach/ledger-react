@@ -147,7 +147,7 @@ function* saveTransactionRunner(action: SaveTransactionAction) {
         put(popPane(paneIndex)),
       ]);
     } else {
-      yield put(resetTransactionData());
+      yield put(requestTransactions(0));
     }
   }
 }
