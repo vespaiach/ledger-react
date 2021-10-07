@@ -24,6 +24,11 @@ const intialState: TransactionState = {
   lookup: {},
 };
 
+/**
+ * Todo: move this config to redux state
+ */
+const Limit = 50;
+
 export function transactionReducer(
   state: TransactionState = intialState,
   action: LedgerAction
@@ -72,19 +77,30 @@ export function transactionReducer(
       if (index > -1) {
         return update(state, {
           data: {
-            $splice: [[index, 1, { ...action.payload, date: new Date(action.payload.date) }]],
+            $splice: [
+              [index, 1, { ...action.payload, date: new Date(action.payload.date) }],
+            ],
           },
         });
       }
       return state;
     }
 
-    case TransactionActionType.RESET:
+    case TransactionActionType.CHANGE_TOTAL_TRANSACTION: {
+      /**
+       * Add/remove a new record will make whole list order shifted.
+       * Since, we don't know exactly where the position of that new/removing record is.
+       * We have to reset the whole list and call API to build up it again.
+       */
+      const totalRecords = state.data.length + action.payload;
+      const totalPages = Math.floor(totalRecords / Limit) + (totalRecords % Limit === 0 ? 0 : 1);
+
       return update(state, {
-        data: { $set: intialState.data },
-        pages: { $set: intialState.pages },
-        lookup: { $set: intialState.lookup },
+        pages: { $set: Array(totalPages).fill(null) },
+        data: { $set: Array(totalRecords) },
+        lookup: { $set: {} },
       });
+    }
 
     default:
       return state;

@@ -2,13 +2,13 @@ import { PopPaneAction, PushPaneAction, RemovePaneAction } from './Pane/action';
 import { RequestReasonsAction, ReceiveReasonsAction } from './Reason/action';
 import { ResetAction } from './Shared/action';
 import {
+  ChangeTotalTransactionAction,
   DeleteTransactionAction,
   ReceiveOneTransactionAction,
   ReceiveTotalPagesAction,
   ReceiveTransactionAction,
   RequestTotalPagesAction,
   RequestTransactionsAction,
-  ResetTransactionDataAction,
   SaveTransactionAction,
   UpdateFilterAction,
   UpdatePageAction,
@@ -36,6 +36,7 @@ export enum TransactionActionType {
   REQUEST = '@Transaction/request-list-transaction',
   RECEIVE = '@Transaction/receive-list-transactions',
   RECEIVE_ONE = '@Transaction/receive-a-transaction',
+  CHANGE_TOTAL_TRANSACTION = '@Transaction/change-total-transactions',
   RESET = '@Transaction/clear-all-transaction-data',
 }
 
@@ -55,11 +56,11 @@ export type SagaReturn<T> = {
   data?: T;
 };
 
-export type LedgerAction =
+type Actions =
   | RequestTransactionsAction
   | ReceiveTransactionAction
   | ReceiveOneTransactionAction
-  | ResetTransactionDataAction
+  | ChangeTotalTransactionAction
   | SaveTransactionAction
   | DeleteTransactionAction
   | RequestTotalPagesAction
@@ -72,3 +73,5 @@ export type LedgerAction =
   | PopPaneAction
   | RemovePaneAction
   | ResetAction;
+
+export type LedgerAction = Actions & { callback?: (data: unknown, error: Error) => void };

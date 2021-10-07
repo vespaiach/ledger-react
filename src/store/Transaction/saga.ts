@@ -13,14 +13,13 @@ import { updateField } from '../Shared/action';
 import { PageActionType, SagaReturn, TransactionActionType } from '../types';
 import { mutate, query } from '../utils';
 import {
+  changeTotalTransaction,
   DeleteTransactionAction,
   receiveOneTransaction,
   receiveTotalPages,
   receiveTransactions,
   requestTotalPages,
-  requestTransactions,
   RequestTransactionsAction,
-  resetTransactionData,
   SaveTransactionAction,
   TransactionFilter,
   updatePage,
@@ -28,8 +27,6 @@ import {
 import { popPane } from '../Pane/action';
 
 const Limit = 50;
-let lastStartIndex: number = 0;
-let lastEndIndex: number | undefined;
 
 export function* requestTransactionsSaga() {
   yield takeEvery(TransactionActionType.REQUEST, requestTransactionsRunner);
@@ -89,8 +86,6 @@ function* requestTransactionsRunner({ payload: { startIndex, endIndex } }: Reque
     }
   }
 
-  lastStartIndex = startIndex;
-  lastEndIndex = endIndex;
   yield put(updateField('loading', false));
 }
 
@@ -119,7 +114,7 @@ function* saveTransactionRunner(action: SaveTransactionAction) {
   } = action;
   yield put(updateField('loading', true));
 
-  const updatingMode = Boolean(transactionInput.id);
+  const mode = Boolean(transactionInput.id) ? 'updating' : 'creating';
   const id = transactionInput.id ?? null;
   const date = transactionInput.date ? transactionInput.date.toISOString() : null;
   const amount = transactionInput.amount ? parseFloat(String(transactionInput.amount)) : null;
@@ -141,13 +136,13 @@ function* saveTransactionRunner(action: SaveTransactionAction) {
   if (result.error) {
     yield put(updateField('error', result.error));
   } else {
-    if (updatingMode) {
+    if (mode === 'updating') {
       yield all([
         put(receiveOneTransaction(result.data?.mutateTransaction as Transaction)),
         put(popPane(paneIndex)),
       ]);
     } else {
-      yield put(requestTransactions(0));
+      yield all([put(changeTotalTransaction(1)), put(popPane(paneIndex))]);
     }
   }
 }
@@ -164,10 +159,6 @@ function* deleteTransactionRunner(action: DeleteTransactionAction) {
   if (result.error) {
     yield put(updateField('error', result.error));
   } else {
-    yield put(resetTransactionData());
-    yield all([
-      put(requestTransactions(lastStartIndex, lastEndIndex)),
-      put(popPane(action.payload.paneIndex)),
-    ]);
+    yield all([put(changeTotalTransaction(-1)), put(popPane(action.payload.paneIndex))]);
   }
 }

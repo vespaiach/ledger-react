@@ -30,6 +30,11 @@ export interface ReceiveOneTransactionAction {
   payload: Transaction;
 }
 
+export interface ChangeTotalTransactionAction {
+  type: TransactionActionType.CHANGE_TOTAL_TRANSACTION;
+  payload: number;
+}
+
 export interface SaveTransactionAction {
   type: TransactionActionType.SAVE;
   payload: {
@@ -44,10 +49,6 @@ export interface DeleteTransactionAction {
     transactionId: number;
     paneIndex: number;
   };
-}
-
-export interface ResetTransactionDataAction {
-  type: TransactionActionType.RESET;
 }
 
 export const requestTransactions = (startIndex: number, endIndex?: number): RequestTransactionsAction => ({
@@ -66,9 +67,14 @@ export const receiveTransactions = (data: Transaction[], offset: number): Receiv
   },
 });
 
-export const receiveOneTransaction = (payload: Transaction): ReceiveOneTransactionAction => ({
+export const receiveOneTransaction = (transaction: Transaction): ReceiveOneTransactionAction => ({
   type: TransactionActionType.RECEIVE_ONE,
-  payload,
+  payload: transaction,
+});
+
+export const changeTotalTransaction = (number: number): ChangeTotalTransactionAction => ({
+  type: TransactionActionType.CHANGE_TOTAL_TRANSACTION,
+  payload: number,
 });
 
 export const saveTransaction = (
@@ -88,8 +94,4 @@ export const deleteTransaction = (transactionId: number, paneIndex: number): Del
     transactionId,
     paneIndex,
   },
-});
-
-export const resetTransactionData = (): ResetTransactionDataAction => ({
-  type: TransactionActionType.RESET,
 });
