@@ -1,7 +1,6 @@
 import { takeEvery, put, select, call } from '@redux-saga/core/effects';
 import { all } from 'redux-saga/effects';
 
-import { TransactionState } from './index';
 import {
   Transaction,
   GetTransactionsDocument,
@@ -10,18 +9,14 @@ import {
   DeleteTransactionDocument,
 } from '../../graphql.generated';
 import { updateField } from '../Shared/action';
-import { PageActionType, SagaReturn, TransactionActionType } from '../types';
+import { DeleteTransactionAction, PageActionType, RequestTransactionsAction, SagaReturn, SaveTransactionAction, TransactionActionType, TransactionFilter, TransactionState } from '../types';
 import { mutate, query } from '../utils';
 import {
   changeTotalTransaction,
-  DeleteTransactionAction,
   receiveOneTransaction,
   receiveTotalPages,
   receiveTransactions,
   requestTotalPages,
-  RequestTransactionsAction,
-  SaveTransactionAction,
-  TransactionFilter,
   updatePage,
 } from './action';
 import { popPane } from '../Pane/action';

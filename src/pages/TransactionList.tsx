@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { createRef, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Container, Fab, Typography } from '@mui/material';
 import { RemoveRounded as MinusIcon, AddRounded as PlusIcon } from '@mui/icons-material';
@@ -19,14 +19,17 @@ import { AppTopMenu } from '../components/AppTopMenu';
 import { CommandFunc, AppCommand } from '../types';
 import { PageHeader } from '../components/PageHeader';
 import { pushPane } from '../store/Pane/action';
+import { clearResetting } from '../store/Transaction/action/other';
 
 const RowHeight = 61;
 
 export function TransactionList() {
   const dispatch = useDispatch();
   const transactions = useSelector((state: AppState) => state.transaction.data);
+  const resetting = useSelector((state: AppState) => state.transaction.resetting);
   const { containerGutter, theme } = useResponsive();
   const resolveLoadingData = useRef((values: unknown) => {});
+  const infiniteRef = createRef<InfiniteLoader>();
 
   const isRowLoaded = ({ index }: Index) => {
     return !!transactions[index];
@@ -72,20 +75,14 @@ export function TransactionList() {
           dispatch(pushPane({ name: 'TransactionDetail', state: { id: trans.id } }));
         }}
         pb={theme.spacing(1)}
-        pt={theme.spacing(1)}
-      >
+        pt={theme.spacing(1)}>
         {(trans.amount || 0) > 0 ? <PlusIcon fontSize="large" /> : <MinusIcon fontSize="large" />}
         <Box ml={theme.spacing(1)} width="calc(100% - 42px)">
           <Box>
             <Typography variant="body1" component="span" mr={theme.spacing(1)}>
               {Math.abs(trans.amount)}
             </Typography>
-            <Typography
-              variant="body1"
-              component="span"
-              mr={theme.spacing(1)}
-              color="text.disabled"
-            >
+            <Typography variant="body1" component="span" mr={theme.spacing(1)} color="text.disabled">
               |
             </Typography>
             <Typography variant="body1" component="span" color="text.disabled">
@@ -114,6 +111,13 @@ export function TransactionList() {
     dispatch(requestTransactions(0));
   }, [dispatch]);
 
+  useEffect(() => {
+    if (resetting) {
+      infiniteRef.current?.resetLoadMoreRowsCache(true);
+      dispatch(clearResetting());
+    }
+  }, [dispatch, resetting, infiniteRef]);
+
   return (
     <>
       <AppTopMenu onCommand={handleCommand} />
@@ -121,8 +125,7 @@ export function TransactionList() {
         maxWidth="md"
         sx={{ marginTop: '78px' }}
         disableGutters={!containerGutter}
-        id="back-to-top-anchor"
-      >
+        id="back-to-top-anchor">
         <PageHeader
           text="Transactions"
           subText={
@@ -138,7 +141,7 @@ export function TransactionList() {
           isRowLoaded={isRowLoaded}
           loadMoreRows={loadMoreRows}
           rowCount={transactions.length}
-        >
+          ref={infiniteRef}>
           {({ onRowsRendered, registerChild }) => (
             <AutoSizer disableHeight>
               {({ width }: { width: number }) => (

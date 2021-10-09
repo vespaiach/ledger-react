@@ -1,18 +1,17 @@
+import { Spec } from 'immutability-helper';
+
 import { PopPaneAction, PushPaneAction, RemovePaneAction } from './Pane/action';
 import { RequestReasonsAction, ReceiveReasonsAction } from './Reason/action';
 import { ResetAction } from './Shared/action';
-import {
-  ChangeTotalTransactionAction,
-  DeleteTransactionAction,
-  ReceiveOneTransactionAction,
-  ReceiveTotalPagesAction,
-  ReceiveTransactionAction,
-  RequestTotalPagesAction,
-  RequestTransactionsAction,
-  SaveTransactionAction,
-  UpdateFilterAction,
-  UpdatePageAction,
-} from './Transaction/action';
+import { Maybe, Transaction } from '../graphql.generated';
+
+/**
+ * Redux action types
+ */
+
+export enum OtherActionType {
+  UPDATE = '@Other/update',
+}
 
 export enum ReasonActionType {
   REQUEST = '@Reason/request-list',
@@ -56,6 +55,124 @@ export type SagaReturn<T> = {
   data?: T;
 };
 
+/**
+ * Transaction pages
+ */
+
+export interface RequestTotalPagesAction {
+  type: PageActionType.REQUEST;
+}
+
+export interface ReceiveTotalPagesAction {
+  type: PageActionType.RECEIVE;
+  payload: {
+    totalPages: number;
+    totalRecords: number;
+  };
+}
+
+export interface UpdatePageAction {
+  type: PageActionType.UPDATE;
+  payload: {
+    page: number;
+    status: boolean;
+  };
+}
+
+/**
+ * Transaction data
+ */
+
+export interface TransactionState {
+  filter: TransactionFilter;
+  data: Transaction[];
+  pages: (boolean | null)[];
+  lookup: Record<number, number>;
+  resetting: boolean;
+}
+
+export type TransactionInput = {
+  id?: number;
+  amount?: number;
+  date?: Date;
+  reason?: string;
+  description?: string;
+};
+
+export interface RequestTransactionsAction {
+  type: TransactionActionType.REQUEST;
+  payload: {
+    startIndex: number;
+    endIndex?: number;
+  };
+}
+
+export interface ReceiveTransactionAction {
+  type: TransactionActionType.RECEIVE;
+  payload: {
+    offset: number;
+    data: Transaction[];
+  };
+}
+
+export interface ReceiveOneTransactionAction {
+  type: TransactionActionType.RECEIVE_ONE;
+  payload: Transaction;
+}
+
+export interface ChangeTotalTransactionAction {
+  type: TransactionActionType.CHANGE_TOTAL_TRANSACTION;
+  payload: number;
+}
+
+export interface SaveTransactionAction {
+  type: TransactionActionType.SAVE;
+  payload: {
+    transactionInput: TransactionInput;
+    paneIndex: number;
+  };
+}
+
+export interface DeleteTransactionAction {
+  type: TransactionActionType.DELETE;
+  payload: {
+    transactionId: number;
+    paneIndex: number;
+  };
+}
+
+/**
+ * Transaction filters
+ */
+
+export interface TransactionFilter {
+  amountFrom: Maybe<number>;
+  amountTo: Maybe<number>;
+  dateFrom: Maybe<number>;
+  dateTo: Maybe<number>;
+  reason: Maybe<number>;
+}
+
+export interface UpdateFilterAction {
+  type: FilterActionType.UPDATE;
+  payload: {
+    field: keyof TransactionFilter;
+    value: TransactionFilter[keyof TransactionFilter];
+  };
+}
+
+/**
+ * Other fields from transaction state
+ */
+
+export interface UpdateOtherFieldsAction {
+  type: OtherActionType.UPDATE;
+  payload: Spec<TransactionState>;
+}
+
+/**
+ * Ledger's Actions
+ */
 type Actions =
   | RequestTransactionsAction
   | ReceiveTransactionAction
@@ -72,6 +189,7 @@ type Actions =
   | PushPaneAction
   | PopPaneAction
   | RemovePaneAction
-  | ResetAction;
+  | ResetAction
+  | UpdateOtherFieldsAction;
 
 export type LedgerAction = Actions & { callback?: (data: unknown, error: Error) => void };

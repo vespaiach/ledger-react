@@ -15,7 +15,8 @@ import { popPane } from '../store/Pane/action';
 import { requestReasons } from '../store/Reason/action';
 import { PaneCommonProps } from '../types';
 import { MoneyInput } from '../components/MoneyInput';
-import { saveTransaction, TransactionInput } from '../store/Transaction/action';
+import { saveTransaction } from '../store/Transaction/action';
+import { TransactionInput } from '../store/types';
 
 enum Mode {
   Create,

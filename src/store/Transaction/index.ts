@@ -1,15 +1,13 @@
 import update from 'immutability-helper';
-import { Transaction } from '../../graphql.generated';
 
-import { FilterActionType, LedgerAction, PageActionType, TransactionActionType } from '../types';
-import { TransactionFilter } from './action';
-
-export interface TransactionState {
-  filter: TransactionFilter;
-  data: Transaction[];
-  pages: (boolean | null)[];
-  lookup: Record<number, number>;
-}
+import {
+  FilterActionType,
+  LedgerAction,
+  OtherActionType,
+  PageActionType,
+  TransactionActionType,
+  TransactionState,
+} from '../types';
 
 const intialState: TransactionState = {
   filter: {
@@ -22,6 +20,7 @@ const intialState: TransactionState = {
   data: [],
   pages: [],
   lookup: {},
+  resetting: false,
 };
 
 /**
@@ -77,9 +76,7 @@ export function transactionReducer(
       if (index > -1) {
         return update(state, {
           data: {
-            $splice: [
-              [index, 1, { ...action.payload, date: new Date(action.payload.date) }],
-            ],
+            $splice: [[index, 1, { ...action.payload, date: new Date(action.payload.date) }]],
           },
         });
       }
@@ -99,8 +96,12 @@ export function transactionReducer(
         pages: { $set: Array(totalPages).fill(null) },
         data: { $set: Array(totalRecords) },
         lookup: { $set: {} },
+        resetting: { $set: true },
       });
     }
+
+    case OtherActionType.UPDATE:
+      return update(state, action.payload);
 
     default:
       return state;
