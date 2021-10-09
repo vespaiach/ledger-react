@@ -94,7 +94,7 @@ export interface TransactionState {
 export type TransactionInput = {
   id?: number;
   amount?: number;
-  date?: Date;
+  date?: Date | null;
   reason?: string;
   description?: string;
 };
@@ -151,6 +151,7 @@ export interface TransactionFilter {
   dateFrom: Maybe<number>;
   dateTo: Maybe<number>;
   reason: Maybe<number>;
+  limit: number;
 }
 
 export interface UpdateFilterAction {
