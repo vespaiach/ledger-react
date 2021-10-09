@@ -9,6 +9,11 @@ import {
   TransactionState,
 } from '../types';
 
+/**
+ * Todo: move to app configuration
+ */
+const Limit = 50;
+
 const intialState: TransactionState = {
   filter: {
     amountFrom: null,
@@ -16,17 +21,13 @@ const intialState: TransactionState = {
     dateFrom: null,
     dateTo: null,
     reason: null,
+    limit: Limit,
   },
   data: [],
   pages: [],
   lookup: {},
   resetting: false,
 };
-
-/**
- * Todo: move this config to redux state
- */
-const Limit = 50;
 
 export function transactionReducer(
   state: TransactionState = intialState,

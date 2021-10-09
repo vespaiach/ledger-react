@@ -9,7 +9,16 @@ import {
   DeleteTransactionDocument,
 } from '../../graphql.generated';
 import { updateField } from '../Shared/action';
-import { DeleteTransactionAction, PageActionType, RequestTransactionsAction, SagaReturn, SaveTransactionAction, TransactionActionType, TransactionFilter, TransactionState } from '../types';
+import {
+  DeleteTransactionAction,
+  PageActionType,
+  RequestTransactionsAction,
+  SagaReturn,
+  SaveTransactionAction,
+  TransactionActionType,
+  TransactionFilter,
+  TransactionState,
+} from '../types';
 import { mutate, query } from '../utils';
 import {
   changeTotalTransaction,
@@ -93,7 +102,7 @@ function* requestTotalPagesRunner() {
   }
 
   const result: SagaReturn<{ getTotalPages: Total }> = yield query(GetTotalPagesDocument, {
-    input: filter,
+    transactionsInput: filter,
   });
 
   if (result.error) {

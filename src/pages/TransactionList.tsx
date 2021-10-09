@@ -36,6 +36,7 @@ export function TransactionList() {
   };
 
   const loadMoreRows = ({ startIndex, stopIndex }: IndexRange) => {
+    console.log('---', startIndex, stopIndex)
     dispatch(requestTransactions(startIndex, stopIndex));
     return new Promise((res) => {
       resolveLoadingData.current = res;
@@ -49,11 +50,21 @@ export function TransactionList() {
       return null;
     }
 
+    console.log(index)
+
     if (!trans) {
       return (
-        <div key={key} style={style}>
-          ...
-        </div>
+        <Box
+          display="flex"
+          alignItems="center"
+          key={key}
+          style={{
+            ...style,
+            overflow: 'hidden',
+            borderTop: index > 0 ? '1px solid rgba(255, 255, 255, 0.12)' : 'none',
+          }}>
+          <i>loading...</i>
+        </Box>
       );
     }
 
@@ -159,6 +170,7 @@ export function TransactionList() {
                       rowHeight={RowHeight}
                       rowCount={transactions.length}
                       onRowsRendered={onRowsRendered}
+                      style={{ outline: 'none' }}
                     />
                   )}
                 </WindowScroller>

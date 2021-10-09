@@ -36,7 +36,7 @@ export function TransactionForm({ state, index }: TransactionFormProps) {
     initialValues: {
       id: transaction?.id,
       amount: transaction?.amount,
-      date: transaction ? new Date(transaction.date) : undefined,
+      date: transaction ? new Date(transaction.date) : null,
       reason: transaction?.reason.text,
       description: transaction?.description || undefined,
     },
