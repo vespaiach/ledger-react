@@ -1,15 +1,13 @@
 import update from 'immutability-helper';
-import { Transaction } from '../../graphql.generated';
 
-import { FilterActionType, LedgerAction, PageActionType, TransactionActionType } from '../types';
-import { TransactionFilter } from './action';
-
-export interface TransactionState {
-  filter: TransactionFilter;
-  data: Transaction[];
-  pages: (boolean | null)[];
-  lookup: Record<number, number>;
-}
+import {
+  FilterActionType,
+  LedgerAction,
+  OtherActionType,
+  PageActionType,
+  TransactionActionType,
+  TransactionState,
+} from '../types';
 
 const intialState: TransactionState = {
   filter: {
@@ -22,7 +20,13 @@ const intialState: TransactionState = {
   data: [],
   pages: [],
   lookup: {},
+  resetting: false,
 };
+
+/**
+ * Todo: move this config to redux state
+ */
+const Limit = 50;
 
 export function transactionReducer(
   state: TransactionState = intialState,
@@ -79,12 +83,25 @@ export function transactionReducer(
       return state;
     }
 
-    case TransactionActionType.RESET:
+    case TransactionActionType.CHANGE_TOTAL_TRANSACTION: {
+      /**
+       * Add/remove a new record will make whole list order shifted.
+       * Since, we don't know exactly where the position of that new/removing record is.
+       * We have to reset the whole list and call API to build up it again.
+       */
+      const totalRecords = state.data.length + action.payload;
+      const totalPages = Math.floor(totalRecords / Limit) + (totalRecords % Limit === 0 ? 0 : 1);
+
       return update(state, {
-        data: { $set: intialState.data },
-        pages: { $set: intialState.pages },
-        lookup: { $set: intialState.lookup },
+        pages: { $set: Array(totalPages).fill(null) },
+        data: { $set: Array(totalRecords) },
+        lookup: { $set: {} },
+        resetting: { $set: true },
       });
+    }
+
+    case OtherActionType.UPDATE:
+      return update(state, action.payload);
 
     default:
       return state;

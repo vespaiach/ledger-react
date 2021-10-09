@@ -19,8 +19,10 @@ The demo version at: https://in-out-money.herokuapp.com/
 # Development
 
 To run web app at local, 
- - First, you need to download and run back-end server [ledger-graphql](https://github.com/vespaiach/ledger-graphql)
- - Download this repository and start with command `yarn start` 
+ 1. You need to download and run back-end server [ledger-graphql](https://github.com/vespaiach/ledger-graphql)
+ 2. Download this repository:
+    - Create `.env` file with variable `REACT_APP_LEDGER_GRAPHQL_API=<back-end url>`
+    - Run web-app with command `yarn start`
 
 This web application is bootstraped with [cra](https://create-react-app.dev/). Some of frameworks and libraries are using in this web application:
 

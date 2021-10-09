@@ -1,54 +1,14 @@
 import { Transaction } from '../../../graphql.generated';
-import { TransactionActionType } from '../../types';
-
-export type TransactionInput = {
-  id?: number;
-  amount?: number;
-  date?: Date;
-  reason?: string;
-  description?: string;
-};
-
-export interface RequestTransactionsAction {
-  type: TransactionActionType.REQUEST;
-  payload: {
-    startIndex: number;
-    endIndex?: number;
-  };
-}
-
-export interface ReceiveTransactionAction {
-  type: TransactionActionType.RECEIVE;
-  payload: {
-    offset: number;
-    data: Transaction[];
-  };
-}
-
-export interface ReceiveOneTransactionAction {
-  type: TransactionActionType.RECEIVE_ONE;
-  payload: Transaction;
-}
-
-export interface SaveTransactionAction {
-  type: TransactionActionType.SAVE;
-  payload: {
-    transactionInput: TransactionInput;
-    paneIndex: number;
-  };
-}
-
-export interface DeleteTransactionAction {
-  type: TransactionActionType.DELETE;
-  payload: {
-    transactionId: number;
-    paneIndex: number;
-  };
-}
-
-export interface ResetTransactionDataAction {
-  type: TransactionActionType.RESET;
-}
+import {
+  ChangeTotalTransactionAction,
+  DeleteTransactionAction,
+  ReceiveOneTransactionAction,
+  ReceiveTransactionAction,
+  RequestTransactionsAction,
+  SaveTransactionAction,
+  TransactionActionType,
+  TransactionInput,
+} from '../../types';
 
 export const requestTransactions = (startIndex: number, endIndex?: number): RequestTransactionsAction => ({
   type: TransactionActionType.REQUEST,
@@ -66,9 +26,14 @@ export const receiveTransactions = (data: Transaction[], offset: number): Receiv
   },
 });
 
-export const receiveOneTransaction = (payload: Transaction): ReceiveOneTransactionAction => ({
+export const receiveOneTransaction = (transaction: Transaction): ReceiveOneTransactionAction => ({
   type: TransactionActionType.RECEIVE_ONE,
-  payload,
+  payload: transaction,
+});
+
+export const changeTotalTransaction = (number: number): ChangeTotalTransactionAction => ({
+  type: TransactionActionType.CHANGE_TOTAL_TRANSACTION,
+  payload: number,
 });
 
 export const saveTransaction = (
@@ -88,8 +53,4 @@ export const deleteTransaction = (transactionId: number, paneIndex: number): Del
     transactionId,
     paneIndex,
   },
-});
-
-export const resetTransactionData = (): ResetTransactionDataAction => ({
-  type: TransactionActionType.RESET,
 });
