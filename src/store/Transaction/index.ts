@@ -4,7 +4,7 @@ import {
   FilterActionType,
   LedgerAction,
   OtherActionType,
-  PageActionType,
+  PagingActionType,
   TransactionActionType,
   TransactionState,
 } from '../types';
@@ -25,6 +25,7 @@ const intialState: TransactionState = {
   },
   data: [],
   pages: [],
+  byMonths: [],
   lookup: {},
   resetting: false,
 };
@@ -43,13 +44,29 @@ export function transactionReducer(
         },
       });
 
-    case PageActionType.RECEIVE:
-      return update(state, {
-        pages: { $set: Array(action.payload.totalPages).fill(null) },
-        data: { $set: Array(action.payload.totalRecords) },
-      });
+    case PagingActionType.RECEIVE: {
+      const { totalRecords, months } = action.payload;
+      const totalPages = Math.floor(totalRecords / Limit) + (totalRecords % Limit) === 0 ? 0 : 1;
 
-    case PageActionType.UPDATE:
+      const byMonths = [];
+      let len = months.length;
+      let offset = 0;
+      for (let i = 0; i < len; i++) {
+        if (i > 0) {
+          offset += months[i - 1].count;
+        }
+        byMonths.push({ month: new Date(months[i].month), offset });
+      }
+
+      return update(state, {
+        pages: { $set: Array(totalPages).fill(null) },
+        data: { $set: Array(action.payload.totalRecords) },
+        lookup: { $set: {} },
+        byMonths: { $set: byMonths },
+      });
+    }
+
+    case PagingActionType.UPDATE:
       return update(state, {
         pages: { $splice: [[action.payload.page, 1, action.payload.status]] },
       });

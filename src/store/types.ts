@@ -19,7 +19,7 @@ export enum ReasonActionType {
   ERROR = '@Reason/receive-error',
 }
 
-export enum PageActionType {
+export enum PagingActionType {
   RECEIVE = '@Transaction/receive-total-pages',
   REQUEST = '@Transaction/request-total-pages',
   UPDATE = '@Transaction/update-pages',
@@ -56,23 +56,28 @@ export type SagaReturn<T> = {
 };
 
 /**
- * Transaction pages
+ * Transaction paging
  */
 
+export interface PagingData {
+  totalRecords: number;
+  months: {
+    month: string;
+    count: number;
+  }[];
+}
+
 export interface RequestTotalPagesAction {
-  type: PageActionType.REQUEST;
+  type: PagingActionType.REQUEST;
 }
 
 export interface ReceiveTotalPagesAction {
-  type: PageActionType.RECEIVE;
-  payload: {
-    totalPages: number;
-    totalRecords: number;
-  };
+  type: PagingActionType.RECEIVE;
+  payload: PagingData;
 }
 
 export interface UpdatePageAction {
-  type: PageActionType.UPDATE;
+  type: PagingActionType.UPDATE;
   payload: {
     page: number;
     status: boolean;
@@ -87,6 +92,7 @@ export interface TransactionState {
   filter: TransactionFilter;
   data: Transaction[];
   pages: (boolean | null)[];
+  byMonths: { month: Date, offset: number }[];
   lookup: Record<number, number>;
   resetting: boolean;
 }

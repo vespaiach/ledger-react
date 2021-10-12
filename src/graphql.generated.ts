@@ -18,6 +18,12 @@ export type Scalars = {
   date_String_format_date: any;
 };
 
+export type MonthCount = {
+  __typename?: 'MonthCount';
+  count: Scalars['Int'];
+  month: Scalars['Date'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   deleteTransaction?: Maybe<Scalars['Boolean']>;
@@ -36,21 +42,21 @@ export type MutationMutateTransactionArgs = {
 
 export type Pagination = {
   __typename?: 'Pagination';
-  totalPages: Scalars['Int'];
+  months: Array<Maybe<MonthCount>>;
   totalRecords: Scalars['Int'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  getTotalPages: Pagination;
+  getPagingData: Pagination;
   reasons: Array<Maybe<Reason>>;
   transactionById?: Maybe<Transaction>;
   transactions: Array<Maybe<Transaction>>;
 };
 
 
-export type QueryGetTotalPagesArgs = {
-  input?: Maybe<TransactionFilterInput>;
+export type QueryGetPagingDataArgs = {
+  input?: Maybe<TransactionCountInput>;
 };
 
 
@@ -78,6 +84,14 @@ export type Transaction = {
   id: Scalars['Int'];
   reason: Reason;
   updatedAt: Scalars['Date'];
+};
+
+export type TransactionCountInput = {
+  amountFrom?: Maybe<Scalars['Float']>;
+  amountTo?: Maybe<Scalars['Float']>;
+  dateFrom?: Maybe<Scalars['dateFrom_String_format_date']>;
+  dateTo?: Maybe<Scalars['dateTo_String_format_date']>;
+  reason?: Maybe<Scalars['Int']>;
 };
 
 export type TransactionFilterInput = {
@@ -110,12 +124,12 @@ export type GetTransactionsQueryVariables = Exact<{
 
 export type GetTransactionsQuery = { __typename?: 'Query', transactions: Array<Maybe<{ __typename?: 'Transaction', id: number, amount: number, date: any, description?: Maybe<string>, updatedAt: any, reason: { __typename?: 'Reason', id: number, text: string, updatedAt: any } }>> };
 
-export type GetTotalPagesQueryVariables = Exact<{
-  transactionsInput?: Maybe<TransactionFilterInput>;
+export type GetPagingDataQueryVariables = Exact<{
+  transactionsInput?: Maybe<TransactionCountInput>;
 }>;
 
 
-export type GetTotalPagesQuery = { __typename?: 'Query', getTotalPages: { __typename?: 'Pagination', totalRecords: number, totalPages: number } };
+export type GetPagingDataQuery = { __typename?: 'Query', getPagingData: { __typename?: 'Pagination', totalRecords: number, months: Array<Maybe<{ __typename?: 'MonthCount', month: any, count: number }>> } };
 
 export type MutateTransactionMutationVariables = Exact<{
   input: TransactionInput;
@@ -212,42 +226,45 @@ export function useGetTransactionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetTransactionsQueryHookResult = ReturnType<typeof useGetTransactionsQuery>;
 export type GetTransactionsLazyQueryHookResult = ReturnType<typeof useGetTransactionsLazyQuery>;
 export type GetTransactionsQueryResult = Apollo.QueryResult<GetTransactionsQuery, GetTransactionsQueryVariables>;
-export const GetTotalPagesDocument = gql`
-    query getTotalPages($transactionsInput: TransactionFilterInput) {
-  getTotalPages(input: $transactionsInput) {
+export const GetPagingDataDocument = gql`
+    query getPagingData($transactionsInput: TransactionCountInput) {
+  getPagingData(input: $transactionsInput) {
     totalRecords
-    totalPages
+    months {
+      month
+      count
+    }
   }
 }
     `;
 
 /**
- * __useGetTotalPagesQuery__
+ * __useGetPagingDataQuery__
  *
- * To run a query within a React component, call `useGetTotalPagesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetTotalPagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetPagingDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPagingDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetTotalPagesQuery({
+ * const { data, loading, error } = useGetPagingDataQuery({
  *   variables: {
  *      transactionsInput: // value for 'transactionsInput'
  *   },
  * });
  */
-export function useGetTotalPagesQuery(baseOptions?: Apollo.QueryHookOptions<GetTotalPagesQuery, GetTotalPagesQueryVariables>) {
+export function useGetPagingDataQuery(baseOptions?: Apollo.QueryHookOptions<GetPagingDataQuery, GetPagingDataQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetTotalPagesQuery, GetTotalPagesQueryVariables>(GetTotalPagesDocument, options);
+        return Apollo.useQuery<GetPagingDataQuery, GetPagingDataQueryVariables>(GetPagingDataDocument, options);
       }
-export function useGetTotalPagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTotalPagesQuery, GetTotalPagesQueryVariables>) {
+export function useGetPagingDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPagingDataQuery, GetPagingDataQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetTotalPagesQuery, GetTotalPagesQueryVariables>(GetTotalPagesDocument, options);
+          return Apollo.useLazyQuery<GetPagingDataQuery, GetPagingDataQueryVariables>(GetPagingDataDocument, options);
         }
-export type GetTotalPagesQueryHookResult = ReturnType<typeof useGetTotalPagesQuery>;
-export type GetTotalPagesLazyQueryHookResult = ReturnType<typeof useGetTotalPagesLazyQuery>;
-export type GetTotalPagesQueryResult = Apollo.QueryResult<GetTotalPagesQuery, GetTotalPagesQueryVariables>;
+export type GetPagingDataQueryHookResult = ReturnType<typeof useGetPagingDataQuery>;
+export type GetPagingDataLazyQueryHookResult = ReturnType<typeof useGetPagingDataLazyQuery>;
+export type GetPagingDataQueryResult = Apollo.QueryResult<GetPagingDataQuery, GetPagingDataQueryVariables>;
 export const MutateTransactionDocument = gql`
     mutation mutateTransaction($input: TransactionInput!) {
   mutateTransaction(input: $input) {

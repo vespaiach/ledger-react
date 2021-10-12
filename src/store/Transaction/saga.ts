@@ -1,17 +1,19 @@
 import { takeEvery, put, select, call } from '@redux-saga/core/effects';
 import { all } from 'redux-saga/effects';
+import { omit } from 'ramda';
 
 import {
   Transaction,
   GetTransactionsDocument,
-  GetTotalPagesDocument,
+  GetPagingDataDocument,
   MutateTransactionDocument,
   DeleteTransactionDocument,
 } from '../../graphql.generated';
 import { updateField } from '../Shared/action';
 import {
   DeleteTransactionAction,
-  PageActionType,
+  PagingActionType,
+  PagingData,
   RequestTransactionsAction,
   SagaReturn,
   SaveTransactionAction,
@@ -23,7 +25,7 @@ import { mutate, query } from '../utils';
 import {
   changeTotalTransaction,
   receiveOneTransaction,
-  receiveTotalPages,
+  receivePagingData,
   receiveTransactions,
   requestTotalPages,
   updatePage,
@@ -45,7 +47,7 @@ export function* deleteTransactionSaga() {
 }
 
 export function* requestPagesSaga() {
-  yield takeEvery(PageActionType.REQUEST, requestTotalPagesRunner);
+  yield takeEvery(PagingActionType.REQUEST, requestTotalPagesRunner);
 }
 
 /**
@@ -96,19 +98,14 @@ function* requestTransactionsRunner({ payload: { startIndex, endIndex } }: Reque
 function* requestTotalPagesRunner() {
   const filter: TransactionFilter = yield select((state) => state.transaction.filter);
 
-  interface Total {
-    totalPages: number;
-    totalRecords: number;
-  }
-
-  const result: SagaReturn<{ getTotalPages: Total }> = yield query(GetTotalPagesDocument, {
-    transactionsInput: filter,
+  const result: SagaReturn<{ getPagingData: PagingData }> = yield query(GetPagingDataDocument, {
+    transactionsInput: omit(['limit'], filter),
   });
 
   if (result.error) {
     yield put(updateField('error', result.error));
   } else {
-    yield put(receiveTotalPages(result.data?.getTotalPages as Total));
+    yield put(receivePagingData(result.data?.getPagingData as PagingData));
   }
 }
 

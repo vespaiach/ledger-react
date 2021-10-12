@@ -1,20 +1,22 @@
-import { PageActionType, ReceiveTotalPagesAction, RequestTotalPagesAction, UpdatePageAction } from '../../types';
-
+import {
+  PagingActionType,
+  PagingData,
+  ReceiveTotalPagesAction,
+  RequestTotalPagesAction,
+  UpdatePageAction,
+} from '../../types';
 
 export const requestTotalPages = (): RequestTotalPagesAction => ({
-  type: PageActionType.REQUEST,
+  type: PagingActionType.REQUEST,
 });
 
-export const receiveTotalPages = (payload: {
-  totalPages: number;
-  totalRecords: number;
-}): ReceiveTotalPagesAction => ({
-  type: PageActionType.RECEIVE,
+export const receivePagingData = (payload: PagingData): ReceiveTotalPagesAction => ({
+  type: PagingActionType.RECEIVE,
   payload,
 });
 
 export const updatePage = (page: number, status: boolean): UpdatePageAction => ({
-  type: PageActionType.UPDATE,
+  type: PagingActionType.UPDATE,
   payload: {
     page,
     status,

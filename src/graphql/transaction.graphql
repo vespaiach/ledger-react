@@ -13,10 +13,13 @@ query getTransactions($transactionsInput: TransactionFilterInput) {
   }
 }
 
-query getTotalPages($transactionsInput: TransactionFilterInput) {
-  getTotalPages(input: $transactionsInput) {
+query getPagingData($transactionsInput: TransactionCountInput) {
+  getPagingData(input: $transactionsInput) {
     totalRecords
-    totalPages
+    months {
+      month
+      count
+    }
   }
 }
 
