@@ -10,7 +10,7 @@ import { formatShortDateTime } from '../utils/date';
 import { useTransaction } from '../hooks/useTransaction';
 import { PaneCommonProps } from '../types';
 import { popPane, pushPane } from '../store/Pane/action';
-import { Transaction } from '../graphql.generated';
+import { Transaction } from '../graphql/graphql.generated';
 import { deleteTransaction } from '../store/Transaction/action';
 
 interface TransactionDetailProps extends PaneCommonProps {}

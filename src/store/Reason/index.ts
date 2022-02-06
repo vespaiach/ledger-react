@@ -1,5 +1,5 @@
 import update from 'immutability-helper';
-import { Reason } from '../../graphql.generated';
+import { Reason } from '../../graphql/graphql.generated';
 
 import { LedgerAction, ReasonActionType } from '../types';
 

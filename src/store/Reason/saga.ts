@@ -1,6 +1,6 @@
 import { takeEvery, put, call } from 'redux-saga/effects';
 
-import { GetReasonsDocument, Reason } from '../../graphql.generated';
+import { GetReasonsDocument, Reason } from '../../graphql/graphql.generated';
 import { updateField } from '../Shared/action';
 import { ReasonActionType, SagaReturn } from '../types';
 import { query } from '../utils';

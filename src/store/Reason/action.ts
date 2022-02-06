@@ -1,4 +1,4 @@
-import { Reason } from '../../graphql.generated';
+import { Reason } from '../../graphql/graphql.generated';
 import { ReasonActionType } from '../types';
 
 export interface RequestReasonsAction {

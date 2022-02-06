@@ -39,7 +39,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "generate": "graphql-codegen",
+    "gentype": "graphql-codegen",
     "graphql:coverage": "graphql coverage",
     "graphql:validate": "graphql validate",
     "graphql:codegen": "graphql codegen",

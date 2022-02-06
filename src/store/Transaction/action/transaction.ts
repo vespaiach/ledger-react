@@ -1,4 +1,4 @@
-import { Transaction } from '../../../graphql.generated';
+import { Transaction } from '../../../graphql/graphql.generated';
 import {
   ChangeTotalTransactionAction,
   DeleteTransactionAction,

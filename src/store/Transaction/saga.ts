@@ -7,7 +7,7 @@ import {
   GetTotalPagesDocument,
   MutateTransactionDocument,
   DeleteTransactionDocument,
-} from '../../graphql.generated';
+} from '../../graphql/graphql.generated';
 import { updateField } from '../Shared/action';
 import {
   DeleteTransactionAction,

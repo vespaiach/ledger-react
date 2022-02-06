@@ -3,7 +3,7 @@ import { Spec } from 'immutability-helper';
 import { PopPaneAction, PushPaneAction, RemovePaneAction } from './Pane/action';
 import { RequestReasonsAction, ReceiveReasonsAction } from './Reason/action';
 import { ResetAction } from './Shared/action';
-import { Maybe, Transaction } from '../graphql.generated';
+import { Maybe, Transaction } from '../graphql/graphql.generated';
 
 /**
  * Redux action types
