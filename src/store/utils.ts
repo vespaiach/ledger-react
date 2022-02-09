@@ -1,49 +1,6 @@
-import { InMemoryCache, ApolloClient, QueryOptions, DocumentNode, ApolloQueryResult } from '@apollo/client';
-import { put, call } from '@redux-saga/core/effects';
-
-import { updateField } from './Shared/action';
-import { SagaReturn } from './types';
+import { InMemoryCache, ApolloClient } from '@apollo/client';
 
 export const gqlClient = new ApolloClient({
   uri: process.env.REACT_APP_LEDGER_GRAPHQL_API,
   cache: new InMemoryCache(),
 });
-
-export function* query<T = any>(
-  q: DocumentNode,
-  variables = {},
-  options: Omit<QueryOptions<any>, 'query' | 'variables'> = { fetchPolicy: 'network-only' }
-): Generator<ApolloQueryResult<T>, SagaReturn<T>, boolean> {
-  try {
-    // @ts-ignore
-    const { error, data } = yield call(gqlClient.query, {
-      ...options,
-      query: q,
-      variables,
-    });
-
-    if (error) {
-      return { error: error.message };
-    } else {
-      return { data: data as T };
-    }
-  } catch (e) {
-    console.error(e);
-    return { error: 'Network error' };
-  }
-}
-
-export function* mutate(m: DocumentNode, variables = {}) {
-  try {
-    const { error, data } = yield gqlClient.mutate({ mutation: m, variables });
-
-    if (error) {
-      return { error: error.message };
-    } else {
-      return { data };
-    }
-  } catch (e) {
-    console.error(e);
-    yield put(updateField('error', 'Network error'));
-  }
-}
