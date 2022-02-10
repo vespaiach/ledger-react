@@ -1,4 +1,3 @@
-import { Maybe } from 'graphql/jsutils/Maybe';
 import { atom } from 'jotai';
 import {
   GetTransactionsDocument,
@@ -21,28 +20,20 @@ export const transactionsAtom = atom<Transaction[]>([]);
 
 export const fetchTransactionsAtom = atom<
   Transaction[],
-  Maybe<{
-    lastCursor?: number;
-    transactionType?: TransactionType;
-    reasonId?: number;
-    fromAmount?: number;
-    toAmount?: number;
-    fromDate?: Date;
-    toDate?: Date;
-  }>,
+  GetTransactionsQueryVariables | undefined | null,
   Promise<void>
 >(
   (get) => get(transactionsAtom),
   async (get, set, args) => {
     try {
       if (args) {
-        args.lastCursor && set(lastCursorAtom, args.lastCursor);
-        args.transactionType && set(transactionTypeAtom, args.transactionType);
-        args.reasonId && set(reasonIdAtom, args.reasonId);
-        args.fromAmount && set(fromAmountAtom, args.fromAmount);
-        args.toAmount && set(toAmountAtom, args.toAmount);
-        args.fromDate && set(fromDateAtom, args.fromDate);
-        args.toDate && set(toDateAtom, args.toDate);
+        args.lastCursor !== undefined && set(lastCursorAtom, args.lastCursor);
+        args.transactionType !== undefined && set(transactionTypeAtom, args.transactionType);
+        args.reasonId !== undefined && set(reasonIdAtom, args.reasonId);
+        args.fromAmount !== undefined && set(fromAmountAtom, args.fromAmount);
+        args.toAmount !== undefined && set(toAmountAtom, args.toAmount);
+        args.fromDate !== undefined && set(fromDateAtom, args.fromDate);
+        args.toDate !== undefined && set(toDateAtom, args.toDate);
       }
 
       const { error, data } = await gqlClient.query<GetTransactionsQuery, GetTransactionsQueryVariables>({
