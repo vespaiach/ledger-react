@@ -1,6 +1,6 @@
 import { InMemoryCache, ApolloClient } from '@apollo/client';
 
 export const gqlClient = new ApolloClient({
-  uri: process.env.REACT_APP_LEDGER_GRAPHQL_API,
+  uri: import.meta.env.VITE_GRAPHQL_URL as string,
   cache: new InMemoryCache(),
 });
