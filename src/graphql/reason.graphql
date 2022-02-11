@@ -1,5 +1,5 @@
-query getReasons {
-  reasons {
+query GetReasons {
+  reasons: getReasons {
     id
     text
     updatedAt

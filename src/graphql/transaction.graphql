@@ -1,31 +1,27 @@
-query getTransactions($transactionsInput: TransactionFilterInput) {
-  transactions(input: $transactionsInput) {
-    reason {
-      id
-      text
-      updatedAt
-    }
+query GetTransactions(
+  $transactionType: TransactionType
+  $fromDate: Date
+  $toDate: Date
+  $fromAmount: Int
+  $toAmount: Int
+  $reasonId: Int
+  $lastCursor: Int
+  $take: Int
+) {
+  transactions: getTransactions(
+    transactionType: $transactionType
+    fromDate: $fromDate
+    toDate: $toDate
+    fromAmount: $fromAmount
+    toAmount: $toAmount
+    reasonId: $reasonId
+    lastCursor: $lastCursor
+    take: $take
+  ) {
     id
     amount
     date
-    description
-    updatedAt
-  }
-}
-
-query getTotalPages($transactionsInput: TransactionFilterInput) {
-  getTotalPages(input: $transactionsInput) {
-    totalRecords
-    totalPages
-  }
-}
-
-mutation mutateTransaction($input: TransactionInput!) {
-  mutateTransaction(input: $input) {
-    id
-    amount
-    date
-    description
+    note
     updatedAt
     reason {
       id
@@ -33,23 +29,4 @@ mutation mutateTransaction($input: TransactionInput!) {
       updatedAt
     }
   }
-}
-
-mutation mutateTransaction($input: TransactionInput!) {
-  mutateTransaction(input: $input) {
-    id
-    amount
-    date
-    description
-    updatedAt
-    reason {
-      id
-      text
-      updatedAt
-    }
-  }
-}
-
-mutation deleteTransaction($id: Int!) {
-  deleteTransaction(id: $id)
 }
