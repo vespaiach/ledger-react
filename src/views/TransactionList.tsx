@@ -1,5 +1,5 @@
 import { Button, Card, CardActions, CardContent, Container, Typography } from '@mui/material';
-import { format } from 'date-fns';
+import { DateTime } from 'luxon';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
@@ -28,10 +28,11 @@ export function TransactionList() {
           <Card sx={{ minWidth: 320, mb: 2 }}>
             <CardContent>
               <Typography
+                gutterBottom
                 variant="body2"
                 component="p"
                 sx={{ textTransform: 'capitalize', color: 'text.secondary' }}>
-                {format(new Date(trans.date), 'iii, PPP')}
+                {DateTime.fromISO(trans.date).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
               </Typography>
               <Typography gutterBottom variant="h5" sx={{ fontWeight: 'bold' }}>
                 $ {trans.amount}

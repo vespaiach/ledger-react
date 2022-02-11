@@ -50,7 +50,7 @@ export const fetchTransactionsAtom = atom<
       });
 
       if (!error && data) {
-        set(transactionsAtom, (prev) => [...prev, ...(data.transactions ?? [])]);
+        set(transactionsAtom, data.transactions ?? []);
       }
     } catch (e) {
       console.error(e);
