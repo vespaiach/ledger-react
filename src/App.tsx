@@ -8,63 +8,66 @@ import { Suspense, useState } from 'react';
 import { Provider } from 'jotai';
 import AdapterLuxon from '@mui/lab/AdapterLuxon';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+import AddIcon from '@mui/icons-material/Add';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton, Container, SwipeableDrawer } from '@mui/material';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import ManageSearchIcon from '@mui/icons-material/ManageSearch';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import { SpeedDial } from '@mui/material';
 
-import { TransactionList } from './views/TransactionList';
-import { SearchInput } from './views/SearchInput';
-import { theme } from './theme';
-import { ElevationScroll } from './components/ElevationScroll';
+import TransactionList from './views/TransactionList';
+import FilterInput from './views/FilterInput';
+
+enum Path {
+  AddNew = '/add',
+  Filter = '/filter',
+  Update = '/update',
+}
+
+const actions = [
+  { icon: <FilterAltIcon />, name: 'Filter Transactions', path: Path.Filter },
+  { icon: <AddIcon />, name: 'Add Transaction', path: Path.AddNew },
+];
 
 export function App() {
-  const [searchPane, setSearchPane] = useState(false);
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+
+  const handleItemClick = (action: typeof actions[0]) => () => {
+    setOpen(false);
+    navigate(action.path);
+  };
 
   return (
     <Provider>
-      <Suspense fallback="Loading...">
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <LocalizationProvider dateAdapter={AdapterLuxon}>
-            <ElevationScroll>
-              <AppBar>
-                <Container disableGutters maxWidth="md">
-                  <Toolbar>
-                    <IconButton size="large" edge="start" color="inherit" aria-label="add" sx={{ mr: 2 }}>
-                      <AddCircleIcon />
-                    </IconButton>
-                    <IconButton
-                      size="large"
-                      edge="end"
-                      color="inherit"
-                      aria-label="search"
-                      sx={{ ml: 'auto' }}
-                      onClick={() => setSearchPane(true)}>
-                      <ManageSearchIcon />
-                    </IconButton>
-                  </Toolbar>
-                </Container>
-              </AppBar>
-            </ElevationScroll>
-            <Router>
-              <Switch>
-                <Route path="/" component={TransactionList} />
-              </Switch>
-            </Router>
-            <SwipeableDrawer
-              anchor="right"
-              open={searchPane}
-              onClose={() => setSearchPane(false)}
-              onOpen={() => setSearchPane(true)}>
-              <SearchInput onClose={() => setSearchPane(false)} />
-            </SwipeableDrawer>
-          </LocalizationProvider>
-        </ThemeProvider>
-      </Suspense>
+      <LocalizationProvider dateAdapter={AdapterLuxon}>
+        <SpeedDial
+          ariaLabel="Shortcut Menu"
+          sx={{ position: 'fixed', bottom: 16, right: 16 }}
+          onOpen={() => void setOpen(true)}
+          onClose={() => void setOpen(false)}
+          open={open}
+          icon={<SpeedDialIcon />}>
+          {actions.map((action) => (
+            <SpeedDialAction
+              key={action.name}
+              icon={action.icon}
+              tooltipTitle={action.name}
+              tooltipOpen
+              onClick={handleItemClick(action)}
+            />
+          ))}
+        </SpeedDial>
+
+        <Suspense fallback="Loading...">
+          <Routes>
+            <Route path="/filter" element={<FilterInput />} />
+            <Route path="/add" element={<TransactionList />} />
+            <Route path="/" element={<TransactionList />} />
+          </Routes>
+        </Suspense>
+      </LocalizationProvider>
     </Provider>
   );
 }

@@ -1,0 +1,32 @@
+name: Buid CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Copy build to remote server 
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: dist
+          remote: /home/$SSH_USER/www/ledger 
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}

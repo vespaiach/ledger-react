@@ -5,18 +5,20 @@ import { useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import { fetchTransactionsAtom } from '../store/transaction';
+import { useNavigate } from 'react-router-dom';
 
 let counter = 0;
 
-export function TransactionList() {
+export default function TransactionList() {
   console.log(++counter);
 
+  const navigate = useNavigate();
   const [transactions, fetch] = useAtom(fetchTransactionsAtom);
 
-  useEffect(() => void fetch(), [fetch]);
+  useEffect(() => void fetch({ lastCursor: null }), [fetch]);
 
   return (
-    <Container maxWidth="md" id="back-to-top-anchor" sx={{ mt: 9 }}>
+    <Container maxWidth="md" id="back-to-top-anchor" sx={{ mt: 3, mb: 8 }}>
       <Virtuoso
         endReached={(i) => {
           fetch({ lastCursor: transactions[i].id });
@@ -55,6 +57,15 @@ export function TransactionList() {
           </Card>
         )}
       />
+
+      {transactions.length === 0 && (
+        <>
+          <Typography>No Transactions.</Typography>
+          <Button disableFocusRipple variant="text" onClick={() => navigate('/filter')}>
+            Apply different filterings
+          </Button>
+        </>
+      )}
     </Container>
   );
 }
