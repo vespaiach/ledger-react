@@ -8,10 +8,13 @@ jobs:
   buildAndDeploy:
     runs-on: ubuntu-latest
 
+    env:
+      SSH_HOST: ${{ secrets.SSH_USER }}
+
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install dependencies and build 
+      - name: Install dependencies and build
         uses: actions/setup-node@v2
         with:
           node-version: '16'
@@ -19,12 +22,22 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      - name: Copy build to remote server
-        uses: garygrossgarten/github-action-scp@release
-        with:
-          local: dist
-          remote: /home/$SSH_USER/www/ledger
-          rmRemote: true
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
+      - name: Config SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/remote.key
+          chmod 600 ~/.ssh/remote.key
+          cat >>~/.ssh/config <<END
+          Host remote
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/remote.key
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
+          END
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+
+      - name: Copy build
+        run: rsync -r dist/ remote:/home/$SSH_USER/www/ledger
