@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SSH_HOST: ${{ secrets.SSH_USER }}
+      SSH_USER: ${{ secrets.SSH_USER }}
 
     steps:
       - uses: actions/checkout@v2
