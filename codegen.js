@@ -5,18 +5,18 @@ const fs = require('fs');
 
 (async function main() {
   const pwd = process.cwd();
-  const { REACT_APP_LEDGER_GRAPHQL_API } = process.env;
+  const { VITE_GRAPHQL_URL } = process.env;
 
   const generatedFiles = await generate(
     {
-      schema: REACT_APP_LEDGER_GRAPHQL_API,
+      schema: VITE_GRAPHQL_URL,
       documents: './src/graphql/**/*.graphql',
       generates: {
         [`${pwd}/src/graphql/graphql.generated.ts`]: {
           plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
           config: {
             maybeValue: ' T | null | undefined',
-            avoidOptionals: true,
+            avoidOptionals: false,
           },
         },
         [`${pwd}/src/graphql/graphql.schema.json`]: {

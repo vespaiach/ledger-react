@@ -18,12 +18,12 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createReason: Maybe<Reason>;
-  createTransaction: Maybe<Transaction>;
-  deleteReason: Maybe<Scalars['Boolean']>;
-  deleteTransaction: Maybe<Scalars['Boolean']>;
-  updateReason: Maybe<Reason>;
-  updateTransaction: Maybe<Transaction>;
+  createReason?: Maybe<Reason>;
+  createTransaction?: Maybe<Transaction>;
+  deleteReason?: Maybe<Scalars['Boolean']>;
+  deleteTransaction?: Maybe<Scalars['Boolean']>;
+  updateReason?: Maybe<Reason>;
+  updateTransaction?: Maybe<Transaction>;
 };
 
 
@@ -35,7 +35,7 @@ export type MutationCreateReasonArgs = {
 export type MutationCreateTransactionArgs = {
   amount: Scalars['Float'];
   date: Scalars['Date'];
-  note: InputMaybe<Scalars['String']>;
+  note?: InputMaybe<Scalars['String']>;
   reasonId: Scalars['Int'];
 };
 
@@ -57,29 +57,28 @@ export type MutationUpdateReasonArgs = {
 
 
 export type MutationUpdateTransactionArgs = {
-  amount: InputMaybe<Scalars['Float']>;
-  date: InputMaybe<Scalars['Date']>;
+  amount?: InputMaybe<Scalars['Float']>;
+  date?: InputMaybe<Scalars['Date']>;
   id: Scalars['Int'];
-  note: InputMaybe<Scalars['String']>;
-  reasonId: InputMaybe<Scalars['Int']>;
+  note?: InputMaybe<Scalars['String']>;
+  reasonId?: InputMaybe<Scalars['Int']>;
 };
 
 export type Query = {
   __typename?: 'Query';
-  getReasons: Maybe<Array<Reason>>;
-  getTransactions: Maybe<Array<Transaction>>;
+  getReasons?: Maybe<Array<Reason>>;
+  getTransactions?: Maybe<Array<Transaction>>;
 };
 
 
 export type QueryGetTransactionsArgs = {
-  fromAmount: InputMaybe<Scalars['Int']>;
-  fromDate: InputMaybe<Scalars['Date']>;
-  lastCursor: InputMaybe<Scalars['Int']>;
-  reasonId: InputMaybe<Scalars['Int']>;
+  fromAmount?: InputMaybe<Scalars['Int']>;
+  fromDate?: InputMaybe<Scalars['Date']>;
+  lastCursor?: InputMaybe<Scalars['Int']>;
+  reasonId?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
-  toAmount: InputMaybe<Scalars['Int']>;
-  toDate: InputMaybe<Scalars['Date']>;
-  transactionType: InputMaybe<TransactionType>;
+  toAmount?: InputMaybe<Scalars['Int']>;
+  toDate?: InputMaybe<Scalars['Date']>;
 };
 
 export type Reason = {
@@ -94,34 +93,28 @@ export type Transaction = {
   amount: Scalars['Float'];
   date: Scalars['Date'];
   id: Scalars['Int'];
-  note: Maybe<Scalars['String']>;
+  note?: Maybe<Scalars['String']>;
   reason: Reason;
   updatedAt: Scalars['Date'];
 };
 
-export enum TransactionType {
-  Expense = 'Expense',
-  Income = 'Income'
-}
-
 export type GetReasonsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetReasonsQuery = { __typename?: 'Query', reasons:  Array<{ __typename?: 'Reason', id: number, text: string, updatedAt: any }> | null | undefined };
+export type GetReasonsQuery = { __typename?: 'Query', reasons?:  Array<{ __typename?: 'Reason', id: number, text: string, updatedAt: any }> | null | undefined };
 
-export type GetTransactionsQueryVariables = Partial<{
-  transactionType: InputMaybe<TransactionType>;
-  fromDate: InputMaybe<Scalars['Date']>;
-  toDate: InputMaybe<Scalars['Date']>;
-  fromAmount: InputMaybe<Scalars['Int']>;
-  toAmount: InputMaybe<Scalars['Int']>;
-  reasonId: InputMaybe<Scalars['Int']>;
-  lastCursor: InputMaybe<Scalars['Int']>;
-  take: InputMaybe<Scalars['Int']>;
+export type GetTransactionsQueryVariables = Exact<{
+  fromDate?: InputMaybe<Scalars['Date']>;
+  toDate?: InputMaybe<Scalars['Date']>;
+  fromAmount?: InputMaybe<Scalars['Int']>;
+  toAmount?: InputMaybe<Scalars['Int']>;
+  reasonId?: InputMaybe<Scalars['Int']>;
+  lastCursor?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type GetTransactionsQuery = { __typename?: 'Query', transactions:  Array<{ __typename?: 'Transaction', id: number, amount: number, date: any, note:  string | null | undefined, updatedAt: any, reason: { __typename?: 'Reason', id: number, text: string, updatedAt: any } }> | null | undefined };
+export type GetTransactionsQuery = { __typename?: 'Query', transactions?:  Array<{ __typename?: 'Transaction', id: number, amount: number, date: any, note?:  string | null | undefined, updatedAt: any, reason: { __typename?: 'Reason', id: number, text: string, updatedAt: any } }> | null | undefined };
 
 
 export const GetReasonsDocument = gql`
@@ -161,9 +154,8 @@ export type GetReasonsQueryHookResult = ReturnType<typeof useGetReasonsQuery>;
 export type GetReasonsLazyQueryHookResult = ReturnType<typeof useGetReasonsLazyQuery>;
 export type GetReasonsQueryResult = Apollo.QueryResult<GetReasonsQuery, GetReasonsQueryVariables>;
 export const GetTransactionsDocument = gql`
-    query GetTransactions($transactionType: TransactionType, $fromDate: Date, $toDate: Date, $fromAmount: Int, $toAmount: Int, $reasonId: Int, $lastCursor: Int, $take: Int) {
+    query GetTransactions($fromDate: Date, $toDate: Date, $fromAmount: Int, $toAmount: Int, $reasonId: Int, $lastCursor: Int, $take: Int) {
   transactions: getTransactions(
-    transactionType: $transactionType
     fromDate: $fromDate
     toDate: $toDate
     fromAmount: $fromAmount
@@ -198,7 +190,6 @@ export const GetTransactionsDocument = gql`
  * @example
  * const { data, loading, error } = useGetTransactionsQuery({
  *   variables: {
- *      transactionType: // value for 'transactionType'
  *      fromDate: // value for 'fromDate'
  *      toDate: // value for 'toDate'
  *      fromAmount: // value for 'fromAmount'

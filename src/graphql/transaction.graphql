@@ -1,5 +1,4 @@
 query GetTransactions(
-  $transactionType: TransactionType
   $fromDate: Date
   $toDate: Date
   $fromAmount: Int
@@ -9,7 +8,6 @@ query GetTransactions(
   $take: Int
 ) {
   transactions: getTransactions(
-    transactionType: $transactionType
     fromDate: $fromDate
     toDate: $toDate
     fromAmount: $fromAmount
