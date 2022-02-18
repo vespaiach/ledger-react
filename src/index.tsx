@@ -1,5 +1,6 @@
 import { ApolloProvider } from '@apollo/client';
 import { MemoryRouter } from 'react-router-dom';
+import { Provider } from 'jotai';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import ReactDOM from 'react-dom';
@@ -14,7 +15,9 @@ ReactDOM.render(
       <ThemeProvider theme={theme}>
         <CssBaseline />
       </ThemeProvider>
-      <App />
+      <Provider>
+        <App />
+      </Provider>
     </MemoryRouter>
   </ApolloProvider>,
   document.querySelector('#root')

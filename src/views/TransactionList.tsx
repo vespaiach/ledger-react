@@ -3,15 +3,11 @@ import { DateTime } from 'luxon';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-
-import { fetchTransactionsAtom } from '../store/transaction';
 import { useNavigate } from 'react-router-dom';
 
-let counter = 0;
+import { fetchTransactionsAtom } from '../store/transaction';
 
 export default function TransactionList() {
-  console.log(++counter);
-
   const navigate = useNavigate();
   const [transactions, fetch] = useAtom(fetchTransactionsAtom);
 

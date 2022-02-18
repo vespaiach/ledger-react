@@ -1,6 +1,9 @@
 import { atom } from 'jotai';
 
 import {
+  CreateReasonDocument,
+  CreateReasonMutation,
+  CreateReasonMutationVariables,
   GetReasonsDocument,
   GetReasonsQuery,
   GetReasonsQueryVariables,
@@ -9,13 +12,17 @@ import {
 
 import { gqlClient } from './utils';
 
-export const reasonAtom = atom<string | null>(null);
-export const reasonsAtom = atom<Reason[] | null>(null);
+export const reasonLoadingAtom = atom(false);
+export const reasonCreatingAtom = atom(false);
+
+export const reasonsAtom = atom<Reason[]>([]);
 
 export const fetchReasonsAtom = atom(
   (get) => get(reasonsAtom),
   async (_, set) => {
     try {
+      set(reasonLoadingAtom, true);
+
       const { error, data } = await gqlClient.query<GetReasonsQuery, GetReasonsQueryVariables>({
         query: GetReasonsDocument,
       });
@@ -25,6 +32,30 @@ export const fetchReasonsAtom = atom(
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      set(reasonLoadingAtom, false);
     }
+  }
+);
+
+export const createReasonsAtom = atom<null, CreateReasonMutationVariables>(
+  () => null,
+  async (_, set, variables) => {
+    set(reasonCreatingAtom, true);
+
+    const { errors, data } = await gqlClient.mutate<CreateReasonMutation, CreateReasonMutationVariables>({
+      mutation: CreateReasonDocument,
+      variables,
+    });
+
+    if (errors) {
+      console.error(errors);
+    }
+
+    if (data?.reason) {
+      set(reasonsAtom, (prev) => [...prev, data.reason as Reason]);
+    }
+
+    set(reasonCreatingAtom, false);
   }
 );

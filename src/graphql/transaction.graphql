@@ -28,3 +28,26 @@ query GetTransactions(
     }
   }
 }
+
+mutation CreateTransaction($date: Date!, $amount: Float!, $reasonId: Int!, $note: String) {
+  transaction: createTransaction(date: $date, amount: $amount, reasonId: $reasonId, note: $note) {
+    id
+    amount
+    date
+    note
+    updatedAt
+    reason {
+      id
+      text
+      updatedAt
+    }
+  }
+}
+
+mutation CreateReason($text: String!) {
+  reason: createReason(text: $text) {
+    id
+    text
+    updatedAt
+  }
+}

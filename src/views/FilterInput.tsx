@@ -1,25 +1,13 @@
+import { Box, Button, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { DatePicker } from '@mui/lab';
-import {
-  Box,
-  Button,
-  MenuItem,
-  Select,
-  Slider,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from '@mui/material';
-import { atom, useAtom } from 'jotai';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { useEffect, useState } from 'react';
+import { useAtom } from 'jotai';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useUpdateAtom } from 'jotai/utils';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
-import { Navigate, useNavigate } from 'react-router-dom';
+
 import AppPanel from '../components/AppPanel';
-
-import { GetTransactionsQueryVariables, TransactionType } from '../graphql/graphql.generated';
 import { fetchReasonsAtom } from '../store/reason';
-
 import {
   fetchTransactionsAtom,
   fromAmountAtom,

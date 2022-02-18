@@ -17,6 +17,10 @@ const fs = require('fs');
           config: {
             maybeValue: ' T | null | undefined',
             avoidOptionals: false,
+            skipTypename: true,
+            scalars: {
+              Date: 'Date',
+            },
           },
         },
         [`${pwd}/src/graphql/graphql.schema.json`]: {
