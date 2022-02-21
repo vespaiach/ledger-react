@@ -8,6 +8,12 @@ import {
   CreateTransactionDocument,
   CreateTransactionMutation,
   CreateTransactionMutationVariables,
+  DeleteTransactionDocument,
+  DeleteTransactionMutation,
+  DeleteTransactionMutationVariables,
+  GetTransactionDocument,
+  GetTransactionQuery,
+  GetTransactionQueryVariables,
   GetTransactionsDocument,
   GetTransactionsQuery,
   GetTransactionsQueryVariables,
@@ -17,16 +23,16 @@ import {
 import { reasonsAtom } from './reason';
 import { gqlClient } from './utils';
 
-export const reasonIdAtom = atom<number | null>(null);
-export const fromAmountAtom = atom<number | null>(null);
-export const toAmountAtom = atom<number | null>(null);
-export const fromDateAtom = atom<Date | null>(null);
-export const toDateAtom = atom<Date | null>(null);
+/**
+ * For filtering
+ */
+export const filterReasonIdAtom = atom<Maybe<number>>(null);
+export const filterFromAmountAtom = atom<Maybe<number>>(null);
+export const filterToAmountAtom = atom<Maybe<number>>(null);
+export const filterFromDateAtom = atom<Maybe<Date>>(null);
+export const filterToDateAtom = atom<Maybe<Date>>(null);
 
 export const transactionsAtom = atom<Transaction[]>([]);
-
-export const transactionCreatingAtom = atom(false);
-
 export const fetchTransactionsAtom = atom<Transaction[], GetTransactionsQueryVariables, Promise<void>>(
   (get) => get(transactionsAtom),
   async (_, set, variables) => {
@@ -47,21 +53,76 @@ export const fetchTransactionsAtom = atom<Transaction[], GetTransactionsQueryVar
   }
 );
 
-export const createTransactionsAtom = atom<
-  null,
-  {
-    date: Date;
-    amount: number;
-    reasonId: Maybe<number>;
-    reasonText?: Maybe<string>;
-    note: Maybe<string>;
-  }
->(
-  () => null,
-  async (_, set, { date, amount, reasonId, reasonText, note }) => {
-    try {
-      set(transactionCreatingAtom, true);
+/**
+ * Creating/ Updating/ Deleting Transaction.
+ */
+export const transactionIdAtom = atom<Maybe<number>>(null);
+export const reasonIdAtom = atom<Maybe<number>>(null);
+export const reasonTextAtom = atom<Maybe<string>>(null);
+export const amountAtom = atom<Maybe<number>>(null);
+export const dateAtom = atom<Maybe<Date>>(null);
+export const noteAtom = atom<Maybe<string>>(null);
 
+export const transactionSavingAtom = atom(false);
+export const transactionLoadingAtom = atom(false);
+
+export const transactionForCreatingUpdatingAtom = atom<null, { id?: string }>(
+  () => null,
+  async (_, set, { id }) => {
+    if (!id) {
+      set(transactionIdAtom, null);
+      set(reasonIdAtom, null);
+      set(reasonTextAtom, null);
+      set(dateAtom, null);
+      set(amountAtom, null);
+      set(noteAtom, null);
+
+      return;
+    }
+
+    try {
+      set(transactionSavingAtom, true);
+
+      const { error, data } = await gqlClient.query<GetTransactionQuery, GetTransactionQueryVariables>({
+        query: GetTransactionDocument,
+        variables: { id: Number(id) },
+      });
+
+      if (!error && data?.transaction) {
+        set(transactionIdAtom, data.transaction.id);
+        set(reasonIdAtom, data.transaction.reason.id);
+        set(reasonTextAtom, data.transaction.reason.text);
+        set(dateAtom, new Date(data.transaction.date));
+        set(amountAtom, data.transaction.amount);
+        set(noteAtom, data.transaction.note);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      set(transactionSavingAtom, false);
+    }
+  }
+);
+
+export const saveTransactionAtom = atom<null, undefined, Promise<void>>(
+  () => null,
+  /**
+   * Let's validate data outside of this function.
+   * Expecting data being saved are valid
+   */
+  async (get, set) => {
+    try {
+      set(transactionSavingAtom, true);
+
+      const reasonId = get(reasonIdAtom);
+      const reasonText = get(reasonTextAtom);
+      const amount = get(amountAtom) as number;
+      const date = get(dateAtom) as Date;
+      const note = get(noteAtom);
+
+      /**
+       * Create a new reason if not exist.
+       */
       let checkReasonId = reasonId;
       if (!reasonId && reasonText) {
         const { errors, data } = await gqlClient.mutate<CreateReasonMutation, CreateReasonMutationVariables>({
@@ -89,7 +150,7 @@ export const createTransactionsAtom = atom<
           CreateTransactionMutationVariables
         >({
           mutation: CreateTransactionDocument,
-          variables: { date, amount, reasonId: checkReasonId, note },
+          variables: { date: date.toISOString(), amount, reasonId: checkReasonId, note },
         });
 
         if (errors) {
@@ -99,7 +160,35 @@ export const createTransactionsAtom = atom<
     } catch (e) {
       console.error(e);
     } finally {
-      set(transactionCreatingAtom, false);
+      set(transactionSavingAtom, false);
+    }
+  }
+);
+
+export const deleteTransactionAtom = atom<null, undefined, Promise<void>>(
+  () => null,
+  async (get, set) => {
+    const id = get(transactionIdAtom);
+
+    if (id) {
+      const { errors, data } = await gqlClient.mutate<
+        DeleteTransactionMutation,
+        DeleteTransactionMutationVariables
+      >({
+        mutation: DeleteTransactionDocument,
+        variables: { id },
+      });
+
+      if (errors) {
+        console.error(errors);
+      }
+
+      set(transactionIdAtom, null);
+      set(reasonIdAtom, null);
+      set(reasonTextAtom, null);
+      set(dateAtom, null);
+      set(amountAtom, null);
+      set(noteAtom, null);
     }
   }
 );

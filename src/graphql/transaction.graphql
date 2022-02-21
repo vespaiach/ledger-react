@@ -29,6 +29,20 @@ query GetTransactions(
   }
 }
 
+query GetTransaction($id: Int!) {
+  transaction: getTransaction(id: $id) {
+    id
+    amount
+    date
+    note
+    updatedAt
+    reason {
+      id
+      text
+    }
+  }
+}
+
 mutation CreateTransaction($date: Date!, $amount: Float!, $reasonId: Int!, $note: String) {
   transaction: createTransaction(date: $date, amount: $amount, reasonId: $reasonId, note: $note) {
     id
@@ -50,4 +64,8 @@ mutation CreateReason($text: String!) {
     text
     updatedAt
   }
+}
+
+mutation DeleteTransaction($id: Int!) {
+  deleteTransaction(id: $id)
 }

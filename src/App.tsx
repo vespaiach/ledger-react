@@ -17,11 +17,11 @@ import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 
 import TransactionList from './views/TransactionList';
 import FilterInput from './views/FilterInput';
-import CreateTransaction from './views/CreateTransaction';
 import { flashMessageAtom } from './store/app';
+import CreateOrUpdateTransaction from './views/CreateOrUpdateTransaction';
 
 enum Path {
-  AddNew = '/add',
+  AddNew = '/transaction',
   Filter = '/filter',
   Update = '/update',
 }
@@ -64,7 +64,8 @@ export function App() {
       <Suspense fallback="Loading...">
         <Routes>
           <Route path="/filter" element={<FilterInput />} />
-          <Route path="/add" element={<CreateTransaction />} />
+          <Route path="/transaction" element={<CreateOrUpdateTransaction />} />
+          <Route path="/transaction/:id" element={<CreateOrUpdateTransaction />} />
           <Route path="/" element={<TransactionList />} />
         </Routes>
       </Suspense>

@@ -1,9 +1,6 @@
 import { atom } from 'jotai';
 
 import {
-  CreateReasonDocument,
-  CreateReasonMutation,
-  CreateReasonMutationVariables,
   GetReasonsDocument,
   GetReasonsQuery,
   GetReasonsQueryVariables,
@@ -35,27 +32,5 @@ export const fetchReasonsAtom = atom(
     } finally {
       set(reasonLoadingAtom, false);
     }
-  }
-);
-
-export const createReasonsAtom = atom<null, CreateReasonMutationVariables>(
-  () => null,
-  async (_, set, variables) => {
-    set(reasonCreatingAtom, true);
-
-    const { errors, data } = await gqlClient.mutate<CreateReasonMutation, CreateReasonMutationVariables>({
-      mutation: CreateReasonDocument,
-      variables,
-    });
-
-    if (errors) {
-      console.error(errors);
-    }
-
-    if (data?.reason) {
-      set(reasonsAtom, (prev) => [...prev, data.reason as Reason]);
-    }
-
-    set(reasonCreatingAtom, false);
   }
 );

@@ -13,7 +13,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  Date: Date;
+  Date: string;
 };
 
 export type Mutation = {
@@ -65,7 +65,13 @@ export type MutationUpdateTransactionArgs = {
 
 export type Query = {
   getReasons?: Maybe<Array<Reason>>;
+  getTransaction?: Maybe<Transaction>;
   getTransactions?: Maybe<Array<Transaction>>;
+};
+
+
+export type QueryGetTransactionArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -97,7 +103,7 @@ export type Transaction = {
 export type GetReasonsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetReasonsQuery = { reasons?:  Array<{ id: number, text: string, updatedAt: Date }> | null | undefined };
+export type GetReasonsQuery = { reasons?:  Array<{ id: number, text: string, updatedAt: string }> | null | undefined };
 
 export type GetTransactionsQueryVariables = Exact<{
   fromDate?: InputMaybe<Scalars['Date']>;
@@ -110,24 +116,38 @@ export type GetTransactionsQueryVariables = Exact<{
 }>;
 
 
-export type GetTransactionsQuery = { transactions?:  Array<{ id: number, amount: number, date: Date, note?:  string | null | undefined, updatedAt: Date, reason: { id: number, text: string, updatedAt: Date } }> | null | undefined };
+export type GetTransactionsQuery = { transactions?:  Array<{ id: number, amount: number, date: string, note?:  string | null | undefined, updatedAt: string, reason: { id: number, text: string, updatedAt: string } }> | null | undefined };
+
+export type GetTransactionQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type GetTransactionQuery = { transaction?:  { id: number, amount: number, date: string, note?:  string | null | undefined, updatedAt: string, reason: { id: number, text: string } } | null | undefined };
 
 export type CreateTransactionMutationVariables = Exact<{
   date: Scalars['Date'];
   amount: Scalars['Float'];
   reasonId: Scalars['Int'];
-  note: InputMaybe<Scalars['String']>;
+  note?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type CreateTransactionMutation = { transaction?:  { id: number, amount: number, date: Date, note?:  string | null | undefined, updatedAt: Date, reason: { id: number, text: string, updatedAt: Date } } | null | undefined };
+export type CreateTransactionMutation = { transaction?:  { id: number, amount: number, date: string, note?:  string | null | undefined, updatedAt: string, reason: { id: number, text: string, updatedAt: string } } | null | undefined };
 
 export type CreateReasonMutationVariables = Exact<{
   text: Scalars['String'];
 }>;
 
 
-export type CreateReasonMutation = { reason?:  { id: number, text: string, updatedAt: Date } | null | undefined };
+export type CreateReasonMutation = { reason?:  { id: number, text: string, updatedAt: string } | null | undefined };
+
+export type DeleteTransactionMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteTransactionMutation = { deleteTransaction?:  boolean | null | undefined };
 
 
 export const GetReasonsDocument = gql`
@@ -224,6 +244,49 @@ export function useGetTransactionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetTransactionsQueryHookResult = ReturnType<typeof useGetTransactionsQuery>;
 export type GetTransactionsLazyQueryHookResult = ReturnType<typeof useGetTransactionsLazyQuery>;
 export type GetTransactionsQueryResult = Apollo.QueryResult<GetTransactionsQuery, GetTransactionsQueryVariables>;
+export const GetTransactionDocument = gql`
+    query GetTransaction($id: Int!) {
+  transaction: getTransaction(id: $id) {
+    id
+    amount
+    date
+    note
+    updatedAt
+    reason {
+      id
+      text
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTransactionQuery__
+ *
+ * To run a query within a React component, call `useGetTransactionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTransactionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTransactionQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetTransactionQuery(baseOptions: Apollo.QueryHookOptions<GetTransactionQuery, GetTransactionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTransactionQuery, GetTransactionQueryVariables>(GetTransactionDocument, options);
+      }
+export function useGetTransactionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTransactionQuery, GetTransactionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTransactionQuery, GetTransactionQueryVariables>(GetTransactionDocument, options);
+        }
+export type GetTransactionQueryHookResult = ReturnType<typeof useGetTransactionQuery>;
+export type GetTransactionLazyQueryHookResult = ReturnType<typeof useGetTransactionLazyQuery>;
+export type GetTransactionQueryResult = Apollo.QueryResult<GetTransactionQuery, GetTransactionQueryVariables>;
 export const CreateTransactionDocument = gql`
     mutation CreateTransaction($date: Date!, $amount: Float!, $reasonId: Int!, $note: String) {
   transaction: createTransaction(
@@ -309,3 +372,34 @@ export function useCreateReasonMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateReasonMutationHookResult = ReturnType<typeof useCreateReasonMutation>;
 export type CreateReasonMutationResult = Apollo.MutationResult<CreateReasonMutation>;
 export type CreateReasonMutationOptions = Apollo.BaseMutationOptions<CreateReasonMutation, CreateReasonMutationVariables>;
+export const DeleteTransactionDocument = gql`
+    mutation DeleteTransaction($id: Int!) {
+  deleteTransaction(id: $id)
+}
+    `;
+export type DeleteTransactionMutationFn = Apollo.MutationFunction<DeleteTransactionMutation, DeleteTransactionMutationVariables>;
+
+/**
+ * __useDeleteTransactionMutation__
+ *
+ * To run a mutation, you first call `useDeleteTransactionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTransactionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTransactionMutation, { data, loading, error }] = useDeleteTransactionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteTransactionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTransactionMutation, DeleteTransactionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteTransactionMutation, DeleteTransactionMutationVariables>(DeleteTransactionDocument, options);
+      }
+export type DeleteTransactionMutationHookResult = ReturnType<typeof useDeleteTransactionMutation>;
+export type DeleteTransactionMutationResult = Apollo.MutationResult<DeleteTransactionMutation>;
+export type DeleteTransactionMutationOptions = Apollo.BaseMutationOptions<DeleteTransactionMutation, DeleteTransactionMutationVariables>;

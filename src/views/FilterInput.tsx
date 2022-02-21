@@ -10,11 +10,11 @@ import AppPanel from '../components/AppPanel';
 import { fetchReasonsAtom } from '../store/reason';
 import {
   fetchTransactionsAtom,
-  fromAmountAtom,
-  fromDateAtom,
+  filterFromAmountAtom,
+  filterFromDateAtom,
   reasonIdAtom,
-  toAmountAtom,
-  toDateAtom,
+  filterToAmountAtom,
+  filterToDateAtom,
 } from '../store/transaction';
 
 const allowAmount = ({ floatValue }: NumberFormatValues) =>
@@ -23,11 +23,11 @@ const allowAmount = ({ floatValue }: NumberFormatValues) =>
 export default function FilterInput() {
   const navigate = useNavigate();
 
-  const [fromAmount, setFromAmount] = useAtom(fromAmountAtom);
-  const [toAmount, setToAmount] = useAtom(toAmountAtom);
+  const [fromAmount, setFromAmount] = useAtom(filterFromAmountAtom);
+  const [toAmount, setToAmount] = useAtom(filterToAmountAtom);
 
-  const [fromDate, setFromDate] = useAtom(fromDateAtom);
-  const [toDate, setToDate] = useAtom(toDateAtom);
+  const [fromDate, setFromDate] = useAtom(filterFromDateAtom);
+  const [toDate, setToDate] = useAtom(filterToDateAtom);
 
   const [reasonId, setReason] = useAtom(reasonIdAtom);
   const [reasons, fetch] = useAtom(fetchReasonsAtom);

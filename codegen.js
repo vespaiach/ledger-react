@@ -19,7 +19,7 @@ const fs = require('fs');
             avoidOptionals: false,
             skipTypename: true,
             scalars: {
-              Date: 'Date',
+              Date: 'string',
             },
           },
         },

@@ -47,7 +47,9 @@ export default function TransactionList() {
               </Typography>
             </CardContent>
             <CardActions>
-              <Button size="small">Edit</Button>
+              <Button size="small" onClick={() => navigate(`/transaction/${trans.id}`)}>
+                Edit
+              </Button>
               <Button size="small">Remove</Button>
             </CardActions>
           </Card>
