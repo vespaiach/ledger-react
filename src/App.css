@@ -1,3 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
 body {
-  background-color: #eceff1;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  font-weight: 400;
+  background-color: rgb(231, 235, 240);
+  line-height: 1.2rem;
+  color: #1a2027;
+  margin: 0;
+}
+
+.search {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.search .icon {
+  width: 24px;
+  height: 24px;
+  color: rgba(25, 118, 210, 0.8);
+}
+
+.appbar {
+  height: 78px;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(231, 235, 240);
+  transition: all 0.1s ease-in-out;
+}
+
+.appbar--float {
+  background: #fff;
+  box-shadow: 0px 2px 3px 1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%),
+    0px 1px 3px 0px rgb(0 0 0 / 12%);
 }
