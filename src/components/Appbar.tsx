@@ -4,6 +4,7 @@ import cx from 'classnames';
 
 import { listenTo } from '../utils/window';
 import './Appbar.css';
+import FilterMenu from './FilterMenu';
 
 export default function Appbar() {
   const appbarRef = useRef<HTMLDivElement>(null);
@@ -11,28 +12,24 @@ export default function Appbar() {
   const [scrolled, setScrolled] = useState(false);
 
   const [spring, api] = useSpring(() => ({
-    y: '-104%',
+    y: '100%',
     height: '100vh',
     position: 'fixed',
     width: '100%',
     zIndex: 102,
-    config: config.stiff,
+    config: { duration: 250 },
   }));
 
   const handleOpen = useCallback(() => {
     openStatusRef.current = true;
 
-    appbarRef.current?.setAttribute('style', 'opacity: 0');
-
-    api.start(() => ({ y: '0%' }));
+    api.start(() => ({ y: '24px' }));
   }, [api]);
 
   const handleClose = useCallback(() => {
     openStatusRef.current = false;
 
-    appbarRef.current?.setAttribute('style', 'opacity: 1');
-
-    api.start(() => ({ y: '-104%' }));
+    api.start(() => ({ y: '100%', config: config.stiff }));
   }, [api]);
 
   useEffect(
@@ -47,16 +44,11 @@ export default function Appbar() {
   return (
     <>
       <animated.div style={spring} className="curtain" />
-      <animated.div style={spring} className="flex-column appbar_filter">
-        <div className="flex-item-stretch appbar_filter_content">sldkflsd</div>
-        <div className="flex-item-stand flex-center appbar_filter_footer">
-          <button className="button-icon" onClick={handleClose}>
-            <svg className="icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
-              <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
-            </svg>
-          </button>
+      <animated.aside style={spring} className="flex-column appbar_filter">
+        <div className="flex-item-stretch appbar_filter_content">
+          <FilterMenu onClose={handleClose} />
         </div>
-      </animated.div>
+      </animated.aside>
       <div className={cx('appbar', { 'appbar--float': scrolled })} ref={appbarRef}>
         <button className="button-icon" onClick={handleOpen}>
           <svg className="icon" fill="currentColor" focusable="false" aria-hidden="true" viewBox="0 0 24 24">

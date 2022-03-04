@@ -1,0 +1,37 @@
+.text-input {
+  width: 100%;
+  display: block;
+  border-radius: 8px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.text-input input:focus {
+  border: 1px solid #1a2027;
+}
+
+.text-input input {
+  transition: all 0.2s ease-in;
+  border: 1px solid rgb(176, 176, 176);
+  padding: 24px 8px 12px 32px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 8px;
+  outline: none;
+}
+
+.text-input .caption {
+  color: rgb(113, 113, 113);
+  font-size: 16px;
+  line-height: 1;
+  position: absolute;
+  top: 8px;
+  left: 16px;
+}
+
+.text-input .prefix {
+  color: rgb(113, 113, 113);
+  position: absolute;
+  top: px;
+  left: 16px;
+}
