@@ -1,4 +1,5 @@
 import { animated, useSpring } from '@react-spring/web';
+import NumberFormat from 'react-number-format';
 
 import './FilterMenu.css';
 import Input from './Input';
@@ -13,11 +14,27 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
         </svg>
       </button>
       <div className="amount-input">
-        <Input caption="min amount" />
+        <NumberFormat
+          caption="min amount"
+          customInput={Input}
+          thousandSeparator={true}
+          onValueChange={(values) => {
+            const { value } = values;
+          }}>
+          $
+        </NumberFormat>
         <div className="flex-center" style={{ fontWeight: 700, fontSize: 18, color: 'rgb(113,113,113)' }}>
           -
         </div>
-        <Input caption="max amount" />
+        <NumberFormat
+          caption="max amount"
+          customInput={Input}
+          thousandSeparator={true}
+          onValueChange={(values) => {
+            const { value } = values;
+          }}>
+          $
+        </NumberFormat>
       </div>
     </div>
   );

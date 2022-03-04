@@ -32,6 +32,6 @@
 .text-input .prefix {
   color: rgb(113, 113, 113);
   position: absolute;
-  top: px;
-  left: 16px;
+  top: 24px;
+  left: 18px;
 }
