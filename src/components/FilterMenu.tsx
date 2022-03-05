@@ -1,5 +1,6 @@
 import { animated, useSpring } from '@react-spring/web';
 import NumberFormat from 'react-number-format';
+import flatpickr from 'flatpickr';
 
 import './FilterMenu.css';
 import Input from './Input';
@@ -35,6 +36,9 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
           }}>
           $
         </NumberFormat>
+      </div>
+      <div className="date-input">
+        <Input />
       </div>
     </div>
   );
