@@ -1,28 +1,69 @@
-import { useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-interface DateData {
-  day: number;
-  date: number;
+export interface GroupExtend extends Group {
+  dates: Date[];
 }
 
-interface MonthData {
+export const DayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+export const MonthNames = [
+  'January',
+  'Febuary',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+interface Group {
+  index: number;
   month: number;
   year: number;
-  dates: DateData;
+  startDate: Date;
 }
 
-export default function useDate() {
-  const [months, setMonths] = useState<MonthData[]>([]);
+export default function useDate({ from, to }: { from: number; to: number }) {
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const next = useCallback(() => {
-    const last = months[months.length - 1];
+  useEffect(() => {
+    const groupList: Group[] = [];
+    let index = 0;
 
-    const curr = new Date(last.year, last.month, 1);
+    for (let year = from; year <= to; year++) {
+      for (let month = 0; month < 12; month++) {
+        const startDate = new Date(year, month, 1);
 
-    for (let i = 1; i <= 12; i++) {}
-  }, []);
+        if (startDate.getDay() > 0) {
+          startDate.setDate(startDate.getDate() - startDate.getDay());
+        }
 
-  return {
-    months,
-  };
+        groupList.push({ startDate, year, month, index });
+        index++;
+      }
+    }
+
+    setGroups(groupList);
+    setLoading(false);
+  }, [from, to]);
+
+  return { loading, groups };
+}
+
+export function buildGroupData(group: Group) {
+  const data: GroupExtend = { ...group, dates: [] };
+
+  const startDate = new Date(group.startDate);
+
+  for (let i = 0; i < 7 * 6; i++) {
+    startDate.setDate(startDate.getDate() + 1);
+    data.dates.push(new Date(startDate));
+  }
+
+  return data;
 }

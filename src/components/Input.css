@@ -13,7 +13,7 @@
 .text-input input {
   transition: all 0.2s ease-in;
   border: 1px solid rgb(176, 176, 176);
-  padding: 24px 8px 12px 32px;
+  padding: 26px 18px 12px 42px;
   width: 100%;
   box-sizing: border-box;
   border-radius: 8px;
@@ -27,11 +27,4 @@
   position: absolute;
   top: 8px;
   left: 16px;
-}
-
-.text-input .prefix {
-  color: rgb(113, 113, 113);
-  position: absolute;
-  top: 24px;
-  left: 18px;
 }
