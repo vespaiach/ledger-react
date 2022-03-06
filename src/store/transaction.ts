@@ -37,19 +37,23 @@ export const filterTransactionAtom = atom<
 >(null);
 
 export const transactionsAtom = atom<Transaction[]>([]);
-export const fetchTransactionsAtom = atom<Transaction[], GetTransactionsQueryVariables, Promise<void>>(
+export const fetchTransactionsAtom = atom<
+  Transaction[],
+  Pick<GetTransactionsQueryVariables, 'take' | 'lastCursor'>,
+  Promise<void>
+>(
   (get) => get(transactionsAtom),
   async (get, set, { take, lastCursor }) => {
     try {
       const filtering = get(filterTransactionAtom);
 
-      const { error, data } = await gqlClient.query<
-        GetTransactionsQuery,
-        Pick<GetTransactionsQueryVariables, 'take' | 'lastCursor'>
-      >({
+      const { error, data } = await gqlClient.query<GetTransactionsQuery, GetTransactionsQueryVariables>({
         query: GetTransactionsDocument,
         variables: {
-          ...filtering,
+          fromDate: filtering?.fromDate?.toISOString(),
+          toDate: filtering?.toDate?.toISOString(),
+          fromAmount: filtering?.fromAmount,
+          toAmount: filtering?.toAmount,
           take,
           lastCursor,
         },

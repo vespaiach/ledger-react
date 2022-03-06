@@ -19,6 +19,8 @@ const GAP = 18;
 const FROM = 2000;
 const TO = 2200;
 
+const noop = () => null;
+
 export default function FilterMenu({ onClose }: { onClose: () => void }) {
   const [filtering, setFiltering] = useAtom(filterTransactionAtom);
   const fetchTransaction = useUpdateAtom(fetchTransactionsAtom);
@@ -108,7 +110,7 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
         </div>
         <div className="date-input">
           <div style={{ padding: '0px 18px 18px 18px' }}>
-            <Input caption="from date - to date" defaultValue={dateString}>
+            <Input caption="from date - to date" value={dateString} onChange={noop}>
               <svg
                 className="icon"
                 style={{
@@ -182,7 +184,15 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
         </div>
       </div>
       <footer>
-        <a>Clear All</a>
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            setAmountRange([null, null]);
+            setDateRange([null, null]);
+          }}>
+          Clear All
+        </a>
         <button onClick={handleApply}>Apply Filter</button>
       </footer>
     </aside>
