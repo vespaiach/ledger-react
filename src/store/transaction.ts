@@ -26,26 +26,39 @@ import { gqlClient } from './utils';
 /**
  * For filtering
  */
-export const filterReasonIdAtom = atom<Maybe<number>>(null);
-export const filterFromAmountAtom = atom<Maybe<number>>(null);
-export const filterToAmountAtom = atom<Maybe<number>>(null);
-export const filterFromDateAtom = atom<Maybe<Date>>(null);
-export const filterToDateAtom = atom<Maybe<Date>>(null);
+export const filterTransactionAtom = atom<
+  Maybe<{
+    fromAmount?: Maybe<number>;
+    toAmount?: Maybe<number>;
+    fromDate?: Maybe<Date>;
+    toDate?: Maybe<Date>;
+    reasonId?: Maybe<number>;
+  }>
+>(null);
 
 export const transactionsAtom = atom<Transaction[]>([]);
 export const fetchTransactionsAtom = atom<Transaction[], GetTransactionsQueryVariables, Promise<void>>(
   (get) => get(transactionsAtom),
-  async (_, set, variables) => {
+  async (get, set, { take, lastCursor }) => {
     try {
-      const { error, data } = await gqlClient.query<GetTransactionsQuery, GetTransactionsQueryVariables>({
+      const filtering = get(filterTransactionAtom);
+
+      const { error, data } = await gqlClient.query<
+        GetTransactionsQuery,
+        Pick<GetTransactionsQueryVariables, 'take' | 'lastCursor'>
+      >({
         query: GetTransactionsDocument,
-        variables,
+        variables: {
+          ...filtering,
+          take,
+          lastCursor,
+        },
       });
 
       if (!error && data) {
         const transactions = data.transactions ?? [];
 
-        set(transactionsAtom, (prev) => (variables.lastCursor ? [...prev, ...transactions] : transactions));
+        set(transactionsAtom, (prev) => (lastCursor ? [...prev, ...transactions] : transactions));
       }
     } catch (e) {
       console.error(e);

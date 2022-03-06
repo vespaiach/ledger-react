@@ -1,12 +1,15 @@
 import NumberFormat from 'react-number-format';
 import { DateTime } from 'luxon';
+import { useAtom } from 'jotai';
 import cx from 'classnames';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import './FilterMenu.css';
 import Input from './Input';
 import useDate, { buildGroupData, DayNames, GroupExtend, MonthNames } from '../utils/useDate';
 import { listenTo } from '../utils/window';
+import { fetchTransactionsAtom, filterTransactionAtom } from '../store/transaction';
+import { useUpdateAtom } from 'jotai/utils';
 
 const WIDTH = 340;
 const HEIGHT = 360;
@@ -17,11 +20,30 @@ const FROM = 2000;
 const TO = 2200;
 
 export default function FilterMenu({ onClose }: { onClose: () => void }) {
+  const [filtering, setFiltering] = useAtom(filterTransactionAtom);
+  const fetchTransaction = useUpdateAtom(fetchTransactionsAtom);
+
   const { groups } = useDate({ from: FROM, to: TO });
   const [frontIndex, setFrontIndex] = useState(0);
   const [rearIndex, setRearIndex] = useState(OVER_SCAN);
-  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
+  const [amountRange, setAmountRange] = useState([filtering?.fromAmount, filtering?.toAmount]);
+  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
+    filtering?.fromDate ?? null,
+    filtering?.toDate ?? null,
+  ]);
+
   const pickerRef = useRef<HTMLDivElement>(null);
+
+  const handleApply = () => {
+    setFiltering({
+      fromAmount: amountRange[0],
+      toAmount: amountRange[1],
+      fromDate: dateRange[0] ?? null,
+      toDate: dateRange[1] ?? null,
+    });
+    fetchTransaction({});
+    onClose();
+  };
 
   useEffect(() => {
     if (!pickerRef.current) return;
@@ -49,105 +71,121 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <div className="filter-pane">
+    <aside className="filter-pane">
       <h1>Filters</h1>
       <button className="button-icon button-close" onClick={onClose}>
         <svg className="icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
           <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
         </svg>
       </button>
-      <div className="amount-input">
-        <NumberFormat
-          caption="min amount"
-          customInput={Input}
-          thousandSeparator={true}
-          onValueChange={(values) => {
-            const { value } = values;
-          }}>
-          <span style={{ position: 'absolute', top: 25, left: 22 }}>$</span>
-        </NumberFormat>
-        <div className="flex-center" style={{ fontWeight: 700, fontSize: 18, color: 'rgb(113,113,113)' }}>
-          -
+      <div className="body">
+        <div className="amount-input">
+          <NumberFormat
+            value={amountRange[0]}
+            caption="min amount"
+            customInput={Input}
+            thousandSeparator={true}
+            onValueChange={(values) => {
+              const { value } = values;
+              setAmountRange([Number(value), amountRange[1]]);
+            }}>
+            <span style={{ position: 'absolute', top: 25, left: 22 }}>$</span>
+          </NumberFormat>
+          <div className="flex-center" style={{ fontWeight: 700, fontSize: 18, color: 'rgb(113,113,113)' }}>
+            -
+          </div>
+          <NumberFormat
+            value={amountRange[1]}
+            caption="max amount"
+            customInput={Input}
+            thousandSeparator={true}
+            onValueChange={(values) => {
+              const { value } = values;
+              setAmountRange([amountRange[0], Number(value)]);
+            }}>
+            <span style={{ position: 'absolute', top: 25, left: 22 }}>$</span>
+          </NumberFormat>
         </div>
-        <NumberFormat
-          caption="max amount"
-          customInput={Input}
-          thousandSeparator={true}
-          onValueChange={(values) => {
-            const { value } = values;
-          }}>
-          <span style={{ position: 'absolute', top: 25, left: 22 }}>$</span>
-        </NumberFormat>
-      </div>
-      <div className="date-input">
-        <div style={{ padding: '0px 18px 18px 18px' }}>
-          <Input caption="from date - to date" value={dateString}>
-            <svg
-              className="icon"
-              style={{
-                position: 'absolute',
-                top: 23,
-                left: 14,
-                width: 22,
-                height: 22,
-                color: 'rgb(113, 113, 113, 0.8)',
-              }}
-              focusable="false"
-              aria-hidden="true"
-              viewBox="0 0 24 24">
-              <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"></path>
-            </svg>
-            {dateRange[0] && (
-              <button
-                className="button-icon button-close"
-                onClick={() => setDateRange([null, null])}
-                style={{ color: '#1a2027', position: 'absolute', right: 4, left: 'initial', top: 15 }}>
-                <svg className="icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
-                  <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
-                </svg>
-              </button>
-            )}
-          </Input>
-        </div>
-        <div className="date-picker" ref={pickerRef} style={{ height: HEIGHT, width: '100%' }}>
-          <div
-            className="date-picker_slide"
-            style={{ position: 'relative', height: '100%', width: groups.length * WIDTH + GAP * 2 }}>
-            {groups.slice(frontIndex, rearIndex).map((g) => (
-              <Group
-                key={`${g.month}${g.year}`}
-                group={buildGroupData(g)}
-                fromDate={dateRange[0]}
-                toDate={dateRange[1]}
-                onSelect={(d) => {
-                  const [from, to] = dateRange;
-
-                  if (from === null) {
-                    setDateRange([d, null]);
-                  } else if (to === null) {
-                    setDateRange(from > d ? [d, from] : [from, d]);
-                  } else {
-                    if (Math.abs(d - from) > Math.abs(d - to)) {
-                      setDateRange(from < d ? [from, d] : [d, from]);
-                    } else {
-                      setDateRange(to < d ? [to, d] : [d, to]);
-                    }
-                  }
-                }}
+        <div className="date-input">
+          <div style={{ padding: '0px 18px 18px 18px' }}>
+            <Input caption="from date - to date" defaultValue={dateString}>
+              <svg
+                className="icon"
                 style={{
-                  background: g.index % 2 === 0 ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.03)',
                   position: 'absolute',
-                  top: 0,
-                  left: g.index * WIDTH + GAP,
-                  width: WIDTH,
-                  height: '100%',
+                  top: 23,
+                  left: 14,
+                  width: 22,
+                  height: 22,
+                  color: 'rgb(113, 113, 113, 0.8)',
                 }}
-              />
-            ))}
+                focusable="false"
+                aria-hidden="true"
+                viewBox="0 0 24 24">
+                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"></path>
+              </svg>
+              {dateRange[0] && (
+                <button
+                  className="button-icon button-close"
+                  onClick={() => setDateRange([null, null])}
+                  style={{
+                    color: 'rgb(113, 113, 113, 0.8)',
+                    position: 'absolute',
+                    right: 4,
+                    left: 'initial',
+                    top: 15,
+                  }}>
+                  <svg className="icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
+                    <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+                  </svg>
+                </button>
+              )}
+            </Input>
+          </div>
+          <div className="date-picker" ref={pickerRef} style={{ height: HEIGHT, width: '100%' }}>
+            <div
+              className="date-picker_slide"
+              style={{ position: 'relative', height: '100%', width: groups.length * WIDTH + GAP * 2 }}>
+              {groups.slice(frontIndex, rearIndex).map((g) => (
+                <Group
+                  key={`${g.month}${g.year}`}
+                  group={buildGroupData(g)}
+                  fromDate={dateRange[0]}
+                  toDate={dateRange[1]}
+                  onSelect={(d) => {
+                    const [from, to] = dateRange;
+
+                    if (from === null) {
+                      setDateRange([d, null]);
+                    } else if (to === null) {
+                      setDateRange(from > d ? [d, from] : [from, d]);
+                    } else {
+                      if (Math.abs(d - from) > Math.abs(d - to)) {
+                        setDateRange(from < d ? [from, d] : [d, from]);
+                      } else {
+                        setDateRange(to < d ? [to, d] : [d, to]);
+                      }
+                    }
+                  }}
+                  style={{
+                    background: g.index % 2 === 0 ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.03)',
+                    position: 'absolute',
+                    top: 0,
+                    left: g.index * WIDTH + GAP,
+                    width: WIDTH,
+                    height: '100%',
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <footer>
+        <a>Clear All</a>
+        <button onClick={handleApply}>Apply Filter</button>
+      </footer>
+    </aside>
   );
 }
 

@@ -6,6 +6,7 @@ import { ChangeEventHandler, ReactNode } from 'react';
 interface InputProps extends ComponentBaseProps {
   onChange?: ChangeEventHandler<HTMLInputElement> | undefined;
   value?: string;
+  defaultValue?: string;
   caption?: string;
   children?: ReactNode;
   id?: string;
