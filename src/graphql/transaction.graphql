@@ -3,7 +3,7 @@ query GetTransactions(
   $toDate: Date
   $fromAmount: Int
   $toAmount: Int
-  $reasonId: Int
+  $reasonIds: [Int!]
   $lastCursor: Int
   $take: Int
 ) {
@@ -12,7 +12,7 @@ query GetTransactions(
     toDate: $toDate
     fromAmount: $fromAmount
     toAmount: $toAmount
-    reasonId: $reasonId
+    reasonIds: $reasonIds
     lastCursor: $lastCursor
     take: $take
   ) {

@@ -23,35 +23,66 @@ import {
 import { reasonsAtom } from './reason';
 import { gqlClient } from './utils';
 
-/**
- * For filtering
- */
-export const filterReasonIdAtom = atom<Maybe<number>>(null);
-export const filterFromAmountAtom = atom<Maybe<number>>(null);
-export const filterToAmountAtom = atom<Maybe<number>>(null);
-export const filterFromDateAtom = atom<Maybe<Date>>(null);
-export const filterToDateAtom = atom<Maybe<Date>>(null);
-
+export const filterTransactionAtom = atom<
+  Maybe<{
+    fromAmount?: Maybe<number>;
+    toAmount?: Maybe<number>;
+    fromDate?: Maybe<Date>;
+    toDate?: Maybe<Date>;
+    reasonIds?: Maybe<number[]>;
+  }>
+>(null);
+export const lastCursorTransactionAtom = atom<number | null>(null);
 export const transactionsAtom = atom<Transaction[]>([]);
-export const fetchTransactionsAtom = atom<Transaction[], GetTransactionsQueryVariables, Promise<void>>(
-  (get) => get(transactionsAtom),
-  async (_, set, variables) => {
+
+export const writeFilterTransactionAtom = atom(
+  null,
+  (
+    _,
+    set,
+    update: Maybe<{
+      fromAmount?: Maybe<number>;
+      toAmount?: Maybe<number>;
+      fromDate?: Maybe<Date>;
+      toDate?: Maybe<Date>;
+      reasonIds?: Maybe<number[]>;
+    }>
+  ) => {
+    set(filterTransactionAtom, (filters) => ({ ...filters, ...update }));
+    set(writeLastCursorAtom, { cursor: null });
+  }
+);
+export const writeLastCursorAtom = atom(null, async (get, set, { cursor }: { cursor: number | null }) => {
+  const lastCursor = get(lastCursorTransactionAtom);
+
+  if (cursor !== lastCursor || lastCursor === null) {
     try {
+      const filtering = get(filterTransactionAtom);
+
       const { error, data } = await gqlClient.query<GetTransactionsQuery, GetTransactionsQueryVariables>({
         query: GetTransactionsDocument,
-        variables,
+        variables: {
+          fromDate: filtering?.fromDate?.toISOString(),
+          toDate: filtering?.toDate?.toISOString(),
+          fromAmount: filtering?.fromAmount,
+          toAmount: filtering?.toAmount,
+          reasonIds: filtering?.reasonIds,
+          take: 50,
+          lastCursor: cursor,
+        },
       });
 
       if (!error && data) {
         const transactions = data.transactions ?? [];
 
-        set(transactionsAtom, (prev) => (variables.lastCursor ? [...prev, ...transactions] : transactions));
+        set(lastCursorTransactionAtom, cursor);
+        set(transactionsAtom, (prev) => (cursor ? [...prev, ...transactions] : transactions));
       }
     } catch (e) {
       console.error(e);
     }
   }
-);
+});
 
 /**
  * Creating/ Updating/ Deleting Transaction.

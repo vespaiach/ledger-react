@@ -1,69 +1,51 @@
-import { Button, Card, CardActions, CardContent, Container, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
-import { useAtom } from 'jotai';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import { useNavigate } from 'react-router-dom';
 
-import { fetchTransactionsAtom } from '../store/transaction';
+import Container from '../components/Container';
+import Card from '../components/Card';
+import Appbar from '../components/Appbar';
+import { transactionsAtom, writeLastCursorAtom } from '../store/transaction';
 
 export default function TransactionList() {
-  const navigate = useNavigate();
-  const [transactions, fetch] = useAtom(fetchTransactionsAtom);
+  const updateLastCursor = useUpdateAtom(writeLastCursorAtom);
+  const transactions = useAtomValue(transactionsAtom);
 
-  useEffect(() => void fetch({ lastCursor: null }), [fetch]);
+  useEffect(() => void updateLastCursor({ cursor: null }), [updateLastCursor]);
 
   return (
-    <Container maxWidth="md" id="back-to-top-anchor" sx={{ mt: 3, mb: 8 }}>
+    <Container>
+      <Appbar />
       <Virtuoso
         endReached={(i) => {
-          fetch({ lastCursor: transactions[i].id });
+          updateLastCursor({ cursor: transactions[i]?.id ?? null });
         }}
         overscan={200}
         useWindowScroll
         data={transactions}
         itemContent={(_, trans) => (
-          <Card sx={{ minWidth: 320, mb: 2 }}>
-            <CardContent>
-              <Typography
-                gutterBottom
-                variant="body2"
-                component="p"
-                sx={{ textTransform: 'capitalize', color: 'text.secondary' }}>
-                {DateTime.fromISO(trans.date).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
-              </Typography>
-              <Typography gutterBottom variant="h5" sx={{ fontWeight: 'bold' }}>
-                $ {trans.amount}
-              </Typography>
-              <Typography gutterBottom variant="body2" color="text.secondary">
-                {trans.note}
-              </Typography>
-              <Typography
-                variant="caption"
-                component="p"
-                color="text.secondary"
-                sx={{ textTransform: 'capitalize' }}>
-                {trans.reason.text}
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button size="small" onClick={() => navigate(`/transaction/${trans.id}`)}>
-                Edit
-              </Button>
-              <Button size="small">Remove</Button>
-            </CardActions>
+          <Card>
+            <div className="headline">
+              <h1>${trans.amount}</h1>
+              <h2>{DateTime.fromISO(trans.date).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</h2>
+              <svg
+                className="icon"
+                focusable="false"
+                aria-hidden="true"
+                height={24}
+                width={24}
+                fill="currentColor"
+                viewBox="0 0 24 24">
+                <path d="M17.59 18 19 16.59 14.42 12 19 7.41 17.59 6l-6 6z"></path>
+                <path d="m11 18 1.41-1.41L7.83 12l4.58-4.59L11 6l-6 6z"></path>
+              </svg>
+            </div>
+            <p className="reason">{trans.reason.text}</p>
+            <p className="note">{trans.note}</p>
           </Card>
         )}
       />
-
-      {transactions.length === 0 && (
-        <>
-          <Typography>No Transactions.</Typography>
-          <Button disableFocusRipple variant="text" onClick={() => navigate('/filter')}>
-            Apply different filterings
-          </Button>
-        </>
-      )}
     </Container>
   );
 }

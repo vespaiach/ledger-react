@@ -79,7 +79,7 @@ export type QueryGetTransactionsArgs = {
   fromAmount?: InputMaybe<Scalars['Int']>;
   fromDate?: InputMaybe<Scalars['Date']>;
   lastCursor?: InputMaybe<Scalars['Int']>;
-  reasonId?: InputMaybe<Scalars['Int']>;
+  reasonIds?: InputMaybe<Array<Scalars['Int']>>;
   take?: InputMaybe<Scalars['Int']>;
   toAmount?: InputMaybe<Scalars['Int']>;
   toDate?: InputMaybe<Scalars['Date']>;
@@ -110,7 +110,7 @@ export type GetTransactionsQueryVariables = Exact<{
   toDate?: InputMaybe<Scalars['Date']>;
   fromAmount?: InputMaybe<Scalars['Int']>;
   toAmount?: InputMaybe<Scalars['Int']>;
-  reasonId?: InputMaybe<Scalars['Int']>;
+  reasonIds?: InputMaybe<Array<Scalars['Int']> | Scalars['Int']>;
   lastCursor?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
 }>;
@@ -187,13 +187,13 @@ export type GetReasonsQueryHookResult = ReturnType<typeof useGetReasonsQuery>;
 export type GetReasonsLazyQueryHookResult = ReturnType<typeof useGetReasonsLazyQuery>;
 export type GetReasonsQueryResult = Apollo.QueryResult<GetReasonsQuery, GetReasonsQueryVariables>;
 export const GetTransactionsDocument = gql`
-    query GetTransactions($fromDate: Date, $toDate: Date, $fromAmount: Int, $toAmount: Int, $reasonId: Int, $lastCursor: Int, $take: Int) {
+    query GetTransactions($fromDate: Date, $toDate: Date, $fromAmount: Int, $toAmount: Int, $reasonIds: [Int!], $lastCursor: Int, $take: Int) {
   transactions: getTransactions(
     fromDate: $fromDate
     toDate: $toDate
     fromAmount: $fromAmount
     toAmount: $toAmount
-    reasonId: $reasonId
+    reasonIds: $reasonIds
     lastCursor: $lastCursor
     take: $take
   ) {
@@ -227,7 +227,7 @@ export const GetTransactionsDocument = gql`
  *      toDate: // value for 'toDate'
  *      fromAmount: // value for 'fromAmount'
  *      toAmount: // value for 'toAmount'
- *      reasonId: // value for 'reasonId'
+ *      reasonIds: // value for 'reasonIds'
  *      lastCursor: // value for 'lastCursor'
  *      take: // value for 'take'
  *   },

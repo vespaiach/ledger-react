@@ -4,7 +4,6 @@ import { Link, useParams } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useEffect, useState } from 'react';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
 
 import { fetchReasonsAtom, reasonLoadingAtom } from '../store/reason';
@@ -22,8 +21,6 @@ import {
   transactionLoadingAtom,
   transactionSavingAtom,
 } from '../store/transaction';
-import { flashMessageAtom } from '../store/app';
-import { Spinner } from '../components/Spinner';
 
 type Field = 'amount' | 'date' | 'reason' | 'note';
 
