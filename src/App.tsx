@@ -1,23 +1,12 @@
 import './App.css';
 
 import { useAtom } from 'jotai';
-import { Route, Routes, useNavigate } from 'react-router-dom';
-import { Suspense, useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { Suspense } from 'react';
 
 import TransactionList from './views/TransactionList';
-import { flashMessageAtom } from './store/app';
-
-enum Path {
-  AddNew = '/transaction',
-  Filter = '/filter',
-  Update = '/update',
-}
 
 export function App() {
-  const navigate = useNavigate();
-  const [flashMessage, hideFlashMessage] = useAtom(flashMessageAtom);
-  const [open, setOpen] = useState(false);
-
   return (
     <Suspense fallback="Loading...">
       <Routes>

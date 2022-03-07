@@ -80,7 +80,9 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
     if (!pickerRef.current) return;
 
     const unsub = listenTo(pickerRef.current, 'scroll', function (event) {
-      const currIndex = Math.floor(event.target.scrollLeft / WIDTH);
+      if (!event.target) return;
+
+      const currIndex = Math.floor((event.target as HTMLDivElement).scrollLeft / WIDTH);
 
       setFrontIndex(currIndex - OVER_SCAN < 0 ? 0 : currIndex - OVER_SCAN);
       setRearIndex(currIndex + OVER_SCAN > groups.length ? groups.length - 1 : currIndex + OVER_SCAN);
@@ -191,7 +193,7 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
                     } else if (to === null) {
                       setDateRange(from > d ? [d, from] : [from, d]);
                     } else {
-                      if (Math.abs(d - from) > Math.abs(d - to)) {
+                      if (Math.abs(d.getTime() - from.getTime()) > Math.abs(d.getTime() - to.getTime())) {
                         setDateRange(from < d ? [from, d] : [d, from]);
                       } else {
                         setDateRange(to < d ? [to, d] : [d, to]);
@@ -277,7 +279,9 @@ function Group({
             dimmed: d.getMonth() !== group.month,
             selected:
               d.getMonth() === group.month &&
-              (isSameDate(d, fromDate) || isSameDate(d, toDate) || (d > fromDate && d < toDate)),
+              (isSameDate(d, fromDate) ||
+                isSameDate(d, toDate) ||
+                (fromDate && toDate && d > fromDate && d < toDate)),
           })}
           onClick={() => onSelect(d)}
           key={i}>
