@@ -1,18 +1,21 @@
 import './App.css';
 
-import { useAtom } from 'jotai';
 import { Route, Routes } from 'react-router-dom';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 
 import TransactionList from './views/TransactionList';
+import { listenTo } from './utils/window';
 
 export function App() {
+  useEffect(() => {
+    return listenTo(window, 'resize', function () {
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}`);
+    });
+  }, []);
+
   return (
     <Suspense fallback="Loading...">
       <Routes>
-        {/* <Route path="/filter" element={<FilterInput />} />
-        <Route path="/transaction" element={<CreateOrUpdateTransaction />} />
-        <Route path="/transaction/:id" element={<CreateOrUpdateTransaction />} /> */}
         <Route path="/" element={<TransactionList />} />
       </Routes>
     </Suspense>
