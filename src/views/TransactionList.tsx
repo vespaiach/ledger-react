@@ -1,27 +1,25 @@
 import { DateTime } from 'luxon';
-import { useAtom } from 'jotai';
-import { useEffect, useRef, useState } from 'react';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import { useNavigate } from 'react-router-dom';
-
-import { fetchTransactionsAtom } from '../store/transaction';
 
 import Container from '../components/Container';
 import Card from '../components/Card';
 import Appbar from '../components/Appbar';
+import { transactionsAtom, writeLastCursorAtom } from '../store/transaction';
 
 export default function TransactionList() {
-  const navigate = useNavigate();
-  const [transactions, fetch] = useAtom(fetchTransactionsAtom);
+  const updateLastCursor = useUpdateAtom(writeLastCursorAtom);
+  const transactions = useAtomValue(transactionsAtom);
 
-  useEffect(() => void fetch({ lastCursor: null }), [fetch]);
+  useEffect(() => void updateLastCursor({ cursor: null }), [updateLastCursor]);
 
   return (
     <Container>
       <Appbar />
       <Virtuoso
         endReached={(i) => {
-          fetch({ lastCursor: transactions[i].id });
+          updateLastCursor({ cursor: transactions[i]?.id ?? null });
         }}
         overscan={200}
         useWindowScroll

@@ -28,3 +28,21 @@
   top: 8px;
   left: 16px;
 }
+
+.text-input .tag-list {
+  padding: 26px 16px 12px 16px;
+  border: 1px solid rgb(176, 176, 176);
+  border-radius: 4px;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 4px;
+  align-items: center;
+  min-height: 38px;
+}
+
+.text-input .tag-list .tag {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background: rgb(239, 239, 239);
+}

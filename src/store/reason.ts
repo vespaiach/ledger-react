@@ -13,6 +13,10 @@ export const reasonLoadingAtom = atom(false);
 export const reasonCreatingAtom = atom(false);
 
 export const reasonsAtom = atom<Reason[]>([]);
+export const reasonsMapAtom = atom<Record<number, Reason>>((get) => {
+  const reasons = get(reasonsAtom);
+  return Object.fromEntries(reasons.map((r) => [r.id, r]));
+});
 
 export const fetchReasonsAtom = atom(
   (get) => get(reasonsAtom),

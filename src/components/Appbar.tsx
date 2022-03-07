@@ -3,34 +3,37 @@ import './Appbar.css';
 import { DateTime } from 'luxon';
 import { ReactNode } from 'react';
 import { Transition } from 'react-transition-group';
-import { useAtom } from 'jotai';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import cx from 'classnames';
+import NumberFormat from 'react-number-format';
 
 import { listenTo } from '../utils/window';
 import FilterMenu from './FilterMenu';
-import { fetchTransactionsAtom, filterTransactionAtom } from '../store/transaction';
+import { filterTransactionAtom, writeFilterTransactionAtom } from '../store/transaction';
 import CloseButton from './CloseButton';
 import { Maybe } from '../graphql/graphql.generated';
-import { useUpdateAtom } from 'jotai/utils';
-import NumberFormat from 'react-number-format';
+import { fetchReasonsAtom, reasonsAtom, reasonsMapAtom } from '../store/reason';
 
 export default function Appbar() {
-  const [filtering, setFiltering] = useAtom(filterTransactionAtom);
-  const fetchTransaction = useUpdateAtom(fetchTransactionsAtom);
+  const filtering = useAtomValue(filterTransactionAtom);
+  const setFiltering = useUpdateAtom(writeFilterTransactionAtom);
+  const fetchReason = useUpdateAtom(fetchReasonsAtom);
+  const reasonList = useAtomValue(reasonsAtom);
 
   const [openFilter, setOpenFilter] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
 
-  const handleDelete = (name: 'amount' | 'date') => () => {
+  const handleDelete = (name: 'amount' | 'date' | 'reason') => (id?: number) => {
     if (name === 'amount') {
-      setFiltering((filters) => ({ ...filters, toAmount: null, fromAmount: null }));
+      setFiltering({ toAmount: null, fromAmount: null });
+    } else if (name === 'date') {
+      setFiltering({ fromDate: null, toDate: null });
     } else {
-      setFiltering((filters) => ({ ...filters, fromDate: null, toDate: null }));
+      const reasonIds = filtering?.reasonIds?.filter((r) => r !== id);
+      setFiltering({ reasonIds: !reasonIds?.length ? null : reasonIds });
     }
-
-    fetchTransaction({});
   };
 
   const handleOpen = useCallback(() => {
@@ -40,6 +43,12 @@ export default function Appbar() {
   const handleClose = useCallback(() => {
     setOpenFilter(false);
   }, []);
+
+  useEffect(() => {
+    if (!reasonList.length) {
+      fetchReason();
+    }
+  }, [reasonList]);
 
   useEffect(
     () =>
@@ -70,16 +79,14 @@ export default function Appbar() {
           </>
         )}
       </Transition>
-      <div
-        className={cx('appbar', { 'appbar--float': scrolled })}
-        style={{ justifyContent: hasFilters ? 'flex-start' : 'center' }}>
-        <button className="button-icon" onClick={handleOpen}>
+      <div className={cx('appbar', { 'appbar--float': scrolled, 'appbar--scrollable': hasFilters })}>
+        <button className={cx('button-icon')} onClick={handleOpen}>
           <svg className="icon" fill="currentColor" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
             <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
           </svg>
         </button>
         {hasFilters && (
-          <>
+          <div className="appbar_chips">
             <AmountChip
               fromAmount={filtering.fromAmount}
               toAmount={filtering.toAmount}
@@ -90,7 +97,8 @@ export default function Appbar() {
               toDate={filtering.toDate}
               onDelete={handleDelete('date')}
             />
-          </>
+            <ReasonChip reasons={filtering.reasonIds} onDelete={handleDelete('reason')} />
+          </div>
         )}
       </div>
     </>
@@ -164,6 +172,33 @@ function DateChip({
         </>
       )}
     </FilterChip>
+  );
+}
+
+function ReasonChip({
+  reasons,
+  onDelete,
+}: {
+  reasons?: Maybe<number[]>;
+  onDelete?: (reasonId: number) => void;
+}) {
+  const reasonsMap = useAtomValue(reasonsMapAtom);
+
+  if (!reasons?.length) return null;
+
+  return (
+    <>
+      {reasons?.map((r) => {
+        const reason = reasonsMap[r];
+        if (!reason) return null;
+
+        return (
+          <FilterChip key={r} onDelete={() => onDelete?.(r)}>
+            {reason.text}
+          </FilterChip>
+        );
+      })}
+    </>
   );
 }
 

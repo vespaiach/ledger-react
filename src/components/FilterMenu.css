@@ -54,7 +54,11 @@
   display: grid;
   grid: auto-flow / 1fr auto 1fr;
   grid-gap: 12px;
-  padding: 24px 18px 24px 18px;
+  margin: 24px 18px 60px 18px;
+}
+
+.date-input {
+  margin: 60px 0;
 }
 
 .date-picker {
@@ -102,4 +106,5 @@
   display: flex;
   align-items: center;
   height: 25px;
+  flex-shrink: 0;
 }

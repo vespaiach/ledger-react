@@ -1,15 +1,18 @@
+import './FilterMenu.css';
+
 import NumberFormat from 'react-number-format';
 import { DateTime } from 'luxon';
 import { useAtom } from 'jotai';
 import cx from 'classnames';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
-import './FilterMenu.css';
-import Input from './Input';
+import { Input, TagInput } from './Input';
 import useDate, { buildGroupData, DayNames, GroupExtend, MonthNames } from '../utils/useDate';
 import { listenTo } from '../utils/window';
-import { fetchTransactionsAtom, filterTransactionAtom } from '../store/transaction';
-import { useUpdateAtom } from 'jotai/utils';
+import { filterTransactionAtom, writeLastCursorAtom } from '../store/transaction';
+import { Reason } from '../graphql/graphql.generated';
+import { fetchReasonsAtom, reasonsAtom, reasonsMapAtom } from '../store/reason';
 
 const WIDTH = 340;
 const HEIGHT = 360;
@@ -23,10 +26,16 @@ const noop = () => null;
 
 export default function FilterMenu({ onClose }: { onClose: () => void }) {
   const [filtering, setFiltering] = useAtom(filterTransactionAtom);
-  const fetchTransaction = useUpdateAtom(fetchTransactionsAtom);
+  const updateLastCursor = useUpdateAtom(writeLastCursorAtom);
+  const fetchReason = useUpdateAtom(fetchReasonsAtom);
+  const reasonList = useAtomValue(reasonsAtom);
+  const reasonMap = useAtomValue(reasonsMapAtom);
 
   const { groups } = useDate({ from: FROM, to: TO });
   const [frontIndex, setFrontIndex] = useState(0);
+  const [reasons, setReasons] = useState<Reason[]>(() => {
+    return filtering?.reasonIds?.map((r) => reasonMap[r]) ?? [];
+  });
   const [rearIndex, setRearIndex] = useState(OVER_SCAN);
   const [amountRange, setAmountRange] = useState([filtering?.fromAmount, filtering?.toAmount]);
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
@@ -36,14 +45,34 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
 
   const pickerRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (!reasonList?.length) {
+      fetchReason();
+    }
+  }, [reasonList]);
+
+  const handleChecked = (evt: ChangeEvent<HTMLInputElement>) => {
+    const { checked, value } = evt.target;
+
+    const id = Number(value);
+
+    if (checked) {
+      reasonMap[id] && setReasons([...reasons, reasonMap[id]]);
+    } else {
+      setReasons(reasons.filter((r) => r.id !== id));
+    }
+  };
+
   const handleApply = () => {
+    const reasonIds = reasons.map((r) => r.id);
     setFiltering({
       fromAmount: amountRange[0],
       toAmount: amountRange[1],
       fromDate: dateRange[0] ?? null,
       toDate: dateRange[1] ?? null,
+      reasonIds: reasonIds.length ? reasonIds : null,
     });
-    fetchTransaction({});
+    updateLastCursor({ cursor: null });
     onClose();
   };
 
@@ -109,7 +138,7 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
           </NumberFormat>
         </div>
         <div className="date-input">
-          <div style={{ padding: '0px 18px 18px 18px' }}>
+          <div style={{ padding: '0px 18px 12px 18px' }}>
             <Input caption="from date - to date" value={dateString} onChange={noop}>
               <svg
                 className="icon"
@@ -182,6 +211,29 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
             </div>
           </div>
         </div>
+        <div style={{ margin: '8px 16px 24px 16px' }}>
+          <TagInput
+            style={{ marginBottom: 12 }}
+            caption="reasons"
+            tags={reasons}
+            onDelete={(tag) => {
+              const reason = tag as Reason;
+              setReasons(reasons.filter((r) => r.id !== reason.id));
+            }}
+          />
+          <div className="checkboxes">
+            {reasonList.map((reason) => (
+              <label key={reason.id}>
+                <input
+                  type="checkbox"
+                  checked={reasons.findIndex((r: Reason) => r.id === reason.id) > -1}
+                  value={reason.id}
+                  onChange={handleChecked}></input>
+                <span>{reason.text}</span>
+              </label>
+            ))}
+          </div>
+        </div>
       </div>
       <footer>
         <a
@@ -190,6 +242,7 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
             e.preventDefault();
             setAmountRange([null, null]);
             setDateRange([null, null]);
+            setReasons([]);
           }}>
           Clear All
         </a>

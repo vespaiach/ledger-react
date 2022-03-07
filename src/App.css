@@ -404,5 +404,17 @@ body {
   align-items: center;
 }
 
-.input {
+.checkboxes {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 6px;
+}
+
+.checkboxes label {
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }

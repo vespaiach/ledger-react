@@ -23,27 +23,39 @@ import {
 import { reasonsAtom } from './reason';
 import { gqlClient } from './utils';
 
-/**
- * For filtering
- */
 export const filterTransactionAtom = atom<
   Maybe<{
     fromAmount?: Maybe<number>;
     toAmount?: Maybe<number>;
     fromDate?: Maybe<Date>;
     toDate?: Maybe<Date>;
-    reasonId?: Maybe<number>;
+    reasonIds?: Maybe<number[]>;
   }>
 >(null);
-
+export const lastCursorTransactionAtom = atom<number | null>(null);
 export const transactionsAtom = atom<Transaction[]>([]);
-export const fetchTransactionsAtom = atom<
-  Transaction[],
-  Pick<GetTransactionsQueryVariables, 'take' | 'lastCursor'>,
-  Promise<void>
->(
-  (get) => get(transactionsAtom),
-  async (get, set, { take, lastCursor }) => {
+
+export const writeFilterTransactionAtom = atom(
+  null,
+  (
+    _,
+    set,
+    update: Maybe<{
+      fromAmount?: Maybe<number>;
+      toAmount?: Maybe<number>;
+      fromDate?: Maybe<Date>;
+      toDate?: Maybe<Date>;
+      reasonIds?: Maybe<number[]>;
+    }>
+  ) => {
+    set(filterTransactionAtom, (filters) => ({ ...filters, ...update }));
+    set(writeLastCursorAtom, { cursor: null });
+  }
+);
+export const writeLastCursorAtom = atom(null, async (get, set, { cursor }: { cursor: number | null }) => {
+  const lastCursor = get(lastCursorTransactionAtom);
+
+  if (cursor !== lastCursor || lastCursor === null) {
     try {
       const filtering = get(filterTransactionAtom);
 
@@ -54,21 +66,23 @@ export const fetchTransactionsAtom = atom<
           toDate: filtering?.toDate?.toISOString(),
           fromAmount: filtering?.fromAmount,
           toAmount: filtering?.toAmount,
-          take,
-          lastCursor,
+          reasonIds: filtering?.reasonIds,
+          take: 50,
+          lastCursor: cursor,
         },
       });
 
       if (!error && data) {
         const transactions = data.transactions ?? [];
 
-        set(transactionsAtom, (prev) => (lastCursor ? [...prev, ...transactions] : transactions));
+        set(lastCursorTransactionAtom, cursor);
+        set(transactionsAtom, (prev) => (cursor ? [...prev, ...transactions] : transactions));
       }
     } catch (e) {
       console.error(e);
     }
   }
-);
+});
 
 /**
  * Creating/ Updating/ Deleting Transaction.

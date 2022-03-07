@@ -28,6 +28,7 @@
   padding: 0 8px;
   box-sizing: border-box;
   gap: 8px;
+  overflow-x: auto;
 }
 
 .appbar.appbar--float {
@@ -58,4 +59,16 @@
 
 .appbar_filter--in {
   transform: translateY(28px);
+}
+
+.appbar--scrollable {
+  justify-content: flex-start;
+}
+
+.appbar_chips {
+  overflow-x: auto;
+  flex: 1;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 8px;
 }
