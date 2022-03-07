@@ -1,5 +1,3 @@
-import './Container.css';
-
 import cx from 'classnames';
 
 interface ContainerProps extends ComponentBaseProps {}
