@@ -1,43 +1,31 @@
 <p align="center">
     <a href="https://www.vespaiach.com/">
-        <img src="https://raw.githubusercontent.com/vespaiach/ledger/main/ledger.svg" height="56" width="56" data-canonical-src="https://www.vespaiach.com/ledger.svg" title="Ledger"/>
+        <img src="https://raw.githubusercontent.com/vespaiach/ledger/main/src/favicon.svg" height="56" width="56" title="Ledger"/>
     </a>
 </p>
 
 <p align="center">
-  <b>Ledger</b> is a small web application managing personal money balance
-  <br>
-  It is built with React/Redux and awesome GUI framework: <a href="https://github.com/mui-org/material-ui" title="Material UI">Material UI</a>
+  <b>Ledger</b> is a web application managing personal money balance
 </p>
 
 <br>
 
 # Live Playground
 
-The demo version at: https://in-out-money.herokuapp.com/ 
+The demo version at: https://ledger.dedyn.io/
 
 # Development
 
-To run web app at local, 
- 1. You need to download and run back-end server [ledger-graphql](https://github.com/vespaiach/ledger-graphql)
- 2. Download this repository:
-    - Create `.env` file with variable `REACT_APP_LEDGER_GRAPHQL_API=<back-end url>`
-    - Run web-app with command `yarn start`
-
-This web application is bootstraped with [cra](https://create-react-app.dev/). Some of frameworks and libraries are using in this web application:
-
- - React
- - Redux/Redux Saga
- - Material UI (v5.x)
- - Graphql Codegen
- - Appolo Client
+1.  Clone back-end server repository [ledger-graphql](https://github.com/vespaiach/ledger-graphql)
+2.  Download this repository:
+    - Create `.env` file with variable `VITE_GRAPHQL_URL=<back-end url>`
+    - Run web-app with command `npm run dev`
 
 # Heroku deployment
 
 ## Create a new app on Heroku
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/vespaiach/ledger)
-
 
 ## Manually deploy
 

@@ -30,6 +30,11 @@ export default function Card({ className, onClick, onDelete, onEdit, ...rest }: 
             </button>
             <button
               onClick={() => {
+                if (!divRef.current) {
+                  onDelete?.();
+                  return;
+                }
+
                 const { height } = divRef.current?.getBoundingClientRect();
                 divRef.current?.style.setProperty('height', `${height}px`);
                 setTimeout(() => {
