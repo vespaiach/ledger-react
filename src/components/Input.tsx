@@ -53,7 +53,7 @@ interface TagInputProps extends ComponentBaseProps {
 
 export function TagInput({ children, tags, caption, className, style, onDelete }: TagInputProps) {
   return (
-    <label className={cx('text-input', className)} style={style}>
+    <label className={cx('input text-input', className)} style={style}>
       <div className="caption">{caption}</div>
       <div className="tag-list">
         {tags.map((t, i) => (

@@ -106,7 +106,7 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
           </NumberFormat>
         </div>
         <div className="date-input">
-          <div style={{ padding: '0px 18px 12px 18px' }}>
+          <div style={{ padding: '0px 18px 4px 18px' }}>
             <Input caption="from date - to date" value={dateString} onChange={noop}>
               <svg
                 className="icon"
