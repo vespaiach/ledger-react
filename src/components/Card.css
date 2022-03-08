@@ -35,6 +35,8 @@
   padding: 16px;
   position: relative;
   z-index: 2;
+  transition: all 0.3s ease-in;
+  left: 0;
 }
 
 .card .reason {

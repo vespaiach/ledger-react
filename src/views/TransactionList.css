@@ -1,0 +1,26 @@
+.chervon-button {
+  border: none;
+  background: none;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chervon-right {
+  display: none;
+}
+
+.card-pane--open .chervon-right {
+  display: block;
+}
+
+.card-pane--open .chervon-left {
+  display: none;
+}
+
+.card-pane--open .card {
+  left: -180px;
+}

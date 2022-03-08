@@ -354,7 +354,7 @@ template {
 body {
   font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
   font-weight: 400;
-  background-color: rgb(231, 235, 240);
+  background-color: rgb(229, 246, 253);
   line-height: 1.2rem;
   color: #1a2027;
   margin: 0;
@@ -376,6 +376,7 @@ body {
   border: 1px solid rgba(0, 0, 0, 0.12);
   cursor: pointer;
   color: rgb(25, 118, 210);
+  background: rgb(255, 244, 229);
 }
 
 .flex-row {
@@ -417,4 +418,8 @@ body {
   display: flex;
   gap: 12px;
   align-items: center;
+}
+
+button svg {
+  color: rgb(25, 118, 210);
 }

@@ -7,4 +7,6 @@ interface ComponentBaseProps {
 interface BaseIconProps {
   width?: number;
   height?: number;
+  className?: string;
+  style?: React.CSSProperties | undefined;
 }

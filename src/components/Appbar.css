@@ -10,7 +10,7 @@
 
 .curtain--in {
   z-index: 101;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgb(18, 92, 122, 0.3);
 }
 
 .appbar {
@@ -19,7 +19,7 @@
   top: 0;
   height: 78px;
   z-index: 3;
-  background: rgb(231, 235, 240);
+  background-color: rgb(229, 246, 253);
   transition: all 0.1s ease-in-out;
   display: flex;
   display: flex;
