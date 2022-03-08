@@ -7,6 +7,7 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import cx from 'classnames';
 import NumberFormat from 'react-number-format';
+import { useNavigate } from 'react-router-dom';
 
 import { listenTo } from '../utils/window';
 import FilterMenu from './FilterMenu';
@@ -15,8 +16,11 @@ import CloseButton from './CloseButton';
 import { Maybe } from '../graphql/graphql.generated';
 import { fetchReasonsAtom, reasonsAtom, reasonsMapAtom } from '../store/reason';
 import MagnifyIcon from './icons/Magnify';
+import PlusOneIcon from './icons/PlusOne';
 
 export default function Appbar() {
+  const navigate = useNavigate();
+
   const filtering = useAtomValue(filterTransactionAtom);
   const setFiltering = useUpdateAtom(writeFilterTransactionAtom);
   const fetchReason = useUpdateAtom(fetchReasonsAtom);
@@ -67,7 +71,10 @@ export default function Appbar() {
       <Transition in={openFilter} timeout={300} unmountOnExit>
         {(state) => (
           <>
-            <div className={cx('curtain', { 'curtain--in': state === 'entering' || state === 'entered' })} />
+            <div
+              className={cx('curtain', { 'curtain--in': state === 'entering' || state === 'entered' })}
+              onClick={handleClose}
+            />
             <div
               className={cx('flex-column appbar_filter', {
                 'appbar_filter--in': state === 'entering' || state === 'entered',
@@ -81,7 +88,10 @@ export default function Appbar() {
         )}
       </Transition>
       <div className={cx('appbar', { 'appbar--float': scrolled, 'appbar--scrollable': hasFilters })}>
-        <button className={cx('button-icon')} onClick={handleOpen}>
+        <button className={cx('button')} onClick={() => navigate('/new')}>
+          <PlusOneIcon />
+        </button>
+        <button className={cx('button')} onClick={handleOpen}>
           <MagnifyIcon />
         </button>
         {hasFilters && (

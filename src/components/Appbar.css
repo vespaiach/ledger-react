@@ -19,11 +19,10 @@
   top: 0;
   height: 78px;
   z-index: 3;
-  background-color: rgb(229, 246, 253);
+  background-color: white;
   transition: all 0.1s ease-in-out;
   display: flex;
   display: flex;
-  justify-content: center;
   align-items: center;
   padding: 0 8px;
   box-sizing: border-box;

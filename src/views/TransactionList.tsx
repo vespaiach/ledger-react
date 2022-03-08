@@ -26,7 +26,7 @@ export default function TransactionList() {
   useEffect(() => void updateLastCursor({ cursor: null }), [updateLastCursor]);
 
   return (
-    <>
+    <div>
       <Appbar />
       <Container>
         <Virtuoso
@@ -60,6 +60,6 @@ export default function TransactionList() {
           )}
         />
       </Container>
-    </>
+    </div>
   );
 }

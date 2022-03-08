@@ -1,0 +1,20 @@
+.back-button {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.mutating {
+  background: white;
+  min-height: 100vh;
+}
+
+.mutating .head h1 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.mutating .head {
+  padding-top: 8px;
+  position: relative;
+}
