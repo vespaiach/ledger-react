@@ -426,9 +426,57 @@ body {
   align-items: center;
 }
 
+button {
+  background: rgb(255, 244, 229);
+}
+
 button svg {
   color: rgb(25, 118, 210);
   flex-shrink: 0;
+}
+
+.page-title {
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.input {
+  position: relative;
+}
+
+.input .caption {
+  color: rgb(113, 113, 113);
+  font-size: 14px;
+  line-height: 1;
+  position: absolute;
+  top: 8px;
+  left: 16px;
+}
+
+.input .caption .error {
+  color: rgb(239, 83, 80) !important;
+}
+
+.input.error input,
+.input.error textarea {
+  border-color: rgb(239, 83, 80) !important;
+}
+
+.input input,
+.input textarea {
+  padding: 26px 18px 12px 16px;
+  outline: none;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgb(176, 176, 176);
+  transition: all 0.1s ease-in;
+}
+
+.input input:focus,
+.input textarea:focus {
+  border: 1px solid #1a2027;
 }
 
 .fly-enter {
@@ -464,4 +512,27 @@ button svg {
 
 .fly-exit.fly-exit-active.on-duty {
   transform: translate3d(100%, 0, 0);
+}
+
+footer.form-footer {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid rgb(235, 235, 235);
+  padding: 0 18px;
+}
+
+footer.form-footer a {
+  margin-right: auto;
+  text-decoration: underline;
+}
+
+footer.form-footer button {
+  height: 38px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
 }

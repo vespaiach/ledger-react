@@ -58,6 +58,22 @@ mutation CreateTransaction($date: Date!, $amount: Float!, $reasonId: Int!, $note
   }
 }
 
+mutation UpdateTransaction($id: Int!, $date: Date, $amount: Float, $reasonId: Int, $note: String) {
+  updateTransaction(id: $id, date: $date, amount: $amount, reasonId: $reasonId, note: $note) {
+    id
+    amount
+    date
+    note
+    updatedAt
+    reason {
+      id
+      text
+      updatedAt
+    }
+  }
+}
+
+
 mutation CreateReason($text: String!) {
   reason: createReason(text: $text) {
     id

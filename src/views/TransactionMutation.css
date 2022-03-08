@@ -6,15 +6,24 @@
 
 .mutating {
   background: white;
-  min-height: 100vh;
-}
-
-.mutating .head h1 {
-  font-size: 18px;
-  font-weight: 700;
+  height: 100vh;
+  display: flex;
+  flex-flow: column nowrap;
 }
 
 .mutating .head {
   padding-top: 8px;
   position: relative;
+  border-bottom: 1px solid rgb(235, 235, 235);
+  margin-bottom: 12px;
+}
+
+.mutating .body .row {
+  padding: 0 16px;
+  margin-top: 18px;
+}
+
+.mutating .body {
+  flex: 1;
+  overflow-y: auto;
 }

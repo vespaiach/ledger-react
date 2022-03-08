@@ -1,0 +1,29 @@
+.combo-select {
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.combo-select input {
+  padding: 26px 0px 12px 16px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1px solid rgb(176, 176, 176);
+  transition: all 0.2s ease-in;
+  outline: none;
+}
+
+.combo-select .button-sheet {
+  background: white;
+  position: absolute;
+  top: 18px;
+  right: 6px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

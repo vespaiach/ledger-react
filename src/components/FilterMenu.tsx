@@ -3,24 +3,14 @@ import './FilterMenu.css';
 import NumberFormat from 'react-number-format';
 import { DateTime } from 'luxon';
 import { useAtom } from 'jotai';
-import cx from 'classnames';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import { Input, TagInput } from './Input';
-import useDate, { buildGroupData, DayNames, GroupExtend, MonthNames } from '../utils/useDate';
-import { listenTo } from '../utils/window';
 import { filterTransactionAtom, writeLastCursorAtom } from '../store/transaction';
-import { Reason } from '../graphql/graphql.generated';
+import { Maybe, Reason } from '../graphql/graphql.generated';
 import { fetchReasonsAtom, reasonsAtom, reasonsMapAtom } from '../store/reason';
-
-const WIDTH = 340;
-const HEIGHT = 360;
-const OVER_SCAN = 10;
-const GAP = 18;
-
-const FROM = 2000;
-const TO = 2200;
+import DatePicker from './DatePicker';
 
 const noop = () => null;
 
@@ -31,19 +21,14 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
   const reasonList = useAtomValue(reasonsAtom);
   const reasonMap = useAtomValue(reasonsMapAtom);
 
-  const { groups } = useDate({ from: FROM, to: TO });
-  const [frontIndex, setFrontIndex] = useState(0);
   const [reasons, setReasons] = useState<Reason[]>(() => {
     return filtering?.reasonIds?.map((r) => reasonMap[r]) ?? [];
   });
-  const [rearIndex, setRearIndex] = useState(OVER_SCAN);
   const [amountRange, setAmountRange] = useState([filtering?.fromAmount, filtering?.toAmount]);
-  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
+  const [dateRange, setDateRange] = useState<[Maybe<Date>, Maybe<Date>]>([
     filtering?.fromDate ?? null,
     filtering?.toDate ?? null,
   ]);
-
-  const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!reasonList?.length) {
@@ -75,25 +60,6 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
     updateLastCursor({ cursor: null });
     onClose();
   };
-
-  useEffect(() => {
-    if (!pickerRef.current) return;
-
-    const unsub = listenTo(pickerRef.current, 'scroll', function (event) {
-      if (!event.target) return;
-
-      const currIndex = Math.floor((event.target as HTMLDivElement).scrollLeft / WIDTH);
-
-      setFrontIndex(currIndex - OVER_SCAN < 0 ? 0 : currIndex - OVER_SCAN);
-      setRearIndex(currIndex + OVER_SCAN > groups.length ? groups.length - 1 : currIndex + OVER_SCAN);
-    });
-
-    const currYearIndex = (new Date().getFullYear() - FROM) * 12 - 1;
-
-    pickerRef.current.scrollTo({ left: currYearIndex * WIDTH });
-
-    return unsub;
-  }, [pickerRef.current]);
 
   let dateString = '';
   if (dateRange[0]) {
@@ -175,43 +141,7 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
               )}
             </Input>
           </div>
-          <div className="date-picker" ref={pickerRef} style={{ height: HEIGHT, width: '100%' }}>
-            <div
-              className="date-picker_slide"
-              style={{ position: 'relative', height: '100%', width: groups.length * WIDTH + GAP * 2 }}>
-              {groups.slice(frontIndex, rearIndex).map((g) => (
-                <Group
-                  key={`${g.month}${g.year}`}
-                  group={buildGroupData(g)}
-                  fromDate={dateRange[0]}
-                  toDate={dateRange[1]}
-                  onSelect={(d) => {
-                    const [from, to] = dateRange;
-
-                    if (from === null) {
-                      setDateRange([d, null]);
-                    } else if (to === null) {
-                      setDateRange(from > d ? [d, from] : [from, d]);
-                    } else {
-                      if (Math.abs(d.getTime() - from.getTime()) > Math.abs(d.getTime() - to.getTime())) {
-                        setDateRange(from < d ? [from, d] : [d, from]);
-                      } else {
-                        setDateRange(to < d ? [to, d] : [d, to]);
-                      }
-                    }
-                  }}
-                  style={{
-                    background: g.index % 2 === 0 ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.03)',
-                    position: 'absolute',
-                    top: 0,
-                    left: g.index * WIDTH + GAP,
-                    width: WIDTH,
-                    height: '100%',
-                  }}
-                />
-              ))}
-            </div>
-          </div>
+          <DatePicker allowRange fromDate={dateRange[0]} toDate={dateRange[1]} onChange={setDateRange} />
         </div>
         <div style={{ margin: '8px 16px 24px 16px' }}>
           <TagInput
@@ -237,7 +167,7 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
           </div>
         </div>
       </div>
-      <footer>
+      <footer className="form-footer">
         <a
           href="#"
           onClick={(e) => {
@@ -251,51 +181,5 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
         <button onClick={handleApply}>Apply Filter</button>
       </footer>
     </aside>
-  );
-}
-
-function Group({
-  group,
-  fromDate,
-  toDate,
-  style,
-  onSelect,
-}: {
-  fromDate: Date | null;
-  toDate: Date | null;
-  style: React.CSSProperties;
-  group: GroupExtend;
-  onSelect: (d: Date) => void;
-}) {
-  return (
-    <div style={style} className="group">
-      <div style={{ gridColumn: '1 / 8' }}>{`${MonthNames[group.month]} ${group.year}`}</div>
-      {DayNames.map((d) => (
-        <div key={d}>{d}</div>
-      ))}
-      {group.dates.map((d, i) => (
-        <button
-          className={cx({
-            dimmed: d.getMonth() !== group.month,
-            selected:
-              d.getMonth() === group.month &&
-              (isSameDate(d, fromDate) ||
-                isSameDate(d, toDate) ||
-                (fromDate && toDate && d > fromDate && d < toDate)),
-          })}
-          onClick={() => onSelect(d)}
-          key={i}>
-          {d.getDate()}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function isSameDate(d1: Date | null, d2: Date | null) {
-  if (!d1 || !d2) return false;
-
-  return (
-    d1.getDate() === d2.getDate() && d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth()
   );
 }

@@ -10,3 +10,7 @@ interface BaseIconProps {
   className?: string;
   style?: React.CSSProperties | undefined;
 }
+
+interface Item {
+  text: string;
+}

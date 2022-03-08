@@ -5,21 +5,35 @@ import { ChangeEventHandler, ReactNode } from 'react';
 import CloseButton from './CloseButton';
 
 interface InputProps extends ComponentBaseProps {
-  onChange?: ChangeEventHandler<HTMLInputElement> | undefined;
+  onChange?: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined;
   value?: string;
   defaultValue?: string;
   caption?: string;
   children?: ReactNode;
   id?: string;
+  error?: string;
+  multiple?: boolean;
 }
 
 let rnd = 0;
 
-export function Input({ id = `input-${++rnd}`, children, className, style, caption, ...rest }: InputProps) {
+export function Input({
+  id = `input-${++rnd}`,
+  error,
+  children,
+  className,
+  style,
+  caption,
+  multiple = false,
+  ...rest
+}: InputProps) {
   return (
-    <label htmlFor={id} className={cx('text-input', className)} style={style}>
-      <div className="caption">{caption}</div>
-      <input id={id} {...rest} />
+    <label htmlFor={id} className={cx('input', 'text-input', { error }, className)} style={style}>
+      <div className="caption">
+        {caption}
+        {!!error && <span className="error"> - {error}</span>}
+      </div>
+      {multiple ? <textarea rows={3} id={id} {...rest} /> : <input id={id} {...rest} />}
       <div className="prefix">{children}</div>
     </label>
   );

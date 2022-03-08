@@ -6,27 +6,13 @@
   position: relative;
 }
 
-.text-input input:focus {
-  border: 1px solid #1a2027;
-}
-
 .text-input input {
-  transition: all 0.2s ease-in;
   border: 1px solid rgb(176, 176, 176);
   padding: 26px 18px 12px 42px;
   width: 100%;
   box-sizing: border-box;
   border-radius: 4px;
   outline: none;
-}
-
-.text-input .caption {
-  color: rgb(113, 113, 113);
-  font-size: 14px;
-  line-height: 1;
-  position: absolute;
-  top: 8px;
-  left: 16px;
 }
 
 .text-input .tag-list {

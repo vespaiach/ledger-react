@@ -17,8 +17,11 @@ import {
   GetTransactionsDocument,
   GetTransactionsQuery,
   GetTransactionsQueryVariables,
+  MutationUpdateTransactionArgs,
   Reason,
   Transaction,
+  UpdateTransactionMutation,
+  UpdateTransactionMutationVariables,
 } from '../graphql/graphql.generated';
 import { reasonsAtom } from './reason';
 import { gqlClient } from './utils';
@@ -135,27 +138,41 @@ export const transactionForCreatingUpdatingAtom = atom<null, { id?: string }>(
   }
 );
 
-export const saveTransactionAtom = atom<null, undefined, Promise<void>>(
+export const saveTransactionAtom = atom(
   () => null,
   /**
    * Let's validate data outside of this function.
    * Expecting data being saved are valid
    */
-  async (get, set) => {
+  async (
+    get,
+    set,
+    {
+      id,
+      reasonText,
+      amount,
+      date,
+      note,
+    }: {
+      id?: number;
+      reasonText?: Maybe<string>;
+      amount?: Maybe<number>;
+      date?: Maybe<Date>;
+      note?: Maybe<string>;
+    }
+  ) => {
     try {
+      const reasons = get(reasonsAtom);
       set(transactionSavingAtom, true);
-
-      const reasonId = get(reasonIdAtom);
-      const reasonText = get(reasonTextAtom);
-      const amount = get(amountAtom) as number;
-      const date = get(dateAtom) as Date;
-      const note = get(noteAtom);
 
       /**
        * Create a new reason if not exist.
        */
-      let checkReasonId = reasonId;
-      if (!reasonId && reasonText) {
+
+      const reason = reasons.find((r) => r.text === reasonText);
+      let reasonId = reason?.id;
+
+      if (!reason && reasonText) {
         const { errors, data } = await gqlClient.mutate<CreateReasonMutation, CreateReasonMutationVariables>({
           mutation: CreateReasonDocument,
           variables: { text: reasonText },
@@ -169,23 +186,49 @@ export const saveTransactionAtom = atom<null, undefined, Promise<void>>(
             return ar;
           });
 
-          checkReasonId = data.reason.id;
+          reasonId = data.reason.id;
         } else {
           console.error(errors);
         }
       }
 
-      if (checkReasonId) {
-        const { errors } = await gqlClient.mutate<
-          CreateTransactionMutation,
-          CreateTransactionMutationVariables
-        >({
-          mutation: CreateTransactionDocument,
-          variables: { date: date.toISOString(), amount, reasonId: checkReasonId, note },
-        });
+      if (reasonId) {
+        if (!id && date && amount) {
+          const { errors } = await gqlClient.mutate<
+            CreateTransactionMutation,
+            CreateTransactionMutationVariables
+          >({
+            mutation: CreateTransactionDocument,
+            variables: { date: date.toISOString(), amount, reasonId, note },
+          });
 
-        if (errors) {
-          console.error(errors);
+          if (errors) {
+            console.error(errors);
+          }
+
+          return;
+        }
+
+        if (id) {
+          const { errors } = await gqlClient.mutate<
+            UpdateTransactionMutation,
+            UpdateTransactionMutationVariables
+          >({
+            mutation: CreateTransactionDocument,
+            variables: {
+              id,
+              date: date?.toISOString(),
+              amount,
+              reasonId,
+              note,
+            },
+          });
+
+          if (errors) {
+            console.error(errors);
+          }
+
+          return;
         }
       }
     } catch (e) {
