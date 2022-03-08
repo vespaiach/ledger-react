@@ -2,7 +2,8 @@ import './TransactionList.css';
 
 import { DateTime } from 'luxon';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import Container from '../components/Container';
@@ -12,9 +13,10 @@ import { deleteTransactionAtom, transactionsAtom, writeLastCursorAtom } from '..
 import ChervonLeftIcon from '../components/icons/ChervonLeft';
 import ChervonRightIcon from '../components/icons/ChervonRight';
 import { Transaction } from '../graphql/graphql.generated';
-import { Transition } from 'react-transition-group';
 
 export default function TransactionList() {
+  const navigate = useNavigate();
+
   const updateLastCursor = useUpdateAtom(writeLastCursorAtom);
   const deleteTransaction = useUpdateAtom(deleteTransactionAtom);
   const transactions = useAtomValue(transactionsAtom);
@@ -39,6 +41,7 @@ export default function TransactionList() {
           itemContent={(_, transaction) => (
             <Card
               onDelete={() => handleDelete(transaction)}
+              onEdit={() => navigate(`/${transaction.id}`)}
               onClick={(e) => {
                 if (e.currentTarget.classList.contains('card-pane--open')) {
                   e.currentTarget.classList.remove('card-pane--open');

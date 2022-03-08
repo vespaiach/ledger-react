@@ -14,7 +14,7 @@ import { fetchReasonsAtom, reasonsAtom } from '../store/reason';
 import XIcon from '../components/icons/X';
 import DatePicker from '../components/DatePicker';
 import ComboSelect from '../components/ComboSelect';
-import { saveTransactionAtom } from '../store/transaction';
+import { saveTransactionAtom, transactionsAtom } from '../store/transaction';
 
 const noop = () => null;
 
@@ -25,14 +25,32 @@ export default function TransactionMutation() {
   const fetchReason = useUpdateAtom(fetchReasonsAtom);
   const saveTransaction = useUpdateAtom(saveTransactionAtom);
   const reasonList = useAtomValue(reasonsAtom);
+  const transactions = useAtomValue(transactionsAtom);
 
+  const [transactionId, setTransactionId] = useState<Maybe<number>>(null);
   const [amount, setAmount] = useState<string>('');
   const [date, setDate] = useState<Maybe<Date>>(null);
   const [reason, setReason] = useState<string>('');
   const [note, setNote] = useState<string>('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const isCreating = id === 'new';
+  useEffect(() => {
+    if (id && /\d+/i.test(id)) {
+      const checkingId = Number(id);
+      const transaction = transactions.find((t) => t.id === checkingId);
+
+      if (transaction) {
+        setAmount(String(transaction.amount));
+        setDate(new Date(transaction.date));
+        setReason(transaction.reason.text);
+        setNote(transaction.note ?? '');
+        setTransactionId(transaction.id);
+        return;
+      }
+    }
+
+    setTransactionId(null);
+  }, [id, transactions]);
 
   const clear = () => {
     setErrors({});
@@ -61,6 +79,7 @@ export default function TransactionMutation() {
       setErrors(checking);
     } else {
       await saveTransaction({
+        id: transactionId,
         date,
         amount: amount !== '' ? Number(amount) : null,
         reasonText: reason,
@@ -80,7 +99,7 @@ export default function TransactionMutation() {
   return (
     <Container className="mutating">
       <div className="flex-row flex-center head">
-        <h1 className="page-title">{isCreating ? 'Add' : 'Update'}</h1>
+        <h1 className="page-title">{transactionId === null ? 'Add' : 'Update'}</h1>
         <button className="button icon-button back-button" onClick={() => navigate('/')}>
           <BackArrowIcon />
         </button>

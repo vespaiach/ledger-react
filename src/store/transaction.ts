@@ -17,9 +17,9 @@ import {
   GetTransactionsDocument,
   GetTransactionsQuery,
   GetTransactionsQueryVariables,
-  MutationUpdateTransactionArgs,
   Reason,
   Transaction,
+  UpdateTransactionDocument,
   UpdateTransactionMutation,
   UpdateTransactionMutationVariables,
 } from '../graphql/graphql.generated';
@@ -154,7 +154,7 @@ export const saveTransactionAtom = atom(
       date,
       note,
     }: {
-      id?: number;
+      id?: Maybe<number>;
       reasonText?: Maybe<string>;
       amount?: Maybe<number>;
       date?: Maybe<Date>;
@@ -214,7 +214,7 @@ export const saveTransactionAtom = atom(
             UpdateTransactionMutation,
             UpdateTransactionMutationVariables
           >({
-            mutation: CreateTransactionDocument,
+            mutation: UpdateTransactionDocument,
             variables: {
               id,
               date: date?.toISOString(),
