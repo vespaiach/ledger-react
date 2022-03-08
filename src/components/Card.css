@@ -3,6 +3,7 @@
   position: relative;
   margin: 8px;
   border-radius: 4px;
+  transition: all 0.3s ease-in-out;
 }
 
 .card-sheet {
@@ -35,7 +36,7 @@
   padding: 16px;
   position: relative;
   z-index: 2;
-  transition: all 0.3s ease-in;
+  transition: all 0.4s ease-in;
   left: 0;
 }
 
@@ -76,4 +77,10 @@
   width: 24px;
   height: 24px;
   color: rgba(25, 118, 210, 0.8);
+}
+
+.card-pane--collapse {
+  height: 1px !important;
+  opacity: 0;
+  overflow: hidden;
 }

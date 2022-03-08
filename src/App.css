@@ -422,4 +422,5 @@ body {
 
 button svg {
   color: rgb(25, 118, 210);
+  flex-shrink: 0;
 }

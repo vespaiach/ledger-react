@@ -2,19 +2,26 @@ import './TransactionList.css';
 
 import { DateTime } from 'luxon';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import Container from '../components/Container';
 import Card from '../components/Card';
 import Appbar from '../components/Appbar';
-import { transactionsAtom, writeLastCursorAtom } from '../store/transaction';
+import { deleteTransactionAtom, transactionsAtom, writeLastCursorAtom } from '../store/transaction';
 import ChervonLeftIcon from '../components/icons/ChervonLeft';
 import ChervonRightIcon from '../components/icons/ChervonRight';
+import { Transaction } from '../graphql/graphql.generated';
+import { Transition } from 'react-transition-group';
 
 export default function TransactionList() {
   const updateLastCursor = useUpdateAtom(writeLastCursorAtom);
+  const deleteTransaction = useUpdateAtom(deleteTransactionAtom);
   const transactions = useAtomValue(transactionsAtom);
+
+  const handleDelete = (transaction: Transaction) => {
+    deleteTransaction({ id: transaction.id });
+  };
 
   useEffect(() => void updateLastCursor({ cursor: null }), [updateLastCursor]);
 
@@ -29,8 +36,9 @@ export default function TransactionList() {
           overscan={200}
           useWindowScroll
           data={transactions}
-          itemContent={(_, trans) => (
+          itemContent={(_, transaction) => (
             <Card
+              onDelete={() => handleDelete(transaction)}
               onClick={(e) => {
                 if (e.currentTarget.classList.contains('card-pane--open')) {
                   e.currentTarget.classList.remove('card-pane--open');
@@ -39,15 +47,15 @@ export default function TransactionList() {
                 }
               }}>
               <div className="headline">
-                <h1>${trans.amount}</h1>
-                <h2>{DateTime.fromISO(trans.date).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</h2>
+                <h1>${transaction.amount}</h1>
+                <h2>{DateTime.fromISO(transaction.date).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</h2>
                 <button className="chervon-button">
                   <ChervonLeftIcon className="chervon-left" />
                   <ChervonRightIcon className="chervon-right" />
                 </button>
               </div>
-              <p className="reason">{trans.reason.text}</p>
-              <p className="note">{trans.note}</p>
+              <p className="reason">{transaction.reason.text}</p>
+              <p className="note">{transaction.note}</p>
             </Card>
           )}
         />

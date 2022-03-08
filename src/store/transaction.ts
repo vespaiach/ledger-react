@@ -196,30 +196,22 @@ export const saveTransactionAtom = atom<null, undefined, Promise<void>>(
   }
 );
 
-export const deleteTransactionAtom = atom<null, undefined, Promise<void>>(
-  () => null,
-  async (get, set) => {
-    const id = get(transactionIdAtom);
+export const deleteTransactionAtom = atom(null, async (_, set, { id }: { id: number }) => {
+  if (id) {
+    const { errors, data } = await gqlClient.mutate<
+      DeleteTransactionMutation,
+      DeleteTransactionMutationVariables
+    >({
+      mutation: DeleteTransactionDocument,
+      variables: { id },
+    });
 
-    if (id) {
-      const { errors, data } = await gqlClient.mutate<
-        DeleteTransactionMutation,
-        DeleteTransactionMutationVariables
-      >({
-        mutation: DeleteTransactionDocument,
-        variables: { id },
-      });
+    if (errors) {
+      console.error(errors);
+    }
 
-      if (errors) {
-        console.error(errors);
-      }
-
-      set(transactionIdAtom, null);
-      set(reasonIdAtom, null);
-      set(reasonTextAtom, null);
-      set(dateAtom, null);
-      set(amountAtom, null);
-      set(noteAtom, null);
+    if (data?.deleteTransaction) {
+      set(transactionsAtom, (trans) => trans.filter((t) => t.id !== id));
     }
   }
-);
+});
