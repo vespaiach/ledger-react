@@ -42,9 +42,10 @@ export default function DatePicker({
       setRearIndex(currIndex + OVER_SCAN > groups.length ? groups.length - 1 : currIndex + OVER_SCAN);
     });
 
-    const currYearIndex = (new Date().getFullYear() - FROM) * 12 - 1;
+    const now = new Date();
+    const currYearIndex = (now.getFullYear() - FROM) * 12 + now.getMonth();
 
-    pickerRef.current.scrollTo({ left: currYearIndex * WIDTH });
+    pickerRef.current.scrollTo({ left: currYearIndex * WIDTH + GAP });
 
     return unsub;
   }, [pickerRef.current]);
@@ -54,40 +55,42 @@ export default function DatePicker({
       <div
         className="date-picker_slide"
         style={{ position: 'relative', height: '100%', width: groups.length * WIDTH + GAP * 2 }}>
-        {groups.slice(frontIndex, rearIndex).map((g) => (
-          <Group
-            key={`${g.month}${g.year}`}
-            group={buildGroupData(g)}
-            fromDate={fromDate}
-            toDate={toDate}
-            onSelect={(d) => {
-              if (!allowRange) {
-                onChange([d, null]);
-                return;
-              }
-
-              if (fromDate === null || fromDate === undefined) {
-                onChange?.([d, null]);
-              } else if (toDate === null || toDate === undefined) {
-                onChange?.(fromDate > d ? [d, fromDate] : [fromDate, d]);
-              } else {
-                if (Math.abs(d.getTime() - fromDate.getTime()) > Math.abs(d.getTime() - toDate.getTime())) {
-                  onChange?.(fromDate < d ? [fromDate, d] : [d, fromDate]);
-                } else {
-                  onChange?.(toDate < d ? [toDate, d] : [d, toDate]);
+        {groups.slice(frontIndex, rearIndex).map((g) => {
+          return (
+            <Group
+              key={`${g.month}${g.year}`}
+              group={buildGroupData(g)}
+              fromDate={fromDate}
+              toDate={toDate}
+              onSelect={(d) => {
+                if (!allowRange) {
+                  onChange([d, null]);
+                  return;
                 }
-              }
-            }}
-            style={{
-              background: g.index % 2 === 0 ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.03)',
-              position: 'absolute',
-              top: 0,
-              left: g.index * WIDTH + GAP,
-              width: WIDTH,
-              height: '100%',
-            }}
-          />
-        ))}
+
+                if (fromDate === null || fromDate === undefined) {
+                  onChange?.([d, null]);
+                } else if (toDate === null || toDate === undefined) {
+                  onChange?.(fromDate > d ? [d, fromDate] : [fromDate, d]);
+                } else {
+                  if (Math.abs(d.getTime() - fromDate.getTime()) > Math.abs(d.getTime() - toDate.getTime())) {
+                    onChange?.(fromDate < d ? [fromDate, d] : [d, fromDate]);
+                  } else {
+                    onChange?.(toDate < d ? [toDate, d] : [d, toDate]);
+                  }
+                }
+              }}
+              style={{
+                background: g.index % 2 === 0 ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.03)',
+                position: 'absolute',
+                top: 0,
+                left: g.index * WIDTH + GAP,
+                width: WIDTH,
+                height: '100%',
+              }}
+            />
+          );
+        })}
       </div>
     </div>
   );

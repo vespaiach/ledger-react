@@ -145,7 +145,7 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
         </div>
         <div style={{ margin: '8px 16px 24px 16px' }}>
           <TagInput
-            style={{ marginBottom: 12 }}
+            style={{ marginBottom: 4 }}
             caption="reasons"
             tags={reasons}
             onDelete={(tag) => {

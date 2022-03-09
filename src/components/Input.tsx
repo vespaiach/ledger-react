@@ -60,7 +60,11 @@ export function TagInput({ children, tags, caption, className, style, onDelete }
           <div key={i} className="tag">
             <span>{t.text}</span>
             <CloseButton
-              onClick={() => onDelete?.(t)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onDelete?.(t);
+              }}
               style={{ marginRight: 'auto', position: 'static', padding: 0, height: 24, width: 24 }}
             />
           </div>

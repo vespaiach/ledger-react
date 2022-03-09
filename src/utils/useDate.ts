@@ -59,8 +59,9 @@ export function buildGroupData(group: Group) {
   const data: GroupExtend = { ...group, dates: [] };
 
   const startDate = new Date(group.startDate);
+  data.dates.push(new Date(startDate));
 
-  for (let i = 0; i < 7 * 6; i++) {
+  for (let i = 1; i < 7 * 6; i++) {
     startDate.setDate(startDate.getDate() + 1);
     data.dates.push(new Date(startDate));
   }

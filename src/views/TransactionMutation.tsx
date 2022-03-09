@@ -180,7 +180,7 @@ export default function TransactionMutation() {
             }}
           />
         </div>
-        <div className="row">
+        <div className="row" style={{ marginBottom: 24 }}>
           <Input
             caption="note"
             value={note}
