@@ -11,9 +11,6 @@ import {
   DeleteTransactionDocument,
   DeleteTransactionMutation,
   DeleteTransactionMutationVariables,
-  GetTransactionDocument,
-  GetTransactionQuery,
-  GetTransactionQueryVariables,
   GetTransactionsDocument,
   GetTransactionsQuery,
   GetTransactionsQueryVariables,
@@ -83,6 +80,8 @@ export const writeLastCursorAtom = atom(null, async (get, set, { cursor }: { cur
       }
     } catch (e) {
       console.error(e);
+
+      set(appMessageAtom, { message: 'Something went wrong', type: 'error', timeout: 3000 });
     }
   }
 });
@@ -99,44 +98,6 @@ export const noteAtom = atom<Maybe<string>>(null);
 
 export const transactionSavingAtom = atom(false);
 export const transactionLoadingAtom = atom(false);
-
-export const transactionForCreatingUpdatingAtom = atom<null, { id?: string }>(
-  () => null,
-  async (_, set, { id }) => {
-    if (!id) {
-      set(transactionIdAtom, null);
-      set(reasonIdAtom, null);
-      set(reasonTextAtom, null);
-      set(dateAtom, null);
-      set(amountAtom, null);
-      set(noteAtom, null);
-
-      return;
-    }
-
-    try {
-      set(transactionSavingAtom, true);
-
-      const { error, data } = await gqlClient.query<GetTransactionQuery, GetTransactionQueryVariables>({
-        query: GetTransactionDocument,
-        variables: { id: Number(id) },
-      });
-
-      if (!error && data?.transaction) {
-        set(transactionIdAtom, data.transaction.id);
-        set(reasonIdAtom, data.transaction.reason.id);
-        set(reasonTextAtom, data.transaction.reason.text);
-        set(dateAtom, new Date(data.transaction.date));
-        set(amountAtom, data.transaction.amount);
-        set(noteAtom, data.transaction.note);
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      set(transactionSavingAtom, false);
-    }
-  }
-);
 
 export const saveTransactionAtom = atom(
   () => null,
@@ -189,6 +150,7 @@ export const saveTransactionAtom = atom(
           reasonId = data.reason.id;
         } else {
           console.error(errors);
+          set(appMessageAtom, { message: "Couldn't create a new reason", type: 'error', timeout: 3000 });
         }
       }
 
@@ -204,6 +166,11 @@ export const saveTransactionAtom = atom(
 
           if (errors) {
             console.error(errors);
+            set(appMessageAtom, {
+              message: "Couldn't create a new transaction",
+              type: 'error',
+              timeout: 3000,
+            });
           }
 
           return;
@@ -226,6 +193,11 @@ export const saveTransactionAtom = atom(
 
           if (errors) {
             console.error(errors);
+            set(appMessageAtom, {
+              message: "Couldn't update transaction",
+              type: 'error',
+              timeout: 3000,
+            });
           }
 
           return;
@@ -233,6 +205,7 @@ export const saveTransactionAtom = atom(
       }
     } catch (e) {
       console.error(e);
+      set(appMessageAtom, { message: e.message, type: 'error', timeout: 3000 });
     } finally {
       set(transactionSavingAtom, false);
     }
@@ -251,6 +224,12 @@ export const deleteTransactionAtom = atom(null, async (_, set, { id }: { id: num
 
     if (errors) {
       console.error(errors);
+
+      set(appMessageAtom, {
+        message: "Couldn't delete transaction",
+        type: 'error',
+        timeout: 3000,
+      });
     }
 
     if (data?.deleteTransaction) {
@@ -258,3 +237,11 @@ export const deleteTransactionAtom = atom(null, async (_, set, { id }: { id: num
     }
   }
 });
+
+export interface AppMessage {
+  message: string;
+  type: 'error' | 'success' | 'notification';
+  timeout?: number; // miliseconds
+}
+
+export const appMessageAtom = atom<AppMessage | null>(null);
