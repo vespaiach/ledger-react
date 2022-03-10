@@ -22,6 +22,11 @@
   color: rgb(255, 255, 255);
 }
 
+.message-sheet.success {
+  background: rgb(46, 125, 50);
+  color: rgb(255, 255, 255);
+}
+
 .message-sheet p {
   margin: 0;
 }

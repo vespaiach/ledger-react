@@ -96,7 +96,7 @@ export const amountAtom = atom<Maybe<number>>(null);
 export const dateAtom = atom<Maybe<Date>>(null);
 export const noteAtom = atom<Maybe<string>>(null);
 
-export const transactionSavingAtom = atom(false);
+export const transactionSaveStatusAtom = atom<'saving' | 'success' | 'error' | null>(null);
 export const transactionLoadingAtom = atom(false);
 
 export const saveTransactionAtom = atom(
@@ -124,7 +124,7 @@ export const saveTransactionAtom = atom(
   ) => {
     try {
       const reasons = get(reasonsAtom);
-      set(transactionSavingAtom, true);
+      set(transactionSaveStatusAtom, 'saving');
 
       /**
        * Create a new reason if not exist.
@@ -171,6 +171,8 @@ export const saveTransactionAtom = atom(
               type: 'error',
               timeout: 3000,
             });
+          } else {
+            set(transactionSaveStatusAtom, 'success');
           }
 
           return;
@@ -198,16 +200,20 @@ export const saveTransactionAtom = atom(
               type: 'error',
               timeout: 3000,
             });
+          } else {
+            set(transactionSaveStatusAtom, 'success');
           }
 
           return;
         }
+      } else {
+        set(transactionSaveStatusAtom, 'error');
+        set(appMessageAtom, { message: "Couldn't create a new reason", type: 'error', timeout: 3000 });
       }
     } catch (e) {
       console.error(e);
-      set(appMessageAtom, { message: e.message, type: 'error', timeout: 3000 });
-    } finally {
-      set(transactionSavingAtom, false);
+      set(appMessageAtom, { message: String(e), type: 'error', timeout: 3000 });
+      set(transactionSaveStatusAtom, 'error');
     }
   }
 );

@@ -2,6 +2,7 @@ import './TransactionMutation.css';
 
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 import NumberFormat from 'react-number-format';
 import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
@@ -14,7 +15,12 @@ import { fetchReasonsAtom, reasonsAtom } from '../store/reason';
 import XIcon from '../components/icons/X';
 import DatePicker from '../components/DatePicker';
 import ComboSelect from '../components/ComboSelect';
-import { saveTransactionAtom, transactionsAtom } from '../store/transaction';
+import {
+  appMessageAtom,
+  saveTransactionAtom,
+  transactionsAtom,
+  transactionSaveStatusAtom,
+} from '../store/transaction';
 
 const noop = () => null;
 
@@ -22,6 +28,8 @@ export default function TransactionMutation() {
   const navigate = useNavigate();
   const { id } = useParams<'id'>();
 
+  const [saving, setSaving] = useAtom(transactionSaveStatusAtom);
+  const setAppMessage = useUpdateAtom(appMessageAtom);
   const fetchReason = useUpdateAtom(fetchReasonsAtom);
   const saveTransaction = useUpdateAtom(saveTransactionAtom);
   const reasonList = useAtomValue(reasonsAtom);
@@ -61,6 +69,8 @@ export default function TransactionMutation() {
   };
 
   const handleSave = async () => {
+    if (saving === 'saving') return;
+
     const checking = { date: '', amount: '', reason: '' };
 
     if (!date) {
@@ -85,8 +95,6 @@ export default function TransactionMutation() {
         reasonText: reason,
         note,
       });
-
-      clear();
     }
   };
 
@@ -95,6 +103,22 @@ export default function TransactionMutation() {
       fetchReason();
     }
   }, [reasonList]);
+
+  useEffect(() => {
+    if (saving === 'saving') return;
+
+    if (saving === 'success') {
+      setAppMessage({
+        message: `Tranaction has been ${transactionId === null ? 'created' : 'updated'}`,
+        type: 'success',
+        timeout: 3000,
+      });
+    }
+
+    clear();
+    setSaving(null);
+  }, [saving]);
+  console.log(saving)
 
   return (
     <Container className="mutating">
@@ -195,12 +219,16 @@ export default function TransactionMutation() {
         <a
           href="#"
           onClick={(e) => {
+            if (saving) return;
+
             e.preventDefault();
             clear();
           }}>
           Clear All
         </a>
-        <button onClick={handleSave}>Save Changes</button>
+        <button disabled={saving === 'saving'} onClick={handleSave}>
+          Save Changes
+        </button>
       </footer>
     </Container>
   );
