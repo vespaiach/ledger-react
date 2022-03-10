@@ -105,7 +105,7 @@ export default function TransactionMutation() {
   }, [reasonList]);
 
   useEffect(() => {
-    if (saving === 'saving') return;
+    if (saving === 'saving' || saving === null) return;
 
     if (saving === 'success') {
       setAppMessage({
