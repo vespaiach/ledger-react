@@ -1,27 +1,8 @@
 import { Maybe } from 'graphql/jsutils/Maybe';
 import { atom } from 'jotai';
 
-import {
-  CreateReasonDocument,
-  CreateReasonMutation,
-  CreateReasonMutationVariables,
-  CreateTransactionDocument,
-  CreateTransactionMutation,
-  CreateTransactionMutationVariables,
-  DeleteTransactionDocument,
-  DeleteTransactionMutation,
-  DeleteTransactionMutationVariables,
-  GetTransactionsDocument,
-  GetTransactionsQuery,
-  GetTransactionsQueryVariables,
-  Reason,
-  Transaction,
-  UpdateTransactionDocument,
-  UpdateTransactionMutation,
-  UpdateTransactionMutationVariables,
-} from '../graphql/graphql.generated';
 import { reasonsAtom } from './reason';
-import { gqlClient } from './utils';
+import { appMessageAtom, createReason, deleteTransaction, loadTransactions, saveTransaction } from './utils';
 
 export const filterTransactionAtom = atom<
   Maybe<{
@@ -56,32 +37,21 @@ export const writeLastCursorAtom = atom(null, async (get, set, { cursor }: { cur
   const lastCursor = get(lastCursorTransactionAtom);
 
   if (cursor !== lastCursor || lastCursor === null) {
-    try {
-      const filtering = get(filterTransactionAtom);
+    const filtering = get(filterTransactionAtom);
 
-      const { error, data } = await gqlClient.query<GetTransactionsQuery, GetTransactionsQueryVariables>({
-        query: GetTransactionsDocument,
-        variables: {
-          fromDate: filtering?.fromDate?.toISOString(),
-          toDate: filtering?.toDate?.toISOString(),
-          fromAmount: filtering?.fromAmount,
-          toAmount: filtering?.toAmount,
-          reasonIds: filtering?.reasonIds,
-          take: 50,
-          lastCursor: cursor,
-        },
-      });
+    const trans = await loadTransactions({
+      fromDate: filtering?.fromDate?.toISOString(),
+      toDate: filtering?.toDate?.toISOString(),
+      fromAmount: filtering?.fromAmount,
+      toAmount: filtering?.toAmount,
+      reasonIds: filtering?.reasonIds,
+      take: 50,
+      lastCursor: cursor,
+    });
 
-      if (!error && data) {
-        const transactions = data.transactions ?? [];
-
-        set(lastCursorTransactionAtom, cursor);
-        set(transactionsAtom, (prev) => (cursor ? [...prev, ...transactions] : transactions));
-      }
-    } catch (e) {
-      console.error(e);
-
-      set(appMessageAtom, { message: 'Something went wrong', type: 'error', timeout: 3000 });
+    if (trans) {
+      set(lastCursorTransactionAtom, cursor);
+      set(transactionsAtom, (prev) => (cursor ? [...prev, ...trans] : trans));
     }
   }
 });
@@ -122,132 +92,73 @@ export const saveTransactionAtom = atom(
       note?: Maybe<string>;
     }
   ) => {
-    try {
-      const reasons = get(reasonsAtom);
-      set(transactionSaveStatusAtom, 'saving');
+    const reasons = get(reasonsAtom);
+    set(transactionSaveStatusAtom, 'saving');
 
-      /**
-       * Create a new reason if not exist.
-       */
+    /**
+     * Create a new reason if not exist.
+     */
+    const reason = reasons.find((r) => r.text === reasonText);
+    let reasonId = reason?.id;
 
-      const reason = reasons.find((r) => r.text === reasonText);
-      let reasonId = reason?.id;
+    if (!reason && reasonText) {
+      const reason = await createReason({ text: reasonText });
 
-      if (!reason && reasonText) {
-        const { errors, data } = await gqlClient.mutate<CreateReasonMutation, CreateReasonMutationVariables>({
-          mutation: CreateReasonDocument,
-          variables: { text: reasonText },
+      if (reason) {
+        set(reasonsAtom, (prev) => {
+          const ar: Reason[] = [...prev, reason];
+          ar.sort((a, b) => a.text.localeCompare(b.text));
+
+          return ar;
         });
 
-        if (!errors && data?.reason) {
-          set(reasonsAtom, (prev) => {
-            const ar: Reason[] = [...prev, data.reason as Reason];
-            ar.sort((a, b) => a.text.localeCompare(b.text));
-
-            return ar;
-          });
-
-          reasonId = data.reason.id;
-        } else {
-          console.error(errors);
-          set(appMessageAtom, { message: "Couldn't create a new reason", type: 'error', timeout: 3000 });
-        }
+        reasonId = reason.id;
       }
+    }
 
-      if (reasonId) {
-        if (!id && date && amount) {
-          const { errors } = await gqlClient.mutate<
-            CreateTransactionMutation,
-            CreateTransactionMutationVariables
-          >({
-            mutation: CreateTransactionDocument,
-            variables: { date: date.toISOString(), amount, reasonId, note },
-          });
+    if (reasonId) {
+      const tran = await saveTransaction({ id, date: date?.toISOString(), amount, reasonId, note });
 
-          if (errors) {
-            console.error(errors);
-            set(appMessageAtom, {
-              message: "Couldn't create a new transaction",
-              type: 'error',
-              timeout: 3000,
-            });
-          } else {
-            set(transactionSaveStatusAtom, 'success');
-          }
-
-          return;
-        }
-
+      if (tran) {
         if (id) {
-          const { errors } = await gqlClient.mutate<
-            UpdateTransactionMutation,
-            UpdateTransactionMutationVariables
-          >({
-            mutation: UpdateTransactionDocument,
-            variables: {
-              id,
-              date: date?.toISOString(),
-              amount,
-              reasonId,
-              note,
-            },
-          });
-
-          if (errors) {
-            console.error(errors);
-            set(appMessageAtom, {
-              message: "Couldn't update transaction",
-              type: 'error',
-              timeout: 3000,
-            });
-          } else {
-            set(transactionSaveStatusAtom, 'success');
-          }
-
-          return;
+          set(transactionsAtom, (t) =>
+            t.map((t) => {
+              if (t.id === id) return { ...tran };
+              return t;
+            })
+          );
+        } else {
+          set(lastCursorTransactionAtom, null);
         }
+        set(transactionSaveStatusAtom, 'success');
       } else {
         set(transactionSaveStatusAtom, 'error');
-        set(appMessageAtom, { message: "Couldn't create a new reason", type: 'error', timeout: 3000 });
       }
-    } catch (e) {
-      console.error(e);
-      set(appMessageAtom, { message: String(e), type: 'error', timeout: 3000 });
+    } else {
       set(transactionSaveStatusAtom, 'error');
+      set(appMessageAtom, { message: "Couldn't create a new reason", type: 'error', timeout: 3000 });
     }
   }
 );
 
 export const deleteTransactionAtom = atom(null, async (_, set, { id }: { id: number }) => {
   if (id) {
-    const { errors, data } = await gqlClient.mutate<
-      DeleteTransactionMutation,
-      DeleteTransactionMutationVariables
-    >({
-      mutation: DeleteTransactionDocument,
-      variables: { id },
-    });
+    const result = await deleteTransaction(id);
 
-    if (errors) {
-      console.error(errors);
-
+    if (!result) {
       set(appMessageAtom, {
         message: "Couldn't delete transaction",
         type: 'error',
         timeout: 3000,
       });
-    }
-
-    if (data?.deleteTransaction) {
+    } else {
       set(transactionsAtom, (trans) => trans.filter((t) => t.id !== id));
+
+      set(appMessageAtom, {
+        message: 'Transaction deleted!',
+        type: 'success',
+        timeout: 3000,
+      });
     }
   }
 });
-
-export interface AppMessage {
-  message: string;
-  type: 'error' | 'success' | 'notification';
-  timeout?: number; // miliseconds
-}
-
-export const appMessageAtom = atom<AppMessage | null>(null);

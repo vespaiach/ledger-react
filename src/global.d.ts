@@ -14,3 +14,24 @@ interface BaseIconProps {
 interface Item {
   text: string;
 }
+
+interface Transaction {
+  id: number;
+  amount: number;
+  date: Date;
+  note?: string | null | undefined;
+  updatedAt: Date;
+  reason: Reason;
+}
+
+interface Reason {
+  id: number;
+  text: string;
+  updatedAt: Date;
+}
+
+interface AppMessage {
+  message: string;
+  type: 'error' | 'success' | 'notification';
+  timeout?: number; // miliseconds
+}

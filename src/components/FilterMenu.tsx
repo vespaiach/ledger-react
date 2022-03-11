@@ -8,9 +8,9 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import { Input, TagInput } from './Input';
 import { filterTransactionAtom, writeLastCursorAtom } from '../store/transaction';
-import { Maybe, Reason } from '../graphql/graphql.generated';
 import { fetchReasonsAtom, reasonsAtom, reasonsMapAtom } from '../store/reason';
 import DatePicker from './DatePicker';
+import { Maybe } from '../graphql.generated';
 
 const noop = () => null;
 

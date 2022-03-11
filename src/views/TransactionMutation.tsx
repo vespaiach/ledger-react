@@ -10,17 +10,17 @@ import { DateTime } from 'luxon';
 import Container from '../components/Container';
 import BackArrowIcon from '../components/icons/BackArrow';
 import { Input } from '../components/Input';
-import { Maybe } from '../graphql/graphql.generated';
+import { Maybe } from '../graphql.generated';
 import { fetchReasonsAtom, reasonsAtom } from '../store/reason';
 import XIcon from '../components/icons/X';
 import DatePicker from '../components/DatePicker';
 import ComboSelect from '../components/ComboSelect';
 import {
-  appMessageAtom,
   saveTransactionAtom,
   transactionsAtom,
   transactionSaveStatusAtom,
 } from '../store/transaction';
+import { appMessageAtom } from '../store/utils';
 
 const noop = () => null;
 
@@ -118,7 +118,6 @@ export default function TransactionMutation() {
     clear();
     setSaving(null);
   }, [saving]);
-  console.log(saving)
 
   return (
     <Container className="mutating">

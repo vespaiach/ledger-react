@@ -12,7 +12,6 @@ import Appbar from '../components/Appbar';
 import { deleteTransactionAtom, transactionsAtom, writeLastCursorAtom } from '../store/transaction';
 import ChervonLeftIcon from '../components/icons/ChervonLeft';
 import ChervonRightIcon from '../components/icons/ChervonRight';
-import { Transaction } from '../graphql/graphql.generated';
 
 export default function TransactionList() {
   const navigate = useNavigate();
@@ -51,7 +50,7 @@ export default function TransactionList() {
               }}>
               <div className="headline">
                 <h1>${transaction.amount}</h1>
-                <h2>{DateTime.fromISO(transaction.date).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</h2>
+                <h2>{DateTime.fromJSDate(transaction.date).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</h2>
                 <button className="chervon-button">
                   <ChervonLeftIcon className="chervon-left" />
                   <ChervonRightIcon className="chervon-right" />
