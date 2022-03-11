@@ -15,11 +15,7 @@ import { fetchReasonsAtom, reasonsAtom } from '../store/reason';
 import XIcon from '../components/icons/X';
 import DatePicker from '../components/DatePicker';
 import ComboSelect from '../components/ComboSelect';
-import {
-  saveTransactionAtom,
-  transactionsAtom,
-  transactionSaveStatusAtom,
-} from '../store/transaction';
+import { saveTransactionAtom, transactionsAtom, transactionSaveStatusAtom } from '../store/transaction';
 import { appMessageAtom } from '../store/utils';
 
 const noop = () => null;
@@ -43,6 +39,8 @@ export default function TransactionMutation() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
+    if (saving !== null) return;
+
     if (id && /\d+/i.test(id)) {
       const checkingId = Number(id);
       const transaction = transactions.find((t) => t.id === checkingId);
@@ -115,7 +113,8 @@ export default function TransactionMutation() {
       });
     }
 
-    clear();
+    if (!transactionId) clear();
+
     setSaving(null);
   }, [saving]);
 
@@ -221,9 +220,10 @@ export default function TransactionMutation() {
             if (saving) return;
 
             e.preventDefault();
-            clear();
+
+            navigate('/');
           }}>
-          Clear All
+          Cancel
         </a>
         <button disabled={saving === 'saving'} onClick={handleSave}>
           Save Changes
