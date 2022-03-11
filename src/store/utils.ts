@@ -111,7 +111,7 @@ export function saveTransaction(
   variables: Omit<UpdateTransactionMutationVariables, 'id'> & { id: Maybe<number> }
 ) {
   return new Promise<Transaction | null>((next) => {
-    callRemote(variables.id ? createTransactionMutation : updateTransactionMutation, variables)
+    callRemote(variables.id ? updateTransactionMutation : createTransactionMutation, variables)
       .pipe(
         map((r) => {
           const res = r.response.data as CreateTransactionMutation;

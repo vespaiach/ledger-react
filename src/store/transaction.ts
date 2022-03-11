@@ -128,7 +128,7 @@ export const saveTransactionAtom = atom(
             })
           );
         } else {
-          set(lastCursorTransactionAtom, null);
+          set(writeLastCursorAtom, { cursor: null });
         }
         set(transactionSaveStatusAtom, 'success');
       } else {
