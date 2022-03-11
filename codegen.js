@@ -10,10 +10,10 @@ const fs = require('fs');
   const generatedFiles = await generate(
     {
       schema: VITE_GRAPHQL_URL,
-      documents: './src/graphql/**/*.graphql',
+      documents: './src/graphql/**/*.ts',
       generates: {
-        [`${pwd}/src/graphql/graphql.generated.ts`]: {
-          plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
+        [`${pwd}/src/graphql.generated.ts`]: {
+          plugins: ['typescript', 'typescript-operations'],
           config: {
             maybeValue: ' T | null | undefined',
             avoidOptionals: false,

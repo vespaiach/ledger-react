@@ -9,7 +9,7 @@ import TransactionList from './views/TransactionList';
 import TransactionMutation from './views/TransactionMutation';
 import { listenTo } from './utils/window';
 import Message from './components/Message';
-import { appMessageAtom } from './store/transaction';
+import { appMessageAtom } from './store/utils';
 
 export function App() {
   const [appMessage, setAppMessage] = useAtom(appMessageAtom);

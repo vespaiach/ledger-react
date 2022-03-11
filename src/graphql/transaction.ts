@@ -1,4 +1,4 @@
-query GetTransactions(
+export const getTransactionsQuery = /* GraphQL*/ `query GetTransactions(
   $fromDate: Date
   $toDate: Date
   $fromAmount: Int
@@ -27,9 +27,9 @@ query GetTransactions(
       updatedAt
     }
   }
-}
+}`;
 
-query GetTransaction($id: Int!) {
+export const getTransactionQuery = /* GraphQL*/ `query GetTransaction($id: Int!) {
   transaction: getTransaction(id: $id) {
     id
     amount
@@ -39,11 +39,12 @@ query GetTransaction($id: Int!) {
     reason {
       id
       text
+      updatedAt
     }
   }
-}
+}`;
 
-mutation CreateTransaction($date: Date!, $amount: Float!, $reasonId: Int!, $note: String) {
+export const createTransactionMutation = /* GraphQL*/ `mutation CreateTransaction($date: Date!, $amount: Float!, $reasonId: Int!, $note: String) {
   transaction: createTransaction(date: $date, amount: $amount, reasonId: $reasonId, note: $note) {
     id
     amount
@@ -56,10 +57,10 @@ mutation CreateTransaction($date: Date!, $amount: Float!, $reasonId: Int!, $note
       updatedAt
     }
   }
-}
+}`;
 
-mutation UpdateTransaction($id: Int!, $date: Date, $amount: Float, $reasonId: Int, $note: String) {
-  updateTransaction(id: $id, date: $date, amount: $amount, reasonId: $reasonId, note: $note) {
+export const updateTransactionMutation = /* GraphQL*/ `mutation UpdateTransaction($id: Int!, $date: Date, $amount: Float, $reasonId: Int, $note: String) {
+  transaction: updateTransaction(id: $id, date: $date, amount: $amount, reasonId: $reasonId, note: $note) {
     id
     amount
     date
@@ -71,17 +72,16 @@ mutation UpdateTransaction($id: Int!, $date: Date, $amount: Float, $reasonId: In
       updatedAt
     }
   }
-}
+}`;
 
-
-mutation CreateReason($text: String!) {
+export const createReasonMutation = /* GraphQL*/ `mutation CreateReason($text: String!) {
   reason: createReason(text: $text) {
     id
     text
     updatedAt
   }
-}
+}`;
 
-mutation DeleteTransaction($id: Int!) {
+export const deleteTransactionMutation = /* GraphQL*/ `mutation DeleteTransaction($id: Int!) {
   deleteTransaction(id: $id)
-}
+}`;

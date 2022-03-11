@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@apollo/client": "^3.5.8",
     "classnames": "^2.3.1",
     "graphql": "^16.3.0",
     "jotai": "^1.5.3",
@@ -13,7 +12,8 @@
     "react-number-format": "^4.9.1",
     "react-router-dom": "^6.2.1",
     "react-transition-group": "^4.4.2",
-    "react-virtuoso": "^2.6.0"
+    "react-virtuoso": "^2.6.0",
+    "rxjs": "^6.6.7"
   },
   "scripts": {
     "dev": "vite",
