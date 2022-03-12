@@ -1,11 +1,12 @@
 import { atom } from 'jotai';
 
-import { loadReasons } from './utils';
+import { ConvertedReason } from '../graphql.generated';
+import provider from './remoteDbProvider';
 
 export const reasonLoadingAtom = atom(false);
 
-export const reasonsAtom = atom<Reason[]>([]);
-export const reasonsMapAtom = atom<Record<number, Reason>>((get) => {
+export const reasonsAtom = atom<ConvertedReason[]>([]);
+export const reasonsMapAtom = atom<Record<number, ConvertedReason>>((get) => {
   const reasons = get(reasonsAtom);
   return Object.fromEntries(reasons.map((r) => [r.id, r]));
 });
@@ -15,7 +16,7 @@ export const fetchReasonsAtom = atom(
   async (_, set) => {
     set(reasonLoadingAtom, true);
 
-    const reasons = await loadReasons();
+    const reasons = await provider.loadReasons();
 
     if (reasons) {
       set(reasonsAtom, reasons);

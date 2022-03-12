@@ -1,8 +1,11 @@
 import { Maybe } from 'graphql/jsutils/Maybe';
 import { atom } from 'jotai';
+import { ConvertedReason, ConvertedTransaction } from '../graphql.generated';
 
 import { reasonsAtom } from './reason';
-import { appMessageAtom, createReason, deleteTransaction, loadTransactions, saveTransaction } from './utils';
+import provider from './remoteDbProvider';
+
+export const appMessageAtom = atom<AppMessage | null>(null);
 
 export const filterTransactionAtom = atom<
   Maybe<{
@@ -14,7 +17,7 @@ export const filterTransactionAtom = atom<
   }>
 >(null);
 export const lastCursorTransactionAtom = atom<number | null>(null);
-export const transactionsAtom = atom<Transaction[]>([]);
+export const transactionsAtom = atom<ConvertedTransaction[]>([]);
 
 export const writeFilterTransactionAtom = atom(
   null,
@@ -39,7 +42,7 @@ export const writeLastCursorAtom = atom(null, async (get, set, { cursor }: { cur
   if (cursor !== lastCursor || lastCursor === null) {
     const filtering = get(filterTransactionAtom);
 
-    const trans = await loadTransactions({
+    const trans = await provider.loadTransactions({
       fromDate: filtering?.fromDate?.toISOString(),
       toDate: filtering?.toDate?.toISOString(),
       fromAmount: filtering?.fromAmount,
@@ -57,7 +60,7 @@ export const writeLastCursorAtom = atom(null, async (get, set, { cursor }: { cur
 });
 
 /**
- * Creating/ Updating/ Deleting Transaction.
+ * Creating/ Updating/ Deleting ConvertedTransaction.
  */
 export const transactionIdAtom = atom<Maybe<number>>(null);
 export const reasonIdAtom = atom<Maybe<number>>(null);
@@ -85,7 +88,7 @@ export const saveTransactionAtom = atom(
       date,
       note,
     }: {
-      id?: Maybe<number>;
+      id?: number | undefined;
       reasonText?: Maybe<string>;
       amount?: Maybe<number>;
       date?: Maybe<Date>;
@@ -102,11 +105,11 @@ export const saveTransactionAtom = atom(
     let reasonId = reason?.id;
 
     if (!reason && reasonText) {
-      const reason = await createReason({ text: reasonText });
+      const reason = await provider.createReason({ text: reasonText });
 
       if (reason) {
         set(reasonsAtom, (prev) => {
-          const ar: Reason[] = [...prev, reason];
+          const ar: ConvertedReason[] = [...prev, reason];
           ar.sort((a, b) => a.text.localeCompare(b.text));
 
           return ar;
@@ -117,7 +120,7 @@ export const saveTransactionAtom = atom(
     }
 
     if (reasonId) {
-      const tran = await saveTransaction({ id, date: date?.toISOString(), amount, reasonId, note });
+      const tran = await provider.saveTransaction({ id, date: date?.toISOString(), amount, reasonId, note });
 
       if (tran) {
         if (id) {
@@ -143,7 +146,7 @@ export const saveTransactionAtom = atom(
 
 export const deleteTransactionAtom = atom(null, async (_, set, { id }: { id: number }) => {
   if (id) {
-    const result = await deleteTransaction(id);
+    const result = await provider.deleteTransaction(id);
 
     if (!result) {
       set(appMessageAtom, {
@@ -155,7 +158,7 @@ export const deleteTransactionAtom = atom(null, async (_, set, { id }: { id: num
       set(transactionsAtom, (trans) => trans.filter((t) => t.id !== id));
 
       set(appMessageAtom, {
-        message: 'Transaction deleted!',
+        message: 'ConvertedTransaction deleted!',
         type: 'success',
         timeout: 3000,
       });

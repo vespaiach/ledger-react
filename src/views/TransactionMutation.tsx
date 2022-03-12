@@ -15,8 +15,7 @@ import { fetchReasonsAtom, reasonsAtom } from '../store/reason';
 import XIcon from '../components/icons/X';
 import DatePicker from '../components/DatePicker';
 import ComboSelect from '../components/ComboSelect';
-import { saveTransactionAtom, transactionsAtom, transactionSaveStatusAtom } from '../store/transaction';
-import { appMessageAtom } from '../store/utils';
+import { appMessageAtom, saveTransactionAtom, transactionsAtom, transactionSaveStatusAtom } from '../store/transaction';
 
 const noop = () => null;
 
