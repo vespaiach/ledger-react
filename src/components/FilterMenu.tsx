@@ -10,7 +10,7 @@ import { Input, TagInput } from './Input';
 import { filterTransactionAtom, writeLastCursorAtom } from '../store/transaction';
 import { fetchReasonsAtom, reasonsAtom, reasonsMapAtom } from '../store/reason';
 import DatePicker from './DatePicker';
-import { ConvertedReason, Maybe } from '../graphql.generated';
+import { ReasonMap, Maybe } from '../graphql.generated';
 
 const noop = () => null;
 
@@ -21,7 +21,7 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
   const reasonList = useAtomValue(reasonsAtom);
   const reasonMap = useAtomValue(reasonsMapAtom);
 
-  const [reasons, setReasons] = useState<ConvertedReason[]>(() => {
+  const [reasons, setReasons] = useState<ReasonMap[]>(() => {
     return filtering?.reasonIds?.map((r) => reasonMap[r]) ?? [];
   });
   const [amountRange, setAmountRange] = useState([filtering?.fromAmount, filtering?.toAmount]);
@@ -149,7 +149,7 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
             caption="reasons"
             tags={reasons}
             onDelete={(tag) => {
-              const reason = tag as ConvertedReason;
+              const reason = tag as ReasonMap;
               setReasons(reasons.filter((r) => r.id !== reason.id));
             }}
           />
@@ -158,7 +158,7 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
               <label key={reason.id}>
                 <input
                   type="checkbox"
-                  checked={reasons.findIndex((r: ConvertedReason) => r.id === reason.id) > -1}
+                  checked={reasons.findIndex((r: ReasonMap) => r.id === reason.id) > -1}
                   value={reason.id}
                   onChange={handleChecked}></input>
                 <span>{reason.text}</span>

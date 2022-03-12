@@ -44,8 +44,8 @@ export const getTransactionQuery = /* GraphQL*/ `query GetTransaction($id: Int!)
   }
 }`;
 
-export const createTransactionMutation = /* GraphQL*/ `mutation CreateTransaction($date: Date!, $amount: Float!, $reasonId: Int!, $note: String) {
-  transaction: createTransaction(date: $date, amount: $amount, reasonId: $reasonId, note: $note) {
+export const createTransactionMutation = /* GraphQL*/ `mutation CreateTransaction($date: Date!, $amount: Float!, $reasonText: String!, $note: String) {
+  transaction: createTransaction(date: $date, amount: $amount, reasonText: $reasonText, note: $note) {
     id
     amount
     date
@@ -59,8 +59,8 @@ export const createTransactionMutation = /* GraphQL*/ `mutation CreateTransactio
   }
 }`;
 
-export const updateTransactionMutation = /* GraphQL*/ `mutation UpdateTransaction($id: Int!, $date: Date, $amount: Float, $reasonId: Int, $note: String) {
-  transaction: updateTransaction(id: $id, date: $date, amount: $amount, reasonId: $reasonId, note: $note) {
+export const updateTransactionMutation = /* GraphQL*/ `mutation UpdateTransaction($id: Int!, $date: Date, $amount: Float, $reasonText: String, $note: String) {
+  transaction: updateTransaction(id: $id, date: $date, amount: $amount, reasonText: $reasonText, note: $note) {
     id
     amount
     date

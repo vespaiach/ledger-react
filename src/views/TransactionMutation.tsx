@@ -16,11 +16,11 @@ import XIcon from '../components/icons/X';
 import DatePicker from '../components/DatePicker';
 import ComboSelect from '../components/ComboSelect';
 import {
-  appMessageAtom,
   saveTransactionAtom,
   transactionsAtom,
   transactionSaveStatusAtom,
 } from '../store/transaction';
+import { appMessageAtom } from '../store/utils';
 
 const noop = () => null;
 
@@ -92,7 +92,7 @@ export default function TransactionMutation() {
     } else {
       await saveTransaction({
         id: transactionId,
-        date,
+        date: date?.toISOString(),
         amount: amount !== '' ? Number(amount) : null,
         reasonText: reason,
         note,
@@ -150,7 +150,7 @@ export default function TransactionMutation() {
               focusable="false"
               aria-hidden="true"
               viewBox="0 0 24 24">
-              <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"></path>
+              <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h1,-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"></path>
             </svg>
             {date && (
               <button

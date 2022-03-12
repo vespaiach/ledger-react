@@ -1,14 +1,13 @@
-import { ajax, AjaxResponse } from 'rxjs/ajax';
-import { map } from 'rxjs/operators';
-
 import {
   Reason,
-  Transaction,
-  ConvertedTransaction,
-  ConvertedReason,
   QueryGetTransactionsArgs,
   DataProvider,
   MutationCreateReasonArgs,
+  GetTransactionsQuery,
+  GetReasonsQuery,
+  MutationSaveTransactionArgs,
+  UpdateTransactionMutation,
+  Transaction,
 } from '../graphql.generated';
 import { getReasons } from '../graphql/reason';
 import {
@@ -21,99 +20,43 @@ import {
 
 const url = import.meta.env.VITE_GRAPHQL_URL as string;
 
-const mapTransaction = (tran: Transaction): ConvertedTransaction => ({
-  ...tran,
-  updatedAt: new Date(tran.date),
-  date: new Date(tran.date),
-  reason: mapReason(tran.reason),
-});
-
-const mapReason = (reason: Reason): ConvertedReason => ({
-  ...reason,
-  updatedAt: new Date(reason.updatedAt),
-});
-
-function callRemote(query: string, variables?: Record<string, unknown>) {
-  return ajax({
-    url,
+async function callRemote<R>(query: string, variables?: Record<string, unknown>) {
+  const response = fetch(url, {
     method: 'POST',
+    cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ query, variables }),
   });
+
+  return (await response).json() as Promise<R>;
 }
 
-function loadTransactions(variables: QueryGetTransactionsArgs) {
-  return new Promise<ConvertedTransaction[]>((next, error) => {
-    callRemote(getTransactionsQuery, variables)
-      .pipe(
-        map<AjaxResponse, ConvertedTransaction[]>((r) => {
-          const res = r.response.data;
-          return res.transactions?.map(mapTransaction) ?? [];
-        })
-      )
-      .subscribe({ next, error });
-  });
+async function loadTransactions(variables: QueryGetTransactionsArgs) {
+  const result = await callRemote<{ data: GetTransactionsQuery }>(getTransactionsQuery, variables);
+  return result.data.transactions ?? [];
 }
 
-function loadReasons() {
-  return new Promise<ConvertedReason[]>((next, error) => {
-    callRemote(getReasons)
-      .pipe(
-        map((r) => {
-          const res = r.response.data;
-          return res.reasons?.map(mapReason) ?? [];
-        })
-      )
-      .subscribe({ next, error });
-  });
+async function loadReasons() {
+  return (await callRemote<{ data: GetReasonsQuery }>(getReasons)).data.reasons ?? [];
 }
 
 function createReason(variables: MutationCreateReasonArgs) {
-  return new Promise<ConvertedReason>((next, error) => {
-    callRemote(createReasonMutation, variables)
-      .pipe(
-        map((r) => {
-          if (!r.response.data?.reason) throw new Error("Couldn't create a Reason");
-
-          return mapReason(r.response.data.reason);
-        })
-      )
-      .subscribe({ next, error });
-  });
+  return callRemote<Reason>(createReasonMutation, variables);
 }
 
-function saveTransaction(variables: any) {
-  return new Promise<ConvertedTransaction>((next, error) => {
-    callRemote(variables.id ? updateTransactionMutation : createTransactionMutation, variables)
-      .pipe(
-        map((r) => {
-          const res = r.response.data;
-
-          if (!res?.transaction) throw new Error("Couldn't create a Transaction");
-
-          return mapTransaction(res.transaction);
-        })
-      )
-      .subscribe({ next, error });
-  });
+async function saveTransaction(variables: MutationSaveTransactionArgs) {
+  return (
+    await callRemote<{ data: UpdateTransactionMutation }>(
+      variables.id ? updateTransactionMutation : createTransactionMutation,
+      variables
+    )
+  ).data.transaction as Transaction;
 }
 
 export function deleteTransaction(id: number) {
-  return new Promise<boolean>((next, error) => {
-    callRemote(deleteTransactionMutation, { id })
-      .pipe(
-        map((r) => {
-          const res = r.response.data;
-
-          if (!res?.deleteTransaction) throw new Error("Couldn't delete Transaction");
-
-          return true;
-        })
-      )
-      .subscribe({ next, error });
-  });
+  return callRemote<boolean>(deleteTransactionMutation, { id });
 }
 
 const provider: DataProvider = {

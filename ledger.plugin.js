@@ -1,17 +1,17 @@
 module.exports = {
   plugin: () => `
-
-export type ConvertedReason = Omit<Reason, 'updatedAt'> & { updatedAt: Date };
-export type ConvertedTransaction = Omit<Transaction, 'date' | 'reason' | 'updatedAt'> & { date: Date, updatedAt: Date, reason: ConvertedReason };
+export type ReasonMap = Omit<Reason, 'updatedAt'> & { updatedAt: Date };
+export type TransactionMap = Omit<Transaction, 'date' | 'reason' | 'updatedAt'> & { date: Date, updatedAt: Date, reason: ReasonMap };
+export type MutationSaveTransactionArgs = Omit<MutationUpdateTransactionArgs, 'id' | 'reasonId'> & { id?: number | undefined | null; reasonText?: string; };
 
 export interface DataProvider {
-  loadTransactions(variables?: QueryGetTransactionsArgs): Promise<ConvertedTransaction[]>;
-  loadReasons(): Promise<ConvertedReason[]>;
+  loadTransactions(variables?: QueryGetTransactionsArgs): Promise<Transaction[]>;
+  loadReasons(): Promise<Reason[]>;
 
-  saveTransaction(variables: Omit<MutationUpdateTransactionArgs, 'id'> & { id?: number | undefined | null }): Promise<ConvertedTransaction>;
+  saveTransaction(variables: MutationSaveTransactionArgs): Promise<Transaction>;
   deleteTransaction(id: number): Promise<boolean>;
 
-  createReason(variables?: MutationCreateReasonArgs): Promise<ConvertedReason>;
+  createReason(variables?: MutationCreateReasonArgs): Promise<Reason>;
 }
   `,
 };

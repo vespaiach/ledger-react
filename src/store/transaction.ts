@@ -1,11 +1,17 @@
 import { Maybe } from 'graphql/jsutils/Maybe';
-import { atom } from 'jotai';
+import { atom, Setter } from 'jotai';
+import { from, Observable } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 
-import { ConvertedReason, ConvertedTransaction } from '../graphql.generated';
+import { MutationSaveTransactionArgs, ReasonMap, TransactionMap } from '../graphql.generated';
 import { reasonsAtom } from './reason';
 import provider from './remoteDbProvider';
+import { loadReasons$, loadTransactions$, saveTransaction$, appMessageAtom } from './utils';
 
-export const appMessageAtom = atom<AppMessage | null>(null);
+function reportError(set: Setter, error: any) {
+  console.error(error);
+  set(appMessageAtom, { message: error.message, type: 'error', timeout: 3000 });
+}
 
 export const filterTransactionAtom = atom<
   Maybe<{
@@ -17,7 +23,7 @@ export const filterTransactionAtom = atom<
   }>
 >(null);
 export const lastCursorTransactionAtom = atom<number | null>(null);
-export const transactionsAtom = atom<ConvertedTransaction[]>([]);
+export const transactionsAtom = atom<TransactionMap[]>([]);
 
 export const writeFilterTransactionAtom = atom(
   null,
@@ -42,7 +48,7 @@ export const writeLastCursorAtom = atom(null, async (get, set, { cursor }: { cur
   if (cursor !== lastCursor || lastCursor === null) {
     const filtering = get(filterTransactionAtom);
 
-    const trans = await provider.loadTransactions({
+    const transPromise = provider.loadTransactions({
       fromDate: filtering?.fromDate?.toISOString(),
       toDate: filtering?.toDate?.toISOString(),
       fromAmount: filtering?.fromAmount,
@@ -52,15 +58,18 @@ export const writeLastCursorAtom = atom(null, async (get, set, { cursor }: { cur
       lastCursor: cursor,
     });
 
-    if (trans) {
-      set(lastCursorTransactionAtom, cursor);
-      set(transactionsAtom, (prev) => (cursor ? [...prev, ...trans] : trans));
-    }
+    loadTransactions$(transPromise).subscribe({
+      next: (transitions) => {
+        set(lastCursorTransactionAtom, cursor);
+        set(transactionsAtom, (prev) => (cursor ? [...prev, ...transitions] : transitions));
+      },
+      error: (err) => reportError(set, err),
+    });
   }
 });
 
 /**
- * Creating/ Updating/ Deleting ConvertedTransaction.
+ * Creating/ Updating/ Deleting TransactionMap.
  */
 export const transactionIdAtom = atom<Maybe<number>>(null);
 export const reasonIdAtom = atom<Maybe<number>>(null);
@@ -78,90 +87,62 @@ export const saveTransactionAtom = atom(
    * Let's validate data outside of this function.
    * Expecting data being saved are valid
    */
-  async (
-    get,
-    set,
-    {
-      id,
-      reasonText,
-      amount,
-      date,
-      note,
-    }: {
-      id?: number | undefined | null;
-      reasonText?: Maybe<string>;
-      amount?: Maybe<number>;
-      date?: Maybe<Date>;
-      note?: Maybe<string>;
-    }
-  ) => {
-    const reasons = get(reasonsAtom);
+  (_, set, variables: MutationSaveTransactionArgs) => {
     set(transactionSaveStatusAtom, 'saving');
 
-    /**
-     * Create a new reason if not exist.
-     */
-    const reason = reasons.find((r) => r.text === reasonText);
-    let reasonId = reason?.id;
+    saveTransaction$(provider.saveTransaction(variables))
+      .pipe(
+        mergeMap((transaction) =>
+          loadReasons$(provider.loadReasons()).pipe(map((reasons) => ({ transaction, reasons })))
+        )
+      )
+      .subscribe({
+        next: ({ transaction, reasons }) => {
+          set(reasonsAtom, reasons);
 
-    if (!reason && reasonText) {
-      const reason = await provider.createReason({ text: reasonText });
+          if (variables.id) {
+            set(transactionsAtom, (t) =>
+              t.map((t) => {
+                if (t.id === transaction.id) return { ...transaction };
+                return t;
+              })
+            );
+          } else {
+            set(writeLastCursorAtom, { cursor: null });
+          }
+        },
+        error: (err) => {
+          reportError(set, err);
 
-      if (reason) {
-        set(reasonsAtom, (prev) => {
-          const ar: ConvertedReason[] = [...prev, reason];
-          ar.sort((a, b) => a.text.localeCompare(b.text));
-
-          return ar;
-        });
-
-        reasonId = reason.id;
-      }
-    }
-
-    if (reasonId) {
-      const tran = await provider.saveTransaction({ id, date: date?.toISOString(), amount, reasonId, note });
-
-      if (tran) {
-        if (id) {
-          set(transactionsAtom, (t) =>
-            t.map((t) => {
-              if (t.id === id) return { ...tran };
-              return t;
-            })
-          );
-        } else {
-          set(writeLastCursorAtom, { cursor: null });
-        }
-        set(transactionSaveStatusAtom, 'success');
-      } else {
-        set(transactionSaveStatusAtom, 'error');
-      }
-    } else {
-      set(transactionSaveStatusAtom, 'error');
-      set(appMessageAtom, { message: "Couldn't create a new reason", type: 'error', timeout: 3000 });
-    }
+          set(transactionSaveStatusAtom, 'error');
+        },
+        complete: () => {
+          set(transactionSaveStatusAtom, 'success');
+        },
+      });
   }
 );
 
 export const deleteTransactionAtom = atom(null, async (_, set, { id }: { id: number }) => {
   if (id) {
-    const result = await provider.deleteTransaction(id);
+    try {
+      const result = await provider.deleteTransaction(id);
 
-    if (!result) {
-      set(appMessageAtom, {
-        message: "Couldn't delete transaction",
-        type: 'error',
-        timeout: 3000,
-      });
-    } else {
-      set(transactionsAtom, (trans) => trans.filter((t) => t.id !== id));
+      if (!result) {
+        throw new Error("Couldn't delete transaction");
+      } else {
+        set(transactionsAtom, (trans) => trans.filter((t) => t.id !== id));
 
-      set(appMessageAtom, {
-        message: 'ConvertedTransaction deleted!',
-        type: 'success',
-        timeout: 3000,
-      });
+        set(appMessageAtom, {
+          message: 'Transaction deleted!',
+          type: 'success',
+          timeout: 3000,
+        });
+      }
+    } catch (e) {
+      console.error(e);
+
+      reportError(set, e);
     }
   }
 });

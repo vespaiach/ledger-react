@@ -131,14 +131,14 @@
                 "deprecationReason": null
               },
               {
-                "name": "reasonId",
+                "name": "reasonText",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
                     "kind": "SCALAR",
-                    "name": "Int",
+                    "name": "String",
                     "ofType": null
                   }
                 },
@@ -315,11 +315,11 @@
                 "deprecationReason": null
               },
               {
-                "name": "reasonId",
+                "name": "reasonText",
                 "description": null,
                 "type": {
                   "kind": "SCALAR",
-                  "name": "Int",
+                  "name": "String",
                   "ofType": null
                 },
                 "defaultValue": null,

@@ -32,7 +32,7 @@ export type MutationCreateTransactionArgs = {
   amount: Scalars['Float'];
   date: Scalars['Date'];
   note?: InputMaybe<Scalars['String']>;
-  reasonId: Scalars['Int'];
+  reasonText: Scalars['String'];
 };
 
 
@@ -57,7 +57,7 @@ export type MutationUpdateTransactionArgs = {
   date?: InputMaybe<Scalars['Date']>;
   id: Scalars['Int'];
   note?: InputMaybe<Scalars['String']>;
-  reasonId?: InputMaybe<Scalars['Int']>;
+  reasonText?: InputMaybe<Scalars['String']>;
 };
 
 export type Query = {
@@ -97,18 +97,78 @@ export type Transaction = {
   updatedAt: Scalars['Date'];
 };
 
+export type GetReasonsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ConvertedReason = Omit<Reason, 'updatedAt'> & { updatedAt: Date };
-export type ConvertedTransaction = Omit<Transaction, 'date' | 'reason' | 'updatedAt'> & { date: Date, updatedAt: Date, reason: ConvertedReason };
+export type GetReasonsQuery = { reasons?:  Array<{ id: number, text: string, updatedAt: string }> | null | undefined };
+
+export type GetTransactionsQueryVariables = Exact<{
+  fromDate?: InputMaybe<Scalars['Date']>;
+  toDate?: InputMaybe<Scalars['Date']>;
+  fromAmount?: InputMaybe<Scalars['Int']>;
+  toAmount?: InputMaybe<Scalars['Int']>;
+  reasonIds?: InputMaybe<Array<Scalars['Int']> | Scalars['Int']>;
+  lastCursor?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GetTransactionsQuery = { transactions?:  Array<{ id: number, amount: number, date: string, note?:  string | null | undefined, updatedAt: string, reason: { id: number, text: string, updatedAt: string } }> | null | undefined };
+
+export type GetTransactionQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type GetTransactionQuery = { transaction?:  { id: number, amount: number, date: string, note?:  string | null | undefined, updatedAt: string, reason: { id: number, text: string, updatedAt: string } } | null | undefined };
+
+export type CreateTransactionMutationVariables = Exact<{
+  date: Scalars['Date'];
+  amount: Scalars['Float'];
+  reasonText: Scalars['String'];
+  note?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type CreateTransactionMutation = { transaction?:  { id: number, amount: number, date: string, note?:  string | null | undefined, updatedAt: string, reason: { id: number, text: string, updatedAt: string } } | null | undefined };
+
+export type UpdateTransactionMutationVariables = Exact<{
+  id: Scalars['Int'];
+  date?: InputMaybe<Scalars['Date']>;
+  amount?: InputMaybe<Scalars['Float']>;
+  reasonText?: InputMaybe<Scalars['String']>;
+  note?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type UpdateTransactionMutation = { transaction?:  { id: number, amount: number, date: string, note?:  string | null | undefined, updatedAt: string, reason: { id: number, text: string, updatedAt: string } } | null | undefined };
+
+export type CreateReasonMutationVariables = Exact<{
+  text: Scalars['String'];
+}>;
+
+
+export type CreateReasonMutation = { reason?:  { id: number, text: string, updatedAt: string } | null | undefined };
+
+export type DeleteTransactionMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteTransactionMutation = { deleteTransaction?:  boolean | null | undefined };
+
+
+export type ReasonMap = Omit<Reason, 'updatedAt'> & { updatedAt: Date };
+export type TransactionMap = Omit<Transaction, 'date' | 'reason' | 'updatedAt'> & { date: Date, updatedAt: Date, reason: ReasonMap };
+export type MutationSaveTransactionArgs = Omit<MutationUpdateTransactionArgs, 'id' | 'reasonId'> & { id?: number | undefined | null; reasonText?: string; };
 
 export interface DataProvider {
-  loadTransactions(variables?: QueryGetTransactionsArgs): Promise<ConvertedTransaction[]>;
-  loadReasons(): Promise<ConvertedReason[]>;
+  loadTransactions(variables?: QueryGetTransactionsArgs): Promise<Transaction[]>;
+  loadReasons(): Promise<Reason[]>;
 
-  saveTransaction(variables: Omit<MutationUpdateTransactionArgs, 'id'> & { id?: number | undefined | null }): Promise<ConvertedTransaction>;
+  saveTransaction(variables: MutationSaveTransactionArgs): Promise<Transaction>;
   deleteTransaction(id: number): Promise<boolean>;
 
-  createReason(variables?: MutationCreateReasonArgs): Promise<ConvertedReason>;
+  createReason(variables?: MutationCreateReasonArgs): Promise<Reason>;
 }
   
