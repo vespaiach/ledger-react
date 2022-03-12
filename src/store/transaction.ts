@@ -1,7 +1,7 @@
 import { Maybe } from 'graphql/jsutils/Maybe';
 import { atom } from 'jotai';
-import { ConvertedReason, ConvertedTransaction } from '../graphql.generated';
 
+import { ConvertedReason, ConvertedTransaction } from '../graphql.generated';
 import { reasonsAtom } from './reason';
 import provider from './remoteDbProvider';
 
@@ -88,7 +88,7 @@ export const saveTransactionAtom = atom(
       date,
       note,
     }: {
-      id?: number | undefined;
+      id?: number | undefined | null;
       reasonText?: Maybe<string>;
       amount?: Maybe<number>;
       date?: Maybe<Date>;

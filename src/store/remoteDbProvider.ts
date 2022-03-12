@@ -1,6 +1,5 @@
-import { of } from 'rxjs';
 import { ajax, AjaxResponse } from 'rxjs/ajax';
-import { catchError, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import {
   Reason,
@@ -46,41 +45,33 @@ function callRemote(query: string, variables?: Record<string, unknown>) {
 }
 
 function loadTransactions(variables: QueryGetTransactionsArgs) {
-  return new Promise<ConvertedTransaction[]>((next) => {
+  return new Promise<ConvertedTransaction[]>((next, error) => {
     callRemote(getTransactionsQuery, variables)
       .pipe(
         map<AjaxResponse, ConvertedTransaction[]>((r) => {
           const res = r.response.data;
           return res.transactions?.map(mapTransaction) ?? [];
-        }),
-        catchError((err) => {
-          console.error(err);
-          return of([]);
         })
       )
-      .subscribe({ next });
+      .subscribe({ next, error });
   });
 }
 
 function loadReasons() {
-  return new Promise<ConvertedReason[]>((next) => {
+  return new Promise<ConvertedReason[]>((next, error) => {
     callRemote(getReasons)
       .pipe(
         map((r) => {
           const res = r.response.data;
           return res.reasons?.map(mapReason) ?? [];
-        }),
-        catchError((err) => {
-          console.error(err);
-          return of([]);
         })
       )
-      .subscribe({ next });
+      .subscribe({ next, error });
   });
 }
 
 function createReason(variables: MutationCreateReasonArgs) {
-  return new Promise<ConvertedReason>((next) => {
+  return new Promise<ConvertedReason>((next, error) => {
     callRemote(createReasonMutation, variables)
       .pipe(
         map((r) => {
@@ -89,12 +80,12 @@ function createReason(variables: MutationCreateReasonArgs) {
           return mapReason(r.response.data.reason);
         })
       )
-      .subscribe({ next });
+      .subscribe({ next, error });
   });
 }
 
 function saveTransaction(variables: any) {
-  return new Promise<ConvertedTransaction>((next) => {
+  return new Promise<ConvertedTransaction>((next, error) => {
     callRemote(variables.id ? updateTransactionMutation : createTransactionMutation, variables)
       .pipe(
         map((r) => {
@@ -105,12 +96,12 @@ function saveTransaction(variables: any) {
           return mapTransaction(res.transaction);
         })
       )
-      .subscribe({ next });
+      .subscribe({ next, error });
   });
 }
 
 export function deleteTransaction(id: number) {
-  return new Promise<boolean>((next) => {
+  return new Promise<boolean>((next, error) => {
     callRemote(deleteTransactionMutation, { id })
       .pipe(
         map((r) => {
@@ -121,7 +112,7 @@ export function deleteTransaction(id: number) {
           return true;
         })
       )
-      .subscribe({ next });
+      .subscribe({ next, error });
   });
 }
 

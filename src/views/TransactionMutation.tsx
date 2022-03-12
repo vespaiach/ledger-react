@@ -15,7 +15,12 @@ import { fetchReasonsAtom, reasonsAtom } from '../store/reason';
 import XIcon from '../components/icons/X';
 import DatePicker from '../components/DatePicker';
 import ComboSelect from '../components/ComboSelect';
-import { appMessageAtom, saveTransactionAtom, transactionsAtom, transactionSaveStatusAtom } from '../store/transaction';
+import {
+  appMessageAtom,
+  saveTransactionAtom,
+  transactionsAtom,
+  transactionSaveStatusAtom,
+} from '../store/transaction';
 
 const noop = () => null;
 
@@ -30,7 +35,7 @@ export default function TransactionMutation() {
   const reasonList = useAtomValue(reasonsAtom);
   const transactions = useAtomValue(transactionsAtom);
 
-  const [transactionId, setTransactionId] = useState<Maybe<number>>(null);
+  const [transactionId, setTransactionId] = useState<number | null | undefined>(null);
   const [amount, setAmount] = useState<string>('');
   const [date, setDate] = useState<Maybe<Date>>(null);
   const [reason, setReason] = useState<string>('');

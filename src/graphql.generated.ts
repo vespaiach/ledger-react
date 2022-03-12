@@ -106,7 +106,7 @@ export interface DataProvider {
   loadTransactions(variables?: QueryGetTransactionsArgs): Promise<ConvertedTransaction[]>;
   loadReasons(): Promise<ConvertedReason[]>;
 
-  saveTransaction(variables: Partial<MutationUpdateTransactionArgs>): Promise<ConvertedTransaction>;
+  saveTransaction(variables: Omit<MutationUpdateTransactionArgs, 'id'> & { id?: number | undefined | null }): Promise<ConvertedTransaction>;
   deleteTransaction(id: number): Promise<boolean>;
 
   createReason(variables?: MutationCreateReasonArgs): Promise<ConvertedReason>;

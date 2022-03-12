@@ -4,7 +4,6 @@ import cx from 'classnames';
 import { useEffect, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
-import { AppMessage } from '../store/transaction';
 import ErrorIcon from './icons/Error';
 import SuccessIcon from './icons/Success';
 import XIcon from './icons/X';

@@ -12,6 +12,7 @@ import Appbar from '../components/Appbar';
 import { deleteTransactionAtom, transactionsAtom, writeLastCursorAtom } from '../store/transaction';
 import ChervonLeftIcon from '../components/icons/ChervonLeft';
 import ChervonRightIcon from '../components/icons/ChervonRight';
+import { ConvertedTransaction } from '../graphql.generated';
 
 export default function TransactionList() {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ export default function TransactionList() {
   const deleteTransaction = useUpdateAtom(deleteTransactionAtom);
   const transactions = useAtomValue(transactionsAtom);
 
-  const handleDelete = (transaction: Transaction) => {
+  const handleDelete = (transaction: ConvertedTransaction) => {
     deleteTransaction({ id: transaction.id });
   };
 

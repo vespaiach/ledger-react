@@ -13,10 +13,10 @@ import { listenTo } from '../utils/window';
 import FilterMenu from './FilterMenu';
 import { filterTransactionAtom, writeFilterTransactionAtom } from '../store/transaction';
 import CloseButton from './CloseButton';
-import { Maybe } from '../graphql/graphql.generated';
 import { fetchReasonsAtom, reasonsAtom, reasonsMapAtom } from '../store/reason';
 import MagnifyIcon from './icons/Magnify';
 import PlusOneIcon from './icons/PlusOne';
+import { Maybe } from '../graphql.generated';
 
 export default function Appbar() {
   const navigate = useNavigate();
