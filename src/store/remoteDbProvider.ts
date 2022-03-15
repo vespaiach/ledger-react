@@ -1,5 +1,4 @@
 import {
-  Reason,
   QueryGetTransactionsArgs,
   DataProvider,
   MutationCreateReasonArgs,
@@ -7,7 +6,9 @@ import {
   GetReasonsQuery,
   MutationSaveTransactionArgs,
   UpdateTransactionMutation,
-  Transaction,
+  GraphqlResponse,
+  CreateReasonMutation,
+  DeleteTransactionMutation,
 } from '../graphql.generated';
 import { getReasons } from '../graphql/reason';
 import {
@@ -21,7 +22,7 @@ import {
 const url = import.meta.env.VITE_GRAPHQL_URL as string;
 
 async function callRemote<R>(query: string, variables?: Record<string, unknown>) {
-  const response = fetch(url, {
+  const response = await fetch(url, {
     method: 'POST',
     cache: 'no-cache',
     headers: {
@@ -30,33 +31,56 @@ async function callRemote<R>(query: string, variables?: Record<string, unknown>)
     body: JSON.stringify({ query, variables }),
   });
 
-  return (await response).json() as Promise<R>;
+  if (!response.ok) throw new Error(response.statusText);
+
+  const result = (await response.json()) as GraphqlResponse<R>;
+
+  if (result.errors?.length) {
+    throw new Error(result.errors.map((e) => e.message).join('\n'));
+  }
+
+  return result.data;
 }
 
 async function loadTransactions(variables: QueryGetTransactionsArgs) {
-  const result = await callRemote<{ data: GetTransactionsQuery }>(getTransactionsQuery, variables);
-  return result.data.transactions ?? [];
+  const result = await callRemote<GetTransactionsQuery>(getTransactionsQuery, variables);
+
+  if (!result.transactions) throw new Error("Couldn't fetch transaction list");
+
+  return result.transactions;
 }
 
 async function loadReasons() {
-  return (await callRemote<{ data: GetReasonsQuery }>(getReasons)).data.reasons ?? [];
+  const result = await callRemote<GetReasonsQuery>(getReasons);
+
+  if (!result.reasons) throw new Error("Couldn't fetch reason list");
+
+  return result.reasons;
 }
 
-function createReason(variables: MutationCreateReasonArgs) {
-  return callRemote<Reason>(createReasonMutation, variables);
+async function createReason(variables: MutationCreateReasonArgs) {
+  const result = await callRemote<CreateReasonMutation>(createReasonMutation, variables);
+
+  if (!result.reason) throw new Error("Couldn't create reason");
+
+  return result.reason;
 }
 
 async function saveTransaction(variables: MutationSaveTransactionArgs) {
-  return (
-    await callRemote<{ data: UpdateTransactionMutation }>(
-      variables.id ? updateTransactionMutation : createTransactionMutation,
-      variables
-    )
-  ).data.transaction as Transaction;
+  const result = await callRemote<UpdateTransactionMutation>(
+    variables.id ? updateTransactionMutation : createTransactionMutation,
+    variables
+  );
+
+  if (!result.transaction) throw new Error("Couldn't save transaction");
+
+  return result.transaction;
 }
 
-export function deleteTransaction(id: number) {
-  return callRemote<boolean>(deleteTransactionMutation, { id });
+async function deleteTransaction(id: number) {
+  const result = await callRemote<DeleteTransactionMutation>(deleteTransactionMutation, { id });
+
+  if (!result.deleteTransaction) throw new Error("Couldn't delete transaction");
 }
 
 const provider: DataProvider = {
