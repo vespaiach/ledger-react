@@ -13,11 +13,19 @@ export type Scalars = {
   Date: string;
 };
 
+export type DailyBalance = {
+  date: Scalars['String'];
+  earning: Scalars['Float'];
+  spending: Scalars['Float'];
+};
+
 export type Mutation = {
   createReason?: Maybe<Reason>;
   createTransaction?: Maybe<Transaction>;
   deleteReason?: Maybe<Scalars['Boolean']>;
   deleteTransaction?: Maybe<Scalars['Boolean']>;
+  signin: Scalars['String'];
+  token: Scalars['String'];
   updateReason?: Maybe<Reason>;
   updateTransaction?: Maybe<Transaction>;
 };
@@ -46,6 +54,16 @@ export type MutationDeleteTransactionArgs = {
 };
 
 
+export type MutationSigninArgs = {
+  email: Scalars['String'];
+};
+
+
+export type MutationTokenArgs = {
+  key: Scalars['String'];
+};
+
+
 export type MutationUpdateReasonArgs = {
   id: Scalars['Int'];
   text: Scalars['String'];
@@ -61,6 +79,7 @@ export type MutationUpdateTransactionArgs = {
 };
 
 export type Query = {
+  getDailyBalance: Array<DailyBalance>;
   getReasons?: Maybe<Array<Reason>>;
   getTransaction?: Maybe<Transaction>;
   getTransactions?: Maybe<Array<Transaction>>;

@@ -23,9 +23,6 @@ const fs = require('fs');
             },
           },
         },
-        [`${pwd}/src/graphql/graphql.schema.json`]: {
-          plugins: ['introspection'],
-        },
       },
     },
     true
