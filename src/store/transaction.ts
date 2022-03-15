@@ -1,9 +1,9 @@
 import { Maybe } from 'graphql/jsutils/Maybe';
 import { atom, Setter } from 'jotai';
-import { from, Observable } from 'rxjs';
+import { from } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 
-import { MutationSaveTransactionArgs, ReasonMap, TransactionMap } from '../graphql.generated';
+import { MutationSaveTransactionArgs, TransactionMap } from '../graphql.generated';
 import { reasonsAtom } from './reason';
 import provider from './remoteDbProvider';
 import { loadReasons$, loadTransactions$, saveTransaction$, appMessageAtom } from './utils';
@@ -123,22 +123,22 @@ export const saveTransactionAtom = atom(
   }
 );
 
-export const deleteTransactionAtom = atom(null, async (_, set, { id }: { id: number }) => {
+export const deleteTransactionAtom = atom(null, (_, set, { id }: { id: number }) => {
   if (id) {
     try {
-      const result = await provider.deleteTransaction(id);
+      from(provider.deleteTransaction(id)).subscribe({
+        complete: () => {
+          set(transactionsAtom, (trans) => trans.filter((t) => t.id !== id));
+        },
 
-      if (!result) {
-        throw new Error("Couldn't delete transaction");
-      } else {
-        set(transactionsAtom, (trans) => trans.filter((t) => t.id !== id));
-
-        set(appMessageAtom, {
-          message: 'Transaction deleted!',
-          type: 'success',
-          timeout: 3000,
-        });
-      }
+        error: () => {
+          set(appMessageAtom, {
+            message: 'Transaction deleted!',
+            type: 'success',
+            timeout: 3000,
+          });
+        },
+      });
     } catch (e) {
       console.error(e);
 
