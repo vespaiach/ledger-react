@@ -9,7 +9,10 @@ import {
   GraphqlResponse,
   CreateReasonMutation,
   DeleteTransactionMutation,
+  SigninMutation,
+  TokenMutation,
 } from '../graphql.generated';
+import { signinMutation, tokenMutation } from '../graphql/auth';
 import { getReasons } from '../graphql/reason';
 import {
   createReasonMutation,
@@ -22,12 +25,19 @@ import {
 const url = import.meta.env.VITE_GRAPHQL_URL as string;
 
 async function callRemote<R>(query: string, variables?: Record<string, unknown>) {
+  const token = window.localStorage.getItem('whoami');
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
   const response = await fetch(url, {
     method: 'POST',
     cache: 'no-cache',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
     body: JSON.stringify({ query, variables }),
   });
 
@@ -83,6 +93,20 @@ async function deleteTransaction(id: number) {
   if (!result.deleteTransaction) throw new Error("Couldn't delete transaction");
 }
 
+async function signin(email: string) {
+  const result = await callRemote<SigninMutation>(signinMutation, { email });
+
+  if (result.signin !== 'sent') throw new Error(result.signin);
+}
+
+async function token(key: string) {
+  const result = await callRemote<TokenMutation>(tokenMutation, { key });
+
+  if (!result.token) throw new Error("Couldn't exchange for a token");
+
+  return result.token;
+}
+
 const provider: DataProvider = {
   loadTransactions,
   loadReasons,
@@ -90,6 +114,9 @@ const provider: DataProvider = {
   saveTransaction,
   deleteTransaction,
   createReason,
+
+  signin,
+  token,
 };
 
 export default provider;

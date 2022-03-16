@@ -40,6 +40,10 @@
   height: 28px;
 }
 
+.message-sheet svg {
+  flex-shrink: 0;
+}
+
 .message-sheet button svg {
   color: white;
 }

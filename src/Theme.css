@@ -1,0 +1,11 @@
+:root {
+  --main-background-color: rgb(229, 246, 253);
+  --sheet-background-color: white;
+
+  --border-color: rgb(213, 213, 213);
+  --focus-border-color: rgb(74, 77, 82);
+
+  --primary-text-color: #1a2027;
+  --secondary-text-color: rgb(145, 145, 145);
+  --error-text-color: rgb(239, 83, 80);
+}

@@ -116,6 +116,20 @@ export type Transaction = {
   updatedAt: Scalars['Date'];
 };
 
+export type SigninMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type SigninMutation = { signin: string };
+
+export type TokenMutationVariables = Exact<{
+  key: Scalars['String'];
+}>;
+
+
+export type TokenMutation = { token: string };
+
 export type GetReasonsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -192,5 +206,8 @@ export interface DataProvider {
   deleteTransaction(id: number): Promise<void>;
 
   createReason(variables?: MutationCreateReasonArgs): Promise<Reason>;
+
+  signin(email: string): Promise<void>;
+  token(key: string): Promise<string>;
 }
   

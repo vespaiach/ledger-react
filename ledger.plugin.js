@@ -15,6 +15,9 @@ export interface DataProvider {
   deleteTransaction(id: number): Promise<void>;
 
   createReason(variables?: MutationCreateReasonArgs): Promise<Reason>;
+
+  signin(email: string): Promise<void>;
+  token(key: string): Promise<string>;
 }
   `,
 };

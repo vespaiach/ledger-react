@@ -20,3 +20,9 @@ interface AppMessage {
   type: 'error' | 'success' | 'notification';
   timeout?: number; // miliseconds
 }
+
+interface AuthToken {
+  email: string;
+  token: string;
+  expiredIn: Date
+}

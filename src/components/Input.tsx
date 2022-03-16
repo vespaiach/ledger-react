@@ -13,6 +13,7 @@ interface InputProps extends ComponentBaseProps {
   id?: string;
   error?: string;
   multiple?: boolean;
+  disabled?: boolean;
 }
 
 let rnd = 0;
@@ -34,7 +35,7 @@ export function Input({
         {!!error && <span className="error"> - {error}</span>}
       </div>
       {multiple ? <textarea rows={3} id={id} {...rest} /> : <input id={id} {...rest} />}
-      <div className="prefix">{children}</div>
+      <div className="add-in">{children}</div>
     </label>
   );
 }

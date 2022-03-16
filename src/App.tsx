@@ -1,3 +1,4 @@
+import './Theme.css';
 import './App.css';
 
 import { Route, Routes, useLocation } from 'react-router-dom';
@@ -10,6 +11,7 @@ import TransactionMutation from './views/TransactionMutation';
 import { listenTo } from './utils/window';
 import Message from './components/Message';
 import { appMessageAtom } from './store/utils';
+import Base from './views/Base';
 
 export function App() {
   const [appMessage, setAppMessage] = useAtom(appMessageAtom);
@@ -35,8 +37,10 @@ export function App() {
         <CSSTransition key={location.key} classNames="fly" timeout={350} onEntered={handleEntered}>
           <Suspense fallback="Loading...">
             <Routes location={location}>
-              <Route path=":id" element={<TransactionMutation />} />
-              <Route path="/" element={<TransactionList />} />
+              <Route element={<Base />}>
+                <Route path=":id" element={<TransactionMutation />} />
+                <Route path="/" element={<TransactionList />} />
+              </Route>
             </Routes>
           </Suspense>
         </CSSTransition>

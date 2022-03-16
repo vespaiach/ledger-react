@@ -6,12 +6,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import { MutationSaveTransactionArgs, TransactionMap } from '../graphql.generated';
 import { reasonsAtom } from './reason';
 import provider from './remoteDbProvider';
-import { loadReasons$, loadTransactions$, saveTransaction$, appMessageAtom } from './utils';
-
-function reportError(set: Setter, error: any) {
-  console.error(error);
-  set(appMessageAtom, { message: error.message, type: 'error', timeout: 3000 });
-}
+import { loadReasons$, loadTransactions$, saveTransaction$, appMessageAtom, reportError } from './utils';
 
 export const filterTransactionAtom = atom<
   Maybe<{

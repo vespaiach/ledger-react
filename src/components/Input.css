@@ -7,7 +7,7 @@
 }
 
 .text-input input {
-  border: 1px solid rgb(176, 176, 176);
+  border: 1px solid var(--border-color);
   padding: 26px 18px 12px 42px;
   width: 100%;
   box-sizing: border-box;
@@ -17,7 +17,7 @@
 
 .text-input .tag-list {
   padding: 26px 16px 12px 16px;
-  border: 1px solid rgb(176, 176, 176);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   display: flex;
   flex-flow: row wrap;

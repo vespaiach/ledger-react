@@ -6,8 +6,8 @@ import { Reason, ReasonMap, Transaction, TransactionMap } from '../graphql.gener
 
 export const appMessageAtom = atom<AppMessage | null>(null);
 
-export function reportError(set: Setter, error: any) {
-  set(appMessageAtom, { message: error.message, type: 'error', timeout: 3000 });
+export function reportError(set: Setter, error: any, timeout = 300) {
+  set(appMessageAtom, { message: error.message, type: 'error', timeout });
 }
 
 const mapTransaction = (tran: Transaction): TransactionMap => {

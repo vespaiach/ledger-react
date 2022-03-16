@@ -354,7 +354,7 @@ template {
 body {
   font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
   font-weight: 400;
-  background-color: rgb(229, 246, 253);
+  background-color: var(--main-background-color);
   line-height: 1.2rem;
   color: #1a2027;
   margin: 0;
@@ -367,7 +367,7 @@ body {
 }
 
 .button {
-  width: 38px;
+  padding: 0px 12px;
   height: 38px;
   display: flex;
   justify-content: center;
@@ -446,7 +446,7 @@ button svg {
 }
 
 .input .caption {
-  color: rgb(113, 113, 113);
+  color: var(--secondary-text-color);
   font-size: 14px;
   line-height: 1;
   position: absolute;
@@ -455,12 +455,12 @@ button svg {
 }
 
 .input .caption .error {
-  color: rgb(239, 83, 80) !important;
+  color: var(--error-text-color) !important;
 }
 
 .input.error input,
 .input.error textarea {
-  border-color: rgb(239, 83, 80) !important;
+  border-color: var(--error-text-color) !important;
 }
 
 .input input,
@@ -470,13 +470,13 @@ button svg {
   border-radius: 4px;
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid rgb(176, 176, 176);
+  border: 1px solid var(--border-color);
   transition: all 0.1s ease-in;
 }
 
 .input input:focus,
 .input textarea:focus {
-  border: 1px solid #1a2027;
+  border: 1px solid var(--focus-border-color);
 }
 
 .fly-enter {
@@ -535,4 +535,48 @@ footer.form-footer button {
   padding: 8px 16px;
   border-radius: 4px;
   border: none;
+}
+
+.full-page {
+  width: 100vw;
+  height: 100vh;
+  background: rgb(229, 246, 253, 0.5);
+}
+
+.spinner {
+  animation: rotate 1.5s linear infinite;
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -25px 0 0 -25px;
+  width: 50px;
+  height: 50px;
+}
+
+.spinner .path {
+  stroke: rgb(25, 118, 210);
+  stroke-linecap: round;
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
 }
