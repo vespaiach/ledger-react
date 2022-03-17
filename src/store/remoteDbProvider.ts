@@ -9,10 +9,8 @@ import {
   GraphqlResponse,
   CreateReasonMutation,
   DeleteTransactionMutation,
-  SigninMutation,
-  TokenMutation,
 } from '../graphql.generated';
-import { signinMutation, tokenMutation } from '../graphql/auth';
+import { signinMutation, signoutMutation, tokenMutation } from '../graphql/auth';
 import { getReasons } from '../graphql/reason';
 import {
   createReasonMutation,
@@ -94,17 +92,21 @@ async function deleteTransaction(id: number) {
 }
 
 async function signin(email: string) {
-  const result = await callRemote<SigninMutation>(signinMutation, { email });
+  const result = await callRemote<string>(signinMutation, { email });
 
-  if (result.signin !== 'sent') throw new Error(result.signin);
+  if (result !== 'sent') throw new Error(result);
+}
+
+async function signout() {
+  return await callRemote<void>(signoutMutation);
 }
 
 async function token(key: string) {
-  const result = await callRemote<TokenMutation>(tokenMutation, { key });
+  const result = await callRemote<string>(tokenMutation, { key });
 
-  if (!result.token) throw new Error("Couldn't exchange for a token");
+  if (!result) throw new Error("Couldn't exchange for a token");
 
-  return result.token;
+  return result;
 }
 
 const provider: DataProvider = {
@@ -116,6 +118,7 @@ const provider: DataProvider = {
   createReason,
 
   signin,
+  signout,
   token,
 };
 

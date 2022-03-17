@@ -17,10 +17,13 @@ import { fetchReasonsAtom, reasonsAtom, reasonsMapAtom } from '../store/reason';
 import MagnifyIcon from './icons/Magnify';
 import PlusOneIcon from './icons/PlusOne';
 import { Maybe } from '../graphql.generated';
+import ExitIcon from './icons/Exit';
+import { signoutAtom } from '../store/auth';
 
 export default function Appbar() {
   const navigate = useNavigate();
 
+  const signout = useUpdateAtom(signoutAtom);
   const filtering = useAtomValue(filterTransactionAtom);
   const setFiltering = useUpdateAtom(writeFilterTransactionAtom);
   const fetchReason = useUpdateAtom(fetchReasonsAtom);
@@ -88,12 +91,17 @@ export default function Appbar() {
         )}
       </Transition>
       <div className={cx('appbar', { 'appbar--float': scrolled, 'appbar--scrollable': hasFilters })}>
-        <button className={cx('button')} onClick={() => navigate('/new')}>
-          <PlusOneIcon />
-        </button>
-        <button className={cx('button')} onClick={handleOpen}>
-          <MagnifyIcon />
-        </button>
+        <div className="button-group">
+          <button title="Add" className={cx('button')} onClick={() => navigate('/new')}>
+            <PlusOneIcon />
+          </button>
+          <button title="Search" className={cx('button')} onClick={handleOpen}>
+            <MagnifyIcon />
+          </button>
+          <button title="Exit" className={cx('button', 'exit')} onClick={() => signout()}>
+            <ExitIcon />
+          </button>
+        </div>
         {hasFilters && (
           <div className="appbar_chips">
             <AmountChip

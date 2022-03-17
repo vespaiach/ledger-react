@@ -11,6 +11,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   Date: string;
+  Void: void;
 };
 
 export type DailyBalance = {
@@ -25,6 +26,7 @@ export type Mutation = {
   deleteReason?: Maybe<Scalars['Boolean']>;
   deleteTransaction?: Maybe<Scalars['Boolean']>;
   signin: Scalars['String'];
+  signout?: Maybe<Scalars['Void']>;
   token: Scalars['String'];
   updateReason?: Maybe<Reason>;
   updateTransaction?: Maybe<Transaction>;
@@ -116,20 +118,6 @@ export type Transaction = {
   updatedAt: Scalars['Date'];
 };
 
-export type SigninMutationVariables = Exact<{
-  email: Scalars['String'];
-}>;
-
-
-export type SigninMutation = { signin: string };
-
-export type TokenMutationVariables = Exact<{
-  key: Scalars['String'];
-}>;
-
-
-export type TokenMutation = { token: string };
-
 export type GetReasonsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -209,5 +197,6 @@ export interface DataProvider {
 
   signin(email: string): Promise<void>;
   token(key: string): Promise<string>;
+  signout(): Promise<void>;
 }
   

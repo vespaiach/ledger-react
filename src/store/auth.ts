@@ -9,6 +9,17 @@ export const authAtom = atom<AuthToken | null>(null);
 export const signinStatusAtom = atom<null | 'sending' | 'sent' | 'error'>(null);
 export const exchangeStatusAtom = atom<null | 'sending' | 'sent' | 'error'>(null);
 
+export const signoutAtom = atom(null, (_, set) => {
+  set(authAtom, null);
+  window.localStorage.removeItem('whoami');
+
+  from(provider.signout()).subscribe({
+    error: (err) => {
+      console.error(err);
+    },
+  });
+});
+
 export const signinAtom = atom(null, (_, set, { email }: { email: string }) => {
   set(signinStatusAtom, 'sending');
 

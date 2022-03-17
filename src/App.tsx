@@ -32,20 +32,18 @@ export function App() {
   }, []);
 
   return (
-    <>
+    <Base>
       <TransitionGroup component={null}>
         <CSSTransition key={location.key} classNames="fly" timeout={350} onEntered={handleEntered}>
           <Suspense fallback="Loading...">
             <Routes location={location}>
-              <Route element={<Base />}>
-                <Route path=":id" element={<TransactionMutation />} />
-                <Route path="/" element={<TransactionList />} />
-              </Route>
+              <Route path=":id" element={<TransactionMutation />} />
+              <Route path="/" element={<TransactionList />} />
             </Routes>
           </Suspense>
         </CSSTransition>
       </TransitionGroup>
       {appMessage && <Message data={appMessage} onClose={() => setAppMessage(null)} />}
-    </>
+    </Base>
   );
 }

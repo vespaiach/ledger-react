@@ -18,6 +18,7 @@ export interface DataProvider {
 
   signin(email: string): Promise<void>;
   token(key: string): Promise<string>;
+  signout(): Promise<void>;
 }
   `,
 };

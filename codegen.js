@@ -20,6 +20,7 @@ const fs = require('fs');
             skipTypename: true,
             scalars: {
               Date: 'string',
+              Void: 'void',
             },
           },
         },

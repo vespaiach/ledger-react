@@ -1,13 +1,12 @@
 import { useAtom } from 'jotai';
 import jwtDecode from 'jwt-decode';
-import { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { ReactNode, useEffect, useState } from 'react';
 import PageLoader from '../components/PageLoader';
 import SignIn from '../views/SignIn';
 
 import { authAtom } from '../store/auth';
 
-export default function Base() {
+export default function Base({ children }: { children: ReactNode }) {
   const [auth, setAuth] = useAtom(authAtom);
   const [loading, setLoading] = useState(true);
 
@@ -25,5 +24,5 @@ export default function Base() {
 
   if (!auth || auth.expiredIn < new Date()) return <SignIn />;
 
-  return <Outlet />;
+  return <>{children}</>;
 }
