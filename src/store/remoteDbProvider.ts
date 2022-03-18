@@ -102,11 +102,11 @@ async function signout() {
 }
 
 async function token(key: string) {
-  const result = await callRemote<string>(tokenMutation, { key });
+  const result = await callRemote<{ token: string }>(tokenMutation, { key });
 
-  if (!result) throw new Error("Couldn't exchange for a token");
+  if (!result.token) throw new Error("Couldn't exchange for a token");
 
-  return result;
+  return result.token;
 }
 
 const provider: DataProvider = {

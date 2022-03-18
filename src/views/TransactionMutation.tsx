@@ -21,10 +21,13 @@ import {
   transactionSaveStatusAtom,
 } from '../store/transaction';
 import { appMessageAtom } from '../store/utils';
+import { useAuth } from '../utils/useAuth';
 
 const noop = () => null;
 
 export default function TransactionMutation() {
+  useAuth();
+
   const navigate = useNavigate();
   const { id } = useParams<'id'>();
 

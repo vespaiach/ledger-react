@@ -4,9 +4,10 @@ import cx from 'classnames';
 import { useEffect, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
-import ErrorIcon from './icons/Error';
-import SuccessIcon from './icons/Success';
-import XIcon from './icons/X';
+import { Button } from '../Button';
+import ErrorIcon from '../icons/Error';
+import SuccessIcon from '../icons/Success';
+import XIcon from '../icons/X';
 
 export default function Message({ data, onClose }: { onClose: () => void; data: AppMessage }) {
   const [open, setOpen] = useState<boolean>(false);
@@ -43,9 +44,9 @@ export default function Message({ data, onClose }: { onClose: () => void; data: 
       <article className={cx('message-sheet', data.type)}>
         {iconEl}
         <p>{data.message}</p>
-        <button className="button" onClick={onClose}>
+        <Button onClick={onClose}>
           <XIcon />
-        </button>
+        </Button>
       </article>
     </CSSTransition>
   );

@@ -6,6 +6,15 @@
   max-width: 320px;
   border-radius: 6px;
 }
+.sign-in h3 {
+  margin-bottom: 4px;
+}
+
+.sign-in p {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: var(--secondary-text-color);
+}
 
 .sign-in .add-in {
   position: absolute;

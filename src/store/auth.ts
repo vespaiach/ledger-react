@@ -40,6 +40,7 @@ export const exchangeTokenAtom = atom(null, (_, set, { key }: { key: string }) =
 
   from(provider.token(key)).subscribe({
     next: (token) => {
+      debugger
       const data = jwtDecode<AuthToken>(token);
       set(authAtom, { token, email: data.email, expiredIn: new Date(data.expiredIn) });
       window.localStorage.setItem('whoami', token);

@@ -13,8 +13,11 @@ import { deleteTransactionAtom, transactionsAtom, writeLastCursorAtom } from '..
 import ChervonLeftIcon from '../components/icons/ChervonLeft';
 import ChervonRightIcon from '../components/icons/ChervonRight';
 import { TransactionMap } from '../graphql.generated';
+import { useAuth } from '../utils/useAuth';
 
 export default function TransactionList() {
+  useAuth();
+
   const navigate = useNavigate();
 
   const updateLastCursor = useUpdateAtom(writeLastCursorAtom);
@@ -51,7 +54,9 @@ export default function TransactionList() {
               }}>
               <div className="headline">
                 <h1>${transaction.amount}</h1>
-                <h2>{DateTime.fromJSDate(transaction.date).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</h2>
+                <h2>
+                  {DateTime.fromJSDate(transaction.date).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
+                </h2>
                 <button className="chervon-button">
                   <ChervonLeftIcon className="chervon-left" />
                   <ChervonRightIcon className="chervon-right" />

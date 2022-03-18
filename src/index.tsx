@@ -1,14 +1,14 @@
-import { MemoryRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'jotai';
 import ReactDOM from 'react-dom';
 
 import { App } from './App';
 
 ReactDOM.render(
-  <MemoryRouter>
+  <BrowserRouter>
     <Provider>
       <App />
     </Provider>
-  </MemoryRouter>,
+  </BrowserRouter>,
   document.querySelector('#root')
 );
