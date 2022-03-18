@@ -6,11 +6,11 @@ import { useAtom } from 'jotai';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
-import { Input, TagInput } from './Input';
 import { filterTransactionAtom, writeLastCursorAtom } from '../store/transaction';
 import { fetchReasonsAtom, reasonsAtom, reasonsMapAtom } from '../store/reason';
 import DatePicker from './DatePicker';
 import { ReasonMap, Maybe } from '../graphql.generated';
+import { Input, TagInput } from './Input';
 
 const noop = () => null;
 

@@ -441,44 +441,6 @@ button svg {
   text-align: center;
 }
 
-.input {
-  position: relative;
-}
-
-.input .caption {
-  color: var(--secondary-text-color);
-  font-size: 14px;
-  line-height: 1;
-  position: absolute;
-  top: 8px;
-  left: 16px;
-}
-
-.input .caption .error {
-  color: var(--error-text-color) !important;
-}
-
-.input.error input,
-.input.error textarea {
-  border-color: var(--error-text-color) !important;
-}
-
-.input input,
-.input textarea {
-  padding: 26px 18px 12px 16px;
-  outline: none;
-  border-radius: 4px;
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid var(--border-color);
-  transition: all 0.1s ease-in;
-}
-
-.input input:focus,
-.input textarea:focus {
-  border: 1px solid var(--focus-border-color);
-}
-
 .fly-enter {
   position: fixed;
   top: 0;
