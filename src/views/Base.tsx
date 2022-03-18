@@ -1,10 +1,10 @@
 import { useAtom } from 'jotai';
 import jwtDecode from 'jwt-decode';
 import { ReactNode, useEffect, useState } from 'react';
-import PageLoader from '../components/PageLoader';
 import SignIn from '../views/SignIn';
 
 import { authAtom } from '../store/auth';
+import { PageLoader } from '../components/Spinner';
 
 export default function Base({ children }: { children: ReactNode }) {
   const [auth, setAuth] = useAtom(authAtom);

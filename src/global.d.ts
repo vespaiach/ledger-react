@@ -24,5 +24,7 @@ interface AppMessage {
 interface AuthToken {
   email: string;
   token: string;
-  expiredIn: Date
+  expiredIn: Date;
 }
+
+type StringDigitOnly = `${number}`;

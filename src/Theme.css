@@ -1,11 +1,16 @@
 :root {
   --main-background-color: rgb(229, 246, 253);
   --sheet-background-color: white;
+  --button-background-color: rgb(255, 244, 229);
+  --dimmed-background-color: rgb(229, 246, 253, 0.5);
 
   --border-color: rgb(213, 213, 213);
+  --button-border-color: rgba(0, 0, 0, 0.12);
   --focus-border-color: rgb(74, 77, 82);
 
   --primary-text-color: #1a2027;
   --secondary-text-color: rgb(145, 145, 145);
   --error-text-color: rgb(239, 83, 80);
+  --button-text-color: #1976d2;
+  --disabled-color: rgba(0, 0, 0, 0.3);
 }

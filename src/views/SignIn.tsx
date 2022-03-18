@@ -9,6 +9,7 @@ import EmailIcon from '../components/icons/Email';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { exchangeStatusAtom, exchangeTokenAtom, signinAtom, signinStatusAtom } from '../store/auth';
 import PasswordIcon from '../components/icons/Password';
+import { Button } from '../components/Button';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -48,8 +49,8 @@ export default function SignIn() {
             <PasswordIcon />
           </Input>
         </CSSTransition>
-        <button
-          className="button"
+        <Button
+          loading={status === 'sending' || exchangeStatus === 'sending'}
           onClick={async () => {
             if (status === 'sending' || exchangeStatus === 'sending') return;
 
@@ -72,7 +73,7 @@ export default function SignIn() {
             return;
           }}>
           Sign In
-        </button>
+        </Button>
       </div>
     </div>
   );
