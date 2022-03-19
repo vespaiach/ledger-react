@@ -12,14 +12,17 @@ import EmailInput from './views/EmailInput';
 import KeyInput from './views/KeyInput';
 import { messagesSelector, removeMessageSelector, useAppStore } from './store/app';
 import { setReasonsSelector, useReasonStore } from './store/reason';
-import { loadReasons$ } from './dataSource';
+import { loadReasons$, loadTransactions$ } from './dataSource';
 import { useAuthStore } from './store/auth';
+import { useFiltersStore, useTransactionStore } from './store/transaction';
+import { PageLoader } from './components/Spinner';
 
 export function App() {
   const auth = useAuthStore((state) => state.auth);
   const setReasons = useReasonStore(setReasonsSelector);
   const removeMessage = useAppStore(removeMessageSelector);
   const messages = useAppStore(messagesSelector);
+  useTransactionStore;
 
   useEffect(() => {
     return listenTo(window, 'resize', function () {
@@ -46,9 +49,23 @@ export function App() {
     });
   }, []);
 
+  useEffect(
+    () =>
+      useFiltersStore.subscribe((fresh, stale) => {
+        if (fresh !== stale) {
+          loadTransactions$(fresh.filters ?? undefined).subscribe({
+            next: (transactions) => {
+              useTransactionStore.getState().setTransactions(transactions);
+            },
+          });
+        }
+      }),
+    []
+  );
+
   return (
     <>
-      <Suspense fallback="Loading...">
+      <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/email" element={<EmailInput />} />
           <Route path="/token" element={<KeyInput />} />

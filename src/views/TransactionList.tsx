@@ -12,19 +12,22 @@ import ChervonLeftIcon from '../components/icons/ChervonLeft';
 import ChervonRightIcon from '../components/icons/ChervonRight';
 import { Maybe, QueryGetTransactionsArgs } from '../graphql.generated';
 import { useAuth } from '../utils/useAuth';
-import { filtersSelector, transactionsSelector, useTransactionStore } from '../store/transaction';
+import {
+  filtersSelector,
+  transactionsSelector,
+  useFiltersStore,
+  useTransactionStore,
+} from '../store/transaction';
 import { deleteTransaction$, loadTransactions$ } from '../dataSource';
-import { addErrorSelector, useAppStore } from '../store/app';
 
 export default function TransactionList() {
   useAuth();
 
-  const filters = useTransactionStore(filtersSelector);
+  const filters = useFiltersStore(filtersSelector);
   const transactions = useTransactionStore(transactionsSelector);
 
   const navigate = useNavigate();
   const addTransactions = useTransactionStore((state) => state.addTransactions);
-  const addError = useAppStore(addErrorSelector);
 
   const fetchTransactions = (
     args?: Omit<QueryGetTransactionsArgs, 'fromDate' | 'toDate'> & {
@@ -34,7 +37,6 @@ export default function TransactionList() {
   ) => {
     loadTransactions$({ ...filters, ...args }).subscribe({
       next: (transactions) => addTransactions(transactions),
-      error: (e) => addError(e.message),
     });
   };
 

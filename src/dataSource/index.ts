@@ -1,5 +1,5 @@
 import { from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 import provider from './remoteDbProvider';
 import {
@@ -10,8 +10,8 @@ import {
   ReasonMap,
   Transaction,
   TransactionMap,
-  UpdateTransactionMutationVariables,
 } from '../graphql.generated';
+import { useAppStore } from '../store/app';
 
 const selectedProvider = window.localStorage.getItem('offline_provider') ? provider : provider;
 
@@ -29,8 +29,18 @@ const mapReason = (reason: Reason): ReasonMap => ({
   updatedAt: new Date(reason.updatedAt),
 });
 
+const errorReport = (e: any) => {
+  console.error(e);
+
+  useAppStore.getState().addError(e.message);
+  throw e;
+};
+
 export const getTransaction$ = (id: number) => {
-  return from(selectedProvider.getTransaction(id)).pipe(map((t) => (t ? mapTransaction(t) : null)));
+  return from(selectedProvider.getTransaction(id)).pipe(
+    catchError((e) => errorReport(e)),
+    map((t) => (t ? mapTransaction(t) : null))
+  );
 };
 
 export const loadTransactions$ = (
@@ -49,20 +59,31 @@ export const loadTransactions$ = (
           }
         : undefined
     )
-  ).pipe(map((t) => t.map(mapTransaction)));
+  ).pipe(
+    catchError((e) => errorReport(e)),
+    map((t) => t.map(mapTransaction))
+  );
 };
 
-export const loadReasons$ = () => from(selectedProvider.loadReasons()).pipe(map((r) => r.map(mapReason)));
+export const loadReasons$ = () =>
+  from(selectedProvider.loadReasons()).pipe(
+    catchError((e) => errorReport(e)),
+    map((r) => r.map(mapReason))
+  );
 
-export const deleteTransaction$ = (id: number) => from(selectedProvider.deleteTransaction(id));
+export const deleteTransaction$ = (id: number) =>
+  from(selectedProvider.deleteTransaction(id)).pipe(catchError((e) => errorReport(e)));
 
 export const saveTransaction$ = (args: Omit<MutationSaveTransactionArgs, 'date'> & { date?: Maybe<Date> }) =>
   from(selectedProvider.saveTransaction({ ...args, date: args.date?.toISOString() })).pipe(
+    catchError((e) => errorReport(e)),
     map(mapTransaction)
   );
 
-export const signout$ = () => from(selectedProvider.signout());
+export const signout$ = () => from(selectedProvider.signout()).pipe(catchError((e) => errorReport(e)));
 
-export const getToken$ = (key: string) => from(selectedProvider.token(key));
+export const getToken$ = (key: string) =>
+  from(selectedProvider.token(key)).pipe(catchError((e) => errorReport(e)));
 
-export const getSigninKey$ = (email: string) => from(selectedProvider.signin(email));
+export const getSigninKey$ = (email: string) =>
+  from(selectedProvider.signin(email)).pipe(catchError((e) => errorReport(e)));

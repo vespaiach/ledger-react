@@ -42,8 +42,7 @@ export default function EmailInput() {
           setLoading(true);
 
           getSigninKey$(email).subscribe({
-            error: (err) => {
-              setErrorMessage(err.message, 8000);
+            error: () => {
               setLoading(false);
             },
             complete: () => {

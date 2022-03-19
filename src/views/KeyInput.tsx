@@ -43,9 +43,8 @@ export default function KeyInput() {
       next: (token) => {
         setAuth(token);
       },
-      error: (err) => {
+      error: () => {
         setLoading(false);
-        addError(err.message, 8000);
       },
       complete: () => navigate('/'),
     });
