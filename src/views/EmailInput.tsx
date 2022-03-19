@@ -3,12 +3,11 @@ import './Signin.css';
 import { useEffect, useRef, useState } from 'react';
 import * as emailValidator from 'email-validator';
 import { useNavigate } from 'react-router-dom';
-import { from } from 'rxjs';
 
 import EmailIcon from '../components/icons/Email';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
-import provider from '../dataSource';
+import { getSigninKey$ } from '../dataSource';
 import { useAppStore } from '../store/app';
 
 export default function EmailInput() {
@@ -19,7 +18,8 @@ export default function EmailInput() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const { setError: setErrorMessage, setMessage } = useAppStore();
+  const setErrorMessage = useAppStore((state) => state.setError);
+  const setMessage = useAppStore((state) => state.setMessage);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -41,7 +41,7 @@ export default function EmailInput() {
 
           setLoading(true);
 
-          from(provider.signin(email)).subscribe({
+          getSigninKey$(email).subscribe({
             error: (err) => {
               setErrorMessage(err.message, 8000);
               setLoading(false);

@@ -2,16 +2,15 @@ import './Signin.css';
 
 import { useEffect, useRef, useState } from 'react';
 import qs from 'query-string';
-import { from } from 'rxjs';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import PasswordIcon from '../components/icons/Password';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import BackArrowIcon from '../components/icons/BackArrow';
-import selectedProvider from '../dataSource';
 import { useAppStore } from '../store/app';
 import { useAuthStore } from '../store/auth';
+import { getToken$ } from '../dataSource';
 
 export default function KeyInput() {
   const location = useLocation();
@@ -28,8 +27,8 @@ export default function KeyInput() {
   const [error, setError] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
-  const { setError: setErrorMessage } = useAppStore();
-  const { setAuth } = useAuthStore();
+  const setErrorMessage = useAppStore((state) => state.setError);
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   const submit = () => {
     if (loading) return;
@@ -40,9 +39,9 @@ export default function KeyInput() {
     }
 
     setLoading(true);
-    from(selectedProvider.token(key)).subscribe({
+    getToken$(key).subscribe({
       next: (token) => {
-        setAuth(token) 
+        setAuth(token);
       },
       error: (err) => {
         setLoading(false);

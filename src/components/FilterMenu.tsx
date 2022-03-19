@@ -6,58 +6,48 @@ import { useAtom } from 'jotai';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
-import { filterTransactionAtom, writeLastCursorAtom } from '../store/transaction';
-import { fetchReasonsAtom, reasonsAtom, reasonsMapAtom } from '../store/reason';
 import DatePicker from './DatePicker';
 import { ReasonMap, Maybe } from '../graphql.generated';
 import { Input, TagInput } from './Input';
+import { useTransactionStore } from '../store/transaction';
+import { useReasonStore } from '../store/reason';
 
 const noop = () => null;
 
 export default function FilterMenu({ onClose }: { onClose: () => void }) {
-  const [filtering, setFiltering] = useAtom(filterTransactionAtom);
-  const updateLastCursor = useUpdateAtom(writeLastCursorAtom);
-  const fetchReason = useUpdateAtom(fetchReasonsAtom);
-  const reasonList = useAtomValue(reasonsAtom);
-  const reasonMap = useAtomValue(reasonsMapAtom);
+  const filters = useTransactionStore((state) => state.filters);
+  const setFilters = useTransactionStore((state) => state.setFilters);
+  const reasons = useReasonStore((state) => state.reasons);
+  const reasonsMap = useReasonStore((state) => state.reasonsMap);
 
-  const [reasons, setReasons] = useState<ReasonMap[]>(() => {
-    return filtering?.reasonIds?.map((r) => reasonMap[r]) ?? [];
-  });
-  const [amountRange, setAmountRange] = useState([filtering?.fromAmount, filtering?.toAmount]);
+  const [amountRange, setAmountRange] = useState([filters?.fromAmount, filters?.toAmount]);
   const [dateRange, setDateRange] = useState<[Maybe<Date>, Maybe<Date>]>([
-    filtering?.fromDate ?? null,
-    filtering?.toDate ?? null,
+    filters?.fromDate ?? null,
+    filters?.toDate ?? null,
   ]);
-
-  useEffect(() => {
-    if (!reasonList?.length) {
-      fetchReason();
-    }
-  }, [reasonList]);
 
   const handleChecked = (evt: ChangeEvent<HTMLInputElement>) => {
     const { checked, value } = evt.target;
 
     const id = Number(value);
 
-    if (checked) {
-      reasonMap[id] && setReasons([...reasons, reasonMap[id]]);
-    } else {
-      setReasons(reasons.filter((r) => r.id !== id));
-    }
+    // if (checked) {
+    //   reasonsMap[id] && setReasons([...reasons, reasonMap[id]]);
+    // } else {
+    //   setReasons(reasons.filter((r) => r.id !== id));
+    // }
   };
 
   const handleApply = () => {
     const reasonIds = reasons.map((r) => r.id);
-    setFiltering({
-      fromAmount: amountRange[0],
-      toAmount: amountRange[1],
-      fromDate: dateRange[0] ?? null,
-      toDate: dateRange[1] ?? null,
-      reasonIds: reasonIds.length ? reasonIds : null,
-    });
-    updateLastCursor({ cursor: null });
+    // setFiltering({
+    //   fromAmount: amountRange[0],
+    //   toAmount: amountRange[1],
+    //   fromDate: dateRange[0] ?? null,
+    //   toDate: dateRange[1] ?? null,
+    //   reasonIds: reasonIds.length ? reasonIds : null,
+    // });
+    // updateLastCursor({ cursor: null });
     onClose();
   };
 
@@ -144,7 +134,7 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
           <DatePicker allowRange fromDate={dateRange[0]} toDate={dateRange[1]} onChange={setDateRange} />
         </div>
         <div style={{ margin: '8px 16px 24px 16px' }}>
-          <TagInput
+          {/* <TagInput
             style={{ marginBottom: 4 }}
             caption="reasons"
             tags={reasons}
@@ -164,7 +154,7 @@ export default function FilterMenu({ onClose }: { onClose: () => void }) {
                 <span>{reason.text}</span>
               </label>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
       <footer className="form-footer">

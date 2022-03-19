@@ -12,23 +12,23 @@ import { from } from 'rxjs';
 
 import { listenTo } from '../utils/window';
 import FilterMenu from './FilterMenu';
-import { filterTransactionAtom, writeFilterTransactionAtom } from '../store/transaction';
 import MagnifyIcon from './icons/Magnify';
 import PlusOneIcon from './icons/PlusOne';
 import { Maybe } from '../graphql.generated';
 import ExitIcon from './icons/Exit';
 import { Button } from './Button';
 import { remove } from '../utils/auth';
-import selectedProvider from '../dataSource';
+import { signout$ } from '../dataSource';
 import { useAuthStore } from '../store/auth';
 import { useReasonStore } from '../store/reason';
 import CloseIcon from './icons/Close';
+import { useTransactionStore } from '../store/transaction';
 
 export default function Appbar() {
   const navigate = useNavigate();
 
-  const filtering = useAtomValue(filterTransactionAtom);
-  const setFiltering = useUpdateAtom(writeFilterTransactionAtom);
+  const filtering = useTransactionStore((state) => state.filters);
+  const setFiltering = useTransactionStore((state) => state.setFilters);
 
   const { setAuth } = useAuthStore();
 
@@ -43,7 +43,7 @@ export default function Appbar() {
       navigate('/email');
     };
 
-    from(selectedProvider.signout()).subscribe({
+    signout$().subscribe({
       error: complete,
       complete,
     });

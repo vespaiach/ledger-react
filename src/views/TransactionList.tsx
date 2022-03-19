@@ -5,32 +5,44 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
+import { from } from 'rxjs';
 
 import Container from '../components/Container';
 import Card from '../components/Card';
 import Appbar from '../components/Appbar';
-import { deleteTransactionAtom, transactionsAtom, writeLastCursorAtom } from '../store/transaction';
 import ChervonLeftIcon from '../components/icons/ChervonLeft';
 import ChervonRightIcon from '../components/icons/ChervonRight';
-import { TransactionMap } from '../graphql.generated';
+import { Maybe, QueryGetTransactionsArgs, TransactionMap } from '../graphql.generated';
 import { useAuth } from '../utils/useAuth';
+import { filtersSelector, transactionsSelector, useTransactionStore } from '../store/transaction';
+import { loadTransactions$ } from '../dataSource';
+import { useAppStore } from '../store/app';
 
 export default function TransactionList() {
   useAuth();
 
+  const filters = useTransactionStore(filtersSelector);
+  const transactions = useTransactionStore(transactionsSelector);
+
   const navigate = useNavigate();
+  const addTransactions = useTransactionStore((state) => state.addTransactions);
+  const setError = useAppStore((state) => state.setError);
 
-  const updateLastCursor = useUpdateAtom(writeLastCursorAtom);
-  const deleteTransaction = useUpdateAtom(deleteTransactionAtom);
-  const transactions = useAtomValue(transactionsAtom);
-
-  const handleDelete = (transaction: TransactionMap) => {
-    deleteTransaction({ id: transaction.id });
+  const fetchTransactions = (
+    args?: Omit<QueryGetTransactionsArgs, 'fromDate' | 'toDate'> & {
+      fromDate?: Maybe<Date>;
+      toDate?: Maybe<Date>;
+    }
+  ) => {
+    loadTransactions$({ ...filters, ...args }).subscribe({
+      next: (transactions) => addTransactions(transactions),
+      error: (e) => setError(e.message),
+    });
   };
 
   useEffect(() => {
-    updateLastCursor({ cursor: null });
-  }, [updateLastCursor]);
+    fetchTransactions();
+  }, []);
 
   return (
     <div>
@@ -38,14 +50,13 @@ export default function TransactionList() {
       <Container>
         <Virtuoso
           endReached={(i) => {
-            updateLastCursor({ cursor: transactions[i]?.id ?? null });
+            fetchTransactions({ lastCursor: transactions[i]?.id ?? null });
           }}
           overscan={200}
           useWindowScroll
           data={transactions}
           itemContent={(_, transaction) => (
             <Card
-              onDelete={() => handleDelete(transaction)}
               onEdit={() => navigate(`/${transaction.id}`)}
               onClick={(e) => {
                 if (e.currentTarget.classList.contains('card-pane--open')) {

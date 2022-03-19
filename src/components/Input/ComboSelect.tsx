@@ -1,4 +1,4 @@
-import './ComboSelect.css';
+import './Input.css';
 
 import cx from 'classnames';
 import CloseIcon from '../icons/Close';

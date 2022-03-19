@@ -3,7 +3,6 @@ import './App.css';
 
 import { Route, Routes } from 'react-router-dom';
 import { Suspense, useEffect } from 'react';
-import { from } from 'rxjs';
 
 import TransactionList from './views/TransactionList';
 import TransactionMutation from './views/TransactionMutation';
@@ -12,11 +11,13 @@ import Message from './components/Message';
 import EmailInput from './views/EmailInput';
 import KeyInput from './views/KeyInput';
 import { useAppStore } from './store/app';
-import selectedProvider from './dataSource';
 import { useReasonStore } from './store/reason';
+import { loadReasons$ } from './dataSource';
+import { useAuthStore } from './store/auth';
 
 export function App() {
-  const { setReasons } = useReasonStore();
+  const auth = useAuthStore((state) => state.auth);
+  const setReasons = useReasonStore((state) => state.setReasons);
   const { message, setMessage } = useAppStore();
 
   useEffect(() => {
@@ -26,12 +27,14 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    from(selectedProvider.loadReasons()).subscribe({
+    if (!auth) return;
+
+    loadReasons$().subscribe({
       next: (reasons) => {
         setReasons(reasons.map((r) => ({ ...r, updatedAt: new Date(r.updatedAt) })));
       },
     });
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
     /**

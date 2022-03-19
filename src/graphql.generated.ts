@@ -200,7 +200,7 @@ export type DeleteTransactionMutation = { deleteTransaction?:  boolean | null | 
 
 export type ReasonMap = Omit<Reason, 'updatedAt'> & { updatedAt: Date };
 export type TransactionMap = Omit<Transaction, 'date' | 'reason' | 'updatedAt'> & { date: Date, updatedAt: Date, reason: ReasonMap };
-export type MutationSaveTransactionArgs = Omit<MutationUpdateTransactionArgs, 'id' | 'reasonId'> & { id?: number | undefined | null; reasonText?: string; };
+export type MutationSaveTransactionArgs = Omit<MutationUpdateTransactionArgs, 'id' | 'reasonId'> & { id?: Maybe<number>; reasonText?: Maybe<string>; };
 
 export interface GraphqlError { message: string; extensions?: { code: string; } };
 export interface GraphqlResponse<T> { errors?: GraphqlError[]; data: T };
