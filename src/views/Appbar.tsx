@@ -3,7 +3,6 @@ import './Appbar.css';
 import { DateTime } from 'luxon';
 import { ReactNode } from 'react';
 import { Transition } from 'react-transition-group';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import cx from 'classnames';
 import NumberFormat from 'react-number-format';
