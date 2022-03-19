@@ -47,9 +47,23 @@
 
 .input-adds-in {
   position: absolute;
-  top: 26px;
+  top: 28px;
   left: 15px;
   color: var(--secondary-text-color);
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.input-subs-in {
+  position: absolute;
+  top: 26px;
+  right: 8px;
+  color: var(--secondary-text-color);
+  min-width: 24px;
+  min-height: 24px;
+}
+.input .right-space {
+  padding-right: 32px;
 }
 
 .input .tag-list {
@@ -57,17 +71,20 @@
   border: 1px solid var(--border-color);
   border-radius: 4px;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   gap: 4px;
   align-items: center;
   min-height: 38px;
+  overflow-x: auto;
 }
 
-.input .tag-list .tag {
+.tag-list .tag {
   display: flex;
   align-items: center;
   padding: 8px;
-  background: rgb(239, 239, 239);
+  gap: 8px;
+  background: var(--grayout-background-color);
+  flex-shrink: 0;
 }
 
 .combo-select {

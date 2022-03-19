@@ -20,6 +20,8 @@ interface InputProps<T extends InputElementType> extends ComponentBaseProps {
   caption?: string;
   as?: T;
   error?: string;
+  addIns?: ReactElement | null;
+  subIns?: ReactElement | null;
 }
 
 type InputComponentProps<T extends InputElementType> = InputProps<T> &
@@ -30,7 +32,18 @@ let rnd = 0;
 export const Input: <T extends InputElementType>(
   props: InputComponentProps<T> & { ref?: Ref<T extends 'input' ? HTMLInputElement : HTMLTextAreaElement> }
 ) => ReactElement | null = forwardRef(function InputComponent<T extends InputElementType = 'input'>(
-  { id = `input-${++rnd}`, error, children, className, style, caption, as, ...rest }: InputComponentProps<T>,
+  {
+    id = `input-${++rnd}`,
+    error,
+    addIns,
+    subIns,
+    className,
+    style,
+    caption,
+    as,
+    children,
+    ...rest
+  }: InputComponentProps<T>,
   ref: Ref<T extends 'input' ? HTMLInputElement : HTMLTextAreaElement>
 ) {
   const Component = (as ?? 'input') as ElementType;
@@ -41,8 +54,10 @@ export const Input: <T extends InputElementType>(
         {caption}
         {!!error && <span className="error"> - {error}</span>}
       </div>
-      <Component {...rest} id={id} ref={ref} />
-      <div className="input-adds-in flex-center">{children}</div>
+      <Component className={cx({ 'right-space': subIns })} {...rest} id={id} ref={ref} />
+      {addIns && <div className="input-adds-in flex-center">{addIns}</div>}
+      {subIns && <div className="input-subs-in flex-center">{subIns}</div>}
+      {children}
     </label>
   );
 });

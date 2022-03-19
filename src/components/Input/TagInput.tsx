@@ -6,13 +6,17 @@ import cx from 'classnames';
 import { Button } from '../Button';
 import CloseIcon from '../icons/Close';
 
+interface Tag {
+  text: string;
+}
+
 interface TagInputProps extends ComponentBaseProps {
   caption?: string;
   children?: ReactNode;
   id?: string;
-  tags: string[];
+  tags: Tag[];
   error?: string;
-  onDelete?: (tag: string) => void;
+  onDelete?: (tag: Tag) => void;
 }
 
 export function TagInput({
@@ -34,8 +38,9 @@ export function TagInput({
       <div className="tag-list">
         {tags.map((t, i) => (
           <div key={i} className="tag">
-            <span>{t}</span>
+            <span>{t.text}</span>
             <Button
+              boxLess
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -46,7 +51,7 @@ export function TagInput({
           </div>
         ))}
       </div>
-      <div className="input-adds-in flex-center">{children}</div>
+      {children}
     </label>
   );
 }

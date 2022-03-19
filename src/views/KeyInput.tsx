@@ -78,12 +78,12 @@ export default function KeyInput() {
           caption="sign-in key"
           error={error}
           value={key}
+          addIns={<PasswordIcon />}
           onChange={(e) => {
             setError(undefined);
             setKey(e.target.value);
-          }}>
-          <PasswordIcon />
-        </Input>
+          }}
+        />
         <Button type="submit" loading={loading}>
           Sign In
         </Button>

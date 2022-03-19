@@ -9,6 +9,7 @@ interface ButtonProps<I> extends ComponentBaseProps {
   onClick?: ReactEventHandler<HTMLButtonElement>;
   as?: I;
   loading?: boolean;
+  boxLess?: boolean;
 }
 
 const defaultElement = 'button';
@@ -19,6 +20,7 @@ export function Button<I extends ElementType = typeof defaultElement>({
   className,
   disabled,
   loading,
+  boxLess,
   as,
   onClick,
   ...rest
@@ -28,7 +30,7 @@ export function Button<I extends ElementType = typeof defaultElement>({
   return (
     <Component
       {...rest}
-      className={cx('button', { disabled }, className)}
+      className={cx('button', { disabled, 'box-less': boxLess }, className)}
       onClick={(e) => (loading || disabled ? null : onClick?.(e))}>
       {loading && (
         <div className="flex-center spinner-sheet">

@@ -58,6 +58,7 @@ export default function EmailInput() {
         <h3>Sign-In Ledger App</h3>
         <p>A sign-in email will be sent to your email</p>
         <Input
+          addIns={<EmailIcon />}
           ref={inputRef}
           caption="email address"
           error={error}
@@ -66,9 +67,8 @@ export default function EmailInput() {
           onChange={(e) => {
             setError(undefined);
             setEmail(e.target.value);
-          }}>
-          <EmailIcon />
-        </Input>
+          }}
+        />
         <Button type="submit" loading={loading}>
           Send
         </Button>

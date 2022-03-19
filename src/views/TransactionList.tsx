@@ -1,18 +1,16 @@
 import './TransactionList.css';
 
 import { DateTime } from 'luxon';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import { from } from 'rxjs';
 
 import Container from '../components/Container';
 import Card from '../components/Card';
-import Appbar from '../components/Appbar';
+import Appbar from './Appbar';
 import ChervonLeftIcon from '../components/icons/ChervonLeft';
 import ChervonRightIcon from '../components/icons/ChervonRight';
-import { Maybe, QueryGetTransactionsArgs, TransactionMap } from '../graphql.generated';
+import { Maybe, QueryGetTransactionsArgs } from '../graphql.generated';
 import { useAuth } from '../utils/useAuth';
 import { filtersSelector, transactionsSelector, useTransactionStore } from '../store/transaction';
 import { loadTransactions$ } from '../dataSource';

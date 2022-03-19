@@ -5,6 +5,12 @@
   height: calc(100vh - 28px);
 }
 
+.filter-pane .close {
+  position: absolute;
+  top: 12px;
+  right: 8px;
+}
+
 .filter-pane .body {
   flex: 1;
   overflow-y: auto;
@@ -19,14 +25,6 @@
   padding: 12px;
 }
 
-.button.button-close {
-  background: none;
-  border: none;
-  position: absolute;
-  top: 3px;
-  left: 2px;
-}
-
 .amount-input {
   display: grid;
   grid: auto-flow / 1fr auto 1fr;
@@ -38,50 +36,6 @@
   margin: 18px 0;
 }
 
-.date-picker {
-  display: grid;
-  grid-gap: 12px;
-  grid-auto-flow: column;
-  overflow-x: auto;
-  overflow-y: hidden;
-  font-size: 13px;
-  font-weight: 500;
-  font-family: 'Roboto Mono', monospace;
-}
-
-.date-picker .group {
-  box-sizing: border-box;
-  display: grid;
-  grid: auto-flow / repeat(7, 1fr);
-}
-
-.group button {
-  background: none;
-  border: none;
-}
-
-.group div {
-  text-align: center;
-  padding: 12px 4px 4px;
-  box-sizing: content-box;
-  color: rgba(113, 113, 113, 0.5);
-}
-
-.group .dimmed {
-  color: rgba(113, 113, 113, 0.5);
-}
-
-.group .selected {
-  background: rgb(239, 83, 80);
-}
-
-.filter-chip {
-  position: relative;
-  padding: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  height: 25px;
-  flex-shrink: 0;
+.checkboxes {
+  margin-top: 4px;
 }

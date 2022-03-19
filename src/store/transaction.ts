@@ -1,23 +1,17 @@
 import create, { StateSelector } from 'zustand';
 
-import { Maybe, TransactionMap } from '../graphql.generated';
+import { FilterArgs, Maybe, TransactionMap } from '../graphql.generated';
 
-interface Filters {
-  fromAmount?: Maybe<number>;
-  toAmount?: Maybe<number>;
-  fromDate?: Maybe<Date>;
-  toDate?: Maybe<Date>;
-  reasonIds?: Maybe<number[]>;
-}
 interface TransactionStore {
-  filters: Maybe<Filters>;
+  filters: Maybe<FilterArgs>;
   transactions: TransactionMap[];
 
-  setFilters: (filters: Maybe<Filters>) => void;
+  setFilters: (filters: Maybe<FilterArgs>) => void;
+  clearFilters: () => void;
   addTransactions: (transactions: TransactionMap[]) => void;
 }
 
-export const filtersSelector: StateSelector<TransactionStore, Maybe<Filters>> = (state) => state.filters;
+export const filtersSelector: StateSelector<TransactionStore, Maybe<FilterArgs>> = (state) => state.filters;
 export const transactionsSelector: StateSelector<TransactionStore, TransactionMap[]> = (state) =>
   state.transactions;
 
@@ -25,7 +19,8 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
   filters: null,
   transactions: [],
 
-  setFilters: (filters) => set({ filters }),
+  setFilters: (filters) => set({ filters: { ...get().filters, ...filters } }),
+  clearFilters: () => set({ filters: null }),
   addTransactions: (transactions) => set({ transactions: get().transactions.concat(transactions) }),
 }));
 

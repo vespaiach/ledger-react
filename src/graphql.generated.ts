@@ -204,6 +204,13 @@ export type MutationSaveTransactionArgs = Omit<MutationUpdateTransactionArgs, 'i
 
 export interface GraphqlError { message: string; extensions?: { code: string; } };
 export interface GraphqlResponse<T> { errors?: GraphqlError[]; data: T };
+export interface FilterArgs {
+  fromAmount?: Maybe<number>;
+  toAmount?: Maybe<number>;
+  fromDate?: Maybe<Date>;
+  toDate?: Maybe<Date>;
+  reasonIds?: Maybe<number[]>;
+}
 
 export interface DataProvider {
   loadTransactions(variables?: QueryGetTransactionsArgs): Promise<Transaction[]>;

@@ -2,10 +2,11 @@
   --main-background-color: rgb(229, 246, 253);
   --sheet-background-color: white;
   --button-background-color: rgb(255, 244, 229);
-  --dimmed-background-color: rgb(229, 246, 253, 0.5);
+  --curtain-background-color: rgb(229, 246, 253, 0.5);
   --notification-background-color: rgb(35, 35, 36);
   --success-background-color: rgb(46, 125, 50);
   --success-background-color: rgb(46, 125, 50);
+  --grayout-background-color: rgba(0, 0, 0, 0.1);
 
   --border-color: rgb(213, 213, 213);
   --button-border-color: rgba(0, 0, 0, 0.12);
