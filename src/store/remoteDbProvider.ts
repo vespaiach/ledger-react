@@ -19,11 +19,12 @@ import {
   getTransactionsQuery,
   updateTransactionMutation,
 } from '../graphql/transaction';
+import { read } from '../utils/auth';
 
 const url = import.meta.env.VITE_GRAPHQL_URL as string;
 
 async function callRemote<R>(query: string, variables?: Record<string, unknown>) {
-  const token = window.localStorage.getItem('whoami');
+  const token = read();
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
   };
@@ -80,7 +81,7 @@ async function saveTransaction(variables: MutationSaveTransactionArgs) {
     variables
   );
 
-  if (!result.transaction) throw new Error("Couldn't save transaction");
+  if (!result.transaction) throw new Error("couldn't save transaction");
 
   return result.transaction;
 }
@@ -88,13 +89,13 @@ async function saveTransaction(variables: MutationSaveTransactionArgs) {
 async function deleteTransaction(id: number) {
   const result = await callRemote<DeleteTransactionMutation>(deleteTransactionMutation, { id });
 
-  if (!result.deleteTransaction) throw new Error("Couldn't delete transaction");
+  if (!result.deleteTransaction) throw new Error("couldn't delete transaction");
 }
 
 async function signin(email: string) {
-  const result = await callRemote<string>(signinMutation, { email });
+  const result = await callRemote<{ signin: string }>(signinMutation, { email });
 
-  if (result !== 'sent') throw new Error(result);
+  if (result.signin !== 'sent') throw new Error(result.signin);
 }
 
 async function signout() {

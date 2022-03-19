@@ -1,10 +1,10 @@
 import './Theme.css';
 import './App.css';
 
-import { Route, Routes, useLocation, useMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import { useUpdateAtom } from 'jotai/utils';
 import { Suspense, useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import TransactionList from './views/TransactionList';
 import TransactionMutation from './views/TransactionMutation';
@@ -13,18 +13,12 @@ import { appMessageAtom } from './store/utils';
 import Message from './components/Message';
 import EmailInput from './views/EmailInput';
 import KeyInput from './views/KeyInput';
+import { read } from './utils/auth';
+import { authAtom } from './store/auth';
 
 export function App() {
+  const setAuth = useUpdateAtom(authAtom);
   const [appMessage, setAppMessage] = useAtom(appMessageAtom);
-  const location = useLocation();
-
-  const handleEntered = () => {
-    if (location.pathname !== '/') {
-      document.getElementById('root')?.classList.add('backward');
-    } else {
-      document.getElementById('root')?.classList.remove('backward');
-    }
-  };
 
   useEffect(() => {
     return listenTo(window, 'resize', function () {
@@ -32,20 +26,25 @@ export function App() {
     });
   }, []);
 
+  useEffect(() => {
+    /**
+     * Sign-in/sign-out other tabs
+     */
+    return listenTo(window, 'storage', () => {
+      setAuth(read());
+    });
+  }, []);
+
   return (
     <>
-      <TransitionGroup component={null}>
-        <CSSTransition key={location.key} classNames="fly" timeout={350} onEntered={handleEntered}>
-          <Suspense fallback="Loading...">
-            <Routes location={location}>
-              <Route path="/email" element={<EmailInput />} />
-              <Route path="/token" element={<KeyInput />} />
-              <Route path=":id" element={<TransactionMutation />} />
-              <Route path="/" element={<TransactionList />} />
-            </Routes>
-          </Suspense>
-        </CSSTransition>
-      </TransitionGroup>
+      <Suspense fallback="Loading...">
+        <Routes>
+          <Route path="/email" element={<EmailInput />} />
+          <Route path="/token" element={<KeyInput />} />
+          <Route path=":id" element={<TransactionMutation />} />
+          <Route path="/" element={<TransactionList />} />
+        </Routes>
+      </Suspense>
       {appMessage && <Message data={appMessage} onClose={() => setAppMessage(null)} />}
     </>
   );

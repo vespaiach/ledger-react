@@ -19,6 +19,8 @@ import PlusOneIcon from './icons/PlusOne';
 import { Maybe } from '../graphql.generated';
 import ExitIcon from './icons/Exit';
 import { signoutAtom } from '../store/auth';
+import { Button } from './Button';
+import { remove } from '../utils/auth';
 
 export default function Appbar() {
   const navigate = useNavigate();
@@ -98,9 +100,16 @@ export default function Appbar() {
           <button title="Search" className={cx('button')} onClick={handleOpen}>
             <MagnifyIcon />
           </button>
-          <button title="Exit" className={cx('button', 'exit')} onClick={() => signout()}>
+          <Button
+            title="Exit"
+            className="exit"
+            onClick={async () => {
+              await signout();
+              remove();
+              navigate('/email');
+            }}>
             <ExitIcon />
-          </button>
+          </Button>
         </div>
         {hasFilters && (
           <div className="appbar_chips">

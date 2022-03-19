@@ -12,6 +12,7 @@ import {
 } from 'react';
 
 import { Button } from '../Button';
+import CloseIcon from '../icons/Close';
 
 type InputElementType = 'input' | 'textarea';
 
@@ -50,38 +51,47 @@ export const Input: <T extends InputElementType>(
   );
 });
 
-interface Tag {
-  text: string;
-}
-
 interface TagInputProps extends ComponentBaseProps {
   caption?: string;
   children?: ReactNode;
   id?: string;
-  tags: Tag[];
-  onDelete?: (tag: Tag) => void;
+  tags: string[];
+  error?: string;
+  onDelete?: (tag: string) => void;
 }
 
-export function TagInput({ children, tags, caption, className, style, onDelete }: TagInputProps) {
+export function TagInput({
+  children,
+  error,
+  tags,
+  caption,
+  className,
+  style,
+  onDelete,
+  ...rest
+}: TagInputProps) {
   return (
-    <label className={cx('input text-input', className)} style={style}>
-      <div className="caption">{caption}</div>
+    <label className={cx('input', 'tag-input', className)} style={style} {...rest}>
+      <div className="caption">
+        {caption}
+        {!!error && <span className="error"> - {error}</span>}
+      </div>
       <div className="tag-list">
         {tags.map((t, i) => (
           <div key={i} className="tag">
-            <span>{t.text}</span>
+            <span>{t}</span>
             <Button
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 onDelete?.(t);
-              }}
-              style={{ marginRight: 'auto', position: 'static', padding: 0, height: 24, width: 24 }}
-            />
+              }}>
+              <CloseIcon />
+            </Button>
           </div>
         ))}
       </div>
-      <div className="prefix">{children}</div>
+      <div className="input-adds-in flex-center">{children}</div>
     </label>
   );
 }

@@ -2,55 +2,86 @@ import { atom } from 'jotai';
 import jwtDecode from 'jwt-decode';
 import { from } from 'rxjs';
 
+import { read, remove, write } from '../utils/auth';
 import provider from './provider';
 import { reportError } from './utils';
 
-export const authAtom = atom<AuthToken | null>(null);
-export const signinStatusAtom = atom<null | 'sending' | 'sent' | 'error'>(null);
-export const exchangeStatusAtom = atom<null | 'sending' | 'sent' | 'error'>(null);
+/**
+ * Sync token from localstorage with store
+ */
+let token = read();
+if (token) {
+  try {
+    const parsed = jwtDecode<{ email: string; exp: number }>(token);
+    const expiredIn = new Date(parsed.exp * 1000);
 
-export const signoutAtom = atom(null, (_, set) => {
-  set(authAtom, null);
-  window.localStorage.removeItem('whoami');
+    if (expiredIn < new Date()) {
+      token = null;
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
 
-  from(provider.signout()).subscribe({
-    error: (err) => {
-      console.error(err);
-    },
-  });
-});
+export const authAtom = atom<string | null>(token);
 
-export const signinAtom = atom(null, (_, set, { email }: { email: string }) => {
-  set(signinStatusAtom, 'sending');
+// export const signoutAtom = atom(
+//   null,
+//   (_, set) =>
+//     new Promise<void>((res) => {
+//       debugger;
+//       set(authAtom, null);
+//       set(signinStatusAtom, null);
+//       set(tokenStatusAtom, null);
 
-  from(provider.signin(email)).subscribe({
-    next: () => {},
-    error: (err) => {
-      set(signinStatusAtom, 'error');
-      reportError(set, err, 8000);
-    },
-    complete: () => {
-      set(signinStatusAtom, 'sent');
-    },
-  });
-});
+//       /**
+//        * Local storage event doesn't fire for tabs that make changes.
+//        */
+//       from(provider.signout()).subscribe({
+//         error: (err) => {
+//           console.error(err);
+//           res();
+//         },
+//         complete: res,
+//       });
+//     })
+// );
 
-export const exchangeTokenAtom = atom(null, (_, set, { key }: { key: string }) => {
-  set(exchangeStatusAtom, 'sending');
+// export const signinAtom = atom(null, (_, set, { email }: { email: string }) => {
+//   set(signinStatusAtom, 'sending');
 
-  from(provider.token(key)).subscribe({
-    next: (token) => {
-      debugger
-      const data = jwtDecode<AuthToken>(token);
-      set(authAtom, { token, email: data.email, expiredIn: new Date(data.expiredIn) });
-      window.localStorage.setItem('whoami', token);
-    },
-    error: (err) => {
-      set(exchangeStatusAtom, 'error');
-      reportError(set, err, 8000);
-    },
-    complete: () => {
-      set(exchangeStatusAtom, 'sent');
-    },
-  });
-});
+//   from(provider.signin(email)).subscribe({
+//     next: () => {},
+//     error: (err) => {
+//       set(signinStatusAtom, 'error');
+//       reportError(set, err, 8000);
+//     },
+//     complete: () => {
+//       set(signinStatusAtom, 'sent');
+//     },
+//   });
+// });
+
+// export const getTokenAtom = atom(null, (_, set, { key }: { key: string }) => {
+//   set(tokenStatusAtom, 'sending');
+
+//   from(provider.token(key)).subscribe({
+//     next: (token) => {
+//       const data = jwtDecode<AuthToken>(token);
+//       set(authAtom, { token, email: data.email, expiredIn: new Date(data.expiredIn) });
+//       write(token);
+//     },
+//     error: (err) => {
+//       set(tokenStatusAtom, 'error');
+//       reportError(set, err, 8000);
+//     },
+//     complete: () => {
+//       set(tokenStatusAtom, 'sent');
+//     },
+//   });
+// });
+
+// export const setTokenAtom = atom(null, (_, set, { token }: { token: string }) => {
+//   const data = jwtDecode<AuthToken>(token);
+//   set(authAtom, { token, email: data.email, expiredIn: new Date(data.expiredIn) });
+// });

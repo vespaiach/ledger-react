@@ -28,7 +28,9 @@ export default function TransactionList() {
     deleteTransaction({ id: transaction.id });
   };
 
-  useEffect(() => void updateLastCursor({ cursor: null }), [updateLastCursor]);
+  useEffect(() => {
+    updateLastCursor({ cursor: null });
+  }, [updateLastCursor]);
 
   return (
     <div>
