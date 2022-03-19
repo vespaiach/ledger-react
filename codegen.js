@@ -13,7 +13,7 @@ const fs = require('fs');
       documents: './src/graphql/**/*.ts',
       generates: {
         [`${pwd}/src/graphql.generated.ts`]: {
-          plugins: ['typescript', 'typescript-operations', 'ledger.plugin.js'],
+          plugins: ['typescript', 'typescript-operations', 'ledger.codegen.plugin.js'],
           config: {
             maybeValue: ' T | null | undefined',
             avoidOptionals: false,

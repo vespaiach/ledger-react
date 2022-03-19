@@ -3,44 +3,63 @@ import './Appbar.css';
 import { DateTime } from 'luxon';
 import { ReactNode } from 'react';
 import { Transition } from 'react-transition-group';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import cx from 'classnames';
 import NumberFormat from 'react-number-format';
 import { useNavigate } from 'react-router-dom';
+import { from } from 'rxjs';
 
 import { listenTo } from '../utils/window';
-import FilterMenu from './FilterMenu';
-import { filterTransactionAtom, writeFilterTransactionAtom } from '../store/transaction';
-import CloseButton from './CloseButton';
-import { fetchReasonsAtom, reasonsAtom, reasonsMapAtom } from '../store/reason';
-import MagnifyIcon from './icons/Magnify';
-import PlusOneIcon from './icons/PlusOne';
-import { Maybe } from '../graphql.generated';
-import ExitIcon from './icons/Exit';
-import { signoutAtom } from '../store/auth';
+import MagnifyIcon from '../components/icons/Magnify';
+import PlusOneIcon from '../components/icons/PlusOne';
+import { FilterArgs, Maybe } from '../graphql.generated';
+import ExitIcon from '../components/icons/Exit';
+import { Button } from '../components/Button';
+import { remove } from '../utils/auth';
+import { loadTransactions$, signout$ } from '../dataSource';
+import { useAuthStore } from '../store/auth';
+import { useReasonStore } from '../store/reason';
+import CloseIcon from '../components/icons/Close';
+import { useTransactionStore } from '../store/transaction';
+import FilterMenu from '../components/FilterMenu';
+import CalendarIcon from '../components/icons/Calendar';
 
 export default function Appbar() {
   const navigate = useNavigate();
 
-  const signout = useUpdateAtom(signoutAtom);
-  const filtering = useAtomValue(filterTransactionAtom);
-  const setFiltering = useUpdateAtom(writeFilterTransactionAtom);
-  const fetchReason = useUpdateAtom(fetchReasonsAtom);
-  const reasonList = useAtomValue(reasonsAtom);
+  const filters = useTransactionStore((state) => state.filters);
+  const setFilters = useTransactionStore((state) => state.setFilters);
+  const clearFilters = useTransactionStore((state) => state.clearFilters);
+  const reasons = useReasonStore((state) => state.reasons);
+  const reasonsMap = useReasonStore((state) => state.reasonsMap);
+
+  const { setAuth } = useAuthStore();
 
   const [openFilter, setOpenFilter] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
 
+  const signout = () => {
+    const complete = () => {
+      setAuth(null);
+      remove();
+      navigate('/email');
+    };
+
+    signout$().subscribe({
+      error: complete,
+      complete,
+    });
+  };
+
   const handleDelete = (name: 'amount' | 'date' | 'reason') => (id?: number) => {
     if (name === 'amount') {
-      setFiltering({ toAmount: null, fromAmount: null });
+      setFilters({ toAmount: null, fromAmount: null });
     } else if (name === 'date') {
-      setFiltering({ fromDate: null, toDate: null });
+      setFilters({ fromDate: null, toDate: null });
     } else {
-      const reasonIds = filtering?.reasonIds?.filter((r) => r !== id);
-      setFiltering({ reasonIds: !reasonIds?.length ? null : reasonIds });
+      const reasonIds = filters?.reasonIds?.filter((r) => r !== id);
+      setFilters({ reasonIds: !reasonIds?.length ? null : reasonIds });
     }
   };
 
@@ -48,15 +67,13 @@ export default function Appbar() {
     setOpenFilter(true);
   }, []);
 
-  const handleClose = useCallback(() => {
+  const handleClose = (args?: FilterArgs | null) => {
     setOpenFilter(false);
-  }, []);
+    if (args === undefined) return;
 
-  useEffect(() => {
-    if (!reasonList.length) {
-      fetchReason();
-    }
-  }, [reasonList]);
+    if (args === null) clearFilters();
+    else setFilters(args);
+  };
 
   useEffect(
     () =>
@@ -67,7 +84,7 @@ export default function Appbar() {
     []
   );
 
-  const hasFilters = filtering && Object.values(filtering).some(Boolean);
+  const hasFilters = filters && Object.values(filters).some(Boolean);
 
   return (
     <>
@@ -76,7 +93,7 @@ export default function Appbar() {
           <>
             <div
               className={cx('curtain', { 'curtain--in': state === 'entering' || state === 'entered' })}
-              onClick={handleClose}
+              onClick={() => handleClose()}
             />
             <div
               className={cx('flex-column appbar_filter', {
@@ -84,7 +101,12 @@ export default function Appbar() {
               })}
               ref={filterRef}>
               <div className="flex-item-stretch appbar_filter_content">
-                <FilterMenu onClose={handleClose} />
+                <FilterMenu
+                  onClose={handleClose}
+                  filters={filters}
+                  reasons={reasons}
+                  reasonsMap={reasonsMap}
+                />
               </div>
             </div>
           </>
@@ -92,29 +114,32 @@ export default function Appbar() {
       </Transition>
       <div className={cx('appbar', { 'appbar--float': scrolled, 'appbar--scrollable': hasFilters })}>
         <div className="button-group">
-          <button title="Add" className={cx('button')} onClick={() => navigate('/new')}>
+          <Button title="Add" onClick={() => navigate('/new')}>
             <PlusOneIcon />
-          </button>
-          <button title="Search" className={cx('button')} onClick={handleOpen}>
+          </Button>
+          <Button title="Search" onClick={handleOpen}>
             <MagnifyIcon />
-          </button>
-          <button title="Exit" className={cx('button', 'exit')} onClick={() => signout()}>
+          </Button>
+          <Button
+            title="Exit"
+            className="exit"
+            onClick={async () => {
+              await signout();
+              remove();
+              navigate('/email');
+            }}>
             <ExitIcon />
-          </button>
+          </Button>
         </div>
         {hasFilters && (
           <div className="appbar_chips">
             <AmountChip
-              fromAmount={filtering.fromAmount}
-              toAmount={filtering.toAmount}
+              fromAmount={filters.fromAmount}
+              toAmount={filters.toAmount}
               onDelete={handleDelete('amount')}
             />
-            <DateChip
-              fromDate={filtering.fromDate}
-              toDate={filtering.toDate}
-              onDelete={handleDelete('date')}
-            />
-            <ReasonChip reasons={filtering.reasonIds} onDelete={handleDelete('reason')} />
+            <DateChip fromDate={filters.fromDate} toDate={filters.toDate} onDelete={handleDelete('date')} />
+            <ReasonChip reasons={filters.reasonIds} onDelete={handleDelete('reason')} />
           </div>
         )}
       </div>
@@ -126,10 +151,9 @@ function FilterChip({ children, onDelete }: { onDelete?: () => void; children?: 
   return (
     <div className="filter-chip">
       {children}
-      <CloseButton
-        onClick={onDelete}
-        style={{ marginLeft: 'auto', position: 'static', height: 24, width: 24, padding: 0 }}
-      />
+      <Button boxLess onClick={onDelete}>
+        <CloseIcon />
+      </Button>
     </div>
   );
 }
@@ -150,12 +174,11 @@ function AmountChip({
 
   return (
     <FilterChip onDelete={onDelete}>
-      <span>$</span>
-      {fromAmountValid && <NumberFormat customInput={Span} value={fromAmount} />}
+      {fromAmountValid && <NumberFormat thousandSeparator prefix="$" customInput={Span} value={fromAmount} />}
       {toAmountValid && (
         <>
           {fromAmountValid ? <span style={{ margin: '0 4px' }}>-</span> : null}
-          <NumberFormat thousandSeparator customInput={Span} value={toAmount} />
+          <NumberFormat thousandSeparator prefix="$" customInput={Span} value={toAmount} />
         </>
       )}
     </FilterChip>
@@ -180,7 +203,6 @@ function DateChip({
 
   return (
     <FilterChip onDelete={onDelete}>
-      <span>$</span>
       {fromDateValid && <span>{format(fromDate)}</span>}
       {toDateValid && (
         <>
@@ -199,14 +221,14 @@ function ReasonChip({
   reasons?: Maybe<number[]>;
   onDelete?: (reasonId: number) => void;
 }) {
-  const reasonsMap = useAtomValue(reasonsMapAtom);
+  const { reasonsMap } = useReasonStore();
 
   if (!reasons?.length) return null;
 
   return (
     <>
       {reasons?.map((r) => {
-        const reason = reasonsMap[r];
+        const reason = reasonsMap?.get(r);
         if (!reason) return null;
 
         return (

@@ -7,7 +7,7 @@ import { CSSTransition } from 'react-transition-group';
 import { Button } from '../Button';
 import ErrorIcon from '../icons/Error';
 import SuccessIcon from '../icons/Success';
-import XIcon from '../icons/X';
+import CloseIcon from '../icons/Close';
 
 export default function Message({ data, onClose }: { onClose: () => void; data: AppMessage }) {
   const [open, setOpen] = useState<boolean>(false);
@@ -44,8 +44,8 @@ export default function Message({ data, onClose }: { onClose: () => void; data: 
       <article className={cx('message-sheet', data.type)}>
         {iconEl}
         <p>{data.message}</p>
-        <Button onClick={onClose}>
-          <XIcon />
+        <Button boxLess onClick={onClose}>
+          <CloseIcon />
         </Button>
       </article>
     </CSSTransition>

@@ -1,30 +1,24 @@
 import './Theme.css';
 import './App.css';
 
-import { Route, Routes, useLocation, useMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { Suspense, useEffect } from 'react';
-import { useAtom } from 'jotai';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import TransactionList from './views/TransactionList';
 import TransactionMutation from './views/TransactionMutation';
 import { listenTo } from './utils/window';
-import { appMessageAtom } from './store/utils';
 import Message from './components/Message';
 import EmailInput from './views/EmailInput';
 import KeyInput from './views/KeyInput';
+import { useAppStore } from './store/app';
+import { useReasonStore } from './store/reason';
+import { loadReasons$ } from './dataSource';
+import { useAuthStore } from './store/auth';
 
 export function App() {
-  const [appMessage, setAppMessage] = useAtom(appMessageAtom);
-  const location = useLocation();
-
-  const handleEntered = () => {
-    if (location.pathname !== '/') {
-      document.getElementById('root')?.classList.add('backward');
-    } else {
-      document.getElementById('root')?.classList.remove('backward');
-    }
-  };
+  const auth = useAuthStore((state) => state.auth);
+  const setReasons = useReasonStore((state) => state.setReasons);
+  const { message, setMessage } = useAppStore();
 
   useEffect(() => {
     return listenTo(window, 'resize', function () {
@@ -32,21 +26,36 @@ export function App() {
     });
   }, []);
 
+  useEffect(() => {
+    if (!auth) return;
+
+    loadReasons$().subscribe({
+      next: (reasons) => {
+        setReasons(reasons.map((r) => ({ ...r, updatedAt: new Date(r.updatedAt) })));
+      },
+    });
+  }, [auth]);
+
+  useEffect(() => {
+    /**
+     * Reload page will trigger auth data hydration
+     */
+    return listenTo(window, 'storage', async () => {
+      window.location.href = '/';
+    });
+  }, []);
+
   return (
     <>
-      <TransitionGroup component={null}>
-        <CSSTransition key={location.key} classNames="fly" timeout={350} onEntered={handleEntered}>
-          <Suspense fallback="Loading...">
-            <Routes location={location}>
-              <Route path="/email" element={<EmailInput />} />
-              <Route path="/token" element={<KeyInput />} />
-              <Route path=":id" element={<TransactionMutation />} />
-              <Route path="/" element={<TransactionList />} />
-            </Routes>
-          </Suspense>
-        </CSSTransition>
-      </TransitionGroup>
-      {appMessage && <Message data={appMessage} onClose={() => setAppMessage(null)} />}
+      <Suspense fallback="Loading...">
+        <Routes>
+          <Route path="/email" element={<EmailInput />} />
+          <Route path="/token" element={<KeyInput />} />
+          <Route path=":id" element={<TransactionMutation />} />
+          <Route path="/" element={<TransactionList />} />
+        </Routes>
+      </Suspense>
+      {message && <Message data={message} onClose={() => setMessage(null)} />}
     </>
   );
 }

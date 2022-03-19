@@ -2,65 +2,74 @@ import './Signin.css';
 
 import { useEffect, useRef, useState } from 'react';
 import * as emailValidator from 'email-validator';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useNavigate } from 'react-router-dom';
 
 import EmailIcon from '../components/icons/Email';
-import { signinAtom, signinStatusAtom } from '../store/auth';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
+import { getSigninKey$ } from '../dataSource';
+import { useAppStore } from '../store/app';
 
 export default function EmailInput() {
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const sendEmail = useUpdateAtom(signinAtom);
-  const status = useAtomValue(signinStatusAtom);
+  const setErrorMessage = useAppStore((state) => state.setError);
+  const setMessage = useAppStore((state) => state.setMessage);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  useEffect(() => {
-    if (status === 'sent') navigate('/token');
-  }, [status]);
-
   return (
     <div className="full-page flex-center">
       <form
         className="sign-in"
-        onSubmit={async (e) => {
+        onSubmit={(e) => {
           e.preventDefault();
 
-          if (status === 'sending') return;
+          if (loading) return;
 
           if (!emailValidator.validate(email)) {
             setError('invalid email address');
             return;
           }
 
-          if (status !== 'sent') {
-            await sendEmail({ email });
-            navigate('/token');
-          }
+          setLoading(true);
+
+          getSigninKey$(email).subscribe({
+            error: (err) => {
+              setErrorMessage(err.message, 8000);
+              setLoading(false);
+            },
+            complete: () => {
+              setMessage({
+                message: 'An email has been sent to you, please check it!',
+                type: 'notification',
+              });
+              navigate('/token');
+            },
+          });
         }}>
         <h3>Sign-In Ledger App</h3>
         <p>A sign-in email will be sent to your email</p>
         <Input
+          addIns={<EmailIcon />}
           ref={inputRef}
           caption="email address"
           error={error}
           value={email}
-          disabled={status === 'sent'}
+          disabled={loading}
           onChange={(e) => {
             setError(undefined);
             setEmail(e.target.value);
-          }}>
-          <EmailIcon />
-        </Input>
-        <Button type="submit" loading={status === 'sending'}>
+          }}
+        />
+        <Button type="submit" loading={loading}>
           Send
         </Button>
       </form>

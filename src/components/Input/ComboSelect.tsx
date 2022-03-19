@@ -1,12 +1,12 @@
-import './ComboSelect.css';
+import './Input.css';
 
 import cx from 'classnames';
-
-import XIcon from './icons/X';
+import CloseIcon from '../icons/Close';
+import { Button } from '../Button';
 
 let inc = 0;
 
-export default function ComboSelect({
+export function ComboSelect({
   id = `select-${++inc}`,
   options,
   value,
@@ -32,6 +32,7 @@ export default function ComboSelect({
         {!!error && <span className="error"> - {error}</span>}
       </div>
       <input
+        autoComplete="off"
         list={listName}
         id={id}
         type="text"
@@ -43,20 +44,20 @@ export default function ComboSelect({
           <option key={op} value={op} />
         ))}
       </datalist>
-      <div className="button-sheet">
-        {value && (
-          <button
-            className="button icon-button"
+      {value && (
+        <div className="button-sheet">
+          <Button
+            boxLess
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
 
               onChange('');
             }}>
-            <XIcon />
-          </button>
-        )}
-      </div>
+            <CloseIcon />
+          </Button>
+        </div>
+      )}
     </label>
   );
 }

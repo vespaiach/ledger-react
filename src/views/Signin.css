@@ -27,6 +27,15 @@
   margin-top: 12px;
 }
 
+.sign-in-back-button {
+  position: fixed;
+  top: 8px;
+  left: 0;
+  width: 38px;
+  border: none;
+  background: none;
+}
+
 .sign-in .key {
   transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   display: none;

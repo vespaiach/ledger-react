@@ -47,25 +47,76 @@
 
 .input-adds-in {
   position: absolute;
-  top: 26px;
-  left: 14px;
+  top: 28px;
+  left: 15px;
   color: var(--secondary-text-color);
+  min-width: 24px;
+  min-height: 24px;
 }
 
-/* .text-input .tag-list {
+.input-subs-in {
+  position: absolute;
+  top: 26px;
+  right: 8px;
+  color: var(--secondary-text-color);
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.input .right-space {
+  padding-right: 32px;
+}
+
+.input .left-space {
+  padding-left: 16px;
+}
+
+.input .tag-list {
   padding: 26px 16px 12px 16px;
   border: 1px solid var(--border-color);
   border-radius: 4px;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   gap: 4px;
   align-items: center;
   min-height: 38px;
+  overflow-x: auto;
 }
 
-.text-input .tag-list .tag {
+.tag-list .tag {
   display: flex;
   align-items: center;
   padding: 8px;
-  background: rgb(239, 239, 239);
-} */
+  gap: 8px;
+  background: var(--grayout-background-color);
+  flex-shrink: 0;
+}
+
+.combo-select {
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.combo-select input {
+  padding: 26px 2px 12px 16px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1px solid rgb(176, 176, 176);
+  transition: all 0.2s ease-in;
+  outline: none;
+}
+
+.combo-select .button-sheet {
+  background: white;
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

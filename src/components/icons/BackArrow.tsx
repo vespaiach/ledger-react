@@ -1,4 +1,4 @@
-export default function ChervonLeftIcon({ width = 24, height = 24, className, style }: BaseIconProps) {
+export default function BackArrowIcon({ width = 24, height = 24, className, style }: BaseIconProps) {
   return (
     <svg
       width={width}
@@ -9,7 +9,7 @@ export default function ChervonLeftIcon({ width = 24, height = 24, className, st
       style={style}
       xmlns="http://www.w3.org/2000/svg">
       <path
-        d="M5.42001 12.99L16.59 12.99L11.71 17.87C11.32 18.26 11.32 18.9 11.71 19.29C12.1 19.68 12.73 19.68 13.12 19.29L19.71 12.7C20.1 12.31 20.1 11.68 19.71 11.29L13.12 4.7C12.73 4.31 12.1 4.31 11.71 4.7C11.32 5.09 11.32 5.72001 11.71 6.11001L16.59 10.99L5.42001 10.99C4.87001 10.99 4.42001 11.44 4.42001 11.99C4.42001 12.54 4.87001 12.99 5.42001 12.99Z"
+        d="M19.0025 11H7.83251L12.7125 6.12C13.1025 5.73 13.1025 5.09 12.7125 4.7C12.3225 4.31 11.6925 4.31 11.3025 4.7L4.71251 11.29C4.32251 11.68 4.32251 12.31 4.71251 12.7L11.3025 19.29C11.6925 19.68 12.3225 19.68 12.7125 19.29C13.1025 18.9 13.1025 18.27 12.7125 17.88L7.83251 13H19.0025C19.5525 13 20.0025 12.55 20.0025 12C20.0025 11.45 19.5525 11 19.0025 11Z"
         fill="currentColor"
       />
     </svg>

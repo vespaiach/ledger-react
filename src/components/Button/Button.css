@@ -1,16 +1,26 @@
 .button {
   position: relative;
-  padding: 0px 16px;
-  height: 38px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 4px;
-  border: 1px solid var(--button-border-color);
   color: var(--button-text-color);
-  background: var(--button-background-color);
   cursor: pointer;
   overflow: hidden;
+  border-radius: 4px;
+}
+
+.button:not(.box-less) {
+  padding: 0px 16px;
+  height: 38px;
+  border: 1px solid var(--button-border-color);
+  background: var(--button-background-color);
+}
+
+.box-less {
+  height: 24px;
+  width: 24px;
+  background: none;
+  border: none;
 }
 
 .button.disabled {
@@ -24,5 +34,5 @@
   left: 0;
   bottom: 0;
   right: 0;
-  background: var(--dimmed-background-color);
+  background: var(--curtain-background-color);
 }
