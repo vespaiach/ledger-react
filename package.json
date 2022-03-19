@@ -16,7 +16,8 @@
     "react-router-dom": "^6.2.1",
     "react-transition-group": "^4.4.2",
     "react-virtuoso": "^2.6.0",
-    "rxjs": "^6.6.7"
+    "rxjs": "^6.6.7",
+    "zustand": "^3.7.1"
   },
   "scripts": {
     "dev": "vite",

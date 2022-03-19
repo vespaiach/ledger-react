@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import cx from 'classnames';
 import NumberFormat from 'react-number-format';
 import { useNavigate } from 'react-router-dom';
+import { from } from 'rxjs';
 
 import { listenTo } from '../utils/window';
 import FilterMenu from './FilterMenu';
@@ -18,22 +19,37 @@ import MagnifyIcon from './icons/Magnify';
 import PlusOneIcon from './icons/PlusOne';
 import { Maybe } from '../graphql.generated';
 import ExitIcon from './icons/Exit';
-import { signoutAtom } from '../store/auth';
 import { Button } from './Button';
 import { remove } from '../utils/auth';
+import selectedProvider from '../store/provider';
+import { useAuthStore } from '../store/auth';
 
 export default function Appbar() {
   const navigate = useNavigate();
 
-  const signout = useUpdateAtom(signoutAtom);
   const filtering = useAtomValue(filterTransactionAtom);
   const setFiltering = useUpdateAtom(writeFilterTransactionAtom);
   const fetchReason = useUpdateAtom(fetchReasonsAtom);
   const reasonList = useAtomValue(reasonsAtom);
 
+  const { setAuth } = useAuthStore();
+
   const [openFilter, setOpenFilter] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
+
+  const signout = () => {
+    const complete = () => {
+      setAuth(null);
+      remove();
+      navigate('/email');
+    };
+
+    from(selectedProvider.signout()).subscribe({
+      error: complete,
+      complete,
+    });
+  };
 
   const handleDelete = (name: 'amount' | 'date' | 'reason') => (id?: number) => {
     if (name === 'amount') {

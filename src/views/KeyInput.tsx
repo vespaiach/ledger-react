@@ -2,14 +2,16 @@ import './Signin.css';
 
 import { useEffect, useRef, useState } from 'react';
 import qs from 'query-string';
+import { from } from 'rxjs';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
-import { tokenStatusAtom, getTokenAtom, authAtom } from '../store/auth';
 import PasswordIcon from '../components/icons/Password';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import BackArrowIcon from '../components/icons/BackArrow';
+import selectedProvider from '../store/provider';
+import { useAppStore } from '../store/app';
+import { useAuthStore } from '../store/auth';
 
 export default function KeyInput() {
   const location = useLocation();
@@ -24,36 +26,37 @@ export default function KeyInput() {
     return '';
   });
   const [error, setError] = useState<string | undefined>(undefined);
+  const [loading, setLoading] = useState(false);
 
-  const auth = useAtomValue(authAtom);
-  const exchangeToken = useUpdateAtom(getTokenAtom);
-  const exchangeStatus = useAtomValue(tokenStatusAtom);
+  const { setError: setErrorMessage } = useAppStore();
+  const { setAuth } = useAuthStore();
 
   const submit = () => {
-    if (exchangeStatus === 'sending') return;
+    if (loading) return;
 
     if (!key || key.length !== 36) {
       setError('invalid sign-in key');
       return;
     }
+    debugger;
 
-    debugger
-    if (exchangeStatus !== 'sent') {
-      exchangeToken({ key });
-    }
+    setLoading(true);
+    from(selectedProvider.token(key)).subscribe({
+      next: (token) => {
+        debugger
+        setAuth(token) 
+      },
+      error: (err) => {
+        setLoading(false);
+        setErrorMessage(err.message, 8000);
+      },
+      complete: () => navigate('/'),
+    });
   };
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
-
-  useEffect(() => {
-    if (auth) navigate('/');
-  }, [auth]);
-
-  useEffect(() => {
-    if (exchangeStatus === 'sent') navigate('/');
-  }, [exchangeStatus]);
 
   useEffect(() => {
     if (location.search) submit();
@@ -73,7 +76,7 @@ export default function KeyInput() {
         <h3>Sign-In Ledger App</h3>
         <p>Please enter the sign-in that has been sent to you</p>
         <Input
-          disabled={exchangeStatus === 'sending' || exchangeStatus === 'sent'}
+          disabled={loading}
           ref={inputRef}
           caption="sign-in key"
           error={error}
@@ -84,7 +87,7 @@ export default function KeyInput() {
           }}>
           <PasswordIcon />
         </Input>
-        <Button type="submit" loading={exchangeStatus === 'sending'}>
+        <Button type="submit" loading={loading}>
           Sign In
         </Button>
       </form>

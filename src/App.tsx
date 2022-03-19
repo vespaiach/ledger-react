@@ -2,23 +2,18 @@ import './Theme.css';
 import './App.css';
 
 import { Route, Routes } from 'react-router-dom';
-import { useUpdateAtom } from 'jotai/utils';
 import { Suspense, useEffect } from 'react';
-import { useAtom } from 'jotai';
 
 import TransactionList from './views/TransactionList';
 import TransactionMutation from './views/TransactionMutation';
 import { listenTo } from './utils/window';
-import { appMessageAtom } from './store/utils';
 import Message from './components/Message';
 import EmailInput from './views/EmailInput';
 import KeyInput from './views/KeyInput';
-import { read } from './utils/auth';
-import { authAtom } from './store/auth';
+import { useAppStore } from './store/app';
 
 export function App() {
-  const setAuth = useUpdateAtom(authAtom);
-  const [appMessage, setAppMessage] = useAtom(appMessageAtom);
+  const { message, setMessage } = useAppStore();
 
   useEffect(() => {
     return listenTo(window, 'resize', function () {
@@ -28,10 +23,10 @@ export function App() {
 
   useEffect(() => {
     /**
-     * Sign-in/sign-out other tabs
+     * Reload page will trigger auth data hydration
      */
-    return listenTo(window, 'storage', () => {
-      setAuth(read());
+    return listenTo(window, 'storage', async () => {
+      window.location.href = '/';
     });
   }, []);
 
@@ -45,7 +40,7 @@ export function App() {
           <Route path="/" element={<TransactionList />} />
         </Routes>
       </Suspense>
-      {appMessage && <Message data={appMessage} onClose={() => setAppMessage(null)} />}
+      {message && <Message data={message} onClose={() => setMessage(null)} />}
     </>
   );
 }

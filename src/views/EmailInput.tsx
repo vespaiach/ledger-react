@@ -2,15 +2,14 @@ import './Signin.css';
 
 import { useEffect, useRef, useState } from 'react';
 import * as emailValidator from 'email-validator';
-import { useAtomValue } from 'jotai/utils';
 import { useNavigate } from 'react-router-dom';
 import { from } from 'rxjs';
 
 import EmailIcon from '../components/icons/Email';
-import { authAtom, signinStatusAtom } from '../store/auth';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import provider from '../store/provider';
+import { useAppStore } from '../store/app';
 
 export default function EmailInput() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -20,7 +19,7 @@ export default function EmailInput() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const auth = useAtomValue(authAtom);
+  const { setError: setErrorMessage, setMessage } = useAppStore();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -40,14 +39,19 @@ export default function EmailInput() {
             return;
           }
 
+          setLoading(true);
+
           from(provider.signin(email)).subscribe({
-            next: () => {},
             error: (err) => {
-              set(signinStatusAtom, 'error');
-              reportError(set, err, 8000);
+              setErrorMessage(err.message, 8000);
+              setLoading(false);
             },
             complete: () => {
-              set(signinStatusAtom, 'sent');
+              setMessage({
+                message: 'An email has been sent to you, please check it!',
+                type: 'notification',
+              });
+              navigate('/token');
             },
           });
         }}>
@@ -58,14 +62,14 @@ export default function EmailInput() {
           caption="email address"
           error={error}
           value={email}
-          disabled={status === 'sending' || status === 'sent'}
+          disabled={loading}
           onChange={(e) => {
             setError(undefined);
             setEmail(e.target.value);
           }}>
           <EmailIcon />
         </Input>
-        <Button type="submit" loading={status === 'sending'}>
+        <Button type="submit" loading={loading}>
           Send
         </Button>
       </form>

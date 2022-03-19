@@ -17,14 +17,19 @@
   line-height: 1.43;
 }
 
+.message-sheet.notification {
+  background: var(--notification-background-color);
+  color: var(--notification-text-color);
+}
+
 .message-sheet.error {
-  background: rgb(239, 83, 80);
-  color: rgb(255, 255, 255);
+  background: var(--error-text-color);
+  color: var(--error-text-color);
 }
 
 .message-sheet.success {
-  background: rgb(46, 125, 50);
-  color: rgb(255, 255, 255);
+  background: var(--success-background-color);
+  color: var(--success-text-color);
 }
 
 .message-sheet p {

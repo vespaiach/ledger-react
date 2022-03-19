@@ -19,18 +19,18 @@ import {
   getTransactionsQuery,
   updateTransactionMutation,
 } from '../graphql/transaction';
-import { read } from '../utils/auth';
+import { useAuthStore } from './auth';
 
 const url = import.meta.env.VITE_GRAPHQL_URL as string;
 
 async function callRemote<R>(query: string, variables?: Record<string, unknown>) {
-  const token = read();
+  const { auth } = useAuthStore.getState();
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
   };
 
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
+  if (auth) {
+    headers.Authorization = `Bearer ${auth}`;
   }
 
   const response = await fetch(url, {
