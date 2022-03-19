@@ -54,9 +54,9 @@ export const loadTransactions$ = (
 
 export const loadReasons$ = () => from(selectedProvider.loadReasons()).pipe(map((r) => r.map(mapReason)));
 
-export const saveTransaction$ = (
-  args: Omit<MutationSaveTransactionArgs, 'date'> & { date?: Maybe<Date> }
-) =>
+export const deleteTransaction$ = (id: number) => from(selectedProvider.deleteTransaction(id));
+
+export const saveTransaction$ = (args: Omit<MutationSaveTransactionArgs, 'date'> & { date?: Maybe<Date> }) =>
   from(selectedProvider.saveTransaction({ ...args, date: args.date?.toISOString() })).pipe(
     map(mapTransaction)
   );

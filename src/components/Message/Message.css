@@ -19,17 +19,17 @@
 
 .message-sheet.notification {
   background: var(--notification-background-color);
-  color: var(--notification-text-color);
+  color: var(--message-text-color);
 }
 
 .message-sheet.error {
-  background: var(--error-text-color);
-  color: var(--error-text-color);
+  background: var(--error-background-color);
+  color: var(--message-text-color);
 }
 
 .message-sheet.success {
   background: var(--success-background-color);
-  color: var(--success-text-color);
+  color: var(--message-text-color);
 }
 
 .message-sheet p {

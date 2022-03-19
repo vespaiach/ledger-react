@@ -10,6 +10,7 @@ interface TransactionStore {
   clearFilters: () => void;
   addTransactions: (transactions: TransactionMap[]) => void;
   updateTransaction: (transaction: TransactionMap) => void;
+  insertTransaction: (transaction: TransactionMap) => void;
 }
 
 export const filtersSelector: StateSelector<TransactionStore, TransactionStore['filters']> = (state) =>
@@ -24,6 +25,10 @@ export const updateTransactionSelector: StateSelector<
 export const addTransactionsSelector: StateSelector<TransactionStore, TransactionStore['addTransactions']> = (
   state
 ) => state.addTransactions;
+export const insertTransactionsSelector: StateSelector<
+  TransactionStore,
+  TransactionStore['insertTransaction']
+> = (state) => state.insertTransaction;
 
 export const useTransactionStore = create<TransactionStore>((set, get) => ({
   filters: null,
@@ -32,6 +37,15 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
   setFilters: (filters) => set({ filters: { ...get().filters, ...filters } }),
   clearFilters: () => set({ filters: null }),
   addTransactions: (transactions) => set({ transactions: get().transactions.concat(transactions) }),
+  insertTransaction: (transaction) => {
+    const transactions = get().transactions;
+
+    let i = 0;
+    while (transaction.date < transactions[i].date) i++;
+
+    transactions.splice(i, 1, transaction);
+    set({ transactions: [...transactions] });
+  },
   updateTransaction: (transaction) => {
     const transactions = get().transactions;
     const index = transactions.findIndex((t) => t.id === transaction.id);

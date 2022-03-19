@@ -2,10 +2,11 @@ import './Card.css';
 
 import cx from 'classnames';
 import { MouseEventHandler, useRef, useState } from 'react';
-
-import TrashIcon from './icons/Trash';
-import PenIcon from './icons/Pen';
 import { Transition } from 'react-transition-group';
+
+import TrashIcon from '../icons/Trash';
+import PenIcon from '../icons/Pen';
+import { Button } from '../Button';
 
 interface CardProps extends ComponentBaseProps {
   onEdit?: MouseEventHandler<HTMLButtonElement>;
@@ -25,10 +26,11 @@ export default function Card({ className, onClick, onDelete, onEdit, ...rest }: 
           className={cx('card-pane', { 'card-pane--collapse': state === 'exiting' }, className)}
           onClick={onClick}>
           <div className="card-sheet">
-            <button onClick={onEdit} title="edit">
+            <Button boxLess onClick={onEdit} title="edit">
               <PenIcon />
-            </button>
-            <button
+            </Button>
+            <Button
+              boxLess
               onClick={() => {
                 if (!divRef.current) {
                   onDelete?.();
@@ -43,7 +45,7 @@ export default function Card({ className, onClick, onDelete, onEdit, ...rest }: 
               }}
               title="delete">
               <TrashIcon />
-            </button>
+            </Button>
           </div>
           <article {...rest} className={cx('card', className)} />
         </div>

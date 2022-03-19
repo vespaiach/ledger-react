@@ -1,5 +1,5 @@
 .card-pane {
-  background: rgb(255, 244, 229);
+  background: var(--button-background-color);
   position: relative;
   margin: 8px;
   border-radius: 4px;
@@ -8,13 +8,14 @@
 
 .card-sheet {
   display: flex;
-  flex-flow: row-reverse nowrap;
+  flex-flow: column nowrap;
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
   z-index: 1;
+  align-items: flex-end;
 }
 
 .card-sheet button {
@@ -29,7 +30,7 @@
 }
 
 .card {
-  background: rgb(255, 255, 255);
+  background: var(--sheet-background-color);
   border-radius: 4px;
   padding: 16px;
   position: relative;
@@ -74,7 +75,7 @@
 .headline .icon {
   width: 24px;
   height: 24px;
-  color: rgba(25, 118, 210, 0.8);
+  color: var(--button-text-color);
 }
 
 .card-pane--collapse {

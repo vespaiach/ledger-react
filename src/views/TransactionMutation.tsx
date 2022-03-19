@@ -9,7 +9,12 @@ import Container from '../components/Container';
 import { ComboSelect, Input } from '../components/Input';
 import { Maybe, TransactionMap } from '../graphql.generated';
 import { reasonsSelector, useReasonStore } from '../store/reason';
-import { transactionsSelector, updateTransactionSelector, useTransactionStore } from '../store/transaction';
+import {
+  insertTransactionsSelector,
+  transactionsSelector,
+  updateTransactionSelector,
+  useTransactionStore,
+} from '../store/transaction';
 import { useAuth } from '../utils/useAuth';
 import { getTransaction$, saveTransaction$ } from '../dataSource';
 import CloseIcon from '../components/icons/Close';
@@ -28,6 +33,7 @@ export default function TransactionMutation() {
   const reasonList = useReasonStore(reasonsSelector);
   const transactions = useTransactionStore(transactionsSelector);
   const updateTransaction = useTransactionStore(updateTransactionSelector);
+  const insertTransaction = useTransactionStore(insertTransactionsSelector);
 
   const [loading, setLoading] = useState(id !== 'new');
   const [transactionId, setTransactionId] = useState<number | null | undefined>(null);
@@ -36,6 +42,10 @@ export default function TransactionMutation() {
   const [reason, setReason] = useState<string>('');
   const [note, setNote] = useState<string>('');
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, []);
 
   useEffect(() => {
     if (!id || !/\d+/.test(id)) return;
@@ -106,6 +116,7 @@ export default function TransactionMutation() {
           if (transactionId) {
             updateTransaction(tran);
           } else {
+            insertTransaction(tran);
             clear();
           }
         },

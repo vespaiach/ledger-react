@@ -19,6 +19,7 @@ export function App() {
   const auth = useAuthStore((state) => state.auth);
   const setReasons = useReasonStore((state) => state.setReasons);
   const { message, setMessage } = useAppStore();
+  console.log(message);
 
   useEffect(() => {
     return listenTo(window, 'resize', function () {

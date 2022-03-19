@@ -13,7 +13,7 @@ import ChervonRightIcon from '../components/icons/ChervonRight';
 import { Maybe, QueryGetTransactionsArgs } from '../graphql.generated';
 import { useAuth } from '../utils/useAuth';
 import { filtersSelector, transactionsSelector, useTransactionStore } from '../store/transaction';
-import { loadTransactions$ } from '../dataSource';
+import { deleteTransaction$, loadTransactions$ } from '../dataSource';
 import { useAppStore } from '../store/app';
 
 export default function TransactionList() {
@@ -55,6 +55,9 @@ export default function TransactionList() {
           data={transactions}
           itemContent={(_, transaction) => (
             <Card
+              onDelete={() => {
+                deleteTransaction$(transaction.id).subscribe();
+              }}
               onEdit={() => navigate(`/${transaction.id}`)}
               onClick={(e) => {
                 if (e.currentTarget.classList.contains('card-pane--open')) {

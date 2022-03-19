@@ -5,7 +5,7 @@
 }
 
 .mutating {
-  background: white;
+  background: var(--sheet-background-color);
   min-height: 100vh;
   display: flex;
   flex-flow: column nowrap;

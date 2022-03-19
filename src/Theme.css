@@ -7,6 +7,7 @@
   --success-background-color: rgb(46, 125, 50);
   --success-background-color: rgb(46, 125, 50);
   --grayout-background-color: rgba(0, 0, 0, 0.1);
+  --error-background-color: rgb(239, 83, 80);
 
   --border-color: rgb(213, 213, 213);
   --button-border-color: rgba(0, 0, 0, 0.12);
@@ -17,7 +18,5 @@
   --error-text-color: rgb(239, 83, 80);
   --button-text-color: #1976d2;
   --disabled-color: rgba(0, 0, 0, 0.3);
-  --notification-text-color: white;
-  --sucess-text-color: white;
-  --error-text-color: white;
+  --message-text-color: white;
 }
