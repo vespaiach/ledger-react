@@ -8,8 +8,8 @@ import PasswordIcon from '../components/icons/Password';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import BackArrowIcon from '../components/icons/BackArrow';
-import { useAppStore } from '../store/app';
-import { useAuthStore } from '../store/auth';
+import { addErrorSelector, useAppStore } from '../store/app';
+import { setAuthSelector, useAuthStore } from '../store/auth';
 import { getToken$ } from '../dataSource';
 
 export default function KeyInput() {
@@ -27,14 +27,14 @@ export default function KeyInput() {
   const [error, setError] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
-  const setErrorMessage = useAppStore((state) => state.setError);
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const addError = useAppStore(addErrorSelector);
+  const setAuth = useAuthStore(setAuthSelector);
 
   const submit = () => {
     if (loading) return;
 
     if (!key || key.length !== 36) {
-      setError('invalid sign-in key');
+      addError('invalid sign-in key');
       return;
     }
 
@@ -45,7 +45,7 @@ export default function KeyInput() {
       },
       error: (err) => {
         setLoading(false);
-        setErrorMessage(err.message, 8000);
+        addError(err.message, 8000);
       },
       complete: () => navigate('/'),
     });

@@ -9,6 +9,8 @@ interface ReasonStore {
   setReasons: (reasons: ReasonMap[]) => void;
 }
 
+export const setReasonsSelector: StateSelector<ReasonStore, ReasonStore['setReasons']> = (state) =>
+  state.setReasons;
 export const reasonsSelector: StateSelector<ReasonStore, ReasonMap[]> = (state) => state.reasons;
 export const reasonsMapSelector: StateSelector<ReasonStore, Map<number, ReasonMap> | null> = (state) =>
   state.reasonsMap;

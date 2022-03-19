@@ -14,7 +14,7 @@ import { Maybe, QueryGetTransactionsArgs } from '../graphql.generated';
 import { useAuth } from '../utils/useAuth';
 import { filtersSelector, transactionsSelector, useTransactionStore } from '../store/transaction';
 import { deleteTransaction$, loadTransactions$ } from '../dataSource';
-import { useAppStore } from '../store/app';
+import { addErrorSelector, useAppStore } from '../store/app';
 
 export default function TransactionList() {
   useAuth();
@@ -24,7 +24,7 @@ export default function TransactionList() {
 
   const navigate = useNavigate();
   const addTransactions = useTransactionStore((state) => state.addTransactions);
-  const setError = useAppStore((state) => state.setError);
+  const addError = useAppStore(addErrorSelector);
 
   const fetchTransactions = (
     args?: Omit<QueryGetTransactionsArgs, 'fromDate' | 'toDate'> & {
@@ -34,7 +34,7 @@ export default function TransactionList() {
   ) => {
     loadTransactions$({ ...filters, ...args }).subscribe({
       next: (transactions) => addTransactions(transactions),
-      error: (e) => setError(e.message),
+      error: (e) => addError(e.message),
     });
   };
 

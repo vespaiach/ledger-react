@@ -8,7 +8,7 @@ import EmailIcon from '../components/icons/Email';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { getSigninKey$ } from '../dataSource';
-import { useAppStore } from '../store/app';
+import { addMessageSelector, addErrorSelector, useAppStore } from '../store/app';
 
 export default function EmailInput() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -18,8 +18,8 @@ export default function EmailInput() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const setErrorMessage = useAppStore((state) => state.setError);
-  const setMessage = useAppStore((state) => state.setMessage);
+  const setErrorMessage = useAppStore(addErrorSelector);
+  const addMessage = useAppStore(addMessageSelector);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -47,7 +47,7 @@ export default function EmailInput() {
               setLoading(false);
             },
             complete: () => {
-              setMessage({
+              addMessage({
                 message: 'An email has been sent to you, please check it!',
                 type: 'notification',
               });

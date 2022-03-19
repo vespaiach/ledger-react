@@ -7,19 +7,19 @@ import { Suspense, useEffect } from 'react';
 import TransactionList from './views/TransactionList';
 import TransactionMutation from './views/TransactionMutation';
 import { listenTo } from './utils/window';
-import Message from './components/Message';
+import { Message, MessagePane } from './components/Message';
 import EmailInput from './views/EmailInput';
 import KeyInput from './views/KeyInput';
-import { useAppStore } from './store/app';
-import { useReasonStore } from './store/reason';
+import { messagesSelector, removeMessageSelector, useAppStore } from './store/app';
+import { setReasonsSelector, useReasonStore } from './store/reason';
 import { loadReasons$ } from './dataSource';
 import { useAuthStore } from './store/auth';
 
 export function App() {
   const auth = useAuthStore((state) => state.auth);
-  const setReasons = useReasonStore((state) => state.setReasons);
-  const { message, setMessage } = useAppStore();
-  console.log(message);
+  const setReasons = useReasonStore(setReasonsSelector);
+  const removeMessage = useAppStore(removeMessageSelector);
+  const messages = useAppStore(messagesSelector);
 
   useEffect(() => {
     return listenTo(window, 'resize', function () {
@@ -56,7 +56,13 @@ export function App() {
           <Route path="/" element={<TransactionList />} />
         </Routes>
       </Suspense>
-      {message && <Message data={message} onClose={() => setMessage(null)} />}
+      {messages?.length > 0 && (
+        <MessagePane>
+          {messages.map((m) => (
+            <Message key={m.id} data={m} onClose={() => removeMessage(m.id)} />
+          ))}
+        </MessagePane>
+      )}
     </>
   );
 }
