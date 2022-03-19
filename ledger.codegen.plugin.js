@@ -16,6 +16,7 @@ export interface FilterArgs {
 
 export interface DataProvider {
   loadTransactions(variables?: QueryGetTransactionsArgs): Promise<Transaction[]>;
+  getTransaction(id: number): Promise<Transaction | null>;
   loadReasons(): Promise<Reason[]>;
 
   saveTransaction(variables: MutationSaveTransactionArgs): Promise<Transaction>;

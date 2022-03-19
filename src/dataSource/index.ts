@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import provider from './remoteDbProvider';
 import {
   Maybe,
+  MutationSaveTransactionArgs,
   QueryGetTransactionsArgs,
   Reason,
   ReasonMap,
@@ -28,6 +29,10 @@ const mapReason = (reason: Reason): ReasonMap => ({
   updatedAt: new Date(reason.updatedAt),
 });
 
+export const getTransaction$ = (id: number) => {
+  return from(selectedProvider.getTransaction(id)).pipe(map((t) => (t ? mapTransaction(t) : null)));
+};
+
 export const loadTransactions$ = (
   args?: Omit<QueryGetTransactionsArgs, 'fromDate' | 'toDate'> & {
     fromDate?: Maybe<Date>;
@@ -50,7 +55,7 @@ export const loadTransactions$ = (
 export const loadReasons$ = () => from(selectedProvider.loadReasons()).pipe(map((r) => r.map(mapReason)));
 
 export const saveTransaction$ = (
-  args: Omit<UpdateTransactionMutationVariables, 'date'> & { date?: Maybe<Date> }
+  args: Omit<MutationSaveTransactionArgs, 'date'> & { date?: Maybe<Date> }
 ) =>
   from(selectedProvider.saveTransaction({ ...args, date: args.date?.toISOString() })).pipe(
     map(mapTransaction)

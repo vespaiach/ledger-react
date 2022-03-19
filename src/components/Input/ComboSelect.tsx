@@ -32,6 +32,7 @@ export function ComboSelect({
         {!!error && <span className="error"> - {error}</span>}
       </div>
       <input
+        autoComplete="off"
         list={listName}
         id={id}
         type="text"
@@ -43,10 +44,10 @@ export function ComboSelect({
           <option key={op} value={op} />
         ))}
       </datalist>
-      <div className="button-sheet">
-        {value && (
+      {value && (
+        <div className="button-sheet">
           <Button
-            className=" icon-button"
+            boxLess
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -55,8 +56,8 @@ export function ComboSelect({
             }}>
             <CloseIcon />
           </Button>
-        )}
-      </div>
+        </div>
+      )}
     </label>
   );
 }

@@ -61,7 +61,7 @@ export default function KeyInput() {
 
   return (
     <div className="full-page flex-center">
-      <Button className="sign-in-back-button" onClick={() => void navigate('/email')}>
+      <Button boxLess className="sign-in-back-button" onClick={() => void navigate('/email')}>
         <BackArrowIcon />
       </Button>
       <form

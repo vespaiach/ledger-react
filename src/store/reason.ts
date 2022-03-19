@@ -1,4 +1,4 @@
-import create from 'zustand';
+import create, { StateSelector } from 'zustand';
 
 import { ReasonMap } from '../graphql.generated';
 
@@ -8,6 +8,10 @@ interface ReasonStore {
 
   setReasons: (reasons: ReasonMap[]) => void;
 }
+
+export const reasonsSelector: StateSelector<ReasonStore, ReasonMap[]> = (state) => state.reasons;
+export const reasonsMapSelector: StateSelector<ReasonStore, Map<number, ReasonMap> | null> = (state) =>
+  state.reasonsMap;
 
 export const useReasonStore = create<ReasonStore>((set) => ({
   reasons: [],

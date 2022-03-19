@@ -9,6 +9,7 @@ import {
   GraphqlResponse,
   CreateReasonMutation,
   DeleteTransactionMutation,
+  GetTransactionQuery,
 } from '../graphql.generated';
 import { signinMutation, signoutMutation, tokenMutation } from '../graphql/auth';
 import { getReasons } from '../graphql/reason';
@@ -16,6 +17,7 @@ import {
   createReasonMutation,
   createTransactionMutation,
   deleteTransactionMutation,
+  getTransactionQuery,
   getTransactionsQuery,
   updateTransactionMutation,
 } from '../graphql/transaction';
@@ -49,6 +51,12 @@ async function callRemote<R>(query: string, variables?: Record<string, unknown>)
   }
 
   return result.data;
+}
+
+async function getTransaction(id: number) {
+  const result = await callRemote<GetTransactionQuery>(getTransactionQuery, { id });
+
+  return result.transaction ?? null;
 }
 
 async function loadTransactions(variables: QueryGetTransactionsArgs) {
@@ -111,6 +119,7 @@ async function token(key: string) {
 }
 
 const provider: DataProvider = {
+  getTransaction,
   loadTransactions,
   loadReasons,
 

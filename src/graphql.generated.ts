@@ -1,5 +1,5 @@
-export type Maybe<T> =  T | null | undefined;
-export type InputMaybe<T> =  T | null | undefined;
+export type Maybe<T> = T | null | undefined;
+export type InputMaybe<T> = T | null | undefined;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
@@ -32,11 +32,9 @@ export type Mutation = {
   updateTransaction?: Maybe<Transaction>;
 };
 
-
 export type MutationCreateReasonArgs = {
   text: Scalars['String'];
 };
-
 
 export type MutationCreateTransactionArgs = {
   amount: Scalars['Float'];
@@ -45,32 +43,26 @@ export type MutationCreateTransactionArgs = {
   reasonText: Scalars['String'];
 };
 
-
 export type MutationDeleteReasonArgs = {
   id: Scalars['Int'];
 };
-
 
 export type MutationDeleteTransactionArgs = {
   id: Scalars['Int'];
 };
 
-
 export type MutationSigninArgs = {
   email: Scalars['String'];
 };
-
 
 export type MutationTokenArgs = {
   key: Scalars['String'];
 };
 
-
 export type MutationUpdateReasonArgs = {
   id: Scalars['Int'];
   text: Scalars['String'];
 };
-
 
 export type MutationUpdateTransactionArgs = {
   amount?: InputMaybe<Scalars['Float']>;
@@ -87,11 +79,9 @@ export type Query = {
   getTransactions?: Maybe<Array<Transaction>>;
 };
 
-
 export type QueryGetTransactionArgs = {
   id: Scalars['Int'];
 };
-
 
 export type QueryGetTransactionsArgs = {
   fromAmount?: InputMaybe<Scalars['Int']>;
@@ -122,25 +112,23 @@ export type SigninMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
 
-
 export type SigninMutation = { signin: string };
 
-export type SignoutMutationVariables = Exact<{ [key: string]: never; }>;
+export type SignoutMutationVariables = Exact<{ [key: string]: never }>;
 
-
-export type SignoutMutation = { signout?:  void | null | undefined };
+export type SignoutMutation = { signout?: void | null | undefined };
 
 export type TokenMutationVariables = Exact<{
   key: Scalars['String'];
 }>;
 
-
 export type TokenMutation = { token: string };
 
-export type GetReasonsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetReasonsQueryVariables = Exact<{ [key: string]: never }>;
 
-
-export type GetReasonsQuery = { reasons?:  Array<{ id: number, text: string, updatedAt: string }> | null | undefined };
+export type GetReasonsQuery = {
+  reasons?: Array<{ id: number; text: string; updatedAt: string }> | null | undefined;
+};
 
 export type GetTransactionsQueryVariables = Exact<{
   fromDate?: InputMaybe<Scalars['Date']>;
@@ -152,15 +140,37 @@ export type GetTransactionsQueryVariables = Exact<{
   take?: InputMaybe<Scalars['Int']>;
 }>;
 
-
-export type GetTransactionsQuery = { transactions?:  Array<{ id: number, amount: number, date: string, note?:  string | null | undefined, updatedAt: string, reason: { id: number, text: string, updatedAt: string } }> | null | undefined };
+export type GetTransactionsQuery = {
+  transactions?:
+    | Array<{
+        id: number;
+        amount: number;
+        date: string;
+        note?: string | null | undefined;
+        updatedAt: string;
+        reason: { id: number; text: string; updatedAt: string };
+      }>
+    | null
+    | undefined;
+};
 
 export type GetTransactionQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
-
-export type GetTransactionQuery = { transaction?:  { id: number, amount: number, date: string, note?:  string | null | undefined, updatedAt: string, reason: { id: number, text: string, updatedAt: string } } | null | undefined };
+export type GetTransactionQuery = {
+  transaction?:
+    | {
+        id: number;
+        amount: number;
+        date: string;
+        note?: string | null | undefined;
+        updatedAt: string;
+        reason: { id: number; text: string; updatedAt: string };
+      }
+    | null
+    | undefined;
+};
 
 export type CreateTransactionMutationVariables = Exact<{
   date: Scalars['Date'];
@@ -169,8 +179,19 @@ export type CreateTransactionMutationVariables = Exact<{
   note?: InputMaybe<Scalars['String']>;
 }>;
 
-
-export type CreateTransactionMutation = { transaction?:  { id: number, amount: number, date: string, note?:  string | null | undefined, updatedAt: string, reason: { id: number, text: string, updatedAt: string } } | null | undefined };
+export type CreateTransactionMutation = {
+  transaction?:
+    | {
+        id: number;
+        amount: number;
+        date: string;
+        note?: string | null | undefined;
+        updatedAt: string;
+        reason: { id: number; text: string; updatedAt: string };
+      }
+    | null
+    | undefined;
+};
 
 export type UpdateTransactionMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -180,30 +201,53 @@ export type UpdateTransactionMutationVariables = Exact<{
   note?: InputMaybe<Scalars['String']>;
 }>;
 
-
-export type UpdateTransactionMutation = { transaction?:  { id: number, amount: number, date: string, note?:  string | null | undefined, updatedAt: string, reason: { id: number, text: string, updatedAt: string } } | null | undefined };
+export type UpdateTransactionMutation = {
+  transaction?:
+    | {
+        id: number;
+        amount: number;
+        date: string;
+        note?: string | null | undefined;
+        updatedAt: string;
+        reason: { id: number; text: string; updatedAt: string };
+      }
+    | null
+    | undefined;
+};
 
 export type CreateReasonMutationVariables = Exact<{
   text: Scalars['String'];
 }>;
 
-
-export type CreateReasonMutation = { reason?:  { id: number, text: string, updatedAt: string } | null | undefined };
+export type CreateReasonMutation = {
+  reason?: { id: number; text: string; updatedAt: string } | null | undefined;
+};
 
 export type DeleteTransactionMutationVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
-
-export type DeleteTransactionMutation = { deleteTransaction?:  boolean | null | undefined };
-
+export type DeleteTransactionMutation = { deleteTransaction?: boolean | null | undefined };
 
 export type ReasonMap = Omit<Reason, 'updatedAt'> & { updatedAt: Date };
-export type TransactionMap = Omit<Transaction, 'date' | 'reason' | 'updatedAt'> & { date: Date, updatedAt: Date, reason: ReasonMap };
-export type MutationSaveTransactionArgs = Omit<MutationUpdateTransactionArgs, 'id' | 'reasonId'> & { id?: Maybe<number>; reasonText?: Maybe<string>; };
+export type TransactionMap = Omit<Transaction, 'date' | 'reason' | 'updatedAt'> & {
+  date: Date;
+  updatedAt: Date;
+  reason: ReasonMap;
+};
+export type MutationSaveTransactionArgs = Omit<MutationUpdateTransactionArgs, 'id' | 'reasonId'> & {
+  id?: Maybe<number>;
+  reasonText?: Maybe<string>;
+};
 
-export interface GraphqlError { message: string; extensions?: { code: string; } };
-export interface GraphqlResponse<T> { errors?: GraphqlError[]; data: T };
+export interface GraphqlError {
+  message: string;
+  extensions?: { code: string };
+}
+export interface GraphqlResponse<T> {
+  errors?: GraphqlError[];
+  data: T;
+}
 export interface FilterArgs {
   fromAmount?: Maybe<number>;
   toAmount?: Maybe<number>;
@@ -214,6 +258,7 @@ export interface FilterArgs {
 
 export interface DataProvider {
   loadTransactions(variables?: QueryGetTransactionsArgs): Promise<Transaction[]>;
+  getTransaction(id: number): Promise<Transaction | null>;
   loadReasons(): Promise<Reason[]>;
 
   saveTransaction(variables: MutationSaveTransactionArgs): Promise<Transaction>;
@@ -225,4 +270,3 @@ export interface DataProvider {
   token(key: string): Promise<string>;
   signout(): Promise<void>;
 }
-  

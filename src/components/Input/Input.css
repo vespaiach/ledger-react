@@ -62,8 +62,13 @@
   min-width: 24px;
   min-height: 24px;
 }
+
 .input .right-space {
   padding-right: 32px;
+}
+
+.input .left-space {
+  padding-left: 16px;
 }
 
 .input .tag-list {
@@ -92,7 +97,6 @@
   display: block;
   box-sizing: border-box;
   position: relative;
-  overflow: hidden;
 }
 
 .combo-select input {

@@ -54,7 +54,12 @@ export const Input: <T extends InputElementType>(
         {caption}
         {!!error && <span className="error"> - {error}</span>}
       </div>
-      <Component className={cx({ 'right-space': subIns })} {...rest} id={id} ref={ref} />
+      <Component
+        className={cx({ 'right-space': subIns, 'left-space': as === 'textarea' })}
+        {...rest}
+        id={id}
+        ref={ref}
+      />
       {addIns && <div className="input-adds-in flex-center">{addIns}</div>}
       {subIns && <div className="input-subs-in flex-center">{subIns}</div>}
       {children}

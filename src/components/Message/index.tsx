@@ -44,7 +44,7 @@ export default function Message({ data, onClose }: { onClose: () => void; data: 
       <article className={cx('message-sheet', data.type)}>
         {iconEl}
         <p>{data.message}</p>
-        <Button onClick={onClose}>
+        <Button boxLess onClick={onClose}>
           <CloseIcon />
         </Button>
       </article>
