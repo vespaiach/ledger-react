@@ -13,7 +13,6 @@ import { from } from 'rxjs';
 import { listenTo } from '../utils/window';
 import FilterMenu from './FilterMenu';
 import { filterTransactionAtom, writeFilterTransactionAtom } from '../store/transaction';
-import CloseButton from './CloseButton';
 import MagnifyIcon from './icons/Magnify';
 import PlusOneIcon from './icons/PlusOne';
 import { Maybe } from '../graphql.generated';
@@ -23,6 +22,7 @@ import { remove } from '../utils/auth';
 import selectedProvider from '../dataSource';
 import { useAuthStore } from '../store/auth';
 import { useReasonStore } from '../store/reason';
+import CloseIcon from './icons/Close';
 
 export default function Appbar() {
   const navigate = useNavigate();
@@ -143,10 +143,9 @@ function FilterChip({ children, onDelete }: { onDelete?: () => void; children?: 
   return (
     <div className="filter-chip">
       {children}
-      <CloseButton
-        onClick={onDelete}
-        style={{ marginLeft: 'auto', position: 'static', height: 24, width: 24, padding: 0 }}
-      />
+      <Button onClick={onDelete}>
+        <CloseIcon />
+      </Button>
     </div>
   );
 }

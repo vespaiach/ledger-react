@@ -12,7 +12,6 @@ import BackArrowIcon from '../components/icons/BackArrow';
 import { Input } from '../components/Input';
 import { Maybe } from '../graphql.generated';
 import { fetchReasonsAtom, reasonsAtom } from '../store/reason';
-import XIcon from '../components/icons/X';
 import DatePicker from '../components/DatePicker';
 import ComboSelect from '../components/ComboSelect';
 import {
@@ -22,6 +21,7 @@ import {
 } from '../store/transaction';
 import { appMessageAtom } from '../store/utils';
 import { useAuth } from '../utils/useAuth';
+import CloseIcon from '../components/icons/Close';
 
 const noop = () => null;
 
@@ -169,7 +169,7 @@ export default function TransactionMutation() {
                   left: 'initial',
                   top: 15,
                 }}>
-                <XIcon />
+                <CloseIcon />
               </button>
             )}
           </Input>

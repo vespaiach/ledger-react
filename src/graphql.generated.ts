@@ -118,6 +118,25 @@ export type Transaction = {
   updatedAt: Scalars['Date'];
 };
 
+export type SigninMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type SigninMutation = { signin: string };
+
+export type SignoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SignoutMutation = { signout?:  void | null | undefined };
+
+export type TokenMutationVariables = Exact<{
+  key: Scalars['String'];
+}>;
+
+
+export type TokenMutation = { token: string };
+
 export type GetReasonsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
