@@ -1,34 +1,17 @@
-import { atom } from 'jotai';
+import create from 'zustand';
 
 import { ReasonMap } from '../graphql.generated';
-import provider from './remoteDbProvider';
-import { loadReasons$, reportError } from './utils';
 
-export const reasonLoadingAtom = atom(false);
+interface ReasonStore {
+  reasons: ReasonMap[];
+  reasonsMap: Map<number, ReasonMap> | null;
 
-export const reasonsAtom = atom<ReasonMap[]>([]);
-export const reasonsMapAtom = atom<Record<number, ReasonMap>>((get) => {
-  const reasons = get(reasonsAtom);
-  return Object.fromEntries(reasons.map((r) => [r.id, r]));
-});
+  setReasons: (reasons: ReasonMap[]) => void;
+}
 
-export const fetchReasonsAtom = atom(
-  (get) => get(reasonsAtom),
-  (_, set) => {
-    set(reasonLoadingAtom, true);
+export const useReasonStore = create<ReasonStore>((set) => ({
+  reasons: [],
+  reasonsMap: null,
 
-    loadReasons$(provider.loadReasons()).subscribe({
-      next: (reasons) => {
-        set(reasonsAtom, reasons);
-      },
-      error: (err) => {
-        reportError(set, err);
-      },
-      complete: () => {
-        set(reasonLoadingAtom, false);
-      },
-    });
-
-    set(reasonLoadingAtom, false);
-  }
-);
+  setReasons: (reasons) => set({ reasons, reasonsMap: new Map(reasons.map((r) => [r.id, r])) }),
+}));

@@ -8,7 +8,7 @@ import { from } from 'rxjs';
 import EmailIcon from '../components/icons/Email';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
-import provider from '../store/provider';
+import provider from '../dataSource';
 import { useAppStore } from '../store/app';
 
 export default function EmailInput() {

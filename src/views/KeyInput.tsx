@@ -9,7 +9,7 @@ import PasswordIcon from '../components/icons/Password';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import BackArrowIcon from '../components/icons/BackArrow';
-import selectedProvider from '../store/provider';
+import selectedProvider from '../dataSource';
 import { useAppStore } from '../store/app';
 import { useAuthStore } from '../store/auth';
 
@@ -38,12 +38,10 @@ export default function KeyInput() {
       setError('invalid sign-in key');
       return;
     }
-    debugger;
 
     setLoading(true);
     from(selectedProvider.token(key)).subscribe({
       next: (token) => {
-        debugger
         setAuth(token) 
       },
       error: (err) => {

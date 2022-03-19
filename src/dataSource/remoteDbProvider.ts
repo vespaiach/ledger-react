@@ -19,7 +19,7 @@ import {
   getTransactionsQuery,
   updateTransactionMutation,
 } from '../graphql/transaction';
-import { useAuthStore } from './auth';
+import { useAuthStore } from '../store/auth';
 
 const url = import.meta.env.VITE_GRAPHQL_URL as string;
 
