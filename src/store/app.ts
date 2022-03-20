@@ -1,15 +1,34 @@
-import create, { State } from 'zustand';
+import create, { State, StateSelector } from 'zustand';
 
-interface AppStore extends State {
-  message: AppMessage | null;
+let i = 0;
 
-  setMessage: (message: AppMessage | null) => void;
-  setError: (message: string, timeout?: number) => void;
+interface StoreMessage extends AppMessage {
+  id: number;
 }
 
-export const useAppStore = create<AppStore>((set) => ({
-  message: null,
+interface AppStore extends State {
+  messages: StoreMessage[];
 
-  setMessage: (message) => set({ message }),
-  setError: (message, timeout = 3000) => set({ message: { message, type: 'error', timeout } }),
+  addMessage: (message: AppMessage) => void;
+  removeMessage: (id: number) => void;
+  addError: (message: string, timeout?: number) => void;
+  clear: () => void;
+}
+
+export const messagesSelector: StateSelector<AppStore, AppStore['messages']> = (state) => state.messages;
+export const addMessageSelector: StateSelector<AppStore, AppStore['addMessage']> = (state) =>
+  state.addMessage;
+export const removeMessageSelector: StateSelector<AppStore, AppStore['removeMessage']> = (state) =>
+  state.removeMessage;
+export const addErrorSelector: StateSelector<AppStore, AppStore['addError']> = (state) => state.addError;
+export const clear: StateSelector<AppStore, AppStore['clear']> = (state) => state.clear;
+
+export const useAppStore = create<AppStore>((set, get) => ({
+  messages: [],
+
+  addMessage: (message) => set({ messages: get().messages.concat([{ ...message, id: ++i }]) }),
+  removeMessage: (id: number) => set({ messages: get().messages.filter((m) => m.id !== id) }),
+  addError: (message, timeout = 3000) =>
+    set({ messages: get().messages.concat([{ id: ++i, message, type: 'error', timeout }]) }),
+  clear: () => set({ messages: [] }),
 }));

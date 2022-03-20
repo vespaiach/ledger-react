@@ -7,7 +7,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import cx from 'classnames';
 import NumberFormat from 'react-number-format';
 import { useNavigate } from 'react-router-dom';
-import { from } from 'rxjs';
 
 import { listenTo } from '../utils/window';
 import MagnifyIcon from '../components/icons/Magnify';
@@ -16,22 +15,26 @@ import { FilterArgs, Maybe } from '../graphql.generated';
 import ExitIcon from '../components/icons/Exit';
 import { Button } from '../components/Button';
 import { remove } from '../utils/auth';
-import { loadTransactions$, signout$ } from '../dataSource';
+import { signout$ } from '../dataSource';
 import { useAuthStore } from '../store/auth';
-import { useReasonStore } from '../store/reason';
+import { reasonsMapSelector, reasonsSelector, useReasonStore } from '../store/reason';
 import CloseIcon from '../components/icons/Close';
-import { useTransactionStore } from '../store/transaction';
+import {
+  clearFiltersSelector,
+  filtersSelector,
+  setFiltersSelector,
+  useFiltersStore,
+} from '../store/transaction';
 import FilterMenu from '../components/FilterMenu';
-import CalendarIcon from '../components/icons/Calendar';
 
 export default function Appbar() {
   const navigate = useNavigate();
 
-  const filters = useTransactionStore((state) => state.filters);
-  const setFilters = useTransactionStore((state) => state.setFilters);
-  const clearFilters = useTransactionStore((state) => state.clearFilters);
-  const reasons = useReasonStore((state) => state.reasons);
-  const reasonsMap = useReasonStore((state) => state.reasonsMap);
+  const filters = useFiltersStore(filtersSelector);
+  const setFilters = useFiltersStore(setFiltersSelector);
+  const clearFilters = useFiltersStore(clearFiltersSelector);
+  const reasons = useReasonStore(reasonsSelector);
+  const reasonsMap = useReasonStore(reasonsMapSelector);
 
   const { setAuth } = useAuthStore();
 

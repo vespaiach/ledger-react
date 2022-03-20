@@ -3,18 +3,26 @@ import create, { StateSelector } from 'zustand';
 import { FilterArgs, Maybe, TransactionMap } from '../graphql.generated';
 
 interface TransactionStore {
-  filters: Maybe<FilterArgs>;
   transactions: TransactionMap[];
 
-  setFilters: (filters: Maybe<FilterArgs>) => void;
-  clearFilters: () => void;
+  setTransactions: (transactions: TransactionMap[]) => void;
   addTransactions: (transactions: TransactionMap[]) => void;
   updateTransaction: (transaction: TransactionMap) => void;
   insertTransaction: (transaction: TransactionMap) => void;
 }
 
-export const filtersSelector: StateSelector<TransactionStore, TransactionStore['filters']> = (state) =>
-  state.filters;
+interface FilterStore {
+  filters: Maybe<FilterArgs>;
+
+  setFilters: (filters: Maybe<FilterArgs>) => void;
+  clearFilters: () => void;
+}
+
+export const filtersSelector: StateSelector<FilterStore, FilterStore['filters']> = (state) => state.filters;
+export const clearFiltersSelector: StateSelector<FilterStore, FilterStore['clearFilters']> = (state) =>
+  state.clearFilters;
+export const setFiltersSelector: StateSelector<FilterStore, FilterStore['setFilters']> = (state) =>
+  state.setFilters;
 export const transactionsSelector: StateSelector<TransactionStore, TransactionStore['transactions']> = (
   state
 ) => state.transactions;
@@ -29,13 +37,21 @@ export const insertTransactionsSelector: StateSelector<
   TransactionStore,
   TransactionStore['insertTransaction']
 > = (state) => state.insertTransaction;
+export const setTransactionsSelector: StateSelector<TransactionStore, TransactionStore['setTransactions']> = (
+  state
+) => state.setTransactions;
 
-export const useTransactionStore = create<TransactionStore>((set, get) => ({
+export const useFiltersStore = create<FilterStore>((set, get) => ({
   filters: null,
-  transactions: [],
 
   setFilters: (filters) => set({ filters: { ...get().filters, ...filters } }),
   clearFilters: () => set({ filters: null }),
+}));
+
+export const useTransactionStore = create<TransactionStore>((set, get) => ({
+  transactions: [],
+
+  setTransactions: (transactions) => set({ transactions }),
   addTransactions: (transactions) => set({ transactions: get().transactions.concat(transactions) }),
   insertTransaction: (transaction) => {
     const transactions = get().transactions;

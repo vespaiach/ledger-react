@@ -1,9 +1,16 @@
-.message-sheet {
+.message-pane {
   z-index: 110;
   position: fixed;
   bottom: 8px;
   left: 8px;
   right: 8px;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.message-sheet {
   display: flex;
   align-items: center;
   padding: 12px 16px;

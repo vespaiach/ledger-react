@@ -1,4 +1,4 @@
-import create, { State } from 'zustand';
+import create, { State, StateSelector } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 import { AUTH_KEY } from '../utils/auth';
@@ -8,6 +8,9 @@ interface AuthStore extends State {
 
   setAuth: (auth: string | null) => void;
 }
+
+export const setAuthSelector: StateSelector<AuthStore, AuthStore['setAuth']> = (state) => state.setAuth;
+export const authSelector: StateSelector<AuthStore, AuthStore['auth']> = (state) => state.auth;
 
 export const useAuthStore = create<AuthStore>(
   persist(

@@ -1,15 +1,16 @@
 import './Message.css';
 
 import cx from 'classnames';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
 import { Button } from '../Button';
 import ErrorIcon from '../icons/Error';
 import SuccessIcon from '../icons/Success';
 import CloseIcon from '../icons/Close';
+import InfoIcon from '../icons/BackArrow copy';
 
-export default function Message({ data, onClose }: { onClose: () => void; data: AppMessage }) {
+export function Message({ data, onClose }: { onClose: () => void; data: AppMessage }) {
   const [open, setOpen] = useState<boolean>(false);
 
   let iconEl = null;
@@ -17,6 +18,8 @@ export default function Message({ data, onClose }: { onClose: () => void; data: 
     iconEl = <ErrorIcon />;
   } else if (data.type === 'success') {
     iconEl = <SuccessIcon />;
+  } else {
+    iconEl = <InfoIcon />;
   }
 
   useEffect(() => {
@@ -50,4 +53,8 @@ export default function Message({ data, onClose }: { onClose: () => void; data: 
       </article>
     </CSSTransition>
   );
+}
+
+export function MessagePane({ children }: { children?: ReactNode[] }) {
+  return <div className="message-pane">{children}</div>;
 }
