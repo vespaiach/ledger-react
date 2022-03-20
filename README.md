@@ -1,14 +1,13 @@
-<p align="center">
+<p>
     <a href="https://ledger.dedyn.io/">
-        <img src="https://raw.githubusercontent.com/vespaiach/ledger/main/src/favicon.svg" height="56" width="56" title="Ledger"/>
+        <img src="https://raw.githubusercontent.com/vespaiach/ledger/main/src/sneakview.gif" height="500"  title="Ledger app"/>
     </a>
 </p>
 
-<p align="center">
+<p>
   <b>Ledger</b> is a web application for managing personal money transactions
 </p>
 
-<br>
 
 # Live Playground
 
@@ -21,8 +20,9 @@ The demo version at: https://ledger.dedyn.io/
 - Easily to filter transactions
 
 # Future Features
+
 - Support offline mode. Use IndexDb to store database
-- Add quick-navigation bar to jump to any segment 
+- Add quick-navigation bar to jump to any segment
 - Update filter pane with more beautiful UIs
 - Add reports/ charts
 
