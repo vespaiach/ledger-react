@@ -1,6 +1,6 @@
 <p>
     <a href="https://ledger.dedyn.io/">
-        <img src="https://raw.githubusercontent.com/vespaiach/ledger/main/src/sneakview.gif" height="500"  title="Ledger app"/>
+        <img src="https://github.com/vespaiach/ledger/blob/fbcb48e0e17775c4f50340b8eee249ed46725059/sneakview.gif" height="500"  title="Ledger app"/>
     </a>
 </p>
 
