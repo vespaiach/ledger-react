@@ -21,7 +21,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
     "gentype": "node ./codegen.js"
   },
   "eslintConfig": {
