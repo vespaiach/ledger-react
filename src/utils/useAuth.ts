@@ -12,7 +12,7 @@ export function useAuth() {
 
   useEffect(() => {
     if (!auth) {
-      navigate('/email');
+      navigate('/signin');
     }
   }, [navigate, auth]);
 }

@@ -6,10 +6,9 @@ import { Suspense, useEffect } from 'react';
 
 import TransactionList from './views/TransactionList';
 import TransactionMutation from './views/TransactionMutation';
+import SignIn from './views/SignIn';
 import { listenTo } from './utils/window';
 import { Message, MessagePane } from './components/Message';
-import EmailInput from './views/EmailInput';
-import KeyInput from './views/KeyInput';
 import { messagesSelector, removeMessageSelector, useAppStore } from './store/app';
 import { setReasonsSelector, useReasonStore } from './store/reason';
 import { loadReasons$, loadTransactions$ } from './dataSource';
@@ -67,8 +66,7 @@ export function App() {
     <>
       <Suspense fallback={<PageLoader />}>
         <Routes>
-          <Route path="/email" element={<EmailInput />} />
-          <Route path="/token" element={<KeyInput />} />
+          <Route path="/signin" element={<SignIn />} />
           <Route path=":id" element={<TransactionMutation />} />
           <Route path="/" element={<TransactionList />} />
         </Routes>

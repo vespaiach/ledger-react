@@ -22,6 +22,7 @@ interface InputProps<T extends InputElementType> extends ComponentBaseProps {
   error?: string;
   addIns?: ReactElement | null;
   subIns?: ReactElement | null;
+  type?: string;
 }
 
 type InputComponentProps<T extends InputElementType> = InputProps<T> &

@@ -56,3 +56,7 @@
   opacity: 1;
   display: block;
 }
+
+.sign-in label + label {
+  margin-top: 8px;
+}

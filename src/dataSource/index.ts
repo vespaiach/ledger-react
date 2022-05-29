@@ -82,8 +82,5 @@ export const saveTransaction$ = (args: Omit<MutationSaveTransactionArgs, 'date'>
 
 export const signout$ = () => from(selectedProvider.signout()).pipe(catchError((e) => errorReport(e)));
 
-export const getToken$ = (key: string) =>
-  from(selectedProvider.token(key)).pipe(catchError((e) => errorReport(e)));
-
-export const getSigninKey$ = (email: string) =>
-  from(selectedProvider.signin(email)).pipe(catchError((e) => errorReport(e)));
+export const signin$ = (username: string, password: string) =>
+  from(selectedProvider.signin(username, password)).pipe(catchError((e) => errorReport(e)));
