@@ -20,7 +20,6 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ username?: string; password?: string } | undefined>(undefined);
 
-  const addMessage = useAppStore(addMessageSelector);
   const setAuth = useAuthStore(setAuthSelector);
 
   useEffect(() => {

@@ -103,7 +103,6 @@ async function deleteTransaction(id: number) {
 
 async function signin(username: string, password: string) {
   const result = await callRemote<SigninMutation>(signinMutation, { username, password });
-  debugger
 
   if (!result.signin) throw new Error(result.signin);
 

@@ -67,7 +67,7 @@ export function App() {
       <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/signin" element={<SignIn />} />
-          <Route path=":id" element={<TransactionMutation />} />
+          <Route path="/mutate/:id" element={<TransactionMutation />} />
           <Route path="/" element={<TransactionList />} />
         </Routes>
       </Suspense>

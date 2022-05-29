@@ -46,7 +46,7 @@ export default function Appbar() {
     const complete = () => {
       setAuth(null);
       remove();
-      navigate('/email');
+      navigate('/signin');
     };
 
     signout$().subscribe({
