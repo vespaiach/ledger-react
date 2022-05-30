@@ -86,7 +86,7 @@ export type MutationUpdateUserArgs = {
 export type Query = {
   getReasons?: Maybe<Array<Reason>>;
   getTransaction?: Maybe<Transaction>;
-  getTransactions?: Maybe<Array<Transaction>>;
+  getTransactions?: Maybe<TransactionsResponse>;
 };
 
 
@@ -118,6 +118,13 @@ export type Transaction = {
   note?: Maybe<Scalars['String']>;
   reasons: Array<Reason>;
   updatedAt: Scalars['DateTime'];
+};
+
+export type TransactionsResponse = {
+  skip: Scalars['Int'];
+  take: Scalars['Int'];
+  total: Scalars['Int'];
+  transactions: Array<Transaction>;
 };
 
 export type User = {
@@ -168,7 +175,12 @@ export type GetTransactionsQueryVariables = Exact<{
 }>;
 
 export type GetTransactionsQueryResult = {
-  transactions?: Maybe<Array<Partial<Transaction>>>
+  getTransactions: {
+    transactions?: Maybe<Array<Partial<Transaction>>>
+    total?: Maybe<number>;
+    skip?: Maybe<number>;
+    take?: Maybe<number>;
+  }
 };
 
 export type CreateTransactionMutationVariables = Exact<{
@@ -243,7 +255,7 @@ export interface FilterArgs {
 }
 
 export interface DataProvider {
-  loadTransactions(variables?: QueryGetTransactionsArgs): Promise<Transaction[]>;
+  loadTransactions(variables?: QueryGetTransactionsArgs): Promise<{ transactions: Transaction[]; total: number; }>;
   getTransaction(id: number): Promise<Transaction | null>;
   loadReasons(): Promise<Reason[]>;
 

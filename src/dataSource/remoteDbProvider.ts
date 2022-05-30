@@ -66,9 +66,9 @@ async function getTransaction(id: number) {
 async function loadTransactions(variables: QueryGetTransactionsArgs) {
   const result = await callRemote<GetTransactionsQueryResult>(getTransactionsQuery, variables);
 
-  if (!result.transactions) throw new Error("Couldn't fetch transaction list");
+  if (!result.getTransactions) throw new Error("Couldn't fetch transaction list");
 
-  return result.transactions as Array<Transaction>;
+  return { transactions: result.getTransactions.transactions as Array<Transaction>, total: result.getTransactions.total as number };
 }
 
 async function loadReasons() {

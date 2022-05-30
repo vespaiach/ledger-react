@@ -1,15 +1,20 @@
 export const getTransactionsQuery = /* GraphQL*/ `query GetTransactions($fromDate: DateTime, $toDate: DateTime, $fromAmount: Int, $toAmount: Int, $reasons: [String!], $take: Int, $skip: Int) {
-  transactions: getTransactions(fromDate: $fromDate, toDate: $toDate, fromAmount: $fromAmount, toAmount: $toAmount, reasons: $reasons, take: $take, skip: $skip) {
-    id
-    amount
-    date
-    note
-    updatedAt
-    reasons {
+  getTransactions(fromDate: $fromDate, toDate: $toDate, fromAmount: $fromAmount, toAmount: $toAmount, reasons: $reasons, take: $take, skip: $skip) {
+    transactions {
       id
-      text
+      amount
+      date
+      note
       updatedAt
+      reasons {
+        id
+        text
+        updatedAt
+      }
     }
+    total
+    take
+    skip
   }
 }`;
 

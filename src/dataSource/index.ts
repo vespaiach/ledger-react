@@ -56,12 +56,13 @@ export const loadTransactions$ = (
             ...args,
             fromDate: args.fromDate?.toISOString(),
             toDate: args.toDate?.toISOString(),
+            take: args.take || 100,
           }
-        : undefined
+        : { take: 100 }
     )
   ).pipe(
     catchError((e) => errorReport(e)),
-    map((t) => t.map(mapTransaction))
+    map((dt) => ({ transactions: dt.transactions.map(mapTransaction), total: dt.total }))
   );
 };
 

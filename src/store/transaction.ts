@@ -4,9 +4,11 @@ import { FilterArgs, Maybe, TransactionMap } from '../graphql.generated';
 
 interface TransactionStore {
   transactions: TransactionMap[];
+  total: number;
 
   setTransactions: (transactions: TransactionMap[]) => void;
   addTransactions: (transactions: TransactionMap[]) => void;
+  setTotal: (total: number) => void;
   updateTransaction: (transaction: TransactionMap) => void;
   insertTransaction: (transaction: TransactionMap) => void;
 }
@@ -26,6 +28,8 @@ export const setFiltersSelector: StateSelector<FilterStore, FilterStore['setFilt
 export const transactionsSelector: StateSelector<TransactionStore, TransactionStore['transactions']> = (
   state
 ) => state.transactions;
+export const totalSelector: StateSelector<TransactionStore, TransactionStore['total']> = (state) =>
+  state.total;
 export const updateTransactionSelector: StateSelector<
   TransactionStore,
   TransactionStore['updateTransaction']
@@ -50,8 +54,10 @@ export const useFiltersStore = create<FilterStore>((set, get) => ({
 
 export const useTransactionStore = create<TransactionStore>((set, get) => ({
   transactions: [],
+  total: 0,
 
   setTransactions: (transactions) => set({ transactions }),
+  setTotal: (total) => set({ total }),
   addTransactions: (transactions) => set({ transactions: get().transactions.concat(transactions) }),
   insertTransaction: (transaction) => {
     const transactions = get().transactions;

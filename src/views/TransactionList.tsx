@@ -2,7 +2,7 @@ import './TransactionList.css';
 
 import { DateTime } from 'luxon';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import Container from '../components/Container';
@@ -14,34 +14,41 @@ import { Maybe, QueryGetTransactionsArgs } from '../graphql.generated';
 import { useAuth } from '../utils/useAuth';
 import {
   filtersSelector,
+  totalSelector,
   transactionsSelector,
   useFiltersStore,
   useTransactionStore,
 } from '../store/transaction';
 import { deleteTransaction$, loadTransactions$ } from '../dataSource';
 
+const take = 50;
+
 export default function TransactionList() {
   useAuth();
 
+  const [loading, setLoading] = useState(false);
   const filters = useFiltersStore(filtersSelector);
   const transactions = useTransactionStore(transactionsSelector);
+  const total = useTransactionStore(totalSelector);
 
   const navigate = useNavigate();
   const addTransactions = useTransactionStore((state) => state.addTransactions);
+  const setTotal = useTransactionStore((state) => state.setTotal);
 
-  const fetchTransactions = (
-    args?: Omit<QueryGetTransactionsArgs, 'fromDate' | 'toDate'> & {
-      fromDate?: Maybe<Date>;
-      toDate?: Maybe<Date>;
-    }
-  ) => {
-    loadTransactions$({ ...filters, ...args }).subscribe({
-      next: (transactions) => addTransactions(transactions),
+  const load = (skip: number, take: number) => {
+    setLoading(true);
+    loadTransactions$({ ...filters, skip, take }).subscribe({
+      next: (dt) => {
+        addTransactions(dt.transactions);
+        setTotal(dt.total);
+      },
+      complete: () => void setLoading(false),
+      error: () => void setLoading(false),
     });
   };
 
   useEffect(() => {
-    fetchTransactions();
+    load(0, take);
   }, []);
 
   return (
@@ -49,8 +56,9 @@ export default function TransactionList() {
       <Appbar />
       <Container>
         <Virtuoso
-          endReached={(i) => {
-            fetchTransactions({ lastCursor: transactions[i]?.id ?? null });
+          endReached={() => {
+            if (loading || transactions.length >= total) return;
+            load(transactions.length, take);
           }}
           overscan={200}
           useWindowScroll

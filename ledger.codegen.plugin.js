@@ -37,7 +37,12 @@ export type GetTransactionsQueryVariables = Exact<{
 }>;
 
 export type GetTransactionsQueryResult = {
-  transactions?: Maybe<Array<Partial<Transaction>>>
+  getTransactions: {
+    transactions?: Maybe<Array<Partial<Transaction>>>
+    total?: Maybe<number>;
+    skip?: Maybe<number>;
+    take?: Maybe<number>;
+  }
 };
 
 export type CreateTransactionMutationVariables = Exact<{
@@ -112,7 +117,7 @@ export interface FilterArgs {
 }
 
 export interface DataProvider {
-  loadTransactions(variables?: QueryGetTransactionsArgs): Promise<Transaction[]>;
+  loadTransactions(variables?: QueryGetTransactionsArgs): Promise<{ transactions: Transaction[]; total: number; }>;
   getTransaction(id: number): Promise<Transaction | null>;
   loadReasons(): Promise<Reason[]>;
 
