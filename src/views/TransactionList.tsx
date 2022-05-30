@@ -78,7 +78,7 @@ export default function TransactionList() {
                   <ChervonRightIcon className="chervon-right" />
                 </button>
               </div>
-              <p className="reason">{transaction.reason.text}</p>
+              <p className="reason">{transaction.reasons.map((r) => r.text).join(', ')}</p>
               <p className="note">{transaction.note}</p>
             </Card>
           )}

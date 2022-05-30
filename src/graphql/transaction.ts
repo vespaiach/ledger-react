@@ -1,27 +1,11 @@
-export const getTransactionsQuery = /* GraphQL*/ `query GetTransactions(
-  $fromDate: Date
-  $toDate: Date
-  $fromAmount: Int
-  $toAmount: Int
-  $reasonIds: [Int!]
-  $lastCursor: Int
-  $take: Int
-) {
-  transactions: getTransactions(
-    fromDate: $fromDate
-    toDate: $toDate
-    fromAmount: $fromAmount
-    toAmount: $toAmount
-    reasonIds: $reasonIds
-    lastCursor: $lastCursor
-    take: $take
-  ) {
+export const getTransactionsQuery = /* GraphQL*/ `query GetTransactions($fromDate: DateTime, $toDate: DateTime, $fromAmount: Int, $toAmount: Int, $reasons: [String!], $take: Int, $skip: Int) {
+  transactions: getTransactions(fromDate: $fromDate, toDate: $toDate, fromAmount: $fromAmount, toAmount: $toAmount, reasons: $reasons, take: $take, skip: $skip) {
     id
     amount
     date
     note
     updatedAt
-    reason {
+    reasons {
       id
       text
       updatedAt
@@ -29,59 +13,59 @@ export const getTransactionsQuery = /* GraphQL*/ `query GetTransactions(
   }
 }`;
 
-export const getTransactionQuery = /* GraphQL*/ `query GetTransaction($id: Int!) {
-  transaction: getTransaction(id: $id) {
+export const getTransactionQuery = /* GraphQL*/ `
+query GetTransaction($getTransactionId: Int!) {
+  transaction: getTransaction(id: $getTransactionId) {
     id
     amount
     date
     note
     updatedAt
-    reason {
+    reasons {
       id
       text
       updatedAt
     }
   }
-}`;
+}
+`;
 
-export const createTransactionMutation = /* GraphQL*/ `mutation CreateTransaction($date: Date!, $amount: Float!, $reasonText: String!, $note: String) {
-  transaction: createTransaction(date: $date, amount: $amount, reasonText: $reasonText, note: $note) {
-    id
-    amount
-    date
-    note
-    updatedAt
-    reason {
+export const createTransactionMutation = /* GraphQL*/ `
+  mutation CreateTransactionMutation($date: DateTime!, $amount: Int!, $reasons: [NonEmptyString]!, $note: String) {
+    transaction: createTransaction(date: $date, amount: $amount, reasons: $reasons, note: $note) {
       id
-      text
+      amount
+      date
+      note
       updatedAt
+      reasons {
+        id
+        text
+        updatedAt
+      }
     }
   }
-}`;
+`;
 
-export const updateTransactionMutation = /* GraphQL*/ `mutation UpdateTransaction($id: Int!, $date: Date, $amount: Float, $reasonText: String, $note: String) {
-  transaction: updateTransaction(id: $id, date: $date, amount: $amount, reasonText: $reasonText, note: $note) {
-    id
-    amount
-    date
-    note
-    updatedAt
-    reason {
+export const updateTransactionMutation = /* GraphQL*/ `
+  mutation UpdateTransactionMutation($updateTransactionId: Int!, $date: DateTime, $amount: Int, $reasons: [NonEmptyString!], $note: String) {
+    updateTransaction(id: $updateTransactionId, date: $date, amount: $amount, reasons: $reasons, note: $note) {
       id
-      text
+      amount
+      date
+      note
       updatedAt
+      reasons {
+        id
+        text
+        updatedAt
+      }
     }
   }
-}`;
+`;
 
-export const createReasonMutation = /* GraphQL*/ `mutation CreateReason($text: String!) {
-  reason: createReason(text: $text) {
-    id
-    text
-    updatedAt
+export const deleteTransactionMutation = /* GraphQL*/ `
+  mutation DeleteTransactionMutation($deleteTransactionId: Int!) {
+    deleteTransaction(id: $deleteTransactionId)
   }
-}`;
-
-export const deleteTransactionMutation = /* GraphQL*/ `mutation DeleteTransaction($id: Int!) {
-  deleteTransaction(id: $id)
-}`;
+`;

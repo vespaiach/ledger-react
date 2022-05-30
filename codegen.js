@@ -13,12 +13,13 @@ const fs = require('fs');
       documents: './src/graphql/**/*.ts',
       generates: {
         [`${pwd}/src/graphql.generated.ts`]: {
-          plugins: ['typescript', 'typescript-operations', 'ledger.codegen.plugin.js'],
+          plugins: ['typescript', 'ledger.codegen.plugin.js'],
           config: {
-            maybeValue: ' T | null | undefined',
+            arrayInputCoercion: false,
             avoidOptionals: false,
             skipTypename: true,
             scalars: {
+              DateTime: 'string',
               Date: 'string',
               Void: 'void',
               EmailAddress: 'string',

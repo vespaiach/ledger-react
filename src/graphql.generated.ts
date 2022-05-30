@@ -1,5 +1,5 @@
-export type Maybe<T> = T | null | undefined;
-export type InputMaybe<T> = T | null | undefined;
+export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
@@ -11,7 +11,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
-  DateTime: any;
+  DateTime: string;
   /** A field whose value conforms to the standard internet email address format as specified in RFC822: https://www.w3.org/Protocols/rfc822/. */
   EmailAddress: string;
   /** A string that cannot be passed as an empty value */
@@ -36,12 +36,14 @@ export type Mutation = {
   updateUser?: Maybe<User>;
 };
 
+
 export type MutationCreateTransactionArgs = {
   amount: Scalars['Int'];
   date: Scalars['DateTime'];
   note?: InputMaybe<Scalars['String']>;
   reasons: Array<InputMaybe<Scalars['NonEmptyString']>>;
 };
+
 
 export type MutationCreateUserArgs = {
   email: Scalars['EmailAddress'];
@@ -51,14 +53,17 @@ export type MutationCreateUserArgs = {
   username: Scalars['username_String_NotNull_minLength_3_maxLength_127_pattern_09azAZ_'];
 };
 
+
 export type MutationDeleteTransactionArgs = {
   id: Scalars['Int'];
 };
+
 
 export type MutationSigninArgs = {
   password: Scalars['password_String_NotNull_minLength_5_maxLength_127'];
   username: Scalars['username_String_NotNull_minLength_3_maxLength_127_pattern_09azAZ_'];
 };
+
 
 export type MutationUpdateTransactionArgs = {
   amount?: InputMaybe<Scalars['Int']>;
@@ -67,6 +72,7 @@ export type MutationUpdateTransactionArgs = {
   note?: InputMaybe<Scalars['String']>;
   reasons?: InputMaybe<Array<Scalars['NonEmptyString']>>;
 };
+
 
 export type MutationUpdateUserArgs = {
   email?: InputMaybe<Scalars['EmailAddress']>;
@@ -83,9 +89,11 @@ export type Query = {
   getTransactions?: Maybe<Array<Transaction>>;
 };
 
+
 export type QueryGetTransactionArgs = {
   id: Scalars['Int'];
 };
+
 
 export type QueryGetTransactionsArgs = {
   fromAmount?: InputMaybe<Scalars['Int']>;
@@ -122,42 +130,116 @@ export type User = {
   username: Scalars['String'];
 };
 
+
+
 export type SigninMutationVariables = Exact<{
   username: Scalars['username_String_NotNull_minLength_3_maxLength_127_pattern_09azAZ_'];
   password: Scalars['password_String_NotNull_minLength_5_maxLength_127'];
 }>;
 
-export type SigninMutation = { signin: string };
+export type SigninMutationResult = { signin: string };
 
 export type SignoutMutationVariables = Exact<{ [key: string]: never }>;
 
-export type SignoutMutation = { signout?: void | null | undefined };
+export type SignoutMutation = { signout?: void | null };
+
+export type GetReasonsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetReasonsQuery = { 
+  reasons?: Maybe<Array<Partial<Reason>>>;
+}
+
+export type GetTransactionQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type GetTransactionQueryResult = {
+  transaction?: Maybe<Partial<Transaction>>
+};
+
+export type GetTransactionsQueryVariables = Exact<{
+  fromDate?: Maybe<Scalars['DateTime']>;
+  toDate?: Maybe<Scalars['DateTime']>;
+  fromAmount?: Maybe<Scalars['Int']>;
+  toAmount?: Maybe<Scalars['Int']>;
+  reasons?: Maybe<Array<Scalars['String']>>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+}>;
+
+export type GetTransactionsQueryResult = {
+  transactions?: Maybe<Array<Partial<Transaction>>>
+};
+
+export type CreateTransactionMutationVariables = Exact<{
+  date: Scalars['DateTime'];
+  amount: Scalars['Int'];
+  reasons: Array<Maybe<Scalars['NonEmptyString']>>;
+  note?: Maybe<Scalars['String']>;
+}>;
+
+export type CreateTransactionMutationResult = {
+  transaction?: Maybe<Partial<Transaction>>
+};
+
+export type UpdateTransactionMutationVariables = Exact<{
+  id: Scalars['Int'];
+  date?: Maybe<Scalars['DateTime']>;
+  amount?: Maybe<Scalars['Int']>;
+  reasons?: Maybe<Array<Scalars['NonEmptyString']>>;
+  note?: Maybe<Scalars['String']>;
+}>;
+
+export type UpdateTransactionMutationResult = {
+  transaction?: Maybe<Partial<Transaction>>
+};
+
+
+export type DeleteTransactionMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type DeleteTransactionMutationResult = { deleteTransaction?: boolean | null };
+
+export type CreateUserMutationVariables = Exact<{
+  username: Scalars['username_String_NotNull_minLength_3_maxLength_127_pattern_09azAZ_'];
+  email: Scalars['EmailAddress'];
+  password: Scalars['password_String_NotNull_minLength_5_maxLength_127'];
+  firstName?: Maybe<Scalars['firstName_String_maxLength_127']>;
+  lastName?: Maybe<Scalars['lastName_String_maxLength_127']>;
+}>;
+
+export type CreateUserMutationResult = {
+  user?: Maybe<Partial<User>>
+};
+
+export type UpdateUserMutationVariables = Exact<{
+  username?: InputMaybe<Scalars['username_String_minLength_3_maxLength_127_pattern_09azAZ_']>;
+  email?: InputMaybe<Scalars['EmailAddress']>;
+  password?: InputMaybe<Scalars['password_String_minLength_5_maxLength_127']>;
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
+  isActive?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type UpdateUserMutationResult = {
+  user?: Maybe<Partial<User>>
+};
 
 export type ReasonMap = Omit<Reason, 'updatedAt'> & { updatedAt: Date };
-export type TransactionMap = Omit<Transaction, 'date' | 'reason' | 'updatedAt'> & {
-  date: Date;
-  updatedAt: Date;
-  reason: ReasonMap;
-};
-export type MutationSaveTransactionArgs = Omit<MutationUpdateTransactionArgs, 'id' | 'reasonId'> & {
-  id?: Maybe<number>;
-  reasonText?: Maybe<string>;
-};
+export type TransactionMap = Omit<Transaction, 'date' | 'reason' | 'updatedAt'> & { date: Date, updatedAt: Date, reason: ReasonMap };
+export type MutationSaveTransactionArgs = Omit<MutationUpdateTransactionArgs, 'id'> & { id?: Maybe<number>; };
 
-export interface GraphqlError {
-  message: string;
-  extensions?: { code: string };
-}
-export interface GraphqlResponse<T> {
-  errors?: GraphqlError[];
-  data: T;
-}
+export interface GraphqlError { message: string; extensions?: { code: string; } };
+export interface GraphqlResponse<T> { errors?: GraphqlError[]; data: T };
 export interface FilterArgs {
   fromAmount?: Maybe<number>;
   toAmount?: Maybe<number>;
   fromDate?: Maybe<Date>;
   toDate?: Maybe<Date>;
-  reasonIds?: Maybe<number[]>;
+  reasons?: Maybe<string[]>;
+  skip?: Maybe<number>;
+  take?: Maybe<number>;
 }
 
 export interface DataProvider {
@@ -168,8 +250,7 @@ export interface DataProvider {
   saveTransaction(variables: MutationSaveTransactionArgs): Promise<Transaction>;
   deleteTransaction(id: number): Promise<void>;
 
-  createReason(variables?: MutationCreateReasonArgs): Promise<Reason>;
-
-  signin(username: string, password: string): Promise<string>;
+  signin(username: string, password:string): Promise<string>;
   signout(): Promise<void>;
 }
+  

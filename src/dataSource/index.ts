@@ -18,9 +18,9 @@ const selectedProvider = window.localStorage.getItem('offline_provider') ? provi
 const mapTransaction = (tran: Transaction): TransactionMap => {
   return {
     ...tran,
-    updatedAt: new Date(tran.date),
+    updatedAt: new Date(tran.updatedAt),
     date: new Date(tran.date),
-    reason: mapReason(tran.reason),
+    reasons: tran.reasons.map(mapReason),
   };
 };
 
