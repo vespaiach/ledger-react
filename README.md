@@ -8,10 +8,9 @@
   <b>Ledger</b> is a web application for managing personal money transactions
 </p>
 
-
 # Playground
 
-The demo version at: https://ledger-react.herokuapp.com with demo account: tester/12345
+The demo version at: https://ledger-react.herokuapp.com with demo account: `tester/12345`
 
 # Features
 
@@ -28,7 +27,7 @@ The demo version at: https://ledger-react.herokuapp.com with demo account: teste
 
 # Development
 
-1.  Clone and run back-end server repository [ledger-graphql](https://github.com/vespaiach/ledger-graphql)
+1.  Clone and run back-end server repository [ledger-graphql](https://github.com/vespaiach/ledger-node-graphql)
 2.  Clone this repository:
     - Create `.env` file with variable `VITE_GRAPHQL_URL=<back-end url>`
     - Run `npm run gentype`
@@ -43,11 +42,12 @@ The demo version at: https://ledger-react.herokuapp.com with demo account: teste
 
 # NPM Commands
 
-| Command         | Note                                    |
-| --------------- | --------------------------------------- |
-| npm run dev     | run app locally for development         |
-| npm run build   | build project and output to dist folder |
-| npm run gentype | use graphql-codegen to generate typing  |
+| Command         | Note                                                                          |
+| --------------- | ----------------------------------------------------------------------------- |
+| npm run dev     | run app locally for development                                               |
+| npm run build   | build project and output to dist folder                                       |
+| npm run gentype | use graphql-codegen to generate typing                                        |
+| npm run start   | use `serve` tool to serve static server. It's ready for Heroku deployment too |
 
 # License
 
