@@ -10,6 +10,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `BigInt` scalar type represents non-fractional signed whole numeric values. */
+  BigInt: any;
   /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   DateTime: string;
   /** A field whose value conforms to the standard internet email address format as specified in RFC822: https://www.w3.org/Protocols/rfc822/. */
@@ -38,10 +40,10 @@ export type Mutation = {
 
 
 export type MutationCreateTransactionArgs = {
-  amount: Scalars['Int'];
+  amount: Scalars['BigInt'];
   date: Scalars['DateTime'];
   note?: InputMaybe<Scalars['String']>;
-  reasons: Array<InputMaybe<Scalars['NonEmptyString']>>;
+  reasons: Array<Scalars['NonEmptyString']>;
 };
 
 
@@ -66,7 +68,7 @@ export type MutationSigninArgs = {
 
 
 export type MutationUpdateTransactionArgs = {
-  amount?: InputMaybe<Scalars['Int']>;
+  amount?: InputMaybe<Scalars['BigInt']>;
   date?: InputMaybe<Scalars['DateTime']>;
   id: Scalars['Int'];
   note?: InputMaybe<Scalars['String']>;
@@ -96,12 +98,12 @@ export type QueryGetTransactionArgs = {
 
 
 export type QueryGetTransactionsArgs = {
-  fromAmount?: InputMaybe<Scalars['Int']>;
+  fromAmount?: InputMaybe<Scalars['BigInt']>;
   fromDate?: InputMaybe<Scalars['DateTime']>;
   reasons?: InputMaybe<Array<Scalars['String']>>;
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
-  toAmount?: InputMaybe<Scalars['Int']>;
+  toAmount?: InputMaybe<Scalars['BigInt']>;
   toDate?: InputMaybe<Scalars['DateTime']>;
 };
 
@@ -112,7 +114,7 @@ export type Reason = {
 };
 
 export type Transaction = {
-  amount: Scalars['Int'];
+  amount: Scalars['BigInt'];
   date: Scalars['DateTime'];
   id: Scalars['Int'];
   note?: Maybe<Scalars['String']>;

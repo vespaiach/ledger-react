@@ -1,4 +1,4 @@
-export const getTransactionsQuery = /* GraphQL*/ `query GetTransactions($fromDate: DateTime, $toDate: DateTime, $fromAmount: Int, $toAmount: Int, $reasons: [String!], $take: Int, $skip: Int) {
+export const getTransactionsQuery = /* GraphQL*/ `query GetTransactions($fromDate: DateTime, $toDate: DateTime, $fromAmount: BigInt, $toAmount: BigInt, $reasons: [String!], $take: Int, $skip: Int) {
   getTransactions(fromDate: $fromDate, toDate: $toDate, fromAmount: $fromAmount, toAmount: $toAmount, reasons: $reasons, take: $take, skip: $skip) {
     transactions {
       id
@@ -36,7 +36,7 @@ query GetTransaction($getTransactionId: Int!) {
 `;
 
 export const createTransactionMutation = /* GraphQL*/ `
-  mutation CreateTransactionMutation($date: DateTime!, $amount: Int!, $reasons: [NonEmptyString]!, $note: String) {
+  mutation CreateTransactionMutation($date: DateTime!, $amount: BigInt!, $reasons: [NonEmptyString!]!, $note: String) {
     transaction: createTransaction(date: $date, amount: $amount, reasons: $reasons, note: $note) {
       id
       amount
@@ -53,7 +53,7 @@ export const createTransactionMutation = /* GraphQL*/ `
 `;
 
 export const updateTransactionMutation = /* GraphQL*/ `
-  mutation UpdateTransactionMutation($updateTransactionId: Int!, $date: DateTime, $amount: Int, $reasons: [NonEmptyString!], $note: String) {
+  mutation UpdateTransactionMutation($updateTransactionId: Int!, $date: DateTime, $amount: BigInt, $reasons: [NonEmptyString!], $note: String) {
     updateTransaction(id: $updateTransactionId, date: $date, amount: $amount, reasons: $reasons, note: $note) {
       id
       amount

@@ -41,13 +41,13 @@ export default function FilterMenu({ onClose, filters, reasons: reasonList, reas
   };
 
   const handleApply = () => {
-    const reasonIds = reasons.map((r) => r.id);
+    const reasonTexts = reasons.map((r) => r.text);
     onClose({
       fromAmount: amountRange[0],
       toAmount: amountRange[1],
       fromDate: dateRange[0] ?? null,
       toDate: dateRange[1] ?? null,
-      reasonIds: reasonIds.length ? reasonIds : null,
+      reasons: reasonTexts,
     });
   };
 
@@ -68,6 +68,7 @@ export default function FilterMenu({ onClose, filters, reasons: reasonList, reas
       <div className="body">
         <div className="amount-input">
           <NumberFormat
+            maxLength={21}
             value={amountRange[0]}
             caption="min amount"
             customInput={Input}
@@ -80,6 +81,7 @@ export default function FilterMenu({ onClose, filters, reasons: reasonList, reas
           />
           <div className="flex-center">-</div>
           <NumberFormat
+            maxLength={21}
             addIns={<span>$</span>}
             value={amountRange[1]}
             caption="max amount"

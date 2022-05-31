@@ -10,7 +10,6 @@ import Card from '../components/Card';
 import Appbar from './Appbar';
 import ChervonLeftIcon from '../components/icons/ChervonLeft';
 import ChervonRightIcon from '../components/icons/ChervonRight';
-import { Maybe, QueryGetTransactionsArgs } from '../graphql.generated';
 import { useAuth } from '../utils/useAuth';
 import {
   filtersSelector,
@@ -33,13 +32,18 @@ export default function TransactionList() {
 
   const navigate = useNavigate();
   const addTransactions = useTransactionStore((state) => state.addTransactions);
+  const setTransactions = useTransactionStore((state) => state.setTransactions);
   const setTotal = useTransactionStore((state) => state.setTotal);
 
-  const load = (skip: number, take: number) => {
+  const load = (skip: number, take: number, loadMore = false) => {
     setLoading(true);
     loadTransactions$({ ...filters, skip, take }).subscribe({
       next: (dt) => {
-        addTransactions(dt.transactions);
+        if (loadMore) {
+          addTransactions(dt.transactions);
+        } else {
+          setTransactions(dt.transactions);
+        }
         setTotal(dt.total);
       },
       complete: () => void setLoading(false),
@@ -49,7 +53,7 @@ export default function TransactionList() {
 
   useEffect(() => {
     load(0, take);
-  }, []);
+  }, [filters]);
 
   return (
     <div>
@@ -58,7 +62,7 @@ export default function TransactionList() {
         <Virtuoso
           endReached={() => {
             if (loading || transactions.length >= total) return;
-            load(transactions.length, take);
+            load(transactions.length, take, true);
           }}
           overscan={200}
           useWindowScroll

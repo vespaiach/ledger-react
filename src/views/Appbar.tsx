@@ -55,14 +55,14 @@ export default function Appbar() {
     });
   };
 
-  const handleDelete = (name: 'amount' | 'date' | 'reason') => (id?: number) => {
+  const handleDelete = (name: 'amount' | 'date' | 'reason') => (idOrText?: number | string) => {
     if (name === 'amount') {
       setFilters({ toAmount: null, fromAmount: null });
     } else if (name === 'date') {
       setFilters({ fromDate: null, toDate: null });
     } else {
-      const reasonIds = filters?.reasonIds?.filter((r) => r !== id);
-      setFilters({ reasonIds: !reasonIds?.length ? null : reasonIds });
+      const reasons = filters?.reasons?.filter((r) => r !== idOrText);
+      setFilters({ reasons: !reasons?.length ? null : reasons });
     }
   };
 
@@ -142,7 +142,7 @@ export default function Appbar() {
               onDelete={handleDelete('amount')}
             />
             <DateChip fromDate={filters.fromDate} toDate={filters.toDate} onDelete={handleDelete('date')} />
-            <ReasonChip reasons={filters.reasonIds} onDelete={handleDelete('reason')} />
+            <ReasonChip reasons={filters.reasons} onDelete={handleDelete('reason')} />
           </div>
         )}
       </div>
@@ -221,22 +221,17 @@ function ReasonChip({
   reasons,
   onDelete,
 }: {
-  reasons?: Maybe<number[]>;
-  onDelete?: (reasonId: number) => void;
+  reasons?: Maybe<string[]>;
+  onDelete?: (reasonText: string) => void;
 }) {
-  const { reasonsMap } = useReasonStore();
-
   if (!reasons?.length) return null;
 
   return (
     <>
       {reasons?.map((r) => {
-        const reason = reasonsMap?.get(r);
-        if (!reason) return null;
-
         return (
           <FilterChip key={r} onDelete={() => onDelete?.(r)}>
-            {reason.text}
+            {r}
           </FilterChip>
         );
       })}
