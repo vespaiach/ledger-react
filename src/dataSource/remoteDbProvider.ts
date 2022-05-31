@@ -22,6 +22,7 @@ import {
   updateTransactionMutation,
 } from '../graphql/transaction';
 import { useAuthStore } from '../store/auth';
+import { UnauthenticationError } from '../utils/AuthError';
 
 const url = import.meta.env.VITE_GRAPHQL_URL as string;
 
@@ -47,7 +48,19 @@ async function callRemote<R>(query: string, variables?: Record<string, unknown>)
   const result = (await response.json()) as GraphqlResponse<R>;
 
   if (result.errors?.length) {
-    throw new Error(result.errors.map((e) => e.message).join('\n'));
+    let mes = '';
+    let prefix = '';
+
+    result.errors.forEach((er) => {
+      if (er.extensions?.code === 'UNAUTHENTICATED') {
+        throw new UnauthenticationError(er.message);
+      } else {
+        mes += prefix + er.message;
+        prefix = '\n';
+      }
+    });
+
+    throw new Error(mes);
   }
 
   return result.data;
@@ -68,7 +81,10 @@ async function loadTransactions(variables: QueryGetTransactionsArgs) {
 
   if (!result.getTransactions) throw new Error("Couldn't fetch transaction list");
 
-  return { transactions: result.getTransactions.transactions as Array<Transaction>, total: result.getTransactions.total as number };
+  return {
+    transactions: result.getTransactions.transactions as Array<Transaction>,
+    total: result.getTransactions.total as number,
+  };
 }
 
 async function loadReasons() {

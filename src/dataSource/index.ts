@@ -12,6 +12,8 @@ import {
   TransactionMap,
 } from '../graphql.generated';
 import { useAppStore } from '../store/app';
+import { UnauthenticationError } from '../utils/AuthError';
+import { useAuthStore } from '../store/auth';
 
 const selectedProvider = window.localStorage.getItem('offline_provider') ? provider : provider;
 
@@ -31,6 +33,10 @@ const mapReason = (reason: Reason): ReasonMap => ({
 
 const errorReport = (e: any) => {
   console.error(e);
+
+  if (e instanceof UnauthenticationError) {
+    useAuthStore.getState().setAuth(null);
+  }
 
   useAppStore.getState().addError(e.message);
   throw e;
