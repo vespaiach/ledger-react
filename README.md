@@ -9,9 +9,9 @@
 </p>
 
 
-# Live Playground
+# Playground
 
-The demo version at: https://ledger.dedyn.io/
+The demo version at: https://ledger-react.herokuapp.com with demo account: tester/12345
 
 # Features
 
