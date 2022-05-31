@@ -11,7 +11,7 @@ interface BaseIconProps {
   style?: React.CSSProperties | undefined;
 }
 
-interface Item {
+interface Tag {
   text: string;
 }
 

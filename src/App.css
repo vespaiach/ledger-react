@@ -479,3 +479,19 @@ footer.form-footer button {
   height: 100vh;
   background: rgb(229, 246, 253, 0.5);
 }
+
+.mb-4 {
+  margin-bottom: 4px;
+}
+
+.mb-8 {
+  margin-bottom: 8px;
+}
+
+.mb-12 {
+  margin-bottom: 12px;
+}
+
+.mb-16 {
+  margin-bottom: 16px;
+}

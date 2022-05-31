@@ -8,7 +8,7 @@ import { Button } from '../Button';
 import ErrorIcon from '../icons/Error';
 import SuccessIcon from '../icons/Success';
 import CloseIcon from '../icons/Close';
-import InfoIcon from '../icons/BackArrow copy';
+import InfoIcon from '../icons/BackArrow';
 
 export function Message({ data, onClose }: { onClose: () => void; data: AppMessage }) {
   const [open, setOpen] = useState<boolean>(false);

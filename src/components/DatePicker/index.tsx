@@ -136,7 +136,7 @@ function Group({
   );
 }
 
-function isSameDate(d1: Maybe<Date>, d2: Maybe<Date>) {
+function isSameDate(d1: Date | null | undefined, d2: Date | null | undefined) {
   if (!d1 || !d2) return false;
 
   return (

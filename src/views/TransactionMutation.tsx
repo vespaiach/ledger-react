@@ -2,13 +2,13 @@ import './TransactionMutation.css';
 
 import { useNavigate, useParams } from 'react-router-dom';
 import NumberFormat from 'react-number-format';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 
 import Container from '../components/Container';
-import { ComboSelect, Input } from '../components/Input';
+import { Input, TagInput } from '../components/Input';
 import { Maybe, TransactionMap } from '../graphql.generated';
-import { reasonsSelector, useReasonStore } from '../store/reason';
+import { addReasonSelector, reasonsSelector, useReasonStore } from '../store/reason';
 import {
   insertTransactionsSelector,
   transactionsSelector,
@@ -21,6 +21,9 @@ import CloseIcon from '../components/icons/Close';
 import { Button } from '../components/Button';
 import DatePicker from '../components/DatePicker';
 import CalendarIcon from '../components/icons/Calendar';
+import NextArrowIcon from '../components/icons/NextArrow';
+import InfoIcon from '../components/icons/Info';
+import { addMessageSelector, useAppStore } from '../store/app';
 
 const noop = () => null;
 
@@ -34,12 +37,15 @@ export default function TransactionMutation() {
   const transactions = useTransactionStore(transactionsSelector);
   const updateTransaction = useTransactionStore(updateTransactionSelector);
   const insertTransaction = useTransactionStore(insertTransactionsSelector);
+  const addReason = useReasonStore(addReasonSelector);
+  const addMessage = useAppStore(addMessageSelector);
 
+  const [reasonText, setReasonText] = useState('');
   const [loading, setLoading] = useState(id !== 'new');
   const [transactionId, setTransactionId] = useState<number | null | undefined>(null);
   const [amount, setAmount] = useState<string>('');
   const [date, setDate] = useState<Maybe<Date>>(null);
-  const [reason, setReason] = useState<string>('');
+  const [reasons, setReasons] = useState<{ text: string }[]>([]);
   const [note, setNote] = useState<string>('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -53,7 +59,7 @@ export default function TransactionMutation() {
     const update = (transaction: TransactionMap) => {
       setAmount(String(transaction.amount));
       setDate(new Date(transaction.date));
-      setReason(transaction.reason.text);
+      setReasons(transaction.reasons);
       setNote(transaction.note ?? '');
       setTransactionId(transaction.id);
     };
@@ -81,14 +87,35 @@ export default function TransactionMutation() {
     setErrors({});
     setAmount('');
     setDate(null);
-    setReason('');
+    setReasons([]);
     setNote('');
+  };
+
+  const handleNewReason = () => {
+    if (reasonText && reasonText.length > 2) {
+      if (reasons.every((r) => r.text !== reasonText)) {
+        setReasons([...reasons, { text: reasonText }]);
+        addReason(reasonText);
+      }
+      setReasonText('');
+      setErrors({});
+    }
+  };
+
+  const handleChecked = (evt: ChangeEvent<HTMLInputElement>) => {
+    const { checked, value } = evt.target;
+
+    if (checked) {
+      setReasons([...reasons, { text: value }]);
+    } else {
+      setReasons(reasons.filter((r) => r.text !== value));
+    }
   };
 
   const handleSave = async () => {
     if (loading) return;
 
-    const checking = { date: '', amount: '', reason: '' };
+    const checking = { date: '', amount: '', reasons: '' };
 
     if (!date) {
       checking.date = 'please enter a date!';
@@ -98,8 +125,8 @@ export default function TransactionMutation() {
       checking.amount = 'please enter an amount!';
     }
 
-    if (!reason) {
-      checking.reason = 'please choose or create a reason!';
+    if (!reasons || reasons.length === 0) {
+      checking.reasons = 'please choose a reason or create one!';
     }
 
     if (Object.values(checking).some(Boolean)) {
@@ -109,7 +136,7 @@ export default function TransactionMutation() {
         id: transactionId,
         date,
         note,
-        reasonText: reason,
+        reasons: reasons.map((r) => r.text),
         amount: amount !== '' ? Number(amount) : null,
       }).subscribe({
         next: (tran) => {
@@ -119,6 +146,9 @@ export default function TransactionMutation() {
             insertTransaction(tran);
             clear();
           }
+        },
+        complete: () => {
+          addMessage({ message: 'Saved transaction successfully!', type: 'success', timeout: 3000 });
         },
       });
     }
@@ -177,16 +207,49 @@ export default function TransactionMutation() {
           />
         </div>
         <div className="row" style={{ marginTop: 18 }}>
-          <ComboSelect
-            error={errors['reason']}
-            caption="reason"
-            options={reasonList.map((r) => r.text)}
-            value={reason}
-            onChange={(val) => {
+          <Input
+            error={errors['reasons']}
+            caption="reasons"
+            value={reasonText}
+            className="mb-4"
+            addIns={<InfoIcon />}
+            subIns={
+              reasonText ? (
+                <Button boxLess onClick={handleNewReason}>
+                  <NextArrowIcon />
+                </Button>
+              ) : null
+            }
+            onKeyUp={(e: { code: string }) => {
+              if (e.code === 'Enter') {
+                handleNewReason();
+              }
+            }}
+            onChange={(e) => {
               setErrors({});
-              setReason(val);
+              setReasonText(e.currentTarget.value);
             }}
           />
+          <TagInput
+            caption=""
+            tags={reasons}
+            onDelete={(tag) => {
+              setReasons(reasons.filter((r) => r.text !== tag.text));
+            }}
+          />
+          <div className="checkboxes">
+            {reasonList.map((reason) => (
+              <label key={reason.text}>
+                <input
+                  type="checkbox"
+                  checked={reasons.findIndex((r) => r.text === reason.text) > -1}
+                  value={reason.text}
+                  onChange={handleChecked}
+                />
+                <span>{reason.text}</span>
+              </label>
+            ))}
+          </div>
         </div>
         <div className="row" style={{ marginBottom: 24 }}>
           <Input
@@ -210,7 +273,7 @@ export default function TransactionMutation() {
 
             navigate('/');
           }}>
-          Cancel
+          Back
         </a>
         <Button disabled={loading} onClick={handleSave}>
           Save Changes

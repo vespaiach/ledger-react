@@ -241,7 +241,7 @@ export type UpdateUserMutationResult = {
 };
 
 export type ReasonMap = Omit<Reason, 'updatedAt'> & { updatedAt: Date };
-export type TransactionMap = Omit<Transaction, 'date' | 'reason' | 'updatedAt'> & { date: Date, updatedAt: Date, reason: ReasonMap };
+export type TransactionMap = Omit<Transaction, 'date' | 'reasons' | 'updatedAt'> & { date: Date, updatedAt: Date, reasons: ReasonMap[] };
 export type MutationSaveTransactionArgs = Omit<MutationUpdateTransactionArgs, 'id'> & { id?: Maybe<number>; };
 
 export interface GraphqlError { message: string; extensions?: { code: string; } };

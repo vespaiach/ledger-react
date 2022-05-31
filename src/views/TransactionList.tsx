@@ -72,7 +72,7 @@ export default function TransactionList() {
               onDelete={() => {
                 deleteTransaction$(transaction.id).subscribe();
               }}
-              onEdit={() => navigate(`/${transaction.id}`)}
+              onEdit={() => navigate(`/mutate/${transaction.id}`)}
               onClick={(e) => {
                 if (e.currentTarget.classList.contains('card-pane--open')) {
                   e.currentTarget.classList.remove('card-pane--open');

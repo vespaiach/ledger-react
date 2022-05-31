@@ -53,8 +53,9 @@ export function App() {
       useFiltersStore.subscribe((fresh, stale) => {
         if (fresh !== stale) {
           loadTransactions$(fresh.filters ?? undefined).subscribe({
-            next: (transactions) => {
-              useTransactionStore.getState().setTransactions(transactions);
+            next: (dt) => {
+              useTransactionStore.getState().setTransactions(dt.transactions);
+              useTransactionStore.getState().setTotal(dt.total);
             },
           });
         }

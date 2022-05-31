@@ -16,12 +16,11 @@ const noop = () => null;
 interface FilterMenuProps {
   onClose: (filters?: FilterArgs | null) => void;
   filters: Maybe<FilterArgs>;
-  reasons: ReasonMap[];
-  reasonsMap?: Maybe<Map<number, ReasonMap>>;
+  reasons: Tag[];
 }
 
-export default function FilterMenu({ onClose, filters, reasons: reasonList, reasonsMap }: FilterMenuProps) {
-  const [reasons, setReasons] = useState<ReasonMap[]>([]);
+export default function FilterMenu({ onClose, filters, reasons: reasonList }: FilterMenuProps) {
+  const [reasons, setReasons] = useState<Tag[]>([]);
   const [amountRange, setAmountRange] = useState([filters?.fromAmount, filters?.toAmount]);
   const [dateRange, setDateRange] = useState<[Maybe<Date>, Maybe<Date>]>([
     filters?.fromDate ?? null,
@@ -31,12 +30,12 @@ export default function FilterMenu({ onClose, filters, reasons: reasonList, reas
   const handleChecked = (evt: ChangeEvent<HTMLInputElement>) => {
     const { checked, value } = evt.target;
 
-    const id = Number(value);
-
     if (checked) {
-      reasonsMap?.has(id) && setReasons([...reasons, reasonsMap.get(id) as ReasonMap]);
+      if (reasons.every((r) => r.text !== value)) {
+        setReasons([...reasons, { text: value }]);
+      }
     } else {
-      setReasons(reasons.filter((r) => r.id !== id));
+      setReasons(reasons.filter((r) => r.text !== value));
     }
   };
 
@@ -116,17 +115,16 @@ export default function FilterMenu({ onClose, filters, reasons: reasonList, reas
             caption="reasons"
             tags={reasons}
             onDelete={(tag) => {
-              const reason = tag as ReasonMap;
-              setReasons(reasons.filter((r) => r.id !== reason.id));
+              setReasons(reasons.filter((r) => r.text !== tag.text));
             }}
           />
           <div className="checkboxes">
             {reasonList.map((reason) => (
-              <label key={reason.id}>
+              <label key={reason.text}>
                 <input
                   type="checkbox"
-                  checked={reasons.findIndex((r: ReasonMap) => r.id === reason.id) > -1}
-                  value={reason.id}
+                  checked={reasons.findIndex((r) => r.text === reason.text) > -1}
+                  value={reason.text}
                   onChange={handleChecked}
                 />
                 <span>{reason.text}</span>

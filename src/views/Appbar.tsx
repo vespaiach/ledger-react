@@ -17,7 +17,7 @@ import { Button } from '../components/Button';
 import { remove } from '../utils/auth';
 import { signout$ } from '../dataSource';
 import { useAuthStore } from '../store/auth';
-import { reasonsMapSelector, reasonsSelector, useReasonStore } from '../store/reason';
+import { reasonsSelector, useReasonStore } from '../store/reason';
 import CloseIcon from '../components/icons/Close';
 import {
   clearFiltersSelector,
@@ -34,7 +34,6 @@ export default function Appbar() {
   const setFilters = useFiltersStore(setFiltersSelector);
   const clearFilters = useFiltersStore(clearFiltersSelector);
   const reasons = useReasonStore(reasonsSelector);
-  const reasonsMap = useReasonStore(reasonsMapSelector);
 
   const { setAuth } = useAuthStore();
 
@@ -104,12 +103,7 @@ export default function Appbar() {
               })}
               ref={filterRef}>
               <div className="flex-item-stretch appbar_filter_content">
-                <FilterMenu
-                  onClose={handleClose}
-                  filters={filters}
-                  reasons={reasons}
-                  reasonsMap={reasonsMap}
-                />
+                <FilterMenu onClose={handleClose} filters={filters} reasons={reasons} />
               </div>
             </div>
           </>
@@ -117,7 +111,7 @@ export default function Appbar() {
       </Transition>
       <div className={cx('appbar', { 'appbar--float': scrolled, 'appbar--scrollable': hasFilters })}>
         <div className="button-group">
-          <Button title="Add" onClick={() => navigate('/new')}>
+          <Button title="Add" onClick={() => navigate('/mutate/new')}>
             <PlusOneIcon />
           </Button>
           <Button title="Search" onClick={handleOpen}>

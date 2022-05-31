@@ -19,8 +19,8 @@ export const getTransactionsQuery = /* GraphQL*/ `query GetTransactions($fromDat
 }`;
 
 export const getTransactionQuery = /* GraphQL*/ `
-query GetTransaction($getTransactionId: Int!) {
-  transaction: getTransaction(id: $getTransactionId) {
+query GetTransaction($id: Int!) {
+  transaction: getTransaction(id: $id) {
     id
     amount
     date
@@ -53,8 +53,8 @@ export const createTransactionMutation = /* GraphQL*/ `
 `;
 
 export const updateTransactionMutation = /* GraphQL*/ `
-  mutation UpdateTransactionMutation($updateTransactionId: Int!, $date: DateTime, $amount: BigInt, $reasons: [NonEmptyString!], $note: String) {
-    updateTransaction(id: $updateTransactionId, date: $date, amount: $amount, reasons: $reasons, note: $note) {
+  mutation UpdateTransactionMutation($id: Int!, $date: DateTime, $amount: BigInt, $reasons: [NonEmptyString!], $note: String) {
+    transaction: updateTransaction(id: $id, date: $date, amount: $amount, reasons: $reasons, note: $note) {
       id
       amount
       date
@@ -70,7 +70,7 @@ export const updateTransactionMutation = /* GraphQL*/ `
 `;
 
 export const deleteTransactionMutation = /* GraphQL*/ `
-  mutation DeleteTransactionMutation($deleteTransactionId: Int!) {
-    deleteTransaction(id: $deleteTransactionId)
+  mutation DeleteTransactionMutation($id: Int!) {
+    deleteTransaction(id: $id)
   }
 `;
