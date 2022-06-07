@@ -1,9 +1,12 @@
 import './TransactionMutation.css';
+import '@vespaiach/horizontal-calendar/dist/calendar.css';
+import '@vespaiach/horizontal-calendar/dist/defaultTheme.css';
 
 import { useNavigate, useParams } from 'react-router-dom';
 import NumberFormat from 'react-number-format';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
+import Calendar from '@vespaiach/horizontal-calendar';
 
 import Container from '../components/Container';
 import { Input, TagInput } from '../components/Input';
@@ -19,7 +22,6 @@ import { useAuth } from '../utils/useAuth';
 import { getTransaction$, saveTransaction$ } from '../dataSource';
 import CloseIcon from '../components/icons/Close';
 import { Button } from '../components/Button';
-import DatePicker from '../components/DatePicker';
 import CalendarIcon from '../components/icons/Calendar';
 import NextArrowIcon from '../components/icons/NextArrow';
 import InfoIcon from '../components/icons/Info';
@@ -183,12 +185,14 @@ export default function TransactionMutation() {
             }
             onChange={noop}></Input>
         </div>
-        <DatePicker
-          onChange={(values) => {
+        <Calendar
+          selection={date}
+          onChange={(value) => {
             setErrors({});
-            setDate(values[0]);
+            setDate(value);
           }}
-          fromDate={date}
+          rangeSelection={false}
+          startAt={date || undefined}
         />
         <div className="row">
           <NumberFormat

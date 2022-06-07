@@ -1,11 +1,13 @@
 import './FilterMenu.css';
+import '@vespaiach/horizontal-calendar/dist/calendar.css';
+import '@vespaiach/horizontal-calendar/dist/defaultTheme.css';
 
 import NumberFormat from 'react-number-format';
 import { DateTime } from 'luxon';
 import { ChangeEvent, useState } from 'react';
+import Calendar from '@vespaiach/horizontal-calendar';
 
-import DatePicker from '../components/DatePicker';
-import { ReasonMap, Maybe, FilterArgs } from '../graphql.generated';
+import { Maybe, FilterArgs } from '../graphql.generated';
 import { Input, TagInput } from '../components/Input';
 import CalendarIcon from '../components/icons/Calendar';
 import CloseIcon from '../components/icons/Close';
@@ -22,10 +24,7 @@ interface FilterMenuProps {
 export default function FilterMenu({ onClose, filters, reasons: reasonList }: FilterMenuProps) {
   const [reasons, setReasons] = useState<Tag[]>([]);
   const [amountRange, setAmountRange] = useState([filters?.fromAmount, filters?.toAmount]);
-  const [dateRange, setDateRange] = useState<[Maybe<Date>, Maybe<Date>]>([
-    filters?.fromDate ?? null,
-    filters?.toDate ?? null,
-  ]);
+  const [dateRange, setDateRange] = useState<[Date, Date | null] | null>(null);
 
   const handleChecked = (evt: ChangeEvent<HTMLInputElement>) => {
     const { checked, value } = evt.target;
@@ -44,18 +43,17 @@ export default function FilterMenu({ onClose, filters, reasons: reasonList }: Fi
     onClose({
       fromAmount: amountRange[0],
       toAmount: amountRange[1],
-      fromDate: dateRange[0] ?? null,
-      toDate: dateRange[1] ?? null,
+      fromDate: Array.isArray(dateRange) ? dateRange[0] : null,
+      toDate: Array.isArray(dateRange) ? dateRange[1] : null,
       reasons: reasonTexts,
     });
   };
 
   let dateString = '';
-  if (dateRange[0]) {
-    dateString = `${DateTime.fromJSDate(dateRange[0]).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}`;
-    if (dateRange[1]) {
-      dateString += ` - ${DateTime.fromJSDate(dateRange[1]).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}`;
-    }
+  if (Array.isArray(dateRange) && dateRange[1]) {
+    dateString = `${DateTime.fromJSDate(dateRange[0]).toLocaleString(
+      DateTime.DATE_MED_WITH_WEEKDAY
+    )} - ${DateTime.fromJSDate(dateRange[1]).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}`;
   }
 
   return (
@@ -100,15 +98,15 @@ export default function FilterMenu({ onClose, filters, reasons: reasonList }: Fi
               onChange={noop}
               addIns={<CalendarIcon />}
               subIns={
-                dateRange[0] && (
-                  <Button boxLess onClick={() => setDateRange([null, null])}>
+                dateRange && (
+                  <Button boxLess onClick={() => setDateRange(null)}>
                     <CloseIcon />
                   </Button>
                 )
               }
             />
           </div>
-          <DatePicker allowRange fromDate={dateRange[0]} toDate={dateRange[1]} onChange={setDateRange} />
+          <Calendar rangeSelection selection={dateRange} onChange={setDateRange} />
         </div>
         <div style={{ margin: '8px 16px 24px 16px' }}>
           <TagInput
@@ -139,7 +137,7 @@ export default function FilterMenu({ onClose, filters, reasons: reasonList }: Fi
           onClick={(e) => {
             e.preventDefault();
             setAmountRange([null, null]);
-            setDateRange([null, null]);
+            setDateRange(null);
             setReasons([]);
           }}>
           Clear All
